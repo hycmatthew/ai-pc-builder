@@ -1,34 +1,49 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
+import React, { Suspense } from 'react'
+import { Provider } from 'react-redux'
+import ReactGA from 'react-ga4'
+import { BrowserRouter, HashRouter } from 'react-router-dom'
+import AIComponentListRoutes from './module/aiComponentList/pages/Route'
+
+import ComponentListRoutes from './module/componentList/pages/Route'
+import DatabaseListRoutes from './module/database/page/Route'
+
+import {
+  getAIODataList,
+  getAirCoolerDataList,
+  getCaseDataList,
+  getCPUDataList,
+  getGPUDataList,
+  getMotherboardDataList,
+  getPSUDataList,
+  getRAMDataList,
+  getSSDDataList,
+} from './module/store/rawDataReducer'
+import store from './module/store/store'
+import config from './config/config'
+
+ReactGA.initialize(config.GA_TRACKING_ID)
 
 function App() {
-  const [count, setCount] = useState(0)
+  store.dispatch(getCPUDataList())
+  store.dispatch(getGPUDataList())
+  store.dispatch(getMotherboardDataList())
+  store.dispatch(getRAMDataList())
+  store.dispatch(getPSUDataList())
+  store.dispatch(getCaseDataList())
+  store.dispatch(getAIODataList())
+  store.dispatch(getSSDDataList())
+  store.dispatch(getAirCoolerDataList())
 
   return (
-    <>
-      <div>
-        <a href="https://vitejs.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.tsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </>
+    <Suspense fallback="loading">
+      <Provider store={store}>
+        <HashRouter>
+          <ComponentListRoutes />
+          <DatabaseListRoutes />
+          <AIComponentListRoutes />
+        </HashRouter>
+      </Provider>
+    </Suspense>
   )
 }
 
