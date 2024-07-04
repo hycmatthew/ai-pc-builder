@@ -2,7 +2,7 @@ import React, { useEffect } from 'react'
 import Grid from '@mui/material/Grid'
 import { useSelector } from 'react-redux'
 
-import AppLayout from '../../common/AppLayout'
+import AppLayout from '../../common/appLayout/AppLayout'
 import ComponentMenu from '../components/ComponentMenu'
 import Calculator from '../components/Calculator'
 import PowerCalculator from '../components/PowerCalculator'

@@ -10,7 +10,7 @@ import { RAMType } from '../../../constant/objectTypes'
 import { getSelectedCurrency, stringToNumberWithDP } from '../../../utils/NumberHelper'
 import { ramPerformanceLogic } from '../../../logic/performanceLogic'
 import { generateRAMName, priceLabelHandler } from '../../../utils/LabelHelper'
-import BarMotion from '../../../animation/BarMotion'
+import BarMotion from '../../../styles/animation/BarMotion'
 import BenchmarksDataGrid from './BenchmarksDataGrid'
 import { getGradientColor } from '../../../utils/ColorHelper'
 

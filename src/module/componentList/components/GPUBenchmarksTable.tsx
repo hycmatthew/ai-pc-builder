@@ -9,7 +9,7 @@ import 'aos/dist/aos.css'
 import GPUType from '../../../constant/objectTypes/GPUType'
 import { getSelectedCurrency, stringToNumber, stringToNumberWithDP } from '../../../utils/NumberHelper'
 import { generateItemName, priceLabelHandler } from '../../../utils/LabelHelper'
-import BarMotion from '../../../animation/BarMotion'
+import BarMotion from '../../../styles/animation/BarMotion'
 import BenchmarksDataGrid from './BenchmarksDataGrid'
 import { getGradientColor } from '../../../utils/ColorHelper'
 

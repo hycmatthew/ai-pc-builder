@@ -5,7 +5,7 @@ import styled from '@emotion/styled'
 import { ToggleButtonGroup, ToggleButton } from '@mui/material'
 import ProductEnum from '../../../constant/ProductEnum'
 
-import AppLayout from '../../common/AppLayout'
+import AppLayout from '../../common/appLayout/AppLayout'
 import CPUBenchmarksTable from '../components/CPUBenchmarksTable'
 import GPUBenchmarksTable from '../components/GPUBenchmarksTable'
 import RAMBenchmarksTable from '../components/RAMBenchmarks'

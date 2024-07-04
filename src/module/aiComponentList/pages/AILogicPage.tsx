@@ -2,7 +2,7 @@ import React from 'react'
 import { useSelector } from 'react-redux'
 import Grid from '@mui/material/Grid'
 
-import AppLayout from '../../common/AppLayout'
+import AppLayout from '../../common/appLayout/AppLayout'
 import BudgetComponent from '../components/BudgetComponent'
 import UsageComponent from '../components/UsageComponent'
 import SpecificComponent from '../components/SpecificComponent'

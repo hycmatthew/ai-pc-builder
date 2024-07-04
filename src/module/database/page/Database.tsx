@@ -4,7 +4,7 @@ import Grid from '@mui/material/Grid'
 import { Button, Stack, Box } from '@mui/material'
 
 import { useSelector } from 'react-redux'
-import AppLayout from '../../common/AppLayout'
+import AppLayout from '../../common/appLayout/AppLayout'
 import ItemInfoTable from '../components/ItemInfoTable'
 import ProductEnum from '../../../constant/ProductEnum'
 import CPUSuggestion from '../components/CPUSuggestion'
