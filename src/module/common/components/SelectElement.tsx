@@ -1,4 +1,3 @@
-import React, { useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import {
   Box,
@@ -144,7 +143,7 @@ const SelectElement = ({
         </Box>
       )}
       /* eslint-disable react/jsx-props-no-spreading */
-      renderInput={(params) => <CustomTextField {...params} label={t(label)} variant="filled" />}
+      renderInput={(params) => <CustomTextField {...params} label={t(label)} InputProps={{...params.InputProps, disableUnderline: true}} variant="filled" />}
     />
   )
 }

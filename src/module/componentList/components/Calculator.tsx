@@ -1,9 +1,8 @@
-import React from 'react'
 import { useTranslation } from 'react-i18next'
-import Grid from '@mui/material/Grid'
 import Typography from '@mui/material/Typography'
 import Container from '@mui/material/Container'
 import styled from '@emotion/styled'
+import { Unstable_Grid2 as Grid } from "@mui/material"
 
 import { SelectedItemType } from '../../store/rawDataReducer'
 import { getTotalPrice } from '../../../utils/NumberHelper'
@@ -15,8 +14,6 @@ type CalculatorProps = {
 const CustomContainer = styled(Container)({
   backgroundColor: '#ffffff',
   padding: '8px',
-  borderRadius: '6px',
-  marginTop: '16px',
 })
 
 const Calculator = ({ selectedItems }: CalculatorProps) => {
@@ -25,7 +22,7 @@ const Calculator = ({ selectedItems }: CalculatorProps) => {
   return (
     <CustomContainer>
       <Grid container spacing={2}>
-        <Grid item xs={8}>
+        <Grid xs={8}>
           <Typography className="normal-header-typography">
             {t('price')}
           </Typography>

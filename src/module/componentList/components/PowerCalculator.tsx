@@ -1,9 +1,8 @@
-import React from 'react'
 import { useTranslation } from 'react-i18next'
-import Grid from '@mui/material/Grid'
 import Typography from '@mui/material/Typography'
 import Container from '@mui/material/Container'
 import styled from '@emotion/styled'
+import { Unstable_Grid2 as Grid } from "@mui/material"
 
 import { SelectedItemType } from '../../store/rawDataReducer'
 import { getTotalPower } from '../../../utils/NumberHelper'
@@ -16,7 +15,6 @@ type CalculatorProps = {
 const CustomContainer = styled(Container)({
   backgroundColor: '#ffffff',
   padding: '8px',
-  borderRadius: '6px',
 })
 
 const Calculator = ({ selectedItems }: CalculatorProps) => {
@@ -30,15 +28,19 @@ const Calculator = ({ selectedItems }: CalculatorProps) => {
   return (
     <CustomContainer>
       <Grid container spacing={2}>
-        <Grid item xs={8}>
-          <Typography className="normal-header-typography">{t('power-calculator')}</Typography>
+        <Grid xs={8}>
+          <Typography className="normal-header-typography">
+            {t('power-calculator')}
+          </Typography>
           <Typography>
             {totalPower}
             <span>{t('watt')}</span>
           </Typography>
         </Grid>
-        <Grid item xs={8}>
-          <Typography className="normal-header-typography">{t('recommended-psu-wattage')}</Typography>
+        <Grid xs={8}>
+          <Typography className="normal-header-typography">
+            {t('recommended-psu-wattage')}
+          </Typography>
           <Typography>
             {recommendPower()}
             <span>{t('watt')}</span>

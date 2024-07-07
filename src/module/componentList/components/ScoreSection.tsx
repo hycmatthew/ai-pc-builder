@@ -1,9 +1,7 @@
-import React from 'react'
 import { useTranslation } from 'react-i18next'
-import Grid from '@mui/material/Grid'
-import Typography from '@mui/material/Typography'
 import Container from '@mui/material/Container'
 import styled from '@emotion/styled'
+import { Unstable_Grid2 as Grid } from '@mui/material'
 
 import { SelectedItemType } from '../../store/rawDataReducer'
 import {
@@ -12,79 +10,59 @@ import {
   ramPerformanceLogic,
   ssdPerformanceLogic,
 } from '../../../logic/performanceLogic'
+import CusTypography from '../../common/components/CusTypography'
 
 type ScoreSectionProps = {
   selectedItems: SelectedItemType
 }
-
-const HeaderTypography = styled(Typography)({
-  fontSize: '9px',
-})
-
-const ScoreTypography = styled(Typography)({
-  fontSize: '24px',
-})
-
 const CustomContainer = styled(Container)({
   backgroundColor: '#ffffff',
   padding: '8px',
   borderRadius: '6px',
-  marginTop: '16px',
 })
 
 const ScoreSection = ({ selectedItems }: ScoreSectionProps) => {
   const { t, i18n } = useTranslation()
 
   const totalScore = () => {
-    const result = cpuPerformanceLogic(selectedItems.cpu)
-      + gpuPerformanceLogic(selectedItems.gpu)
-      + ramPerformanceLogic(selectedItems.ram)
-      + ssdPerformanceLogic(selectedItems.ssd)
+    const result =
+      cpuPerformanceLogic(selectedItems.cpu) +
+      gpuPerformanceLogic(selectedItems.gpu) +
+      ramPerformanceLogic(selectedItems.ram) +
+      ssdPerformanceLogic(selectedItems.ssd)
     return result
   }
 
   return (
     <CustomContainer>
       <Grid container spacing={2}>
-        <Grid item xs={8}>
-          <HeaderTypography className="normal-header-typography">
-            {t('cpu-score')}
-          </HeaderTypography>
-          <ScoreTypography>
+        <Grid xs={8}>
+          <CusTypography variant="h6">{t('cpu-score')}</CusTypography>
+          <CusTypography variant="h4">
             {cpuPerformanceLogic(selectedItems.cpu)}
-          </ScoreTypography>
+          </CusTypography>
         </Grid>
-        <Grid item xs={8}>
-          <HeaderTypography className="normal-header-typography">
-            {t('gpu-score')}
-          </HeaderTypography>
-          <ScoreTypography>
+        <Grid xs={8}>
+          <CusTypography variant="h6">{t('gpu-score')}</CusTypography>
+          <CusTypography variant="h4">
             {gpuPerformanceLogic(selectedItems.gpu)}
-          </ScoreTypography>
+          </CusTypography>
         </Grid>
-        <Grid item xs={8}>
-          <HeaderTypography className="normal-header-typography">
-            {t('ram-score')}
-          </HeaderTypography>
-          <ScoreTypography>
+        <Grid xs={8}>
+          <CusTypography variant="h6">{t('ram-score')}</CusTypography>
+          <CusTypography variant="h4">
             {ramPerformanceLogic(selectedItems.ram)}
-          </ScoreTypography>
+          </CusTypography>
         </Grid>
-        <Grid item xs={8}>
-          <HeaderTypography className="normal-header-typography">
-            {t('ssd-score')}
-          </HeaderTypography>
-          <ScoreTypography>
+        <Grid xs={8}>
+          <CusTypography variant="h6">{t('ssd-score')}</CusTypography>
+          <CusTypography variant="h4">
             {ssdPerformanceLogic(selectedItems.ssd)}
-          </ScoreTypography>
+          </CusTypography>
         </Grid>
-        <Grid item xs={8}>
-          <HeaderTypography className="normal-header-typography">
-            {t('total-score')}
-          </HeaderTypography>
-          <ScoreTypography>
-            {totalScore()}
-          </ScoreTypography>
+        <Grid xs={8}>
+          <CusTypography variant="h6">{t('total-score')}</CusTypography>
+          <CusTypography variant="h4">{totalScore()}</CusTypography>
         </Grid>
       </Grid>
     </CustomContainer>

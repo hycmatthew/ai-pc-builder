@@ -1,12 +1,11 @@
-import React from 'react'
 import { useTranslation } from 'react-i18next'
-import Grid from '@mui/material/Grid'
 import Typography from '@mui/material/Typography'
 import Container from '@mui/material/Container'
 import Stack from '@mui/material/Stack'
 import CancelRoundedIcon from '@mui/icons-material/CancelRounded'
 import WarningRoundedIcon from '@mui/icons-material/WarningRounded'
 import styled from '@emotion/styled'
+import { Unstable_Grid2 as Grid } from "@mui/material"
 
 import { SelectedItemType } from '../../store/rawDataReducer'
 import { getTotalPower } from '../../../utils/NumberHelper'
@@ -19,7 +18,11 @@ import {
   caseIncompatibleWithMotherboard,
   caseIncompatibleWithAIO,
 } from '../../../logic/incompatibleLogic'
-import { gpuMatchcpuSuggestion, ramProfileIsNotMatchCPU, ramSizeSuggestion } from '../../../logic/suggestionLogic'
+import {
+  gpuMatchcpuSuggestion,
+  ramProfileIsNotMatchCPU,
+  ramSizeSuggestion,
+} from '../../../logic/suggestionLogic'
 
 type CompatibleSectionProps = {
   selectedItems: SelectedItemType
@@ -28,8 +31,6 @@ type CompatibleSectionProps = {
 const CustomContainer = styled(Container)({
   backgroundColor: '#ffffff',
   padding: '8px',
-  borderRadius: '6px',
-  marginTop: '16px',
 })
 
 const WarningStack = styled(Stack)({
@@ -50,15 +51,7 @@ type SuggestionType = {
 const CompatibleSection = ({ selectedItems }: CompatibleSectionProps) => {
   const { t } = useTranslation()
 
-  const {
-    cpu,
-    gpu,
-    motherboard,
-    ram,
-    psu,
-    pcCase,
-    aio
-  } = selectedItems
+  const { cpu, gpu, motherboard, ram, psu, pcCase, aio } = selectedItems
 
   const createSuggestion = () => {
     const suggestion: SuggestionType[] = []
@@ -106,7 +99,7 @@ const CompatibleSection = ({ selectedItems }: CompatibleSectionProps) => {
         type: 'suggestion',
       })
     }
-    if ((gpu && cpu) && gpuMatchcpuSuggestion(gpu, cpu)) {
+    if (gpu && cpu && gpuMatchcpuSuggestion(gpu, cpu)) {
       suggestion.push({
         name: 'suggestion-gpu-cpu-not-match',
         type: 'suggestion',
@@ -127,8 +120,8 @@ const CompatibleSection = ({ selectedItems }: CompatibleSectionProps) => {
   return (
     <CustomContainer>
       <Grid container spacing={2}>
-        <Grid item xs={8}>
-          {suggestions.map((item: SuggestionType) => (
+        <Grid xs={8}>
+          {suggestions.map((item: SuggestionType) =>
             item.type === 'warning' ? (
               <WarningStack
                 direction="row"
@@ -150,13 +143,9 @@ const CompatibleSection = ({ selectedItems }: CompatibleSectionProps) => {
                 <Typography>{t(item.name)}</Typography>
               </SuggectStack>
             )
-          ))}
+          )}
           {suggestions.length === 0 && (
-            <SuggectStack
-              direction="row"
-              alignItems="center"
-              spacing={2}
-            >
+            <SuggectStack direction="row" alignItems="center" spacing={2}>
               <WarningRoundedIcon />
               <Typography>{t('no-suggestion')}</Typography>
             </SuggectStack>

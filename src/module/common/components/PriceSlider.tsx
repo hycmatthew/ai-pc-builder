@@ -2,10 +2,10 @@ import * as React from 'react'
 import { useTranslation } from 'react-i18next'
 import { styled } from '@mui/material/styles'
 import Box from '@mui/material/Box'
-import Grid from '@mui/material/Grid'
 import Typography from '@mui/material/Typography'
 import Slider, { SliderProps } from '@mui/material/Slider'
 import MuiInput from '@mui/material/Input'
+import { Unstable_Grid2 as Grid } from "@mui/material"
 
 const Input = styled(MuiInput)`
   width: 84px;
@@ -15,7 +15,7 @@ type PriceSliderProps = SliderProps & {
   selectChange?: (value: number) => void
 }
 
-const PriceSlider = ({ selectChange } : PriceSliderProps) => {
+const PriceSlider = ({ selectChange }: PriceSliderProps) => {
   const { t, i18n } = useTranslation()
   const getMaximunNumber = () => {
     switch (i18n.language) {
@@ -27,7 +27,9 @@ const PriceSlider = ({ selectChange } : PriceSliderProps) => {
         return 4000
     }
   }
-  const [value, setValue] = React.useState<number | string | Array<number | string>>(getMaximunNumber())
+  const [value, setValue] = React.useState<
+    number | string | Array<number | string>
+  >(getMaximunNumber())
 
   const handleSliderChange = (event: Event, newValue: number | number[]) => {
     if (typeof newValue === 'number' && selectChange) {
@@ -41,11 +43,13 @@ const PriceSlider = ({ selectChange } : PriceSliderProps) => {
   }
 
   const handleBlur = () => {
+    /*
     if (value < 0) {
       setValue(0)
     } else if (value > getMaximunNumber()) {
       setValue(getMaximunNumber())
     }
+    */
   }
 
   return (
@@ -54,7 +58,7 @@ const PriceSlider = ({ selectChange } : PriceSliderProps) => {
         {t('price')}
       </Typography>
       <Grid container spacing={2} alignItems="center">
-        <Grid item xs>
+        <Grid xs>
           <Slider
             min={0}
             step={10}
@@ -64,7 +68,7 @@ const PriceSlider = ({ selectChange } : PriceSliderProps) => {
             aria-labelledby="input-slider"
           />
         </Grid>
-        <Grid item>
+        <Grid>
           <Input
             value={value}
             size="small"

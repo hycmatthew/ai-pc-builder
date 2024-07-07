@@ -1,5 +1,5 @@
-import React, { useEffect } from 'react'
-import Grid from '@mui/material/Grid'
+import { useEffect } from 'react'
+import { Unstable_Grid2 as Grid } from '@mui/material'
 
 import SelectElement from '../../common/components/SelectElement'
 import { DataState, sliceActions } from '../../store/rawDataReducer'
@@ -106,8 +106,8 @@ const ComponentMenu = ({ dataState }: ComponentMenuProps) => {
   }
 
   return (
-    <Grid container spacing={2}>
-      <Grid item xs={12}>
+    <Grid container spacing={1}>
+      <Grid xs={12}>
         <SelectElement
           label={ProductEnum.CPU}
           options={generateCPUSelectElement(cpuList, selectedItems)}
@@ -115,7 +115,7 @@ const ComponentMenu = ({ dataState }: ComponentMenuProps) => {
           isLoading={isLoading}
         />
       </Grid>
-      <Grid item xs={12}>
+      <Grid xs={12}>
         <SelectElement
           label={ProductEnum.GPU}
           options={generateGPUSelectElement(gpuList, selectedItems)}
@@ -123,7 +123,7 @@ const ComponentMenu = ({ dataState }: ComponentMenuProps) => {
           isLoading={isLoading}
         />
       </Grid>
-      <Grid item xs={12}>
+      <Grid xs={12}>
         <SelectElement
           label={ProductEnum.Motherboard}
           options={generateMotherboardSelectElement(
@@ -134,7 +134,7 @@ const ComponentMenu = ({ dataState }: ComponentMenuProps) => {
           isLoading={isLoading}
         />
       </Grid>
-      <Grid item xs={12}>
+      <Grid xs={12}>
         <SelectElement
           label={ProductEnum.RAM}
           options={generateRAMSelectElement(ramList, selectedItems)}
@@ -142,7 +142,7 @@ const ComponentMenu = ({ dataState }: ComponentMenuProps) => {
           isLoading={isLoading}
         />
       </Grid>
-      <Grid item xs={12}>
+      <Grid xs={12}>
         <SelectElement
           label={ProductEnum.SSD}
           options={generateSSDSelectElement(ssdList, selectedItems)}
@@ -150,7 +150,7 @@ const ComponentMenu = ({ dataState }: ComponentMenuProps) => {
           isLoading={isLoading}
         />
       </Grid>
-      <Grid item xs={12}>
+      <Grid xs={12}>
         <SelectElement
           label={ProductEnum.PSU}
           options={generatePSUSelectElement(psuList, selectedItems)}
@@ -158,7 +158,7 @@ const ComponentMenu = ({ dataState }: ComponentMenuProps) => {
           isLoading={isLoading}
         />
       </Grid>
-      <Grid item xs={12}>
+      <Grid xs={12}>
         <SelectElement
           label={ProductEnum.ComputerCase}
           options={generateCaseSelectElement(caseList, selectedItems)}
@@ -166,7 +166,7 @@ const ComponentMenu = ({ dataState }: ComponentMenuProps) => {
           isLoading={isLoading}
         />
       </Grid>
-      <Grid item xs={12}>
+      <Grid xs={12}>
         <SelectElement
           label={ProductEnum.AIO}
           options={generateAIOSelectElement(aioList, selectedItems)}
@@ -174,7 +174,7 @@ const ComponentMenu = ({ dataState }: ComponentMenuProps) => {
           isLoading={isLoading}
         />
       </Grid>
-      <Grid item xs={12}>
+      <Grid xs={12}>
         <SelectElement
           label={ProductEnum.AirCooler}
           options={generateAirCoolerSelectElement(airCoolerList, selectedItems)}

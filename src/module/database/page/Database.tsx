@@ -1,10 +1,9 @@
-import React, { useEffect, useState } from 'react'
+import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import Grid from '@mui/material/Grid'
-import { Button, Stack, Box } from '@mui/material'
+import { Button, Box } from '@mui/material'
+import { Unstable_Grid2 as Grid } from '@mui/material'
 
 import { useSelector } from 'react-redux'
-import AppLayout from '../../common/appLayout/AppLayout'
 import ItemInfoTable from '../components/ItemInfoTable'
 import ProductEnum from '../../../constant/ProductEnum'
 import CPUSuggestion from '../components/CPUSuggestion'
@@ -19,7 +18,9 @@ import AirCoolerSuggestion from '../components/AirCoolerSuggestion'
 
 function Database() {
   const { t } = useTranslation()
-  const categoryList = Object.values(ProductEnum).filter((item) => item !== ProductEnum.AirCooler)
+  const categoryList = Object.values(ProductEnum).filter(
+    (item) => item !== ProductEnum.AirCooler
+  )
 
   const dataState = useSelector((state: any) => {
     return state.rawData
@@ -98,46 +99,39 @@ function Database() {
   }
 
   return (
-    <AppLayout>
-      <Grid justifyContent="center" container>
-        <Grid container xs={12} md={8} justifyContent="center" spacing={2}>
-          {categoryList.map((item) => (
-            <Grid item>
-              <Box component="span">
-                <Button
-                  variant="contained"
-                  onClick={() => setSelectedType(item)}
-                >
-                  {t(item)}
-                </Button>
-              </Box>
-            </Grid>
-          ))}
-        </Grid>
-        <Grid
-          container
-          xs={12}
-          md={8}
-          justifyContent="center"
-          sx={{ paddingTop: '24px' }}
-        >
-          <Grid item xs={12}>
-            {createSelectLogic(selectedType)}
+    <Grid justifyContent="center" container>
+      <Grid container xs={12} md={8} justifyContent="center" spacing={2}>
+        {categoryList.map((item) => (
+          <Grid>
+            <Box component="span">
+              <Button variant="contained" onClick={() => setSelectedType(item)}>
+                {t(item)}
+              </Button>
+            </Box>
           </Grid>
-        </Grid>
-        <Grid
-          container
-          xs={12}
-          md={8}
-          justifyContent="center"
-          sx={{ paddingTop: '24px' }}
-        >
-          <Grid item xs={12}>
-            <ItemInfoTable />
-          </Grid>
+        ))}
+      </Grid>
+      <Grid
+        container
+        xs={12}
+        md={8}
+        justifyContent="center"
+        sx={{ paddingTop: '24px' }}
+      >
+        <Grid xs={12}>{createSelectLogic(selectedType)}</Grid>
+      </Grid>
+      <Grid
+        container
+        xs={12}
+        md={8}
+        justifyContent="center"
+        sx={{ paddingTop: '24px' }}
+      >
+        <Grid xs={12}>
+          <ItemInfoTable />
         </Grid>
       </Grid>
-    </AppLayout>
+    </Grid>
   )
 }
 

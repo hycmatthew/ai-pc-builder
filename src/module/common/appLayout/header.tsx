@@ -1,4 +1,3 @@
-import { Button } from '@mui/material'
 import { t } from 'i18next'
 import { Link } from 'react-router-dom'
 import './header.scss'
@@ -16,14 +15,7 @@ const HeaderLayout = () => {
       <div className="header-container">
         <div className="header-menu-container">
           <div className="header-icon">
-            {/*
-            <Image
-              src="/paper-plane.png"
-              alt="Main Icon"
-              
-              width="64"
-              height="64"
-            />*/}
+            <h3>Header</h3>
           </div>
           <div className="header-menu">
             <div className="menu-list-container">
