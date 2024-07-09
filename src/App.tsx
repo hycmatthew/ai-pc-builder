@@ -1,4 +1,4 @@
-import React, { Suspense } from 'react'
+import { Suspense } from 'react'
 import { Provider } from 'react-redux'
 import ReactGA from 'react-ga4'
 import { BrowserRouter, HashRouter } from 'react-router-dom'
@@ -17,9 +17,10 @@ import {
   getPSUDataList,
   getRAMDataList,
   getSSDDataList,
-} from './module/store/rawDataReducer'
-import store from './module/store/store'
+} from './store/rawDataReducer'
+import store from './store/store'
 import config from './config/config'
+import AppLayout from './module/common/appLayout/AppLayout'
 
 ReactGA.initialize(config.GA_TRACKING_ID)
 
@@ -38,9 +39,13 @@ function App() {
     <Suspense fallback="loading">
       <Provider store={store}>
         <HashRouter>
-          <ComponentListRoutes />
-          <DatabaseListRoutes />
-          <AIComponentListRoutes />
+          <AppLayout>
+            <>
+              <ComponentListRoutes />
+              <DatabaseListRoutes />
+              <AIComponentListRoutes />
+            </>
+          </AppLayout>
         </HashRouter>
       </Provider>
     </Suspense>

@@ -4,7 +4,7 @@ import Container from '@mui/material/Container'
 import styled from '@emotion/styled'
 import { Unstable_Grid2 as Grid } from "@mui/material"
 
-import { SelectedItemType } from '../../store/rawDataReducer'
+import { SelectedItemType } from '../../../store/rawDataReducer'
 import { getTotalPrice } from '../../../utils/NumberHelper'
 
 type CalculatorProps = {

@@ -2,8 +2,8 @@ import { useEffect } from 'react'
 import { Unstable_Grid2 as Grid } from '@mui/material'
 
 import SelectElement from '../../common/components/SelectElement'
-import { DataState, sliceActions } from '../../store/rawDataReducer'
-import { useAppDispatch } from '../../store/store'
+import { DataState, sliceActions } from '../../../store/rawDataReducer'
+import { useAppDispatch } from '../../../store/store'
 import ProductEnum from '../../../constant/ProductEnum'
 import {
   generateAIOSelectElement,

@@ -6,7 +6,7 @@ import UsageComponent from '../components/UsageComponent'
 import SpecificComponent from '../components/SpecificComponent'
 import ResultComponent from '../components/ResultComponent'
 import { aiLogicSlice } from '../store/aiLogicReducer'
-import { useAppDispatch } from '../../store/store'
+import { useAppDispatch } from '../../../store/store'
 
 function AILogicPage() {
   const dispatch = useAppDispatch()

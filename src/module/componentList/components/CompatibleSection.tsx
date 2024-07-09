@@ -7,7 +7,7 @@ import WarningRoundedIcon from '@mui/icons-material/WarningRounded'
 import styled from '@emotion/styled'
 import { Unstable_Grid2 as Grid } from "@mui/material"
 
-import { SelectedItemType } from '../../store/rawDataReducer'
+import { SelectedItemType } from '../../../store/rawDataReducer'
 import { getTotalPower } from '../../../utils/NumberHelper'
 import {
   motherboardIncompatibleWithCPU,

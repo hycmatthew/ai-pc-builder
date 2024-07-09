@@ -1,5 +1,5 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit'
-import { SelectedItemType } from '../../store/rawDataReducer'
+import { SelectedItemType } from '../../../store/rawDataReducer'
 
 export interface BuildLogicState {
   step: number

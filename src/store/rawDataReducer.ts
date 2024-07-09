@@ -1,13 +1,13 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit'
-import { AirCoolerType, SSDType } from '../../constant/objectTypes'
-import AIOType from '../../constant/objectTypes/AIOType'
-import CaseType from '../../constant/objectTypes/CaseType'
-import CPUType from '../../constant/objectTypes/CPUType'
-import GPUType from '../../constant/objectTypes/GPUType'
-import MotherboardType from '../../constant/objectTypes/MotherboardType'
-import PSUType from '../../constant/objectTypes/PSUType'
-import RAMType from '../../constant/objectTypes/RAMType'
-import { RawDataAPI } from '../../utils/HttpHelper'
+import { AirCoolerType, SSDType } from '../constant/objectTypes'
+import AIOType from '../constant/objectTypes/AIOType'
+import CaseType from '../constant/objectTypes/CaseType'
+import CPUType from '../constant/objectTypes/CPUType'
+import GPUType from '../constant/objectTypes/GPUType'
+import MotherboardType from '../constant/objectTypes/MotherboardType'
+import PSUType from '../constant/objectTypes/PSUType'
+import RAMType from '../constant/objectTypes/RAMType'
+import { RawDataAPI } from '../utils/HttpHelper'
 
 export interface SelectedItemType {
   cpu: CPUType | null

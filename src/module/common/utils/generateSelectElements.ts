@@ -11,7 +11,7 @@ import {
 } from '../../../constant/objectTypes'
 import { generateItemName, generateRAMName, generateSSDName } from '../../../utils/LabelHelper'
 import { getCurrentPrice } from '../../../utils/NumberHelper'
-import { SelectedItemType } from '../../store/rawDataReducer'
+import { SelectedItemType } from '../../../store/rawDataReducer'
 import {
   airCoolerIncompatible,
   caseIncompatible,

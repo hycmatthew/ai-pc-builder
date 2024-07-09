@@ -104,7 +104,7 @@ function Database() {
         {categoryList.map((item) => (
           <Grid>
             <Box component="span">
-              <Button variant="contained" onClick={() => setSelectedType(item)}>
+              <Button variant="outlined" onClick={() => setSelectedType(item)}>
                 {t(item)}
               </Button>
             </Box>

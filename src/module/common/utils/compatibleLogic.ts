@@ -18,7 +18,7 @@ import {
   airCoolerIncompatibleWithCase,
 } from '../../../logic/incompatibleLogic'
 import { getTotalPower } from '../../../utils/NumberHelper'
-import { SelectedItemType } from '../../store/rawDataReducer'
+import { SelectedItemType } from '../../../store/rawDataReducer'
 
 export const cpuIncompatible = (
   item: CPUType,
