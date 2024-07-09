@@ -1,6 +1,5 @@
 import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import { Button, Box } from '@mui/material'
 import { Unstable_Grid2 as Grid } from '@mui/material'
 
 import { useSelector } from 'react-redux'
@@ -15,6 +14,7 @@ import PSUSuggestion from '../components/PSUSuggestion'
 import CaseSuggestion from '../components/CaseSuggestion'
 import AIOSuggestion from '../components/AIOSuggestion'
 import AirCoolerSuggestion from '../components/AirCoolerSuggestion'
+import CusButton from '../../common/components/CusButton'
 
 function Database() {
   const { t } = useTranslation()
@@ -102,12 +102,8 @@ function Database() {
     <Grid justifyContent="center" container>
       <Grid container xs={12} md={8} justifyContent="center" spacing={2}>
         {categoryList.map((item) => (
-          <Grid>
-            <Box component="span">
-              <Button variant="outlined" onClick={() => setSelectedType(item)}>
-                {t(item)}
-              </Button>
-            </Box>
+          <Grid md={3} xs={6}>
+            <CusButton label={item} clickedFunc={() => setSelectedType(item)} />
           </Grid>
         ))}
       </Grid>

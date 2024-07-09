@@ -1,7 +1,7 @@
 import { configureStore } from '@reduxjs/toolkit'
 import { useDispatch } from 'react-redux'
 import rawDataReducer from './rawDataReducer'
-import aiLogicReducer from '../aiComponentList/store/aiLogicReducer'
+import aiLogicReducer from '../module/aiComponentList/store/aiLogicReducer'
 
 const store = configureStore({
   reducer: {

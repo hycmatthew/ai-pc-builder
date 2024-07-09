@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useState } from 'react'
 import {
   Card,
   CardContent,
@@ -7,7 +7,7 @@ import {
   Button,
   InputAdornment,
 } from '@mui/material'
-import { useAppDispatch } from '../../store/store'
+import { useAppDispatch } from '../../../store/store'
 import { aiLogicSlice } from '../store/aiLogicReducer'
 import { addCurrencySign } from '../../../utils/NumberHelper'
 import buildConfig from '../data/buildConfig'

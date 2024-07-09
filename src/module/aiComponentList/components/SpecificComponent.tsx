@@ -30,7 +30,7 @@ import {
   searchAIOItem,
   searchAirCoolerItem,
 } from '../../common/utils/searchItemLogic'
-import { useAppDispatch } from '../../store/store'
+import { useAppDispatch } from '../../../store/store'
 import { sliceActions } from '../store/aiLogicReducer'
 
 type SpecificComponentProps = {

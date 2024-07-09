@@ -1,8 +1,8 @@
-import React, { useEffect, useState } from 'react'
-import { Box, Card, Grid } from '@mui/material'
-import { useAppDispatch } from '../../store/store'
-import { sliceActions, BuildLogicState } from '../store/aiLogicReducer'
-import { DataState, SelectedItemType } from '../../store/rawDataReducer'
+import { useEffect, useState } from 'react'
+import { Box, Grid } from '@mui/material'
+import { useAppDispatch } from '../../../store/store'
+import { BuildLogicState } from '../store/aiLogicReducer'
+import { DataState, SelectedItemType } from '../../../store/rawDataReducer'
 import ResultCard from './ResultCard'
 import {
   selectCPULogic,

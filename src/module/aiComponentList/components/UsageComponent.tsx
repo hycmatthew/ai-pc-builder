@@ -1,11 +1,11 @@
-import React, { useEffect, useState } from 'react'
+import { useState } from 'react'
 import {
   Card,
   CardContent,
   CardActions,
   Button,
 } from '@mui/material'
-import { useAppDispatch } from '../../store/store'
+import { useAppDispatch } from '../../../store/store'
 import { aiLogicSlice } from '../store/aiLogicReducer'
 
 type UsageComponentProps = {
