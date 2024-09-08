@@ -2,10 +2,12 @@ import { motion, Variants } from 'framer-motion'
 
 const cardVariants: Variants = {
   offscreen: {
-    x: -250,
+    scale: 0,
+    x: '-50%',
   },
   onscreen: {
-    x: 0,
+    scale: 1,
+    x: '0%',
     transition: {
       type: 'spring',
       bounce: 0.3,

@@ -38,8 +38,8 @@ function RAMBenchmarksTable() {
         <Box
           sx={{
             width: setLength * maxWidth,
-            backgroundColor: getGradientColor('#00e673', '#ff0000', setLength),
-            borderRadius: 3,
+            backgroundColor: getGradientColor('#006bd6', '#ff0000', setLength),
+            borderRadius: 0,
             height: 12,
           }}
         />

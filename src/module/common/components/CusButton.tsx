@@ -10,8 +10,17 @@ type ButtonType = {
 
 const StyledButton = styled(Button)({
   width: '100%',
-  color: '#a6a6a6',
-  borderColor: '#a6a6a6',
+  color: '#B9B7BD',
+  borderColor: '#B9B7BD',
+  outline: 'none',
+  '&.selected-button': {
+    color: '#fff',
+    borderColor: '#0E86D4',
+    background: '#0E86D4'
+  },
+  '&:focus': {
+    outline: 'none'
+  }
 })
 
 const CusButton = ({ label, isSelected, clickedFunc }: ButtonType) => {

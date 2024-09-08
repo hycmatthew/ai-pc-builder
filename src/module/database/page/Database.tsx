@@ -100,10 +100,10 @@ function Database() {
 
   return (
     <Grid justifyContent="center" container>
-      <Grid container xs={12} md={8} justifyContent="center" spacing={2}>
+      <Grid container xs={12} md={8} justifyContent="center" spacing={1}>
         {categoryList.map((item) => (
           <Grid md={3} xs={6}>
-            <CusButton label={item} clickedFunc={() => setSelectedType(item)} />
+            <CusButton label={item} isSelected={item === selectedType} clickedFunc={() => setSelectedType(item)} />
           </Grid>
         ))}
       </Grid>

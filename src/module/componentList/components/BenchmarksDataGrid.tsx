@@ -14,20 +14,17 @@ function BenchmarksDataGrid({
   headerClick,
 }: BenchmarksDataGridProps) {
   return (
-    <Box sx={{ height: 900, width: '100%', background: '#fff' }}>
+    <div style={{ width: '100%', background: '#fff' }}>
       <DataGrid
         rows={rows}
         columns={columns}
-        pageSize={100}
-        rowsPerPageOptions={[5]}
-        experimentalFeatures={{ newEditingApi: true }}
         onColumnHeaderClick={(param) => {
           headerClick(param.field)
         }}
         sortingOrder={['desc', 'asc', null]}
         hideFooter
       />
-    </Box>
+    </div>
   )
 }
 

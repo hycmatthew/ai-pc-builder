@@ -5,9 +5,10 @@ import { Box, Stack, Typography } from '@mui/material'
 import { DataGrid, GridColDef, GridRowParams } from '@mui/x-data-grid'
 import AOS from 'aos'
 import 'aos/dist/aos.css'
+import './BenchmarksTable.scss'
 
 import GPUType from '../../../constant/objectTypes/GPUType'
-import { getSelectedCurrency, stringToNumber, stringToNumberWithDP } from '../../../utils/NumberHelper'
+import { getSelectedCurrency, stringToNumberWithDP } from '../../../utils/NumberHelper'
 import { generateItemName, priceLabelHandler } from '../../../utils/LabelHelper'
 import BarMotion from '../../../styles/animation/BarMotion'
 import BenchmarksDataGrid from './BenchmarksDataGrid'
@@ -46,8 +47,8 @@ function GPUBenchmarksTable() {
         <Box
           sx={{
             width: setLength * maxWidth,
-            backgroundColor: getGradientColor('#00e673', '#ff0000', setLength),
-            borderRadius: 3,
+            backgroundColor: getGradientColor('#006bd6', '#ff0000', setLength),
+            borderRadius: 0,
             height: 12,
           }}
         />
