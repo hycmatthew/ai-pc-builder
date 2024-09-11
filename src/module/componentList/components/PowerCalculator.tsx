@@ -2,7 +2,7 @@ import { useTranslation } from 'react-i18next'
 import Typography from '@mui/material/Typography'
 import Container from '@mui/material/Container'
 import styled from '@emotion/styled'
-import { Unstable_Grid2 as Grid } from "@mui/material"
+import { Box, Unstable_Grid2 as Grid } from '@mui/material'
 
 import { SelectedItemType } from '../../../store/rawDataReducer'
 import { getTotalPower } from '../../../utils/NumberHelper'
@@ -30,7 +30,7 @@ const Calculator = ({ selectedItems }: CalculatorProps) => {
       <Grid container spacing={2}>
         <Grid xs={8}>
           <Typography className="normal-header-typography">
-            {t('power-calculator')}
+            <Box sx={{ fontWeight: '600' }}>{t('power-calculator')}</Box>
           </Typography>
           <Typography>
             {totalPower}
@@ -39,7 +39,7 @@ const Calculator = ({ selectedItems }: CalculatorProps) => {
         </Grid>
         <Grid xs={8}>
           <Typography className="normal-header-typography">
-            {t('recommended-psu-wattage')}
+            <Box sx={{ fontWeight: '600' }}>{t('recommended-psu-wattage')}</Box>
           </Typography>
           <Typography>
             {recommendPower()}

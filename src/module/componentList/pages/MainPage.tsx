@@ -30,9 +30,9 @@ function MainPage() {
                 <ComponentMenu dataState={dataState} />
               </Grid>
               <Grid xs={6}>
+                <CompatibleSection selectedItems={dataState.selectedItems} />
                 <PowerCalculator selectedItems={dataState.selectedItems} />
                 <Calculator selectedItems={dataState.selectedItems} />
-                <CompatibleSection selectedItems={dataState.selectedItems} />
                 <ScoreSection selectedItems={dataState.selectedItems} />
               </Grid>
             </Grid>
