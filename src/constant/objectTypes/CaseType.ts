@@ -7,7 +7,7 @@ interface CaseType {
   PowerSupply: boolean
   DriveBays2: number
   DriveBays3: number
-  Compatibility: string
+  Compatibility: string[]
   Dimensions: number[]
   MaxVGAlength: number
   RadiatorSupport: number

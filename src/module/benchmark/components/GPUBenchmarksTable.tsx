@@ -19,7 +19,6 @@ import { getGradientColor } from '../../../utils/ColorHelper'
 
 function GPUBenchmarksTable() {
   const { t } = useTranslation()
-  const [selectedField, setSelectedField] = useState('timespyScore')
 
   const dataState = useSelector((state: any) => {
     return state.rawData
@@ -69,34 +68,15 @@ function GPUBenchmarksTable() {
       disableColumnMenu: true,
     },
     {
-      field: 'timespyScore',
-      headerName: 'Time Spy Score',
-      width: selectedField === 'timespyScore' ? 450 : 150,
+      field: 'benchmark',
+      headerName: 'Benchmark',
+      width: 450,
       editable: false,
       disableColumnMenu: true,
       renderCell: (params) => {
         return (
           <Stack direction="row" alignItems="center" spacing={2}>
-            {params.field === selectedField
-              ? benchmarksBarWidth(params.field, params.value)
-              : ''}
-            <Typography variant="subtitle2">{params.value}</Typography>
-          </Stack>
-        )
-      },
-    },
-    {
-      field: 'firestrikeScore',
-      headerName: 'Fire Strike Score',
-      width: selectedField === 'firestrikeScore' ? 450 : 150,
-      editable: false,
-      disableColumnMenu: true,
-      renderCell: (params) => {
-        return (
-          <Stack direction="row" alignItems="center" spacing={2}>
-            {params.field === selectedField
-              ? benchmarksBarWidth(params.field, params.value)
-              : ''}
+            {benchmarksBarWidth(params.field, params.value)}
             <Typography variant="subtitle2">{params.value}</Typography>
           </Stack>
         )
@@ -126,9 +106,6 @@ function GPUBenchmarksTable() {
   }
 
   const handleColumnHeaderClick = (fieldName: string) => {
-    if (fieldName === 'timespyScore' || fieldName === 'firestrikeScore') {
-      setSelectedField(fieldName)
-    }
   }
 
   return (

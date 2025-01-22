@@ -18,6 +18,9 @@ function CPUBenchmarksTable() {
   const { t } = useTranslation()
   const [selectedField, setSelectedField] = useState('multiScore')
 
+  const barWidthShort = 150
+  const barWidthLong = 500
+
   const dataState = useSelector((state: any) => {
     return state.rawData
   })
@@ -42,8 +45,7 @@ function CPUBenchmarksTable() {
           sx={{
             width: setLength * maxWidth,
             backgroundColor: getGradientColor('#006bd6', '#ff0000', setLength),
-            borderRadius: 0,
-            height: 12,
+            height: 16,
           }}
         />
       </BarMotion>
@@ -62,7 +64,7 @@ function CPUBenchmarksTable() {
     {
       field: 'singleScore',
       headerName: t('cpu-single-score'),
-      width: selectedField === 'singleScore' ? 400 : 200,
+      width: selectedField === 'singleScore' ? barWidthLong : barWidthShort,
       editable: false,
       disableColumnMenu: true,
       renderCell: (params) => {
@@ -79,7 +81,7 @@ function CPUBenchmarksTable() {
     {
       field: 'multiScore',
       headerName: t('cpu-multi-score'),
-      width: selectedField === 'multiScore' ? 400 : 200,
+      width: selectedField === 'multiScore' ? barWidthLong : barWidthShort,
       editable: false,
       disableColumnMenu: true,
       renderCell: (params) => {

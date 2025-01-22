@@ -10,8 +10,8 @@ const DETECTION_OPTIONS = {
 
 i18n
   .use(Backend)
-  .use(LanguageDetector)
   .use(initReactI18next)
+  .use(LanguageDetector)
   .init({
     detection: DETECTION_OPTIONS,
     fallbackLng: 'en',

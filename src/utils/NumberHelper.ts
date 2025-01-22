@@ -1,6 +1,6 @@
 import { compact, isEmpty, sum, toNumber } from 'lodash'
 import i18n from '../config/i18n'
-import { AIOType, RAMType } from '../constant/objectTypes'
+import { AIOType, MotherboardType, RAMType } from '../constant/objectTypes'
 import { SelectedItemType } from '../store/rawDataReducer'
 
 export const getSelectedCurrency = () => {
@@ -23,13 +23,13 @@ export const calculateTotalNumber = (numberList: string[]) => {
 }
 
 export const addCurrencySign = (str: string) => {
-  let currencySign = "$"
+  let currencySign = '$'
 
   if (i18n.language == 'zh-CN') {
-      currencySign = "¥"
+    currencySign = '¥'
   }
 
-  return isEmpty(str) ? " - " : `${currencySign}${str}`
+  return isEmpty(str) ? ' - ' : `${currencySign}${str}`
 }
 
 export const stringToNumber = (str: string | undefined) => {
@@ -38,7 +38,7 @@ export const stringToNumber = (str: string | undefined) => {
 
 export const stringToNumberWithDP = (str: string) => {
   if (isEmpty(str)) {
-    return ""
+    return ''
   }
   return toNumber(str).toFixed(2)
 }
@@ -80,15 +80,15 @@ export const getTotalPrice = (selectedItems: SelectedItemType) => {
 export const getTotalPower = (selectedItems: SelectedItemType) => {
   const getAIOPower = (aio: AIOType | null) => {
     if (aio) {
-      switch (aio.Size) {
+      switch (aio.LiquidCoolerSize) {
         case 120:
-          return 3
+          return 4
         case 240:
-          return 6
+          return 7
         case 280:
           return 8
         case 360:
-          return 9
+          return 10
         default:
           return 5
       }
@@ -97,7 +97,23 @@ export const getTotalPower = (selectedItems: SelectedItemType) => {
   }
 
   const getRamPower = (ram: RAMType | null) => {
-    return ram ? 5 : 0
+    let wattNum = 0
+    if (ram) {
+      wattNum = ram.Channel * 3
+    }
+    return wattNum
+  }
+
+  const getMotherboardPower = (motherboard: MotherboardType | null) => {
+    let wattNum = 0
+    if (motherboard) {
+      if (motherboard.Chipset.includes("Z") || motherboard.Chipset.includes("X")){
+        wattNum = 35
+      }else{
+        wattNum = 25
+      }
+    }
+    return wattNum
   }
 
   const numberList = [
@@ -105,6 +121,7 @@ export const getTotalPower = (selectedItems: SelectedItemType) => {
     selectedItems.gpu?.Power,
     getAIOPower(selectedItems.aio),
     getRamPower(selectedItems.ram),
+    getMotherboardPower(selectedItems.motherboard)
   ]
   return sum(numberList) || 0
 }

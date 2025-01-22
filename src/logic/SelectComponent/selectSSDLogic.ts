@@ -17,7 +17,7 @@ const ssdFilterLogic = (
   item: SSDType,
   buildLogic: BuildLogicState
 ) => {
-  const capacityFilter = item.capacity.toUpperCase().includes('1TB')
+  const capacityFilter = item.Capacity.toUpperCase().includes('1TB')
   const enoughBudget = isEnoughBudget(
     buildLogic.budget,
     buildLogic.preSelectedItem,

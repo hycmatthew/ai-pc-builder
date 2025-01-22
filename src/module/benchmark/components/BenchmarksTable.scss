@@ -1,0 +1,24 @@
+.MuiDataGrid-root {
+  .MuiDataGrid-row {
+    border: none;
+    --rowBorderColor: none !important;
+    font-size: 14px;
+
+    .MuiStack-root {
+      height: 100%;
+      align-items: center;
+    }
+  }
+
+  .MuiDataGrid-columnHeader .MuiDataGrid-columnHeaderTitle {
+    font-weight: 600;
+  }
+}
+
+.MuiTabs-root{
+    margin-bottom: 12px;
+
+    .MuiButtonBase-root.MuiTab-root{
+        text-transform: none;
+    }
+}

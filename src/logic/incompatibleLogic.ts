@@ -48,7 +48,7 @@ export const caseIncompatibleWithMotherboard = (
   pcCase: CaseType,
   motherboard: MotherboardType | null
 ) => {
-  return motherboard && pcCase
+  return motherboard && pcCase.Compatibility
     ? !pcCase.Compatibility.includes(motherboard.FormFactor)
     : false
 }

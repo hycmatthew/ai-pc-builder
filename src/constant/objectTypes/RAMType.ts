@@ -8,7 +8,7 @@ interface RAMType {
 	Speed: number
   Timing: string
   Voltage: string
-  Channel: string
+  Channel: number
   Profile: string
   LED: string
   HeatSpreader: boolean

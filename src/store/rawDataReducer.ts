@@ -45,7 +45,7 @@ const initialState: DataState = {
     pcCase: null,
     aio: null,
     ssd: null,
-    airCooler: null
+    airCooler: null,
   },
   cpuList: [],
   gpuList: [],
@@ -64,7 +64,7 @@ function delay(ms: number) {
 }
 */
 
-export const getCPUDataList:any = createAsyncThunk(
+export const getCPUDataList: any = createAsyncThunk(
   'cpuList/fetchData',
   async () => {
     const response = await RawDataAPI.get('/cpuData.json')
@@ -72,7 +72,7 @@ export const getCPUDataList:any = createAsyncThunk(
   }
 )
 
-export const getGPUDataList:any = createAsyncThunk(
+export const getGPUDataList: any = createAsyncThunk(
   'gpuList/fetchData',
   async () => {
     const response = await RawDataAPI.get('/gpuData.json')
@@ -80,7 +80,7 @@ export const getGPUDataList:any = createAsyncThunk(
   }
 )
 
-export const getMotherboardDataList:any = createAsyncThunk(
+export const getMotherboardDataList: any = createAsyncThunk(
   'motherboardList/fetchData',
   async () => {
     const response = await RawDataAPI.get('/motherboardData.json')
@@ -88,7 +88,7 @@ export const getMotherboardDataList:any = createAsyncThunk(
   }
 )
 
-export const getRAMDataList:any = createAsyncThunk(
+export const getRAMDataList: any = createAsyncThunk(
   'ramList/fetchData',
   async () => {
     const response = await RawDataAPI.get('/ramData.json')
@@ -96,7 +96,7 @@ export const getRAMDataList:any = createAsyncThunk(
   }
 )
 
-export const getPSUDataList:any = createAsyncThunk(
+export const getPSUDataList: any = createAsyncThunk(
   'psuList/fetchData',
   async () => {
     const response = await RawDataAPI.get('/powerData.json')
@@ -104,7 +104,7 @@ export const getPSUDataList:any = createAsyncThunk(
   }
 )
 
-export const getCaseDataList:any = createAsyncThunk(
+export const getCaseDataList: any = createAsyncThunk(
   'caseList/fetchData',
   async () => {
     const response = await RawDataAPI.get('/caseData.json')
@@ -112,7 +112,7 @@ export const getCaseDataList:any = createAsyncThunk(
   }
 )
 
-export const getAIODataList:any = createAsyncThunk(
+export const getAIODataList: any = createAsyncThunk(
   'aioList/fetchData',
   async () => {
     const response = await RawDataAPI.get('/coolerData.json')
@@ -120,7 +120,7 @@ export const getAIODataList:any = createAsyncThunk(
   }
 )
 
-export const getSSDDataList:any = createAsyncThunk(
+export const getSSDDataList: any = createAsyncThunk(
   'ssdList/fetchData',
   async () => {
     const response = await RawDataAPI.get('/ssdData.json')
@@ -128,7 +128,7 @@ export const getSSDDataList:any = createAsyncThunk(
   }
 )
 
-export const getAirCoolerDataList:any = createAsyncThunk(
+export const getAirCoolerDataList: any = createAsyncThunk(
   'airCoolerList/fetchData',
   async () => {
     const response = await RawDataAPI.get('/coolerData.json')
@@ -278,10 +278,13 @@ export const counterSlice = createSlice({
         state.caseList = payload
       }
     )
-    builder.addCase(getCaseDataList.pending, (state: DataState, { payload }) => {
-      console.log('isLoading')
-      state.isLoading = true
-    })
+    builder.addCase(
+      getCaseDataList.pending,
+      (state: DataState, { payload }) => {
+        console.log('isLoading')
+        state.isLoading = true
+      }
+    )
     builder.addCase(
       getCaseDataList.rejected,
       (state: DataState, { payload }) => {
@@ -335,10 +338,13 @@ export const counterSlice = createSlice({
         state.airCoolerList = payload
       }
     )
-    builder.addCase(getAirCoolerDataList.pending, (state: DataState, { payload }) => {
-      console.log('isLoading')
-      state.isLoading = true
-    })
+    builder.addCase(
+      getAirCoolerDataList.pending,
+      (state: DataState, { payload }) => {
+        console.log('isLoading')
+        state.isLoading = true
+      }
+    )
     builder.addCase(
       getAirCoolerDataList.rejected,
       (state: DataState, { payload }) => {

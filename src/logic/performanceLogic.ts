@@ -28,8 +28,9 @@ export const gpuPerformanceLogic = (gpu: GPUType | null) => {
 }
 
 export const ssdPerformanceLogic = (ssd: SSDType | null) => {
-  if (ssd) {
-    return (ssd.MaxRead + ssd.MaxWrite) * 0.2
+  const mainSSD = ssd
+  if (mainSSD) {
+    return (mainSSD.MaxRead + mainSSD.MaxWrite) * 0.2
   }
   return 0
 }

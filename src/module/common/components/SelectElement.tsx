@@ -17,8 +17,9 @@ import { OptionType } from '../../../constant/objectTypes'
 type SelectElementProps = SelectProps & {
   label: string
   placeholder?: string
+  extraNum?: number
   options: OptionType[]
-  selectChange?: (value: string, type: string) => void
+  selectChange?: (value: string, type: string, num?: number) => void
   isLoading?: boolean
 }
 
@@ -52,30 +53,36 @@ const CustomTextField = styled(TextField)(({ theme }) => ({
       backgroundColor: '#fff',
     },
   },
-}));
+}))
 
 const GroupHeader = styled('div')(({ theme }) => ({
   position: 'sticky',
   padding: '8px 12px',
   color: '#222222',
   fontSize: '12px',
-}));
+}))
 
 const GroupItems = styled('ul')({
   fontSize: '7px !important',
-  padding: 0
-});
+  padding: 0,
+})
 
 const SelectElement = ({
   label,
   options,
+  extraNum,
   selectChange,
 }: SelectElementProps) => {
   const { t } = useTranslation()
 
   const handleChange = (event: any, newValue: any) => {
-    if (selectChange && newValue) {
-      selectChange(newValue.name, label)
+    console.log(newValue)
+    if (selectChange) {
+      if (newValue) {
+        selectChange(newValue.name, label, extraNum)
+      } else {
+        selectChange(newValue, label, extraNum)
+      }
     }
   }
 
@@ -109,7 +116,9 @@ const SelectElement = ({
       options={options}
       groupBy={(option: any) => option.brand}
       onChange={handleChange}
-      isOptionEqualToValue={(option: any, value: any) => option.model === value.model}
+      isOptionEqualToValue={(option: any, value: any) =>
+        option.model === value.model
+      }
       getOptionDisabled={(option: any) => option.disabled === true}
       renderGroup={(params) => (
         <li>
@@ -128,14 +137,19 @@ const SelectElement = ({
             spacing={1}
           >
             <Typography>{option.label}</Typography>
-            <ValueTypography>
-              {addCurrencySign(option.value)}
-            </ValueTypography>
+            <ValueTypography>{addCurrencySign(option.value)}</ValueTypography>
           </Stack>
         </Box>
       )}
       /* eslint-disable react/jsx-props-no-spreading */
-      renderInput={(params) => <CustomTextField {...params} label={t(label)} InputProps={{...params.InputProps, disableUnderline: true}} variant="filled" />}
+      renderInput={(params) => (
+        <CustomTextField
+          {...params}
+          label={t(label)}
+          InputProps={{ ...params.InputProps, disableUnderline: true }}
+          variant="filled"
+        />
+      )}
     />
   )
 }

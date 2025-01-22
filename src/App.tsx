@@ -2,10 +2,8 @@ import { Suspense } from 'react'
 import { Provider } from 'react-redux'
 import ReactGA from 'react-ga4'
 import { BrowserRouter, HashRouter } from 'react-router-dom'
-import AIComponentListRoutes from './module/aiComponentList/pages/Route'
 
-import ComponentListRoutes from './module/componentList/pages/Route'
-import DatabaseListRoutes from './module/database/page/Route'
+import AppRoutes from './Route'
 
 import {
   getAIODataList,
@@ -41,9 +39,7 @@ function App() {
         <HashRouter>
           <AppLayout>
             <>
-              <ComponentListRoutes />
-              <DatabaseListRoutes />
-              <AIComponentListRoutes />
+              <AppRoutes />
             </>
           </AppLayout>
         </HashRouter>

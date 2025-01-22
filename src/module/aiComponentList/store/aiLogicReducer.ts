@@ -45,6 +45,7 @@ export const aiLogicSlice = createSlice({
       state.gamingUsage = action.payload
     },
     updatePreSelectedCPU: (state, action) => {
+      console.log(action.payload)
       state.preSelectedItem.cpu = action.payload
     },
     updatePreSelectedMotherboard: (state, action) => {

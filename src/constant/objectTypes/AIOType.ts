@@ -3,10 +3,14 @@ interface AIOType {
   Name: string
   ReleaseDate: string
   Sockets: string[]
-  IsLiquidCooler: string
-  Size: number
+  IsLiquidCooler: boolean
+  LiquidCoolerSize: number
+  AirCoolerHeight: number
   NoiseLevel: string
   FanSpeed: string
+  Airflow: string
+  Pressure: string
+  LED: string
   PriceUS: string
   PriceHK: string
   PriceCN: string

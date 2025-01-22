@@ -3,11 +3,11 @@ import { useTranslation } from 'react-i18next'
 import styled from '@emotion/styled'
 import { ToggleButton, Tabs, Tab } from '@mui/material'
 import { Unstable_Grid2 as Grid } from '@mui/material'
-import ProductEnum from '../../../constant/ProductEnum'
+import ProductEnum from '../../constant/ProductEnum'
 
-import CPUBenchmarksTable from '../components/CPUBenchmarksTable'
-import GPUBenchmarksTable from '../components/GPUBenchmarksTable'
-import RAMBenchmarksTable from '../components/RAMBenchmarks'
+import CPUBenchmarksTable from './components/CPUBenchmarksTable'
+import GPUBenchmarksTable from './components/GPUBenchmarksTable'
+import RAMBenchmarksTable from './components/RAMBenchmarks'
 
 const CustomTabs = styled(Tabs)({
   '.MuiButtonBase-root': {

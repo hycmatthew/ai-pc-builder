@@ -62,55 +62,54 @@ function SpecificComponent({
     caseList,
     aioList,
     airCoolerList,
-    isLoading,
   } = rawData
 
-  const changeSelectItem = (value: string, type: string) => {
+  const changeSelectItem = (value: string, type: string, num?: number) => {
     console.log(type);
     console.log(value);
     switch (type) {
       case ProductEnum.CPU: {
-        const selectedItem = searchCPUItem(cpuList, value)
+        const selectedItem = value ? searchCPUItem(cpuList, value) : null
         dispatch(sliceActions.updatePreSelectedCPU(selectedItem))
         break
       }
       case ProductEnum.Motherboard: {
-        const selectedItem = searchMotherboardItem(motherboardList, value)
+        const selectedItem = value ? searchMotherboardItem(motherboardList, value) : null
         dispatch(sliceActions.updatePreSelectedMotherboard(selectedItem))
         break
       }
       case ProductEnum.GPU: {
-        const selectedItem = searchGPUItem(gpuList, value)
+        const selectedItem = value ? searchGPUItem(gpuList, value) : null
         dispatch(sliceActions.updatePreSelectedGPU(selectedItem))
         break
       }
       case ProductEnum.RAM: {
-        const selectedItem = searchRAMItem(ramList, value)
+        const selectedItem = value ? searchRAMItem(ramList, value) : null
         dispatch(sliceActions.updatePreSelectedRAM(selectedItem))
         break
       }
       case ProductEnum.SSD: {
-        const selectedItem = searchSSDItem(ssdList, value)
+        const selectedItem = value ? searchSSDItem(ssdList, value) : null
         dispatch(sliceActions.updatePreSelectedSSD(selectedItem))
         break
       }
       case ProductEnum.PSU: {
-        const selectedItem = searchPSUItem(psuList, value)
+        const selectedItem = value ? searchPSUItem(psuList, value) : null
         dispatch(sliceActions.updatePreSelectedPSU(selectedItem))
         break
       }
       case ProductEnum.ComputerCase: {
-        const selectedItem = searchCaseItem(caseList, value)
+        const selectedItem = value ? searchCaseItem(caseList, value) : null
         dispatch(sliceActions.updatePreSelectedCase(selectedItem))
         break
       }
       case ProductEnum.AIO: {
-        const selectedItem = searchAIOItem(aioList, value)
+        const selectedItem = value ? searchAIOItem(aioList, value) : null
         dispatch(sliceActions.updatePreSelectedAIO(selectedItem))
         break
       }
       case ProductEnum.AirCooler: {
-        const selectedItem = searchAirCoolerItem(airCoolerList, value)
+        const selectedItem = value ? searchAirCoolerItem(airCoolerList, value) : null
         dispatch(sliceActions.updatePreSelectedAirCooler(selectedItem))
         break
       }

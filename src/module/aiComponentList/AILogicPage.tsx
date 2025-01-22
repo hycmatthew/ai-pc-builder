@@ -1,12 +1,12 @@
 import { useSelector } from 'react-redux'
 import { Unstable_Grid2 as Grid } from '@mui/material'
 
-import BudgetComponent from '../components/BudgetComponent'
-import UsageComponent from '../components/UsageComponent'
-import SpecificComponent from '../components/SpecificComponent'
-import ResultComponent from '../components/ResultComponent'
-import { aiLogicSlice } from '../store/aiLogicReducer'
-import { useAppDispatch } from '../../../store/store'
+import BudgetComponent from './components/BudgetComponent'
+import UsageComponent from './components/UsageComponent'
+import SpecificComponent from './components/SpecificComponent'
+import ResultComponent from './components/ResultComponent'
+import { aiLogicSlice } from './store/aiLogicReducer'
+import { useAppDispatch } from './../../store/store'
 
 function AILogicPage() {
   const dispatch = useAppDispatch()
