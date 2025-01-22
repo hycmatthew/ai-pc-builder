@@ -1,18 +1,19 @@
 interface PSUType {
-  brand: string
-  model: string
-  type: string
-  length: number
-  efficiency: string
-  fans: string
-  color: string
-  module: string
-  watt: number
-  score: string
-  priceUS: string
-  priceHK: string
-  priceCN: string
-  img: string
+  Brand: string
+  Name: string
+  ReleaseDate: string
+  Wattage: number
+  Size: string
+  Modular: string
+  Efficiency: string
+  Length: number
+  PriceUS: string
+  PriceHK: string
+  PriceCN: string
+  LinkUS: string
+  LinkHK: string
+  LinkCN: string
+  Img: string
 }
 
 export default PSUType

@@ -66,7 +66,7 @@ const PSUSuggestion = ({
 
   const removeComparison = (model: string) => {
     const updatedList: PSUType[] = selectedItems.filter(
-      (element: PSUType) => element.model !== model
+      (element: PSUType) => element.Name !== model
     )
     if (updatedList.length === 0) {
       handleClose()
@@ -83,44 +83,38 @@ const PSUSuggestion = ({
   const openComparison = () => {
     let comparsionObjects: ComparisonObject[] = []
     comparsionObjects = selectedItems.map((item) => {
-      const imgStr = item.img
-      const itemModel = item.model
-      const itemName = generateItemName(item.brand, item.model)
+      const imgStr = item.Img
+      const itemModel = item.Name
+      const itemName = generateItemName(item.Brand, item.Name)
 
       const type: ComparisonSubItem = {
         label: 'type',
-        value: item.type,
+        value: item.Size,
         isHighlight: false,
       }
 
       const psuPower: ComparisonSubItem = {
         label: 'power',
-        value: item.watt.toString(),
+        value: item.Wattage.toString(),
         isHighlight: false,
       }
 
       const efficiency: ComparisonSubItem = {
         label: 'efficiency',
-        value: item.efficiency,
-        isHighlight: item.efficiency === max(selectedItems.map((element) => element.efficiency)),
+        value: item.Efficiency,
+        isHighlight: item.Efficiency === max(selectedItems.map((element) => element.Efficiency)),
       }
 
       const moduleType: ComparisonSubItem = {
         label: 'modular-design',
-        value: item.module,
-        isHighlight: item.module.includes('Full'),
-      }
-
-      const fans: ComparisonSubItem = {
-        label: 'fan-size',
-        value: item.fans || '-',
-        isHighlight: false,
+        value: item.Modular,
+        isHighlight: item.Modular.includes('Full'),
       }
 
       const length: ComparisonSubItem = {
         label: 'length',
-        value: lengthLabelHandler(item.length),
-        isHighlight: item.length === min(selectedItems.map((element) => element.length)),
+        value: lengthLabelHandler(item.Length),
+        isHighlight: item.Length === min(selectedItems.map((element) => element.Length)),
       }
 
       const result: ComparisonObject = {
@@ -132,7 +126,6 @@ const PSUSuggestion = ({
           psuPower,
           efficiency,
           moduleType,
-          fans,
           length
         ],
       }
@@ -152,10 +145,10 @@ const PSUSuggestion = ({
   const updatedList = psuList.filter((item) => {
     let isMatch = true
     if (filterLogic.model) {
-      isMatch = item.model === filterLogic.model
+      isMatch = item.Name === filterLogic.model
     }
     if (!isEmpty(filterLogic.brand) && isMatch) {
-      isMatch = (item.brand === filterLogic.brand)
+      isMatch = (item.Brand === filterLogic.brand)
     }
     if (filterLogic.price !== 0 && isMatch) {
       isMatch = stringToNumber(item[getSelectedCurrency()]) < filterLogic.price
@@ -201,12 +194,12 @@ const PSUSuggestion = ({
       <Grid sx={{ paddingTop: 10 }} container spacing={2} columns={{ xs: 6, md: 12 }}>
         {updatedList.map((item) => (
           <ItemCard
-            itemLabel={generateItemName(item.brand, item.model)}
+            itemLabel={generateItemName(item.Brand, item.Name)}
             priceLabel={getCurrentPrice(item)}
-            imgSrc={item.img}
+            imgSrc={item.Img}
             disable={selectedItems.includes(item)}
             addComparsion={() => addComparison(item)}
-            removeComparsion={() => removeComparison(item.model)}
+            removeComparsion={() => removeComparison(item.Name)}
           />
         ))}
       </Grid>

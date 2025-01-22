@@ -9,9 +9,9 @@ interface AirCoolerType {
   fanNoise: string
   color: string
   led: string
-  priceUS: string
-  priceHK: string
-  priceCN: string
+  PriceUS: string
+  PriceHK: string
+  PriceCN: string
   img: string
 }
 

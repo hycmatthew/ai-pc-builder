@@ -67,7 +67,7 @@ const AIOSuggestion = ({
 
   const removeComparison = (model: string) => {
     const updatedList: AIOType[] = selectedItems.filter(
-      (element: AIOType) => element.model !== model
+      (element: AIOType) => element.Name !== model
     )
     if (updatedList.length === 0) {
       handleClose()
@@ -84,37 +84,37 @@ const AIOSuggestion = ({
   const openComparison = () => {
     let comparsionObjects: ComparisonObject[] = []
     comparsionObjects = selectedItems.map((item) => {
-      const imgStr = item.img
-      const itemModel = item.model
-      const itemName = generateItemName(item.brand, item.model)
+      const imgStr = item.Img
+      const itemModel = item.Name
+      const itemName = generateItemName(item.Brand, item.Name)
 
       const fanSize: ComparisonSubItem = {
         label: 'fan-size',
-        value: item.fanSize.toString(),
-        isHighlight: item.fanSize === max(selectedItems.map((element) => element.fanSize)),
+        value: item.toString(),
+        isHighlight: item.Size === max(selectedItems.map((element) => element.Size)),
       }
 
       const fanAirflow: ComparisonSubItem = {
         label: 'airflow',
-        value: item.fanAirflow,
-        isHighlight: item.fanAirflow === max(selectedItems.map((element) => element.fanAirflow)),
+        value: item.FanSpeed,
+        isHighlight: item.FanSpeed === max(selectedItems.map((element) => element.FanSpeed)),
       }
 
       const fanNoise: ComparisonSubItem = {
         label: 'noise',
-        value: item.fanNoise.toString(),
-        isHighlight: item.fanNoise === min(selectedItems.map((element) => element.fanNoise)),
+        value: item.NoiseLevel.toString(),
+        isHighlight: item.NoiseLevel === min(selectedItems.map((element) => element.NoiseLevel)),
       }
 
       const fanSpeed: ComparisonSubItem = {
         label: 'fan-speed',
-        value: item.fanSpeed,
+        value: item.FanSpeed,
         isHighlight: false,
       }
 
-      const led: ComparisonSubItem = {
-        label: 'is-rgb',
-        value: item.led || '-',
+      const isLiquid: ComparisonSubItem = {
+        label: 'is-liquid',
+        value: item.IsLiquidCooler || '-',
         isHighlight: false,
       }
 
@@ -127,7 +127,7 @@ const AIOSuggestion = ({
           fanAirflow,
           fanNoise,
           fanSpeed,
-          led,
+          isLiquid,
         ],
       }
 
@@ -147,13 +147,13 @@ const AIOSuggestion = ({
   const updatedList = aioList.filter((item) => {
     let isMatch = true
     if (filterLogic.model) {
-      isMatch = item.model === filterLogic.model
+      isMatch = item.Name === filterLogic.model
     }
     if (filterLogic.brand && isMatch) {
-      isMatch = (item.brand === filterLogic.brand)
+      isMatch = (item.Brand === filterLogic.brand)
     }
     if (filterLogic.size && isMatch) {
-      isMatch = (item.fanSize === filterLogic.size)
+      isMatch = (item.Size === filterLogic.size)
     }
     if (filterLogic.price !== 0 && isMatch) {
       isMatch = stringToNumber(item[getSelectedCurrency()]) < filterLogic.price
@@ -206,12 +206,12 @@ const AIOSuggestion = ({
       <Grid sx={{ paddingTop: 10 }} container spacing={2} columns={{ xs: 6, md: 12 }}>
         {updatedList.map((item) => (
           <ItemCard
-            itemLabel={generateItemName(item.brand, item.model)}
+            itemLabel={generateItemName(item.Brand, item.Name)}
             priceLabel={getCurrentPrice(item)}
-            imgSrc={item.img}
+            imgSrc={item.Img}
             disable={selectedItems.includes(item)}
             addComparsion={() => addComparison(item)}
-            removeComparsion={() => removeComparison(item.model)}
+            removeComparsion={() => removeComparison(item.Name)}
           />
         ))}
       </Grid>

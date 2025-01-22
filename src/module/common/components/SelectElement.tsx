@@ -12,14 +12,7 @@ import Autocomplete from '@mui/material/Autocomplete'
 import { styled } from '@mui/material/styles'
 import { addCurrencySign } from '../../../utils/NumberHelper'
 import { brandTranslationKey } from '../../../utils/LabelHelper'
-
-interface OptionType {
-  model: string
-  brand: string
-  label: string
-  value: any
-  disabled: boolean
-}
+import { OptionType } from '../../../constant/objectTypes'
 
 type SelectElementProps = SelectProps & {
   label: string
@@ -74,7 +67,6 @@ const GroupItems = styled('ul')({
 });
 
 const SelectElement = ({
-  isLoading,
   label,
   options,
   selectChange,
@@ -82,8 +74,8 @@ const SelectElement = ({
   const { t } = useTranslation()
 
   const handleChange = (event: any, newValue: any) => {
-    if (selectChange) {
-      selectChange(newValue ? newValue.model : '', label)
+    if (selectChange && newValue) {
+      selectChange(newValue.name, label)
     }
   }
 

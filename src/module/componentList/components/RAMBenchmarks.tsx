@@ -101,9 +101,9 @@ function RAMBenchmarksTable() {
       return {
         id: generateRAMName(item),
         index,
-        speed: item.speed,
+        speed: item.Speed,
         performance: ramPerformanceLogic(item),
-        cl: item.cl,
+        cl: item.Timing,
         price: stringToNumberWithDP(item[getSelectedCurrency()]),
       }
     })

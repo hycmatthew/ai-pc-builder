@@ -1,16 +1,16 @@
-import { compact, sum, toNumber } from 'lodash'
+import { compact, isEmpty, sum, toNumber } from 'lodash'
 import i18n from '../config/i18n'
 import { AIOType, RAMType } from '../constant/objectTypes'
-import { SelectedItemType } from '../module/store/rawDataReducer'
+import { SelectedItemType } from '../store/rawDataReducer'
 
 export const getSelectedCurrency = () => {
   switch (i18n.language) {
     case 'zh-TW':
-      return 'priceHK'
+      return 'PriceHK'
     case 'zh-CN':
-      return 'priceCN'
+      return 'PriceCN'
     default:
-      return 'priceUS'
+      return 'PriceUS'
   }
 }
 
@@ -23,14 +23,13 @@ export const calculateTotalNumber = (numberList: string[]) => {
 }
 
 export const addCurrencySign = (str: string) => {
-  switch (i18n.language) {
-    case 'zh-TW':
-      return `$${str}`
-    case 'zh-CN':
-      return `¥${str}`
-    default:
-      return `$${str}`
+  let currencySign = "$"
+
+  if (i18n.language == 'zh-CN') {
+      currencySign = "¥"
   }
+
+  return isEmpty(str) ? " - " : `${currencySign}${str}`
 }
 
 export const stringToNumber = (str: string | undefined) => {
@@ -38,17 +37,20 @@ export const stringToNumber = (str: string | undefined) => {
 }
 
 export const stringToNumberWithDP = (str: string) => {
+  if (isEmpty(str)) {
+    return ""
+  }
   return toNumber(str).toFixed(2)
 }
 
 export const getCurrentPrice = (item: any) => {
   switch (i18n.language) {
     case 'zh-TW':
-      return stringToNumberWithDP(item.priceHK)
+      return stringToNumberWithDP(item.PriceCN)
     case 'zh-CN':
-      return stringToNumberWithDP(item.priceCN)
+      return stringToNumberWithDP(item.PriceCN)
     default:
-      return stringToNumberWithDP(item.priceUS)
+      return stringToNumberWithDP(item.PriceCN)
   }
 }
 
@@ -78,7 +80,7 @@ export const getTotalPrice = (selectedItems: SelectedItemType) => {
 export const getTotalPower = (selectedItems: SelectedItemType) => {
   const getAIOPower = (aio: AIOType | null) => {
     if (aio) {
-      switch (aio.fanSize) {
+      switch (aio.Size) {
         case 120:
           return 3
         case 240:
@@ -99,8 +101,8 @@ export const getTotalPower = (selectedItems: SelectedItemType) => {
   }
 
   const numberList = [
-    selectedItems.cpu?.power,
-    selectedItems.gpu?.power,
+    selectedItems.cpu?.Power,
+    selectedItems.gpu?.Power,
     getAIOPower(selectedItems.aio),
     getRamPower(selectedItems.ram),
   ]

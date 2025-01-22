@@ -72,7 +72,7 @@ const GPUSuggestion = ({
 
   const removeComparison = (model: string) => {
     const updatedList: GPUType[] = selectedItems.filter(
-      (element: GPUType) => element.model !== model
+      (element: GPUType) => element.Name !== model
     )
     if (updatedList.length === 0) {
       handleClose()
@@ -93,57 +93,45 @@ const GPUSuggestion = ({
   const openComparison = () => {
     let comparsionObjects: ComparisonObject[] = []
     comparsionObjects = selectedItems.map((item) => {
-      const imgStr = item.img
-      const itemModel = item.model
-      const itemName = generateItemName(item.brand, item.model)
+      const imgStr = item.Img
+      const itemModel = item.Name
+      const itemName = generateItemName(item.Brand, item.Name)
 
       const gpuMemorySize: ComparisonSubItem = {
         label: 'gpu-memory-size',
-        value: item.memorySize,
-        isHighlight: getRamNumber(item.memorySize) === max(selectedItems.map((element) => getRamNumber(element.memorySize))),
+        value: item.MemorySize.toString(),
+        isHighlight: item.MemorySize === max(selectedItems.map((element) => element.MemorySize)),
       }
 
       const gpuMemoryType: ComparisonSubItem = {
         label: 'gpu-memory-type',
-        value: item.memoryType,
+        value: item.MemoryType,
         isHighlight: false
       }
 
       const gpuMemoryInterface: ComparisonSubItem = {
         label: 'gpu-memory-interface',
-        value: item.memoryInterface,
-        isHighlight: getRamNumber(item.memoryInterface) === max(selectedItems.map((element) => getRamNumber(element.memoryInterface))),
+        value: item.MemoryBus,
+        isHighlight: getRamNumber(item.MemoryBus) === max(selectedItems.map((element) => getRamNumber(element.MemoryBus))),
       }
 
-      const cudaCores: ComparisonSubItem = {
-        label: 'cuda-cores',
-        value: item.cudaCores.toString(),
-        isHighlight: item.cudaCores === max(selectedItems.map((element) => element.cudaCores)),
-      }
-
-      const timespyScore: ComparisonSubItem = {
-        label: 'TimeSpy Score',
-        value: item.timespyScore.toString(),
+      const benchmark: ComparisonSubItem = {
+        label: 'Benchmark',
+        value: item.Benchmark.toString(),
         isHighlight:
-          item.timespyScore === max(selectedItems.map((element) => element.timespyScore)),
-      }
-
-      const firestrikeScore: ComparisonSubItem = {
-        label: 'FireStrike Score',
-        value: item.firestrikeScore.toString(),
-        isHighlight: item.firestrikeScore === max(selectedItems.map((element) => element.firestrikeScore)),
+          item.Benchmark === max(selectedItems.map((element) => element.Benchmark)),
       }
 
       const power: ComparisonSubItem = {
         label: 'power',
-        value: item.power.toString(),
-        isHighlight: item.power === min(selectedItems.map((element) => element.power)),
+        value: item.Power.toString(),
+        isHighlight: item.Power === min(selectedItems.map((element) => element.Power)),
       }
 
       const gpuLength: ComparisonSubItem = {
         label: 'gpu-length',
-        value: lengthLabelHandler(item.length),
-        isHighlight: item.length === min(selectedItems.map((element) => element.length)),
+        value: lengthLabelHandler(item.Length),
+        isHighlight: item.Length === min(selectedItems.map((element) => element.Length)),
       }
 
       const result: ComparisonObject = {
@@ -154,9 +142,7 @@ const GPUSuggestion = ({
           gpuMemorySize,
           gpuMemoryType,
           gpuMemoryInterface,
-          cudaCores,
-          timespyScore,
-          firestrikeScore,
+          benchmark,
           power,
           gpuLength,
         ],
@@ -178,16 +164,16 @@ const GPUSuggestion = ({
   const updatedList = gpuList.filter((item) => {
     let isMatch = true
     if (filterLogic.model) {
-      isMatch = item.model === filterLogic.model
+      isMatch = item.Name === filterLogic.model
     }
     if (filterLogic.brand && isMatch) {
-      isMatch = (item.brand === filterLogic.brand)
+      isMatch = (item.Brand === filterLogic.brand)
     }
     if (filterLogic.manufacturer && isMatch) {
-      isMatch = (item.manufacturer === filterLogic.manufacturer)
+      isMatch = (item.Manufacturer === filterLogic.manufacturer)
     }
     if (filterLogic.gpu && isMatch) {
-      isMatch = (item.gpu === filterLogic.gpu)
+      isMatch = (item.Series === filterLogic.gpu)
     }
     if (filterLogic.price !== 0 && isMatch) {
       isMatch = (stringToNumber(item[getSelectedCurrency()]) < filterLogic.price)
@@ -247,12 +233,12 @@ const GPUSuggestion = ({
       <Grid sx={{ paddingTop: 10 }} container spacing={2} columns={{ xs: 6, md: 12 }}>
         {updatedList.map((item) => (
           <ItemCard
-            itemLabel={generateItemName(item.brand, item.model)}
+            itemLabel={generateItemName(item.Brand, item.Name)}
             priceLabel={getCurrentPrice(item)}
-            imgSrc={item.img}
+            imgSrc={item.Img}
             disable={selectedItems.includes(item)}
             addComparsion={() => addComparison(item)}
-            removeComparsion={() => removeComparison(item.model)}
+            removeComparsion={() => removeComparison(item.Name)}
           />
         ))}
       </Grid>

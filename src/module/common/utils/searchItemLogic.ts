@@ -11,54 +11,38 @@ import {
 } from '../../../constant/objectTypes'
 
 export const searchCPUItem = (cpuList: CPUType[], name: string) => {
-  return cpuList.find((item: CPUType) => {
-    return item.name === name
-  })
+  return cpuList.find((item: CPUType) => item.Name === name)
 }
 
-export const searchGPUItem = (gpuList: GPUType[], model: string) => {
-  return gpuList.find((item: GPUType) => {
-    return item.model === model
-  })
+export const searchGPUItem = (gpuList: GPUType[], name: string) => {
+  return gpuList.find((item: GPUType) =>  item.Name === name)
 }
 
 export const searchMotherboardItem = (
   motherboardList: MotherboardType[],
-  model: string
+  name: string
 ) => {
-  return motherboardList.find((item: MotherboardType) => {
-    return item.model === model
-  })
+  return motherboardList.find((item: MotherboardType) => item.Name === name)
 }
 
-export const searchRAMItem = (ramList: RAMType[], model: string) => {
-  return ramList.find((item: RAMType) => {
-    return item.model === model
-  })
+export const searchRAMItem = (ramList: RAMType[], name: string) => {
+  return ramList.find((item: RAMType) => item.Name === name)
 }
 
-export const searchSSDItem = (ssdList: SSDType[], model: string) => {
-  return ssdList.find((item: SSDType) => {
-    return item.model === model
-  })
+export const searchSSDItem = (ssdList: SSDType[], name: string) => {
+  return ssdList.find((item: SSDType) => item.Name === name)
 }
 
-export const searchPSUItem = (psuList: PSUType[], model: string) => {
-  return psuList.find((item: PSUType) => {
-    return item.model === model
-  })
+export const searchPSUItem = (psuList: PSUType[], name: string) => {
+  return psuList.find((item: PSUType) => item.Name === name)
 }
 
-export const searchCaseItem = (caseList: CaseType[], model: string) => {
-  return caseList.find((item: CaseType) => {
-    return item.model === model
-  })
+export const searchCaseItem = (caseList: CaseType[], name: string) => {
+  return caseList.find((item: CaseType) => item.Name === name)
 }
 
 export const searchAIOItem = (aioList: AIOType[], name: string) => {
-  return aioList.find((item: AIOType) => {
-    return item.name === name
-  })
+  return aioList.find((item: AIOType) => item.Name === name)
 }
 
 export const searchAirCoolerItem = (

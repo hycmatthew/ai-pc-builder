@@ -13,11 +13,11 @@ export const motherboardIncompatibleWithCPU = (
   motherboard: MotherboardType | null,
   cpu: CPUType | null
 ) => {
-  return cpu && motherboard ? motherboard.socket !== cpu.socket : false
+  return cpu && motherboard ? motherboard.Socket !== cpu.Socket : false
 }
 
 export const ramIncompatibleWithCPU = (ram: RAMType, cpu: CPUType | null) => {
-  return cpu && ram ? !ram.chipset.includes(cpu.brand) : false
+  return cpu && ram ? !ram.Profile.includes(cpu.Brand) : false
 }
 
 export const ramIncompatibleWithMotherboard = (
@@ -26,7 +26,9 @@ export const ramIncompatibleWithMotherboard = (
 ) => {
   let result = false
   if (ram && motherboard) {
-    result = (!motherboard.supportedRam.includes(ram.speed.toString()) || !motherboard.ramType.includes(ram.type))
+    result =
+      !motherboard.RamSupport.includes(ram.Speed.toString()) ||
+      !motherboard.RamType.includes(ram.Type)
   }
   return result
 }
@@ -39,7 +41,7 @@ export const caseIncompatibleWithGPU = (
   pcCase: CaseType | null,
   gpu: GPUType | null
 ) => {
-  return gpu && pcCase ? gpu.length > pcCase.maxGPULength : false
+  return gpu && pcCase ? gpu.Length > pcCase.MaxVGAlength : false
 }
 
 export const caseIncompatibleWithMotherboard = (
@@ -47,7 +49,7 @@ export const caseIncompatibleWithMotherboard = (
   motherboard: MotherboardType | null
 ) => {
   return motherboard && pcCase
-    ? !pcCase.motherboardCompatibility.includes(motherboard.sizeType)
+    ? !pcCase.Compatibility.includes(motherboard.FormFactor)
     : false
 }
 
@@ -55,12 +57,23 @@ export const caseIncompatibleWithAIO = (
   pcCase: CaseType,
   aio: AIOType | null
 ) => {
-  return aio && pcCase ? !flatten(pcCase.radiatorOptions).includes(aio.fanSize) : false
+  /*
+  const listOfAIOSize: number[] = [120, 140, 240, 280, 360, 420]
+  let radiatorSupportList: number[] = []
+  for (const item of listOfAIOSize) {
+    if (pcCase.RadiatorSupport >= item) {
+      radiatorSupportList.push(item)
+    }
+  }
+  */
+  return aio && pcCase ? aio.Size > pcCase.RadiatorSupport : false
 }
 
 export const airCoolerIncompatibleWithCase = (
   airCooler: AirCoolerType,
   pcCase: CaseType | null
 ) => {
-  return airCooler && pcCase ? airCooler.maxCoolerHeight > pcCase.maxCPUCoolerLength : false
+  return airCooler && pcCase
+    ? airCooler.maxCoolerHeight > pcCase.MaxCpuCoolorHeight
+    : false
 }

@@ -1,18 +1,18 @@
 import { compact, sum, toNumber } from 'lodash'
 import i18n from '../config/i18n'
-import { CPUType, GPUType, MotherboardType, RAMType } from '../constant/objectTypes'
-import { BuildLogicState } from '../module/aiComponentList/store/aiLogicReducer'
 import {
-  gpuIncompatible,
-  motherboardIncompatible,
-  ramIncompatible,
-} from '../module/common/utils/compatibleLogic'
+  CPUType,
+  GPUType,
+  MotherboardType,
+  RAMType,
+} from '../constant/objectTypes'
+import { BuildLogicState } from '../module/aiComponentList/store/aiLogicReducer'
+import { ramIncompatible } from '../module/common/utils/compatibleLogic'
 import {
   calculateTotalNumber,
   getSelectedCurrency,
 } from '../utils/NumberHelper'
 import { ramPerformanceLogic } from './performanceLogic'
-import { motherboardOverclockSuggestion } from './suggestionLogic'
 
 export const selectComponentLogic = (budget: number, type: number) => {
   return budget < 10000 ? budget * 0.25 : budget * 0.2
@@ -42,7 +42,8 @@ export const selectRAMLogic = (
   ramList.forEach((item: RAMType) => {
     const ramValid = ramIncompatible(item, buildLogic.preSelectedItem)
     if (
-      !ramValid && buildLogic.budget > toNumber(item[getSelectedCurrency()])
+      !ramValid &&
+      buildLogic.budget > toNumber(item[getSelectedCurrency()])
     ) {
       const performance = ramPerformanceLogic(item)
       selectedRAM = item

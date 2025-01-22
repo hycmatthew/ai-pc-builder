@@ -70,7 +70,7 @@ const MotherboardSuggestion = ({
 
   const removeComparison = (model: string) => {
     const updatedList: MotherboardType[] = selectedItems.filter(
-      (element: MotherboardType) => element.model !== model
+      (element: MotherboardType) => element.Name !== model
     )
     if (updatedList.length === 0) {
       handleClose()
@@ -81,25 +81,25 @@ const MotherboardSuggestion = ({
   const openComparison = () => {
     let comparsionObjects: ComparisonObject[] = []
     comparsionObjects = selectedItems.map((item) => {
-      const imgStr = item.img
-      const itemModel = item.model
-      const itemName = generateItemName(item.brand, item.model)
+      const imgStr = item.Img
+      const itemModel = item.Name
+      const itemName = generateItemName(item.Brand, item.Name)
 
       const motherboardSocket: ComparisonSubItem = {
         label: 'cpu-socket',
-        value: item.socket,
+        value: item.Socket,
         isHighlight: false,
       }
 
       const motherboardChipset: ComparisonSubItem = {
         label: 'chipset',
-        value: item.chipset,
+        value: item.Chipset,
         isHighlight: false,
       }
 
       const motherboardRamType: ComparisonSubItem = {
         label: 'memory-type',
-        value: item.ramType,
+        value: item.RamType,
         isHighlight: false,
       }
       /*
@@ -111,7 +111,7 @@ const MotherboardSuggestion = ({
       */
       const sizeType: ComparisonSubItem = {
         label: 'form-factor',
-        value: item.sizeType,
+        value: item.FormFactor,
         isHighlight: false,
       }
 
@@ -143,13 +143,13 @@ const MotherboardSuggestion = ({
   const updatedList = motherboardList.filter((item) => {
     let isMatch = true
     if (filterLogic.model) {
-      isMatch = item.model === filterLogic.model
+      isMatch = item.Name === filterLogic.model
     }
     if (filterLogic.brand && isMatch) {
-      isMatch = item.brand === filterLogic.brand
+      isMatch = item.Brand === filterLogic.brand
     }
     if (filterLogic.chipset && isMatch) {
-      isMatch = item.chipset === filterLogic.chipset
+      isMatch = item.Chipset === filterLogic.chipset
     }
     if (filterLogic.price !== 0 && isMatch) {
       isMatch = stringToNumber(item[getSelectedCurrency()]) < filterLogic.price
@@ -202,12 +202,12 @@ const MotherboardSuggestion = ({
       <Grid sx={{ paddingTop: 10 }} container spacing={2} columns={{ xs: 6, md: 12 }}>
         {updatedList.map((item) => (
           <ItemCard
-            itemLabel={generateItemName(item.brand, item.model)}
+            itemLabel={generateItemName(item.Brand, item.Name)}
             priceLabel={getCurrentPrice(item)}
-            imgSrc={item.img}
+            imgSrc={item.Img}
             disable={selectedItems.includes(item)}
             addComparsion={() => addComparison(item)}
-            removeComparsion={() => removeComparison(item.model)}
+            removeComparsion={() => removeComparison(item.Name)}
           />
         ))}
       </Grid>

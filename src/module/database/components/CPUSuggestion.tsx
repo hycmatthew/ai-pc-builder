@@ -6,7 +6,6 @@ import {
   Grid,
 } from '@mui/material'
 import CompareArrowsIcon from '@mui/icons-material/CompareArrows'
-import { motion, Variants } from 'framer-motion'
 import { max, min, sum } from 'lodash'
 
 import CPUType from '../../../constant/objectTypes/CPUType'
@@ -64,7 +63,7 @@ const CPUSuggestion = ({ cpuList, isLoading }: CPUSuggestionProps) => {
 
   const removeComparison = (name: string) => {
     const updatedList: CPUType[] = selectedItems.filter(
-      (element: CPUType) => element.name !== name
+      (element: CPUType) => element.Name !== name
     )
     if (updatedList.length === 0) {
       handleClose()
@@ -86,48 +85,48 @@ const CPUSuggestion = ({ cpuList, isLoading }: CPUSuggestionProps) => {
   const openComparison = () => {
     let comparsionObjects: ComparisonObject[] = []
     comparsionObjects = selectedItems.map((item) => {
-      const imgStr = item.img
-      const itemModel = item.name
-      const itemName = generateItemName(item.brand, item.name)
+      const imgStr = item.Img
+      const itemModel = item.Name
+      const itemName = generateItemName(item.Brand, item.Name)
 
       const cpuSocket: ComparisonSubItem = {
         label: 'cpu-socket',
-        value: item.socket,
+        value: item.Socket,
         isHighlight: false,
       }
 
       const cpuCores: ComparisonSubItem = {
         label: 'cpu-cores',
-        value: item.cores,
+        value: item.Cores.toString(),
         isHighlight:
-          getCoresNumber(item.cores) === max(selectedItems.map((element) => getCoresNumber(element.cores))),
+        item.Cores === max(selectedItems.map((element) => element.Cores)),
       }
 
       const cpuDisplay: ComparisonSubItem = {
         label: 'integrated-graphics',
-        value: item.gpu ? item.gpu : '-',
-        isHighlight: item.gpu !== '',
+        value: item.GPU ? item.GPU : '-',
+        isHighlight: item.GPU !== '',
       }
 
       const singleScore: ComparisonSubItem = {
         label: 'single-core',
-        value: item.singleCoreScore.toString(),
+        value: item.SingleCoreScore.toString(),
         isHighlight:
-          item.singleCoreScore === max(selectedItems.map((element) => element.singleCoreScore)),
+          item.SingleCoreScore === max(selectedItems.map((element) => element.SingleCoreScore)),
       }
 
       const multiScore: ComparisonSubItem = {
         label: 'multi-core',
-        value: item.multiCoreScore.toString(),
+        value: item.MultiCoreScore.toString(),
         isHighlight:
-          item.multiCoreScore === max(selectedItems.map((element) => element.multiCoreScore)),
+          item.MultiCoreScore === max(selectedItems.map((element) => element.MultiCoreScore)),
       }
 
       const power: ComparisonSubItem = {
         label: 'power',
-        value: item.power.toString(),
+        value: item.Power.toString(),
         isHighlight:
-          item.power === min(selectedItems.map((element) => element.power)),
+          item.Power === min(selectedItems.map((element) => element.Power)),
       }
 
       const result: ComparisonObject = {
@@ -160,10 +159,10 @@ const CPUSuggestion = ({ cpuList, isLoading }: CPUSuggestionProps) => {
   const updatedList = cpuList.filter((item) => {
     let isMatch = true
     if (filterLogic.model) {
-      isMatch = item.name === filterLogic.model
+      isMatch = item.Name === filterLogic.model
     }
     if (filterLogic.brand && isMatch) {
-      isMatch = item.brand === filterLogic.brand
+      isMatch = item.Brand === filterLogic.brand
     }
     if (filterLogic.price !== 0 && isMatch) {
       isMatch = stringToNumber(item[getSelectedCurrency()]) < filterLogic.price
@@ -209,12 +208,12 @@ const CPUSuggestion = ({ cpuList, isLoading }: CPUSuggestionProps) => {
       <Grid sx={{ paddingTop: 10 }} container spacing={2} columns={{ xs: 6, md: 12 }}>
         {updatedList.map((item) => (
           <ItemCard
-            itemLabel={generateItemName(item.brand, item.name)}
+            itemLabel={generateItemName(item.Brand, item.Name)}
             priceLabel={getCurrentPrice(item)}
-            imgSrc={item.img}
+            imgSrc={item.Img}
             disable={selectedItems.includes(item)}
             addComparsion={() => addComparison(item)}
-            removeComparsion={() => removeComparison(item.name)}
+            removeComparsion={() => removeComparison(item.Name)}
           />
         ))}
       </Grid>

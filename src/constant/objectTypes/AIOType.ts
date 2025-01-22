@@ -1,19 +1,19 @@
 interface AIOType {
-  name: string
-  brand: string
-  model: string
-  blockCompatibility: string
-  radiatorSize: [string]
-  fanSize: number
-  fanSpeed: string
-  fanAirflow: string
-  fanNoise: string
-  color: string
-  led: string
-  priceUS: string
-  priceHK: string
-  priceCN: string
-  img: string
+  Brand: string
+  Name: string
+  ReleaseDate: string
+  Sockets: string[]
+  IsLiquidCooler: string
+  Size: number
+  NoiseLevel: string
+  FanSpeed: string
+  PriceUS: string
+  PriceHK: string
+  PriceCN: string
+  LinkUS: string
+  LinkHK: string
+  LinkCN: string
+  Img: string
 }
 
 export default AIOType

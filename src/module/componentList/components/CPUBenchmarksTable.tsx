@@ -115,12 +115,12 @@ function CPUBenchmarksTable() {
     let tempOptions: any[] = []
     tempOptions = dataState.cpuList.map((item: CPUType, index: number) => {
       return {
-        id: generateItemName(item.brand, item.name),
+        id: generateItemName(item.Brand, item.Name),
         index,
-        singleScore: item.singleCoreScore,
-        multiScore: item.multiCoreScore,
+        singleScore: item.SingleCoreScore,
+        multiScore: item.MultiCoreScore,
         pricePerformance:
-          item.multiCoreScore / stringToNumber(item[getSelectedCurrency()]),
+          item.MultiCoreScore / stringToNumber(item[getSelectedCurrency()]),
         price: stringToNumberWithDP(item[getSelectedCurrency()]),
       }
     })

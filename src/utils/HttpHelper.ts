@@ -64,6 +64,5 @@ export class HttpHelper {
 }
 
 const RawDataAPI = new HttpHelper(config.RAW_DATA_API)
-const EpicGameDataAPI = new HttpHelper(config.EPIC_FREE_GAME_API)
 
-export { RawDataAPI, EpicGameDataAPI }
+export { RawDataAPI }

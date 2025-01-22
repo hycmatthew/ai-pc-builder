@@ -7,28 +7,29 @@ import {
 
 export const ramPerformanceLogic = (ram: RAMType | null) => {
   if (ram) {
-    return ram.speed - ram.cl * 80
+    const timingNum = Number(ram.Timing.split("-")[0]);
+    return ram.Speed - (timingNum * 80)
   }
   return 0
 }
 
 export const cpuPerformanceLogic = (cpu: CPUType | null) => {
   if (cpu) {
-    return cpu.multiCoreScore + cpu.singleCoreScore * 5
+    return cpu.MultiCoreScore + cpu.SingleCoreScore * 5
   }
   return 0
 }
 
 export const gpuPerformanceLogic = (gpu: GPUType | null) => {
   if (gpu) {
-    return (gpu.timespyScore + gpu.firestrikeScore) * 0.5
+    return gpu.Benchmark
   }
   return 0
 }
 
 export const ssdPerformanceLogic = (ssd: SSDType | null) => {
   if (ssd) {
-    return (ssd.readSpeed + ssd.writeSpeed) * 0.2 * ssd.score
+    return (ssd.MaxRead + ssd.MaxWrite) * 0.2
   }
   return 0
 }

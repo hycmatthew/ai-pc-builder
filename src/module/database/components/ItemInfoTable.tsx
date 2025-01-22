@@ -23,8 +23,8 @@ function ItemInfoTable({ cpuType, motherboardType }: InfoTableProp) {
           <CardMedia
             component="img"
             height="140"
-            image={cpuType.img}
-            alt={cpuType.name}
+            image={cpuType.Img}
+            alt={cpuType.Name}
           />
           <CardContent>
             <Typography gutterBottom variant="h5" component="div">

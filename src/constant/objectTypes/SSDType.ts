@@ -1,18 +1,21 @@
-interface CPUType {
-  brand: string
-  series: string
-  model: string
-  sizeType: string
-  memoryType: string
-  interface: string
-  capacity: string
-  readSpeed: number
-  writeSpeed: number
-  priceUS: string
-  priceHK: string
-  priceCN: string
-  score: number
-  img: string
+interface SSDType {
+  Brand: string
+  Name: string
+  ReleaseDate: string
+  Model: string
+  Capacity: string
+  MaxRead: number
+  MaxWrite: number
+  Interface: string
+  FlashType: string
+  FormFactor: string
+  PriceUS: string
+  PriceHK: string
+  PriceCN: string
+  LinkUS: string
+  LinkHK: string
+  LinkCN: string
+  Img: string
 }
 
-export default CPUType
+export default SSDType

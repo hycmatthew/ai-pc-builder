@@ -1,16 +1,20 @@
 interface CPUType {
-  name: string
-  brand: string
-  socket: string
-  cores: string
-  gpu: string
-  singleCoreScore: number
-  multiCoreScore: number
-  power: number
-  priceUS: string
-  priceHK: string
-  priceCN: string
-  img: string
+  Name: string
+  Brand: string
+  Socket: string
+  Cores: number
+  Threads: number
+  GPU: string
+  SingleCoreScore: number
+  MultiCoreScore: number
+  Power: number
+  PriceUS: string
+  PriceHK: string
+  PriceCN: string
+  LinkUS: string
+  LinkHK: string
+  LinkCN: string
+  Img: string
 }
 
 export default CPUType

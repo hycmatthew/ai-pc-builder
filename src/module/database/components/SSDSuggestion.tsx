@@ -64,7 +64,7 @@ const SSDSuggestion = ({ ssdList, isLoading }: SSDSuggestionProps) => {
 
   const removeComparison = (model: string) => {
     const updatedList: SSDType[] = selectedItems.filter(
-      (element: SSDType) => element.model !== model
+      (element: SSDType) => element.Model !== model
     )
     if (updatedList.length === 0) {
       handleClose()
@@ -81,44 +81,44 @@ const SSDSuggestion = ({ ssdList, isLoading }: SSDSuggestionProps) => {
   const openComparison = () => {
     let comparsionObjects: ComparisonObject[] = []
     comparsionObjects = selectedItems.map((item) => {
-      const imgStr = item.img
-      const itemModel = item.model
+      const imgStr = item.Img
+      const itemModel = item.Model
       const itemName = generateSSDName(item)
 
       const capacity: ComparisonSubItem = {
         label: 'capacity',
-        value: item.capacity,
+        value: item.Capacity,
         isHighlight: false,
       }
 
       const memoryType: ComparisonSubItem = {
         label: 'memory-type',
-        value: item.memoryType,
+        value: item.FlashType,
         isHighlight: false,
       }
 
       const ramInterface: ComparisonSubItem = {
         label: 'interface',
-        value: item.interface,
+        value: item.Interface,
         isHighlight: false,
       }
 
       const sizeType: ComparisonSubItem = {
         label: 'type',
-        value: item.sizeType,
+        value: item.FormFactor,
         isHighlight: false,
       }
 
       const readSpeed: ComparisonSubItem = {
         label: 'read-speed',
-        value: diskSpeedLabelHandler(item.readSpeed),
-        isHighlight: item.readSpeed === max(selectedItems.map((element) => element.readSpeed)),
+        value: diskSpeedLabelHandler(item.MaxRead),
+        isHighlight: item.MaxRead === max(selectedItems.map((element) => element.MaxRead)),
       }
 
       const writeSpeed: ComparisonSubItem = {
         label: 'write-speed',
-        value: diskSpeedLabelHandler(item.writeSpeed),
-        isHighlight: item.writeSpeed === max(selectedItems.map((element) => element.writeSpeed)),
+        value: diskSpeedLabelHandler(item.MaxWrite),
+        isHighlight: item.MaxWrite === max(selectedItems.map((element) => element.MaxWrite)),
       }
 
       const result: ComparisonObject = {
@@ -151,13 +151,13 @@ const SSDSuggestion = ({ ssdList, isLoading }: SSDSuggestionProps) => {
   const updatedList = ssdList.filter((item) => {
     let isMatch = true
     if (filterLogic.model) {
-      isMatch = item.model === filterLogic.model
+      isMatch = item.Model === filterLogic.model
     }
     if (!isEmpty(filterLogic.brand) && isMatch) {
-      isMatch = item.brand === filterLogic.brand
+      isMatch = item.Brand === filterLogic.brand
     }
     if (!isEmpty(filterLogic.capacity) && isMatch) {
-      isMatch = item.capacity === filterLogic.capacity
+      isMatch = item.Capacity === filterLogic.capacity
     }
     if (filterLogic.price !== 0 && isMatch) {
       isMatch = stringToNumber(item[getSelectedCurrency()]) < filterLogic.price
@@ -212,10 +212,10 @@ const SSDSuggestion = ({ ssdList, isLoading }: SSDSuggestionProps) => {
           <ItemCard
             itemLabel={generateSSDName(item)}
             priceLabel={getCurrentPrice(item)}
-            imgSrc={item.img}
+            imgSrc={item.Img}
             disable={selectedItems.includes(item)}
             addComparsion={() => addComparison(item)}
-            removeComparsion={() => removeComparison(item.model)}
+            removeComparsion={() => removeComparison(item.Model)}
           />
         ))}
       </Grid>

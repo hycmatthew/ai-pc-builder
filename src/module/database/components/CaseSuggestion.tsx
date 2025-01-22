@@ -64,7 +64,7 @@ const CaseSuggestion = ({ caseList, isLoading }: CaseSuggestionProps) => {
 
   const removeComparison = (model: string) => {
     const updatedList: CaseType[] = selectedItems.filter(
-      (element: CaseType) => element.model !== model
+      (element: CaseType) => element.Name !== model
     )
     if (updatedList.length === 0) {
       handleClose()
@@ -81,49 +81,38 @@ const CaseSuggestion = ({ caseList, isLoading }: CaseSuggestionProps) => {
   const openComparison = () => {
     let comparsionObjects: ComparisonObject[] = []
     comparsionObjects = selectedItems.map((item) => {
-      const imgStr = item.img
-      const itemModel = item.model
-      const itemName = generateItemName(item.brand, item.model)
+      const imgStr = item.Img
+      const itemModel = item.Name
+      const itemName = generateItemName(item.Brand, item.Name)
 
       const size: ComparisonSubItem = {
         label: 'size',
         value:
-          item.size.length > 2
-            ? `${item.size[0]} * ${item.size[1]} * ${item.size[2]}`
+          item.CaseSize.length > 2
+            ? `${item.CaseSize[0]} * ${item.CaseSize[1]} * ${item.CaseSize[2]}`
             : '',
-        isHighlight: false,
-      }
-
-      const weight: ComparisonSubItem = {
-        label: 'weight',
-        value: item.weight,
         isHighlight: false,
       }
 
       const color: ComparisonSubItem = {
         label: 'color',
-        value: item.color,
+        value: item.Color,
         isHighlight: false,
       }
 
       const maxGPULength: ComparisonSubItem = {
         label: 'max-gpu-length',
-        value: item.maxGPULength.toString(),
+        value: item.MaxVGAlength.toString(),
         isHighlight:
-          item.maxGPULength === max(selectedItems.map((element) => element.maxGPULength)),
+          item.MaxVGAlength === max(selectedItems.map((element) => element.MaxVGAlength)),
       }
 
-      const maxPSULength: ComparisonSubItem = {
-        label: 'max-psu-length',
-        value: item.maxPSULength.toString(),
-        isHighlight: item.maxPSULength === max(selectedItems.map((element) => element.maxPSULength)),
-      }
-
+      // tbc
       const motherboardCompatibility: ComparisonSubItem = {
         label: 'motherboard-compatibility',
-        value: item.motherboardCompatibility.toString() || '-',
+        value: item.Compatibility.toString() || '-',
         isHighlight:
-          item.motherboardCompatibility.length === max(selectedItems.map((element) => element.motherboardCompatibility.length)),
+          item.Compatibility.length === max(selectedItems.map((element) => element.Compatibility.length)),
       }
 
       const result: ComparisonObject = {
@@ -132,10 +121,8 @@ const CaseSuggestion = ({ caseList, isLoading }: CaseSuggestionProps) => {
         model: itemModel,
         items: [
           size,
-          weight,
           color,
           maxGPULength,
-          maxPSULength,
           motherboardCompatibility,
         ],
       }
@@ -156,13 +143,13 @@ const CaseSuggestion = ({ caseList, isLoading }: CaseSuggestionProps) => {
   const updatedList = caseList.filter((item) => {
     let isMatch = true
     if (filterLogic.model) {
-      isMatch = item.model === filterLogic.model
+      isMatch = item.Name === filterLogic.model
     }
     if (filterLogic.brand && isMatch) {
-      isMatch = item.brand === filterLogic.brand
+      isMatch = item.Brand === filterLogic.brand
     }
     if (filterLogic.size && isMatch) {
-      isMatch = item.type === filterLogic.size
+      isMatch = item.CaseSize === filterLogic.size
     }
     if (filterLogic.price !== 0 && isMatch) {
       isMatch = stringToNumber(item[getSelectedCurrency()]) < filterLogic.price
@@ -220,12 +207,12 @@ const CaseSuggestion = ({ caseList, isLoading }: CaseSuggestionProps) => {
       >
         {updatedList.map((item) => (
           <ItemCard
-            itemLabel={generateItemName(item.brand, item.model)}
+            itemLabel={generateItemName(item.Brand, item.Name)}
             priceLabel={getCurrentPrice(item)}
-            imgSrc={item.img}
+            imgSrc={item.Img}
             disable={selectedItems.includes(item)}
             addComparsion={() => addComparison(item)}
-            removeComparsion={() => removeComparison(item.model)}
+            removeComparsion={() => removeComparison(item.Name)}
           />
         ))}
       </Grid>

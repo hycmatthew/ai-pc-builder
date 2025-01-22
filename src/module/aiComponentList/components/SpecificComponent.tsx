@@ -66,6 +66,8 @@ function SpecificComponent({
   } = rawData
 
   const changeSelectItem = (value: string, type: string) => {
+    console.log(type);
+    console.log(value);
     switch (type) {
       case ProductEnum.CPU: {
         const selectedItem = searchCPUItem(cpuList, value)
@@ -126,7 +128,6 @@ function SpecificComponent({
               label={ProductEnum.CPU}
               options={generateCPUSelectElement(cpuList, selectedItems)}
               selectChange={changeSelectItem}
-              isLoading={isLoading}
             />
           </Grid>
           <Grid item xs={9}>
@@ -134,7 +135,6 @@ function SpecificComponent({
               label={ProductEnum.GPU}
               options={generateGPUSelectElement(gpuList)}
               selectChange={changeSelectItem}
-              isLoading={isLoading}
             />
           </Grid>
           <Grid item xs={9}>
@@ -145,7 +145,6 @@ function SpecificComponent({
                 selectedItems
               )}
               selectChange={changeSelectItem}
-              isLoading={isLoading}
             />
           </Grid>
           <Grid item xs={9}>
@@ -153,7 +152,6 @@ function SpecificComponent({
               label={ProductEnum.RAM}
               options={generateRAMSelectElement(ramList, selectedItems)}
               selectChange={changeSelectItem}
-              isLoading={isLoading}
             />
           </Grid>
           <Grid item xs={9}>
@@ -161,7 +159,6 @@ function SpecificComponent({
               label={ProductEnum.SSD}
               options={generateSSDSelectElement(ssdList)}
               selectChange={changeSelectItem}
-              isLoading={isLoading}
             />
           </Grid>
           <Grid item xs={9}>
@@ -169,7 +166,6 @@ function SpecificComponent({
               label={ProductEnum.PSU}
               options={generatePSUSelectElement(psuList, selectedItems)}
               selectChange={changeSelectItem}
-              isLoading={isLoading}
             />
           </Grid>
           <Grid item xs={9}>
@@ -177,7 +173,6 @@ function SpecificComponent({
               label={ProductEnum.ComputerCase}
               options={generateCaseSelectElement(caseList, selectedItems)}
               selectChange={changeSelectItem}
-              isLoading={isLoading}
             />
           </Grid>
           <Grid item xs={9}>
@@ -185,7 +180,6 @@ function SpecificComponent({
               label={ProductEnum.AIO}
               options={generateAIOSelectElement(aioList)}
               selectChange={changeSelectItem}
-              isLoading={isLoading}
             />
           </Grid>
           <Grid item xs={9}>
@@ -196,7 +190,6 @@ function SpecificComponent({
                 selectedItems
               )}
               selectChange={changeSelectItem}
-              isLoading={isLoading}
             />
           </Grid>
         </Grid>

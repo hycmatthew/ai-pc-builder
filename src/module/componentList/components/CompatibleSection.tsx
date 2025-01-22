@@ -70,7 +70,7 @@ const CompatibleSection = ({ selectedItems }: CompatibleSectionProps) => {
         type: 'warning',
       })
     }
-    if (psu && psuPowerNotEnough(psu.watt, getTotalPower(selectedItems))) {
+    if (psu && psuPowerNotEnough(psu.Wattage, getTotalPower(selectedItems))) {
       suggestion.push({ name: 'warning-power-not-enough', type: 'warning' })
     }
     if (pcCase && caseIncompatibleWithGPU(pcCase, gpu)) {

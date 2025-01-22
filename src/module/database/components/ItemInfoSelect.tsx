@@ -3,7 +3,6 @@ import { useTranslation } from 'react-i18next'
 import {
   Box,
   CircularProgress,
-  FormControl,
   SelectProps,
   Stack,
   TextField,
@@ -11,25 +10,12 @@ import {
 } from '@mui/material'
 import Autocomplete from '@mui/material/Autocomplete'
 import { styled } from '@mui/material/styles'
-
-const CustomFormControl = styled(FormControl)({
-  position: 'relative',
-  width: '100%',
-  background: '#fff',
-  borderRadius: 3,
-})
+import { OptionType } from '../../../constant/objectTypes'
 
 const CustomAutocomplete = styled(Autocomplete)({
   height: '60px',
 })
 
-interface OptionType {
-  model: string
-  brand: string
-  label: string
-  value: any
-  disabled: boolean
-}
 
 type SelectElementProps = SelectProps & {
   label: string

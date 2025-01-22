@@ -15,7 +15,7 @@ import SelectFilter from '../../common/components/SelectFilter'
 import { getRAMBrand, getRAMGeneration } from '../../../utils/GroupCategoryHelper'
 
 import { RAM_FILTER_INIT_DATA } from '../data/FilterInitData'
-import { generateItemName, generateRAMName } from '../../../utils/LabelHelper'
+import { generateRAMName } from '../../../utils/LabelHelper'
 import ItemCard from './ItemCard'
 import { ComparisonObject, ComparisonSubItem } from '../data/ComparisonObject'
 import ComparisonModal from './ComparisonModal'
@@ -67,7 +67,7 @@ const RAMSuggestion = ({
 
   const removeComparison = (model: string) => {
     const updatedList: RAMType[] = selectedItems.filter(
-      (element: RAMType) => element.model !== model
+      (element: RAMType) => element.Model !== model
     )
     if (updatedList.length === 0) {
       handleClose()
@@ -84,43 +84,31 @@ const RAMSuggestion = ({
   const openComparison = () => {
     let comparsionObjects: ComparisonObject[] = []
     comparsionObjects = selectedItems.map((item) => {
-      const imgStr = item.img
-      const itemModel = item.model
+      const imgStr = item.Img
+      const itemModel = item.Model
       const itemName = generateRAMName(item)
-
-      const ramChipset: ComparisonSubItem = {
-        label: 'chipset',
-        value: item.chipset,
-        isHighlight: false,
-      }
 
       const capacity: ComparisonSubItem = {
         label: 'capacity',
-        value: item.capacity,
-        isHighlight: item.capacityNum === max(selectedItems.map((element) => element.capacityNum)),
+        value: item.Capacity,
+        isHighlight: item.Capacity === max(selectedItems.map((element) => element.Capacity)),
       }
 
       const speed: ComparisonSubItem = {
         label: 'ram-frequency',
-        value: item.speed.toString(),
-        isHighlight: item.speed === max(selectedItems.map((element) => element.speed)),
-      }
-
-      const cl: ComparisonSubItem = {
-        label: 'latency',
-        value: item.cl.toString(),
-        isHighlight: item.cl === min(selectedItems.map((element) => element.cl)),
+        value: item.Speed.toString(),
+        isHighlight: item.Speed === max(selectedItems.map((element) => element.Speed)),
       }
 
       const timing: ComparisonSubItem = {
         label: 'ram-timing',
-        value: item.timing || '-',
-        isHighlight: item.cl === min(selectedItems.map((element) => element.cl)),
+        value: item.Timing || '-',
+        isHighlight: item.Timing === min(selectedItems.map((element) => element.Timing)),
       }
 
       const rgb: ComparisonSubItem = {
         label: 'is-rgb',
-        value: item.rgb ? 'RGB' : '-',
+        value: item.LED ? 'RGB' : '-',
         isHighlight: false,
       }
 
@@ -129,10 +117,8 @@ const RAMSuggestion = ({
         name: itemName,
         model: itemModel,
         items: [
-          ramChipset,
           capacity,
           speed,
-          cl,
           timing,
           rgb
         ],
@@ -154,13 +140,13 @@ const RAMSuggestion = ({
   const updatedList = ramList.filter((item) => {
     let isMatch = true
     if (filterLogic.model) {
-      isMatch = item.model === filterLogic.model
+      isMatch = item.Model === filterLogic.model
     }
     if (filterLogic.brand && isMatch) {
-      isMatch = (item.brand === filterLogic.brand)
+      isMatch = (item.Brand === filterLogic.brand)
     }
     if (filterLogic.generation && isMatch) {
-      isMatch = (item.type === filterLogic.generation)
+      isMatch = (item.Type === filterLogic.generation)
     }
     if (filterLogic.price !== 0 && isMatch) {
       isMatch = stringToNumber(item[getSelectedCurrency()]) < filterLogic.price
@@ -215,10 +201,10 @@ const RAMSuggestion = ({
           <ItemCard
             itemLabel={generateRAMName(item)}
             priceLabel={getCurrentPrice(item)}
-            imgSrc={item.img}
+            imgSrc={item.Img}
             disable={selectedItems.includes(item)}
             addComparsion={() => addComparison(item)}
-            removeComparsion={() => removeComparison(item.model)}
+            removeComparsion={() => removeComparison(item.Model)}
           />
         ))}
       </Grid>

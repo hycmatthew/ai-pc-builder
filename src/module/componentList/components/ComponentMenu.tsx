@@ -14,7 +14,6 @@ import {
   generateSSDSelectElement,
   generatePSUSelectElement,
   generateRAMSelectElement,
-  generateAirCoolerSelectElement,
 } from '../../common/utils/generateSelectElements'
 import {
   searchCPUItem,
@@ -50,13 +49,14 @@ const ComponentMenu = ({ dataState }: ComponentMenuProps) => {
     caseList,
     aioList,
     airCoolerList,
-    isLoading,
   } = dataState
 
   const changeSelectItem = (value: string, type: string) => {
     switch (type) {
       case ProductEnum.CPU: {
         const selectedItem = searchCPUItem(cpuList, value)
+        console.log(cpuList)
+        console.log(value)
         dispatch(sliceActions.updateSelectedCPU(selectedItem))
         break
       }
@@ -112,7 +112,6 @@ const ComponentMenu = ({ dataState }: ComponentMenuProps) => {
           label={ProductEnum.CPU}
           options={generateCPUSelectElement(cpuList, selectedItems)}
           selectChange={changeSelectItem}
-          isLoading={isLoading}
         />
       </Grid>
       <Grid xs={12}>
@@ -120,7 +119,6 @@ const ComponentMenu = ({ dataState }: ComponentMenuProps) => {
           label={ProductEnum.GPU}
           options={generateGPUSelectElement(gpuList, selectedItems)}
           selectChange={changeSelectItem}
-          isLoading={isLoading}
         />
       </Grid>
       <Grid xs={12}>
@@ -131,7 +129,6 @@ const ComponentMenu = ({ dataState }: ComponentMenuProps) => {
             selectedItems
           )}
           selectChange={changeSelectItem}
-          isLoading={isLoading}
         />
       </Grid>
       <Grid xs={12}>
@@ -139,7 +136,6 @@ const ComponentMenu = ({ dataState }: ComponentMenuProps) => {
           label={ProductEnum.RAM}
           options={generateRAMSelectElement(ramList, selectedItems)}
           selectChange={changeSelectItem}
-          isLoading={isLoading}
         />
       </Grid>
       <Grid xs={12}>
@@ -147,7 +143,6 @@ const ComponentMenu = ({ dataState }: ComponentMenuProps) => {
           label={ProductEnum.SSD}
           options={generateSSDSelectElement(ssdList, selectedItems)}
           selectChange={changeSelectItem}
-          isLoading={isLoading}
         />
       </Grid>
       <Grid xs={12}>
@@ -155,7 +150,6 @@ const ComponentMenu = ({ dataState }: ComponentMenuProps) => {
           label={ProductEnum.PSU}
           options={generatePSUSelectElement(psuList, selectedItems)}
           selectChange={changeSelectItem}
-          isLoading={isLoading}
         />
       </Grid>
       <Grid xs={12}>
@@ -163,7 +157,6 @@ const ComponentMenu = ({ dataState }: ComponentMenuProps) => {
           label={ProductEnum.ComputerCase}
           options={generateCaseSelectElement(caseList, selectedItems)}
           selectChange={changeSelectItem}
-          isLoading={isLoading}
         />
       </Grid>
       <Grid xs={12}>
@@ -171,15 +164,6 @@ const ComponentMenu = ({ dataState }: ComponentMenuProps) => {
           label={ProductEnum.AIO}
           options={generateAIOSelectElement(aioList, selectedItems)}
           selectChange={changeSelectItem}
-          isLoading={isLoading}
-        />
-      </Grid>
-      <Grid xs={12}>
-        <SelectElement
-          label={ProductEnum.AirCooler}
-          options={generateAirCoolerSelectElement(airCoolerList, selectedItems)}
-          selectChange={changeSelectItem}
-          isLoading={isLoading}
         />
       </Grid>
     </Grid>

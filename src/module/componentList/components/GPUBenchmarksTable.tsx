@@ -2,13 +2,16 @@ import React, { useState, useEffect } from 'react'
 import { useSelector } from 'react-redux'
 import { useTranslation } from 'react-i18next'
 import { Box, Stack, Typography } from '@mui/material'
-import { DataGrid, GridColDef, GridRowParams } from '@mui/x-data-grid'
+import { GridColDef } from '@mui/x-data-grid'
 import AOS from 'aos'
 import 'aos/dist/aos.css'
 import './BenchmarksTable.scss'
 
 import GPUType from '../../../constant/objectTypes/GPUType'
-import { getSelectedCurrency, stringToNumberWithDP } from '../../../utils/NumberHelper'
+import {
+  getSelectedCurrency,
+  stringToNumberWithDP,
+} from '../../../utils/NumberHelper'
 import { generateItemName, priceLabelHandler } from '../../../utils/LabelHelper'
 import BarMotion from '../../../styles/animation/BarMotion'
 import BenchmarksDataGrid from './BenchmarksDataGrid'
@@ -105,7 +108,7 @@ function GPUBenchmarksTable() {
       width: 160,
       editable: false,
       disableColumnMenu: true,
-      renderCell: (params) => priceLabelHandler(params.value)
+      renderCell: (params) => priceLabelHandler(params.value),
     },
   ]
 
@@ -113,10 +116,9 @@ function GPUBenchmarksTable() {
     let tempOptions: any[] = []
     tempOptions = dataState.gpuList.map((item: GPUType, index: number) => {
       return {
-        id: generateItemName(item.brand, item.model),
+        id: generateItemName(item.Brand, item.Name),
         index,
-        timespyScore: item.timespyScore,
-        firestrikeScore: item.firestrikeScore,
+        benchmark: item.Benchmark,
         price: stringToNumberWithDP(item[getSelectedCurrency()]),
       }
     })
