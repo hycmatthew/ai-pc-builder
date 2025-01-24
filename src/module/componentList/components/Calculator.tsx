@@ -2,10 +2,10 @@ import { useTranslation } from 'react-i18next'
 import Typography from '@mui/material/Typography'
 import Container from '@mui/material/Container'
 import styled from '@emotion/styled'
-import { Box, Unstable_Grid2 as Grid } from '@mui/material'
+import { Box, Grid2 as Grid } from '@mui/material'
 
 import { SelectedItemType } from '../../../store/rawDataReducer'
-import { getTotalPrice } from '../../../utils/NumberHelper'
+import { getTotalPriceStr } from '../../../utils/PCPartUtil'
 
 type CalculatorProps = {
   selectedItems: SelectedItemType
@@ -22,11 +22,11 @@ const Calculator = ({ selectedItems }: CalculatorProps) => {
   return (
     <CustomContainer>
       <Grid container spacing={2}>
-        <Grid xs={8}>
+        <Grid size={8}>
           <Typography className="normal-header-typography">
             <Box sx={{ fontWeight: '600' }}>{t('price')}</Box>
           </Typography>
-          <Typography>{getTotalPrice(selectedItems)}</Typography>
+          <Typography>{getTotalPriceStr(selectedItems)}</Typography>
         </Grid>
       </Grid>
     </CustomContainer>

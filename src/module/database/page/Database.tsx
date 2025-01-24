@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import { Unstable_Grid2 as Grid } from '@mui/material'
+import { Grid2 as Grid } from '@mui/material'
 
 import { useSelector } from 'react-redux'
 import ItemInfoTable from '../components/ItemInfoTable'
@@ -100,30 +100,28 @@ function Database() {
 
   return (
     <Grid justifyContent="center" container>
-      <Grid container xs={12} md={8} justifyContent="center" spacing={1}>
+      <Grid container size={{ xs: 12, md: 8 }} justifyContent="center" spacing={1}>
         {categoryList.map((item) => (
-          <Grid md={3} xs={6}>
+          <Grid size={{ xs: 6, md: 3 }}>
             <CusButton label={item} isSelected={item === selectedType} clickedFunc={() => setSelectedType(item)} />
           </Grid>
         ))}
       </Grid>
       <Grid
         container
-        xs={12}
-        md={8}
+        size={{ xs: 12, md: 8 }}
         justifyContent="center"
         sx={{ paddingTop: '24px' }}
       >
-        <Grid xs={12}>{createSelectLogic(selectedType)}</Grid>
+        <Grid size={12}>{createSelectLogic(selectedType)}</Grid>
       </Grid>
       <Grid
         container
-        xs={12}
-        md={8}
+        size={{ xs: 12, md: 8 }}
         justifyContent="center"
         sx={{ paddingTop: '24px' }}
       >
-        <Grid xs={12}>
+        <Grid size={12}>
           <ItemInfoTable />
         </Grid>
       </Grid>

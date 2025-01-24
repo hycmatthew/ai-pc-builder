@@ -1,7 +1,7 @@
 import { useTranslation } from 'react-i18next'
 import Container from '@mui/material/Container'
 import styled from '@emotion/styled'
-import { Unstable_Grid2 as Grid } from '@mui/material'
+import { Grid2 as Grid } from '@mui/material'
 
 import { SelectedItemType } from '../../../store/rawDataReducer'
 import {
@@ -36,31 +36,31 @@ const ScoreSection = ({ selectedItems }: ScoreSectionProps) => {
   return (
     <CustomContainer>
       <Grid container spacing={2}>
-        <Grid xs={6}>
+        <Grid size={6}>
           <CusTypography variant="h6">{t('cpu-score')}</CusTypography>
           <CusTypography variant="h4">
             {cpuPerformanceLogic(selectedItems.cpu)}
           </CusTypography>
         </Grid>
-        <Grid xs={6}>
+        <Grid size={6}>
           <CusTypography variant="h6">{t('gpu-score')}</CusTypography>
           <CusTypography variant="h4">
             {gpuPerformanceLogic(selectedItems.gpu)}
           </CusTypography>
         </Grid>
-        <Grid xs={6}>
+        <Grid size={6}>
           <CusTypography variant="h6">{t('ram-score')}</CusTypography>
           <CusTypography variant="h4">
             {ramPerformanceLogic(selectedItems.ram)}
           </CusTypography>
         </Grid>
-        <Grid xs={6}>
+        <Grid size={6}>
           <CusTypography variant="h6">{t('ssd-score')}</CusTypography>
           <CusTypography variant="h4">
             {ssdPerformanceLogic(selectedItems.ssd)}
           </CusTypography>
         </Grid>
-        <Grid xs={8}>
+        <Grid size={8}>
           <CusTypography variant="h6">{t('total-score')}</CusTypography>
           <CusTypography variant="h4">{totalScore()}</CusTypography>
         </Grid>

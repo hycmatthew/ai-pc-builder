@@ -1,5 +1,5 @@
 import { useSelector } from 'react-redux'
-import { Unstable_Grid2 as Grid } from '@mui/material'
+import { Grid2 as Grid } from '@mui/material'
 
 import BudgetComponent from './components/BudgetComponent'
 import UsageComponent from './components/UsageComponent'
@@ -21,16 +21,16 @@ function AILogicPage() {
 
   return (
     <Grid container spacing={2}>
-      <Grid xs={12}>
+      <Grid size={12}>
         <BudgetComponent currectStep={aiLogic.step} updateStep={updateStep} />
       </Grid>
       {aiLogic.step > 0 && (
-        <Grid xs={12}>
+        <Grid size={12}>
           <UsageComponent currectStep={aiLogic.step} updateStep={updateStep} />
         </Grid>
       )}
       {aiLogic.step > 1 && (
-        <Grid xs={12}>
+        <Grid size={12}>
           <SpecificComponent
             rawData={rawData}
             currectStep={aiLogic.step}
@@ -39,7 +39,7 @@ function AILogicPage() {
         </Grid>
       )}
       {aiLogic.step > 2 && (
-        <Grid xs={12}>
+        <Grid size={12}>
           <ResultComponent logicState={aiLogic} rawData={rawData} />
         </Grid>
       )}

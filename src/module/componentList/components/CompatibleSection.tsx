@@ -5,7 +5,7 @@ import Stack from '@mui/material/Stack'
 import CancelRoundedIcon from '@mui/icons-material/CancelRounded'
 import WarningRoundedIcon from '@mui/icons-material/WarningRounded'
 import styled from '@emotion/styled'
-import { Unstable_Grid2 as Grid } from "@mui/material"
+import { Grid2 as Grid } from "@mui/material"
 
 import { SelectedItemType } from '../../../store/rawDataReducer'
 import { getTotalPower } from '../../../utils/NumberHelper'
@@ -120,7 +120,7 @@ const CompatibleSection = ({ selectedItems }: CompatibleSectionProps) => {
   return (
     <CustomContainer>
       <Grid container spacing={2}>
-        <Grid xs={8}>
+        <Grid size={8}>
           {suggestions.map((item: SuggestionType) =>
             item.type === 'warning' ? (
               <WarningStack

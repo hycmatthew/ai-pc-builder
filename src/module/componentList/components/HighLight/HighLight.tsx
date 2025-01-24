@@ -1,5 +1,5 @@
 import { useTranslation } from 'react-i18next'
-import { Unstable_Grid2 as Grid } from '@mui/material'
+import { Grid2 as Grid } from '@mui/material'
 import Card from '@mui/material/Card'
 import CardActions from '@mui/material/CardActions'
 import CardContent from '@mui/material/CardContent'
@@ -13,7 +13,7 @@ function HighLight() {
 
   return (
     <Grid container spacing={2}>
-      <Grid xs={12}>
+      <Grid size={12}>
         <Card sx={{ maxWidth: 345 }}>
           <CardMedia
             sx={{ height: 140 }}

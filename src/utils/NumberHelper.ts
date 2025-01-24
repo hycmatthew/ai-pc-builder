@@ -1,4 +1,4 @@
-import { compact, isEmpty, sum, toNumber } from 'lodash'
+import { isEmpty, sum, toNumber } from 'lodash'
 import i18n from '../config/i18n'
 import { AIOType, MotherboardType, RAMType } from '../constant/objectTypes'
 import { SelectedItemType } from '../store/rawDataReducer'
@@ -58,25 +58,6 @@ export const getCurrentPriceWithSign = (item: any) => {
   return addCurrencySign(getCurrentPrice(item))
 }
 
-export const getTotalPrice = (selectedItems: SelectedItemType) => {
-  const numberList = [
-    selectedItems.cpu?.[getSelectedCurrency()],
-    selectedItems.gpu?.[getSelectedCurrency()],
-    selectedItems.motherboard?.[getSelectedCurrency()],
-    selectedItems.ram?.[getSelectedCurrency()],
-    selectedItems.psu?.[getSelectedCurrency()],
-    selectedItems.ssd?.[getSelectedCurrency()],
-    selectedItems.aio?.[getSelectedCurrency()],
-    selectedItems.airCooler?.[getSelectedCurrency()],
-    selectedItems.pcCase?.[getSelectedCurrency()],
-  ]
-
-  const totolPrice = calculateTotalNumber(compact(numberList))
-    .toFixed(2)
-    .toString()
-  return addCurrencySign(totolPrice)
-}
-
 export const getTotalPower = (selectedItems: SelectedItemType) => {
   const getAIOPower = (aio: AIOType | null) => {
     if (aio) {
@@ -107,9 +88,12 @@ export const getTotalPower = (selectedItems: SelectedItemType) => {
   const getMotherboardPower = (motherboard: MotherboardType | null) => {
     let wattNum = 0
     if (motherboard) {
-      if (motherboard.Chipset.includes("Z") || motherboard.Chipset.includes("X")){
+      if (
+        motherboard.Chipset.includes('Z') ||
+        motherboard.Chipset.includes('X')
+      ) {
         wattNum = 35
-      }else{
+      } else {
         wattNum = 25
       }
     }
@@ -121,7 +105,7 @@ export const getTotalPower = (selectedItems: SelectedItemType) => {
     selectedItems.gpu?.Power,
     getAIOPower(selectedItems.aio),
     getRamPower(selectedItems.ram),
-    getMotherboardPower(selectedItems.motherboard)
+    getMotherboardPower(selectedItems.motherboard),
   ]
   return sum(numberList) || 0
 }

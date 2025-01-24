@@ -12,7 +12,7 @@ import {
 import { brandTranslationKey } from './LabelHelper'
 
 export const getCPUBrand = (items: CPUType[]) => {
-  const options = [...new Set(items.map((item: CPUType) => item.brand))].map(
+  const options = [...new Set(items.map((item: CPUType) => item.Brand))].map(
     (item) => {
       return {
         label: brandTranslationKey(item),
@@ -48,7 +48,7 @@ export const getGPUManufacturer = (items: GPUType[]) => {
 }
 
 export const getGPUType = (items: GPUType[]) => {
-  const options = [...new Set(items.map((item: GPUType) => item.gpu))].map(
+  const options = [...new Set(items.map((item: GPUType) => item.Generation))].map(
     (item) => {
       return {
         label: item,

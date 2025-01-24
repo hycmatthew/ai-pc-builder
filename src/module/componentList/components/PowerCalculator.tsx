@@ -2,7 +2,7 @@ import { useTranslation } from 'react-i18next'
 import Typography from '@mui/material/Typography'
 import Container from '@mui/material/Container'
 import styled from '@emotion/styled'
-import { Box, Unstable_Grid2 as Grid } from '@mui/material'
+import { Box, Grid2 as Grid } from '@mui/material'
 
 import { SelectedItemType } from '../../../store/rawDataReducer'
 import { getTotalPower } from '../../../utils/NumberHelper'

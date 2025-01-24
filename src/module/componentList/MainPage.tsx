@@ -1,5 +1,5 @@
 import { useSelector } from 'react-redux'
-import { Unstable_Grid2 as Grid } from '@mui/material'
+import { Grid2 as Grid } from '@mui/material'
 
 import ComponentMenu from './components/ComponentMenu'
 import Calculator from './components/Calculator'
@@ -21,15 +21,15 @@ function MainPage() {
         <div className="main-container">
           <div className="main-overlay-card">
             <Grid
-              sx={{ flexGrow: 1 }}
+              size={12}
               container
               spacing={0}
               columns={{ xs: 6, md: 12 }}
             >
-              <Grid xs={6}>
+              <Grid size={6}>
                 <ComponentMenu dataState={dataState} />
               </Grid>
-              <Grid xs={6}>
+              <Grid size={6}>
                 <ScoreSection selectedItems={dataState.selectedItems} />
                 <Calculator selectedItems={dataState.selectedItems} />
                 <PowerCalculator selectedItems={dataState.selectedItems} />
@@ -47,7 +47,7 @@ function MainPage() {
                 spacing={0}
                 columns={{ xs: 6, md: 12 }}
               >
-                <Grid xs={12}>
+                <Grid size={12}>
                   <HighLight />
                 </Grid>
               </Grid>

@@ -76,7 +76,6 @@ const SelectElement = ({
   const { t } = useTranslation()
 
   const handleChange = (event: any, newValue: any) => {
-    console.log(newValue)
     if (selectChange) {
       if (newValue) {
         selectChange(newValue.name, label, extraNum)

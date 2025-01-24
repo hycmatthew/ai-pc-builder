@@ -5,7 +5,7 @@ import Box from '@mui/material/Box'
 import Typography from '@mui/material/Typography'
 import Slider, { SliderProps } from '@mui/material/Slider'
 import MuiInput from '@mui/material/Input'
-import { Unstable_Grid2 as Grid } from "@mui/material"
+import { Grid2 as Grid } from "@mui/material"
 
 const Input = styled(MuiInput)`
   width: 84px;
@@ -58,7 +58,7 @@ const PriceSlider = ({ selectChange }: PriceSliderProps) => {
         {t('price')}
       </Typography>
       <Grid container spacing={2} alignItems="center">
-        <Grid xs>
+        <Grid>
           <Slider
             min={0}
             step={10}

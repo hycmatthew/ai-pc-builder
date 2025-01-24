@@ -1,8 +1,8 @@
 import React from 'react'
 import { useTranslation } from 'react-i18next'
 import styled from '@emotion/styled'
-import { ToggleButton, Tabs, Tab } from '@mui/material'
-import { Unstable_Grid2 as Grid } from '@mui/material'
+import { Tabs, Tab } from '@mui/material'
+import { Grid2 as Grid } from '@mui/material'
 import ProductEnum from '../../constant/ProductEnum'
 
 import CPUBenchmarksTable from './components/CPUBenchmarksTable'
@@ -29,7 +29,7 @@ function Benchmarks() {
     <div className="bg-container">
       <div className="main-container">
         <Grid container spacing={0}>
-          <Grid xs={12}>
+          <Grid size={12}>
             <CustomTabs
               value={itemType}
               onChange={handleChange}
@@ -40,7 +40,7 @@ function Benchmarks() {
               <Tab label={t('ram')} value={ProductEnum.RAM} />
             </CustomTabs>
           </Grid>
-          <Grid xs={12}>
+          <Grid size={12}>
             {itemType === ProductEnum.CPU && <CPUBenchmarksTable />}
             {itemType === ProductEnum.GPU && <GPUBenchmarksTable />}
             {itemType === ProductEnum.RAM && <RAMBenchmarksTable />}
