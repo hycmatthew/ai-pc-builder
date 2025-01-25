@@ -30,51 +30,64 @@ export const getTotalPriceStr = (selectedItems: SelectedItemType) => {
   return addCurrencySign(totolPrice)
 }
 
-export const getSelectItemListText = (selectedItems: SelectedItemType) => {
+const displayPriceLogic = (displayPrice: boolean, price: string) => {
+  if (displayPrice) {
+    return ` ${price}`
+  } else {
+    return ''
+  }
+}
+
+export const getSelectItemListText = (
+  selectedItems: SelectedItemType,
+  displayPrice: boolean
+) => {
   let resStr = ''
 
   if (selectedItems.cpu) {
     resStr += `${t(ProductEnum.CPU)}: ${
       selectedItems.cpu?.Name
-    } ${getCurrentPriceWithSign(selectedItems.cpu)}\n`
+    }${displayPriceLogic(displayPrice, getCurrentPriceWithSign(selectedItems.cpu))}\n`
   }
   if (selectedItems.motherboard) {
     resStr += `${t(ProductEnum.Motherboard)}: ${
       selectedItems.motherboard?.Name
-    } ${getCurrentPriceWithSign(selectedItems.motherboard)}\n`
+    }${displayPriceLogic(displayPrice, getCurrentPriceWithSign(selectedItems.motherboard))}\n`
   }
   if (selectedItems.gpu) {
     resStr += `${t(ProductEnum.GPU)}: ${
       selectedItems.gpu?.Name
-    } ${getCurrentPriceWithSign(selectedItems.gpu)}\n`
+    }${displayPriceLogic(displayPrice, getCurrentPriceWithSign(selectedItems.gpu))}\n`
   }
   if (selectedItems.ram) {
     resStr += `${t(ProductEnum.RAM)}: ${
       selectedItems.ram?.Name
-    } ${getCurrentPriceWithSign(selectedItems.ram)}\n`
+    }${displayPriceLogic(displayPrice, getCurrentPriceWithSign(selectedItems.ram))}\n`
   }
   if (selectedItems.ssd) {
     resStr += `${t(ProductEnum.SSD)}: ${
       selectedItems.ssd?.Name
-    } ${getCurrentPriceWithSign(selectedItems.ssd)}\n`
+    }${displayPriceLogic(displayPrice, getCurrentPriceWithSign(selectedItems.ssd))}\n`
   }
   if (selectedItems.psu) {
     resStr += `${t(ProductEnum.PSU)}: ${
       selectedItems.psu?.Name
-    } ${getCurrentPriceWithSign(selectedItems.psu)}\n`
+    }${displayPriceLogic(displayPrice, getCurrentPriceWithSign(selectedItems.psu))}\n`
   }
   if (selectedItems.pcCase) {
     resStr += `${t(ProductEnum.ComputerCase)}: ${
       selectedItems.pcCase?.Name
-    } ${getCurrentPriceWithSign(selectedItems.pcCase)}\n`
+    }${displayPriceLogic(displayPrice, getCurrentPriceWithSign(selectedItems.pcCase))}\n`
   }
   if (selectedItems.aio) {
     resStr += `${t(ProductEnum.AIO)}: ${
       selectedItems.aio?.Name
-    } ${getCurrentPriceWithSign(selectedItems.aio)}\n`
+    }${displayPriceLogic(displayPrice, getCurrentPriceWithSign(selectedItems.aio))}\n`
   }
 
-  resStr += `${t('price')}: ${getTotalPriceStr(selectedItems)}`
+  if (displayPrice) {
+    resStr += `${t('price')}: ${getTotalPriceStr(selectedItems)}`
+  }
 
   return resStr
 }
