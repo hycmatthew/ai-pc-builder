@@ -20,8 +20,8 @@ const HeaderLayout = () => {
           <div className="header-menu">
             <div className="menu-list-container">
               {pages.map((page) => (
-                <div className="menu-item">
-                  <Link key={page.label} to={page.link}>
+                <div key={page.label} className="menu-item">
+                  <Link to={page.link}>
                     {page.label}
                   </Link>
                 </div>

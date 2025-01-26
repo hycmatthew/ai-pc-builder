@@ -23,9 +23,11 @@ const Calculator = ({ selectedItems }: CalculatorProps) => {
     <CustomContainer>
       <Grid container spacing={2}>
         <Grid size={8}>
-          <Typography className="normal-header-typography">
-            <Box sx={{ fontWeight: '600' }}>{t('price')}</Box>
-          </Typography>
+          <Box sx={{ fontWeight: '600' }}>
+            <Typography className="normal-header-typography">
+              {t('price')}
+            </Typography>
+          </Box>
           <Typography>{getTotalPriceStr(selectedItems)}</Typography>
         </Grid>
       </Grid>

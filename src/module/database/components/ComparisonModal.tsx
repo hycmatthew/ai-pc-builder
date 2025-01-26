@@ -2,7 +2,7 @@ import React from 'react'
 import { useTranslation } from 'react-i18next'
 import {
   Modal,
-  Grid,
+  Grid2 as Grid,
   CardMedia,
   CardContent,
   Typography,
@@ -66,7 +66,7 @@ function ComparisonTypography({ item }: ComparisonTypographyProps) {
   const { t } = useTranslation()
   const { label, value, isHighlight } = item
   return (
-    <Grid item key={item.label} xs={12}>
+    <Grid key={item.label} size={{ xs: 12 }}>
       <Box sx={boxStyle}>
         <Typography sx={topTypographyStyle}>{t(label)}</Typography>
         <Typography
@@ -101,7 +101,7 @@ const ComparisonModal = ({
       <Box sx={style}>
         <Grid container justifyContent="center" spacing={3}>
           {comparisonObjects.map((comparisonObject) => (
-            <Grid key={comparisonObject.name} item xs={3} height="100%">
+            <Grid key={comparisonObject.name} size={{ xs: 3 }}>
               <CardMedia
                 component="img"
                 image={comparisonObject.img || EMPTY_IMG_DATA}

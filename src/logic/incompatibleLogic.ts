@@ -1,4 +1,3 @@
-import { flatten } from 'lodash'
 import {
   CPUType,
   GPUType,
@@ -17,7 +16,7 @@ export const motherboardIncompatibleWithCPU = (
 }
 
 export const ramIncompatibleWithCPU = (ram: RAMType, cpu: CPUType | null) => {
-  return cpu && ram ? !ram.Profile.includes(cpu.Brand) : false
+  return cpu && ram ? !ram.Profile.toUpperCase().includes(cpu.Brand.toUpperCase() ) : false
 }
 
 export const ramIncompatibleWithMotherboard = (
@@ -66,7 +65,7 @@ export const caseIncompatibleWithAIO = (
     }
   }
   */
-  return aio && pcCase ? aio.Size > pcCase.RadiatorSupport : false
+  return aio && pcCase ? aio.LiquidCoolerSize > pcCase.RadiatorSupport : false
 }
 
 export const airCoolerIncompatibleWithCase = (

@@ -120,20 +120,21 @@ const SelectElement = ({
       }
       getOptionDisabled={(option: any) => option.disabled === true}
       renderGroup={(params) => (
-        <li>
+        <li key={params.key}>
           <GroupHeader>{t(brandTranslationKey(params.group))}</GroupHeader>
           <GroupItems>{params.children}</GroupItems>
         </li>
       )}
       /* eslint-disable react/jsx-props-no-spreading */
       renderOption={(props, option: any) => (
-        <Box component="li" {...props}>
+        <Box component="li" {...props} key={props.key}>
           <Stack
             sx={{ width: '100%' }}
             direction="row"
             alignItems="center"
             justifyContent="space-between"
             spacing={1}
+            // key={`${option.brand}-${option.name}`}
           >
             <Typography>{option.label}</Typography>
             <ValueTypography>{addCurrencySign(option.value)}</ValueTypography>
@@ -152,11 +153,11 @@ const SelectElement = ({
     />
   )
 }
-
+/*
 SelectElement.defaultProps = {
   placeholder: 'Select',
   selectChange: () => {},
   isLoading: false,
 }
-
+*/
 export default SelectElement

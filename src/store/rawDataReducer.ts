@@ -181,7 +181,6 @@ export const counterSlice = createSlice({
       }
     )
     builder.addCase(getCPUDataList.pending, (state: DataState, { payload }) => {
-      console.log('isLoading')
       state.isLoading = true
     })
     builder.addCase(
@@ -200,7 +199,6 @@ export const counterSlice = createSlice({
       }
     )
     builder.addCase(getGPUDataList.pending, (state: DataState, { payload }) => {
-      console.log('isLoading')
       state.isLoading = true
     })
     builder.addCase(
@@ -281,7 +279,6 @@ export const counterSlice = createSlice({
     builder.addCase(
       getCaseDataList.pending,
       (state: DataState, { payload }) => {
-        console.log('isLoading')
         state.isLoading = true
       }
     )
@@ -301,7 +298,6 @@ export const counterSlice = createSlice({
       }
     )
     builder.addCase(getAIODataList.pending, (state: DataState, { payload }) => {
-      console.log('isLoading')
       state.isLoading = true
     })
     builder.addCase(
@@ -320,7 +316,6 @@ export const counterSlice = createSlice({
       }
     )
     builder.addCase(getSSDDataList.pending, (state: DataState, { payload }) => {
-      console.log('isLoading')
       state.isLoading = true
     })
     builder.addCase(

@@ -81,8 +81,4 @@ function AppLayout({ children }: Props) {
   )
 }
 
-AppLayout.defaultProps = {
-  bgColor: '#e7ebf0',
-}
-
 export default AppLayout

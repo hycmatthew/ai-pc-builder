@@ -29,18 +29,22 @@ const Calculator = ({ selectedItems }: CalculatorProps) => {
     <CustomContainer>
       <Grid container spacing={2}>
         <Grid size={6}>
-          <Typography className="normal-header-typography">
-            <Box sx={{ fontWeight: '600' }}>{t('power-calculator')}</Box>
-          </Typography>
+          <Box sx={{ fontWeight: '600' }}>
+            <Typography className="normal-header-typography">
+              {t('power-calculator')}
+            </Typography>
+          </Box>
           <Typography>
             {totalPower}
             <span>{t('watt')}</span>
           </Typography>
         </Grid>
         <Grid size={6}>
-          <Typography className="normal-header-typography">
-            <Box sx={{ fontWeight: '600' }}>{t('recommended-psu-wattage')}</Box>
-          </Typography>
+          <Box sx={{ fontWeight: '600' }}>
+            <Typography className="normal-header-typography">
+              {t('recommended-psu-wattage')}
+            </Typography>
+          </Box>
           <Typography>
             {recommendPower()}
             <span>{t('watt')}</span>
