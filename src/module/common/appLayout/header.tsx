@@ -1,13 +1,14 @@
 import { t } from 'i18next'
 import { Link } from 'react-router-dom'
 import './header.scss'
+import i18n from '../../../config/i18n'
 
 const HeaderLayout = () => {
   const pages = [
     { label: t('pc-builder'), link: '/' },
-    { label: t('benchmark'), link: '/benchmarks' },
-    { label: t('ai-list'), link: '/ai-build' },
-    { label: t('database'), link: '/database' },
+    { label: t('benchmark'), link: `/${i18n.language}/benchmarks` },
+    { label: t('ai-list'), link: `/${i18n.language}/ai-build` },
+    { label: t('database'), link: `/${i18n.language}/database` },
   ]
 
   return (

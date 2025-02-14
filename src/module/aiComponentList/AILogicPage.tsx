@@ -1,49 +1,141 @@
+import { useState } from 'react'
 import { useSelector } from 'react-redux'
-import { Grid2 as Grid } from '@mui/material'
+import {
+  Box,
+  Button,
+  FormControl,
+  FormControlLabel,
+  FormLabel,
+  Grid2 as Grid,
+  Radio,
+  RadioGroup,
+  TextField,
+} from '@mui/material'
 
-import BudgetComponent from './components/BudgetComponent'
-import UsageComponent from './components/UsageComponent'
 import SpecificComponent from './components/SpecificComponent'
-import ResultComponent from './components/ResultComponent'
-import { aiLogicSlice } from './store/aiLogicReducer'
 import { useAppDispatch } from './../../store/store'
+import { buildType } from './constant/buildType'
+import { preFilterDataLogic } from './logic/selectPartsLogic'
 
 function AILogicPage() {
-  const dispatch = useAppDispatch()
-
-  const { aiLogic, rawData } = useSelector((state: any) => {
+  const dataState = useSelector((state: any) => {
     return state
   })
 
-  const updateStep = (newStep: number) => {
-    dispatch(aiLogicSlice.actions.updateStep(newStep))
+  const dispatch = useAppDispatch()
+  const [formData, setFormData] = useState({
+    type: '',
+    budget: '',
+    size: 'ATX',
+  })
+
+  const updateType = (event: any) => {
+    setFormData((prevData) => ({
+      ...prevData,
+      type: event.target.value,
+    }))
+  }
+
+  const budgetTextfieldChanged = (
+    event: React.ChangeEvent<HTMLInputElement>
+  ) => {
+    const maxLength = 7
+    const budget = event.target.value.replace(/^0+/, '')
+    if (budget.length < maxLength) {
+      setFormData((prevData) => ({
+        ...prevData,
+        budget: budget,
+      }))
+    } else {
+      setFormData((prevData) => ({
+        ...prevData,
+        budget: budget.slice(0, maxLength),
+      }))
+    }
+  }
+
+  const disableButtonLogic = () => {
+    if (formData.type == '') {
+      return true
+    }
+    if (Number(formData.budget) <= 0) {
+      return true
+    }
+    return false
+  }
+
+  const generateListLogic = () => {
+    console.log('generateListLogic')
+    preFilterDataLogic(
+      dataState.rawData.cpuList,
+      dataState.rawData.motherboardList,
+      dataState.rawData.gpuList,
+      dataState.rawData.ramList,
+      dataState.rawData.ssdList,
+      dataState.rawData.caseList,
+      Number(formData.budget),
+      formData.type
+    )
   }
 
   return (
-    <Grid container spacing={2}>
-      <Grid size={12}>
-        <BudgetComponent currectStep={aiLogic.step} updateStep={updateStep} />
-      </Grid>
-      {aiLogic.step > 0 && (
-        <Grid size={12}>
-          <UsageComponent currectStep={aiLogic.step} updateStep={updateStep} />
+    <div className="main-container">
+      <div className="main-overlay-card">
+        <Grid size={12} container spacing={0} columns={{ xs: 6, md: 12 }}>
+          <Grid size={12}>
+            <FormControl>
+              <FormLabel id="demo-row-radio-buttons-group-label">
+                Gender
+              </FormLabel>
+              <RadioGroup
+                row
+                aria-labelledby="demo-row-radio-buttons-group-label"
+                name="row-radio-buttons-group"
+                value={formData.type}
+                onChange={updateType}
+              >
+                {buildType.map((item) => (
+                  <FormControlLabel
+                    value={item.value}
+                    control={<Radio />}
+                    label={item.key}
+                  />
+                ))}
+              </RadioGroup>
+            </FormControl>
+          </Grid>
+          <Grid size={12}>
+            <Box
+              component="form"
+              sx={{ '& > :not(style)': { m: 1, width: '25ch' } }}
+              noValidate
+              autoComplete="off"
+            >
+              <TextField
+                id="outlined-basic"
+                label="Budget"
+                variant="filled"
+                type="number"
+                size="small"
+                value={formData.budget}
+                onChange={budgetTextfieldChanged}
+              />
+              <Button
+                variant="contained"
+                disabled={disableButtonLogic()}
+                onClick={generateListLogic}
+              >
+                Contained
+              </Button>
+            </Box>
+          </Grid>
+          <Grid size={6}>
+            <SpecificComponent rawData={dataState.rawData} />
+          </Grid>
+          <Grid size={6}></Grid>
         </Grid>
-      )}
-      {aiLogic.step > 1 && (
-        <Grid size={12}>
-          <SpecificComponent
-            rawData={rawData}
-            currectStep={aiLogic.step}
-            updateStep={updateStep}
-          />
-        </Grid>
-      )}
-      {aiLogic.step > 2 && (
-        <Grid size={12}>
-          <ResultComponent logicState={aiLogic} rawData={rawData} />
-        </Grid>
-      )}
-    </Grid>
+      </div>
+    </div>
   )
 }
 

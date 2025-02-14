@@ -5,24 +5,23 @@ import Stack from '@mui/material/Stack'
 import CancelRoundedIcon from '@mui/icons-material/CancelRounded'
 import WarningRoundedIcon from '@mui/icons-material/WarningRounded'
 import styled from '@emotion/styled'
-import { Grid2 as Grid } from "@mui/material"
+import { Grid2 as Grid } from '@mui/material'
 
 import { SelectedItemType } from '../../../store/rawDataReducer'
 import { getTotalPower } from '../../../utils/NumberHelper'
 import {
-  motherboardIncompatibleWithCPU,
-  ramIncompatibleWithCPU,
-  ramIncompatibleWithMotherboard,
+  cpuIncompatibleWithMotherboard,
+  motherboardIncompatibleWithRam,
   psuPowerNotEnough,
-  caseIncompatibleWithGPU,
-  caseIncompatibleWithMotherboard,
+  gpuIncompatibleWithCase,
+  motherboardIncompatibleWithCase,
   caseIncompatibleWithAIO,
-} from '../../../logic/incompatibleLogic'
+} from '../../../logic/CompatibleLogic/incompatibleLogic'
 import {
   gpuMatchcpuSuggestion,
   ramProfileIsNotMatchCPU,
   ramSizeSuggestion,
-} from '../../../logic/suggestionLogic'
+} from '../../../logic/CompatibleLogic/suggestionLogic'
 
 type CompatibleSectionProps = {
   selectedItems: SelectedItemType
@@ -44,7 +43,7 @@ const SuggectStack = styled(Stack)({
 })
 
 type SuggestionType = {
-  name: string
+  value: string
   type: string
 }
 
@@ -55,60 +54,57 @@ const CompatibleSection = ({ selectedItems }: CompatibleSectionProps) => {
 
   const createSuggestion = () => {
     const suggestion: SuggestionType[] = []
-    if (motherboardIncompatibleWithCPU(motherboard, cpu)) {
+    if (cpuIncompatibleWithMotherboard(cpu, motherboard)) {
       suggestion.push({
-        name: 'warning-motherboard-cpu-incompatible',
-        type: 'warning',
-      })
-    }
-    if (ram && ramIncompatibleWithCPU(ram, cpu)) {
-      suggestion.push({ name: 'warning-ram-incompatible', type: 'warning' })
-    }
-    if (ram && ramIncompatibleWithMotherboard(ram, motherboard)) {
-      suggestion.push({
-        name: 'warning-ram-motherboard-incompatible',
+        value: t('warning-motherboard-cpu-incompatible'),
         type: 'warning',
       })
     }
     if (psu && psuPowerNotEnough(psu.Wattage, getTotalPower(selectedItems))) {
-      suggestion.push({ name: 'warning-power-not-enough', type: 'warning' })
+      suggestion.push({ value: t('warning-power-not-enough'), type: 'warning' })
     }
-    if (pcCase && caseIncompatibleWithGPU(pcCase, gpu)) {
+    if (pcCase && gpuIncompatibleWithCase(pcCase, gpu)) {
       suggestion.push({
-        name: 'warning-gpu-case-incompatible',
+        value: t('warning-gpu-case-incompatible', { gpu: gpu?.Length , case: pcCase.MaxVGAlength }),
         type: 'warning',
       })
     }
-    if (pcCase && caseIncompatibleWithMotherboard(pcCase, motherboard)) {
+    if (pcCase && motherboardIncompatibleWithCase(pcCase, motherboard)) {
       suggestion.push({
-        name: 'warning-motherboard-case-incompatible',
+        value: t('warning-motherboard-case-incompatible', { mb: motherboard?.FormFactor }),
         type: 'warning',
       })
     }
     if (pcCase && caseIncompatibleWithAIO(pcCase, aio)) {
       suggestion.push({
-        name: 'warning-air-cooler-case-incompatible',
+        value: t('warning-air-cooler-case-incompatible'),
         type: 'warning',
       })
     }
 
     // suggestion
+    if (ram && motherboardIncompatibleWithRam(motherboard, ram)) {
+      suggestion.push({
+        value: t('suggestion-ram-motherboard-incompatible', { ram: ram?.Speed }),
+        type: 'suggestion',
+      })
+    }
     if (ram && ramProfileIsNotMatchCPU(ram, cpu)) {
       suggestion.push({
-        name: 'suggestion-ram-profile-not-match',
+        value: t('suggestion-ram-profile-not-match'),
         type: 'suggestion',
       })
     }
     if (gpu && cpu && gpuMatchcpuSuggestion(gpu, cpu)) {
       suggestion.push({
-        name: 'suggestion-gpu-cpu-not-match',
+        value: t('suggestion-gpu-cpu-not-match'),
         type: 'suggestion',
       })
     }
 
     if (ram && ramSizeSuggestion(ram)) {
       suggestion.push({
-        name: 'suggestion-ram-capacity',
+        value: t('suggestion-ram-capacity'),
         type: 'suggestion',
       })
     }
@@ -120,34 +116,34 @@ const CompatibleSection = ({ selectedItems }: CompatibleSectionProps) => {
   return (
     <CustomContainer>
       <Grid container spacing={2}>
-        <Grid size={8}>
+        <Grid size={12}>
           {suggestions.map((item: SuggestionType) =>
             item.type === 'warning' ? (
               <WarningStack
                 direction="row"
                 alignItems="center"
                 spacing={2}
-                key={item.name}
+                key={item.value}
               >
-                <CancelRoundedIcon />
-                <Typography>{t(item.name)}</Typography>
+                <CancelRoundedIcon style={{ alignSelf: "flex-start" }} />
+                <Typography variant="body2" dangerouslySetInnerHTML={{ __html: item.value }}></Typography>
               </WarningStack>
             ) : (
               <SuggectStack
                 direction="row"
                 alignItems="center"
                 spacing={2}
-                key={item.name}
+                key={item.value}
               >
-                <WarningRoundedIcon />
-                <Typography>{t(item.name)}</Typography>
+                <WarningRoundedIcon style={{ alignSelf: "flex-start" }} />
+                <Typography variant="body2" dangerouslySetInnerHTML={{ __html: item.value }}></Typography>
               </SuggectStack>
             )
           )}
           {suggestions.length === 0 && (
             <SuggectStack direction="row" alignItems="center" spacing={2}>
-              <WarningRoundedIcon />
-              <Typography>{t('no-suggestion')}</Typography>
+              <WarningRoundedIcon style={{ alignSelf: "flex-start" }} />
+              <Typography variant="body2">{t('no-suggestion')}</Typography>
             </SuggectStack>
           )}
         </Grid>

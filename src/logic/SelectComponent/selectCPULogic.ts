@@ -3,13 +3,13 @@ import { CPUType } from '../../constant/objectTypes'
 import { BuildLogicState } from '../../module/aiComponentList/store/aiLogicReducer'
 import { getSelectedCurrency } from '../../utils/NumberHelper'
 import { convertCurrency, getPricingFactor, isEnoughBudget } from '../../module/aiComponentList/logic/pricingLogic'
-import buildConfig from '../../module/aiComponentList/data/buildConfig'
+import buildConfig from '../../module/aiComponentList/constant/buildConfig'
 import { cpuIncompatible } from '../../module/common/utils/compatibleLogic'
-import { motherboardChipsetSuggestion, motherboardOverclockSuggestion } from '../suggestionLogic'
+import { motherboardChipsetSuggestion, motherboardOverclockSuggestion } from '../CompatibleLogic/suggestionLogic'
 
 const cpuHaveInternalGPU = (cpu: CPUType) => {
   if (cpu) {
-    return cpu.gpu !== ''
+    return cpu.GPU !== ''
   }
   return false
 }
@@ -21,8 +21,8 @@ const cpuPricingLogic = (item: CPUType, budget: number) => {
 }
 
 const countCPUScore = (item: CPUType) => {
-  const singleScore = item.singleCoreScore * buildConfig.cpuFactor.singleCoreMultiply
-  const multiScore = item.multiCoreScore * buildConfig.cpuFactor.multiCoreMultiply
+  const singleScore = item.SingleCoreScore * buildConfig.cpuFactor.singleCoreMultiply
+  const multiScore = item.MultiCoreScore * buildConfig.cpuFactor.multiCoreMultiply
   const internalScore = cpuHaveInternalGPU(item) ? 2000 : 0
   return singleScore + multiScore + internalScore
 }

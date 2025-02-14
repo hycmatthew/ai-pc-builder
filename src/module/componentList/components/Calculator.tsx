@@ -17,7 +17,7 @@ const CustomContainer = styled(Container)({
 })
 
 const Calculator = ({ selectedItems }: CalculatorProps) => {
-  const { t, i18n } = useTranslation()
+  const { t } = useTranslation()
 
   return (
     <CustomContainer>

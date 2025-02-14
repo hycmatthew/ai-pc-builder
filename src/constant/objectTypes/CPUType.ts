@@ -7,6 +7,7 @@ interface CPUType {
   GPU: string
   SingleCoreScore: number
   MultiCoreScore: number
+  IntegratedGraphicsScore: number
   Power: number
   PriceUS: string
   PriceHK: string

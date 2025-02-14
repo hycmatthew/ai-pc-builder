@@ -8,37 +8,37 @@ import {
   GPUType,
 } from '../../../constant/objectTypes'
 import {
-  motherboardIncompatibleWithCPU,
-  ramIncompatibleWithCPU,
-  ramIncompatibleWithMotherboard,
+  cpuIncompatibleWithMotherboard,
+  motherboardIncompatibleWithRam,
   psuPowerNotEnough,
-  caseIncompatibleWithGPU,
-  caseIncompatibleWithMotherboard,
+  gpuIncompatibleWithCase,
+  motherboardIncompatibleWithCase,
   caseIncompatibleWithAIO,
   airCoolerIncompatibleWithCase,
-} from '../../../logic/incompatibleLogic'
+} from '../../../logic/CompatibleLogic/incompatibleLogic'
 import { getTotalPower } from '../../../utils/NumberHelper'
 import { SelectedItemType } from '../../../store/rawDataReducer'
+import { ramIncompatibleWithCPU } from '../../../logic/CompatibleLogic/suggestionLogic'
 
 export const cpuIncompatible = (
   item: CPUType,
   selectedItems: SelectedItemType
 ) => {
-  return motherboardIncompatibleWithCPU(selectedItems.motherboard, item)
+  return cpuIncompatibleWithMotherboard(item, selectedItems.motherboard)
 }
 
 export const motherboardIncompatible = (
   item: MotherboardType,
   selectedItems: SelectedItemType
 ) => {
-  return motherboardIncompatibleWithCPU(item, selectedItems.cpu)
+  return cpuIncompatibleWithMotherboard(selectedItems.cpu, item)
 }
 
 export const gpuIncompatible = (
   item: GPUType,
   selectedItems: SelectedItemType
 ) => {
-  return caseIncompatibleWithGPU(selectedItems.pcCase, item)
+  return gpuIncompatibleWithCase(selectedItems.pcCase, item)
 }
 
 export const ramIncompatible = (
@@ -46,9 +46,9 @@ export const ramIncompatible = (
   selectedItems: SelectedItemType
 ) => {
   const sameChipset = ramIncompatibleWithCPU(item, selectedItems.cpu)
-  const isMotherboardSupport = ramIncompatibleWithMotherboard(
-    item,
-    selectedItems.motherboard
+  const isMotherboardSupport = motherboardIncompatibleWithRam(
+    selectedItems.motherboard,
+    item
   )
   return sameChipset || isMotherboardSupport
 }
@@ -57,15 +57,15 @@ export const psuIncompatible = (
   item: PSUType,
   selectedItems: SelectedItemType
 ) => {
-  return psuPowerNotEnough(item.watt, getTotalPower(selectedItems))
+  return psuPowerNotEnough(item.Wattage, getTotalPower(selectedItems))
 }
 
 export const caseIncompatible = (
   item: CaseType,
   selectedItems: SelectedItemType
 ) => {
-  const gpuLengthValid = caseIncompatibleWithGPU(item, selectedItems.gpu)
-  const motherboardValid = caseIncompatibleWithMotherboard(
+  const gpuLengthValid = gpuIncompatibleWithCase(item, selectedItems.gpu)
+  const motherboardValid = motherboardIncompatibleWithCase(
     item,
     selectedItems.motherboard
   )

@@ -7,7 +7,7 @@ import {
 
 export const ramPerformanceLogic = (ram: RAMType | null) => {
   if (ram) {
-    const timingNum = Number(ram.Timing.split("-")[0]);
+    const timingNum = ram.Latency;
     return ram.Speed - (timingNum * 80)
   }
   return 0

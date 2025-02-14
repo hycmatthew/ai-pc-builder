@@ -46,12 +46,16 @@ export const stringToNumberWithDP = (str: string) => {
 export const getCurrentPrice = (item: any) => {
   switch (i18n.language) {
     case 'zh-TW':
-      return stringToNumberWithDP(item.PriceCN)
+      return stringToNumberWithDP(item.PriceHK)
     case 'zh-CN':
       return stringToNumberWithDP(item.PriceCN)
     default:
-      return stringToNumberWithDP(item.PriceCN)
+      return stringToNumberWithDP(item.PriceUS)
   }
+}
+
+export const getCurrentPriceNum = (item: any) => {
+   return toNumber(item[getSelectedCurrency()])
 }
 
 export const getCurrentPriceWithSign = (item: any) => {

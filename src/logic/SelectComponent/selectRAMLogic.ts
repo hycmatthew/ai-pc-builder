@@ -4,8 +4,8 @@ import { BuildLogicState } from '../../module/aiComponentList/store/aiLogicReduc
 import { ramIncompatible } from '../../module/common/utils/compatibleLogic'
 import { getSelectedCurrency } from '../../utils/NumberHelper'
 import { convertCurrency, getPricingFactor, isEnoughBudget } from '../../module/aiComponentList/logic/pricingLogic'
-import { ramProfileIsNotMatchCPU } from '../suggestionLogic'
-import buildConfig from '../../module/aiComponentList/data/buildConfig'
+import { ramProfileIsNotMatchCPU } from '../CompatibleLogic/suggestionLogic'
+import buildConfig from '../../module/aiComponentList/constant/buildConfig'
 import { ramPerformanceLogic } from '../performanceLogic'
 
 const ramCapacityScore = (capacity: number) => {

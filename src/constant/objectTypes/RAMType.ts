@@ -3,10 +3,11 @@ interface RAMType {
   Name: string
   Series: string
   Model: string
-  Capacity: string
+  Capacity: number
   Type: string
 	Speed: number
   Timing: string
+  Latency: number
   Voltage: string
   Channel: number
   Profile: string

@@ -43,51 +43,63 @@ export const getSelectItemListText = (
   displayPrice: boolean
 ) => {
   let resStr = ''
+  let resLink = window.location.href+"?"
 
   if (selectedItems.cpu) {
     resStr += `${t(ProductEnum.CPU)}: ${
       selectedItems.cpu?.Name
     }${displayPriceLogic(displayPrice, getCurrentPriceWithSign(selectedItems.cpu))}\n`
+    resLink += `&${ProductEnum.CPU}=${selectedItems.cpu?.Name}`
   }
   if (selectedItems.motherboard) {
     resStr += `${t(ProductEnum.Motherboard)}: ${
       selectedItems.motherboard?.Name
     }${displayPriceLogic(displayPrice, getCurrentPriceWithSign(selectedItems.motherboard))}\n`
+    resLink += `&mb=${selectedItems.motherboard?.Name}`
   }
   if (selectedItems.gpu) {
     resStr += `${t(ProductEnum.GPU)}: ${
       selectedItems.gpu?.Name
     }${displayPriceLogic(displayPrice, getCurrentPriceWithSign(selectedItems.gpu))}\n`
+    resLink += `&gpu=${selectedItems.gpu?.Name}`
   }
   if (selectedItems.ram) {
     resStr += `${t(ProductEnum.RAM)}: ${
       selectedItems.ram?.Name
     }${displayPriceLogic(displayPrice, getCurrentPriceWithSign(selectedItems.ram))}\n`
+    resLink += `&${ProductEnum.RAM}=${selectedItems.ram?.Name}`
   }
   if (selectedItems.ssd) {
     resStr += `${t(ProductEnum.SSD)}: ${
       selectedItems.ssd?.Name
     }${displayPriceLogic(displayPrice, getCurrentPriceWithSign(selectedItems.ssd))}\n`
+    resLink += `&${ProductEnum.SSD}=${selectedItems.ssd?.Name}`
   }
   if (selectedItems.psu) {
     resStr += `${t(ProductEnum.PSU)}: ${
       selectedItems.psu?.Name
     }${displayPriceLogic(displayPrice, getCurrentPriceWithSign(selectedItems.psu))}\n`
+    resLink += `&${ProductEnum.PSU}=${selectedItems.psu?.Name}`
   }
   if (selectedItems.pcCase) {
     resStr += `${t(ProductEnum.ComputerCase)}: ${
       selectedItems.pcCase?.Name
     }${displayPriceLogic(displayPrice, getCurrentPriceWithSign(selectedItems.pcCase))}\n`
+    resLink += `&pcCase=${selectedItems.pcCase?.Name}`
   }
   if (selectedItems.aio) {
     resStr += `${t(ProductEnum.AIO)}: ${
       selectedItems.aio?.Name
     }${displayPriceLogic(displayPrice, getCurrentPriceWithSign(selectedItems.aio))}\n`
+    resLink += `&cooler=${selectedItems.aio?.Name}`
   }
 
   if (displayPrice) {
     resStr += `${t('price')}: ${getTotalPriceStr(selectedItems)}`
   }
 
+  if (resLink.includes("&")) {
+    resStr += `\n\n${resLink}`
+  }
   return resStr
 }

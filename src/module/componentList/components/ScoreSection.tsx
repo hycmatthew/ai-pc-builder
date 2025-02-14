@@ -22,7 +22,7 @@ const CustomContainer = styled(Container)({
 })
 
 const ScoreSection = ({ selectedItems }: ScoreSectionProps) => {
-  const { t, i18n } = useTranslation()
+  const { t } = useTranslation()
 
   const totalScore = () => {
     const result =

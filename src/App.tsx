@@ -1,7 +1,7 @@
 import { Suspense } from 'react'
 import { Provider } from 'react-redux'
 import ReactGA from 'react-ga4'
-import { BrowserRouter, HashRouter } from 'react-router-dom'
+import { BrowserRouter } from 'react-router-dom'
 
 import AppRoutes from './Route'
 
@@ -36,13 +36,13 @@ function App() {
   return (
     <Suspense fallback="loading">
       <Provider store={store}>
-        <HashRouter>
+        <BrowserRouter>
           <AppLayout>
             <>
               <AppRoutes />
             </>
           </AppLayout>
-        </HashRouter>
+        </BrowserRouter>
       </Provider>
     </Suspense>
   )

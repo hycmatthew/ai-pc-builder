@@ -2,7 +2,7 @@ import { forOwn, toNumber } from 'lodash'
 import i18n from '../../../config/i18n'
 import { getSelectedCurrency } from '../../../utils/NumberHelper'
 import { SelectedItemType } from '../../../store/rawDataReducer'
-import buildConfig from '../data/buildConfig'
+import buildConfig from '../constant/buildConfig'
 
 export const convertCurrency = (price: number) => {
   switch (i18n.language) {

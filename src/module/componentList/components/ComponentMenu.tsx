@@ -30,6 +30,7 @@ import {
 import { useTranslation } from 'react-i18next'
 import { getTotalPrice } from '../../../utils/PCPartUtil'
 import ListCopyModal from '../../common/components/ListCopyModal'
+import { useLocation } from 'react-router-dom'
 
 type ComponentMenuProps = {
   dataState: DataState
@@ -38,11 +39,9 @@ type ComponentMenuProps = {
 const ComponentMenu = ({ dataState }: ComponentMenuProps) => {
   const dispatch = useAppDispatch()
   const { t } = useTranslation()
+  const location = useLocation()
+  const searchParams = new URLSearchParams(location.search);
   const [open, setOpen] = useState(false)
-
-  useEffect(() => {
-    dispatch(sliceActions.clearSelectedItem())
-  }, [dispatch])
 
   const {
     selectedItems,
@@ -57,10 +56,43 @@ const ComponentMenu = ({ dataState }: ComponentMenuProps) => {
     airCoolerList,
   } = dataState
 
+  useEffect(() => {
+    if (cpuList.length > 0 && searchParams.get('cpu')) {
+      changeSelectItem(searchParams.get('cpu') || '', ProductEnum.CPU)
+    }
+    if (gpuList.length > 0 && searchParams.get('gpu')) {
+      changeSelectItem(searchParams.get('gpu') || '', ProductEnum.GPU)
+    }
+    if (motherboardList.length > 0 && searchParams.get('mb')) {
+      changeSelectItem(searchParams.get('mb') || '', ProductEnum.Motherboard)
+    }
+    if (ramList.length > 0 && searchParams.get(ProductEnum.RAM)) {
+      changeSelectItem(searchParams.get(ProductEnum.RAM) || '', ProductEnum.RAM)
+    }
+    if (ssdList.length > 0 && searchParams.get(ProductEnum.SSD)) {
+      changeSelectItem(searchParams.get(ProductEnum.SSD) || '', ProductEnum.SSD)
+    }
+    if (psuList.length > 0 && searchParams.get(ProductEnum.PSU)) {
+      changeSelectItem(searchParams.get(ProductEnum.PSU) || '', ProductEnum.PSU)
+    }
+    if (caseList.length > 0 && searchParams.get('pcCase')) {
+      changeSelectItem(searchParams.get('pcCase') || '', ProductEnum.ComputerCase)
+    }
+    if (aioList.length > 0 && searchParams.get('cooler')) {
+      changeSelectItem(searchParams.get('cooler') || '', ProductEnum.AIO)
+    }
+  }, [cpuList, gpuList, motherboardList, ramList, ssdList, psuList, caseList, aioList])
+
+  useEffect(() => {
+    // dispatch(sliceActions.clearSelectedItem())
+  }, [dispatch])
+
+
   const changeSelectItem = (value: string, type: string, extraNum?: number) => {
     switch (type) {
       case ProductEnum.CPU: {
         const selectedItem = value ? searchCPUItem(cpuList, value) : null
+        console.log('selectedItem', selectedItem)
         dispatch(sliceActions.updateSelectedCPU(selectedItem))
         break
       }
@@ -82,16 +114,6 @@ const ComponentMenu = ({ dataState }: ComponentMenuProps) => {
       case ProductEnum.SSD: {
         const selectedItem = searchSSDItem(ssdList, value)
         dispatch(sliceActions.updateSelectedSSD(selectedItem))
-        /*
-        const selectedItem = searchSSDItem(ssdList, value)
-        let selectedSSD = [...[], ...selectedItems.ssd]
-        if (!isNil(extraNum) && selectedItem) {
-          console.log(selectedItem)
-          selectedSSD[extraNum] = selectedItem
-          console.log(selectedSSD)
-          dispatch(sliceActions.updateSelectedSSD(selectedSSD))
-        }
-        */
         break
       }
       case ProductEnum.PSU: {
@@ -130,6 +152,7 @@ const ComponentMenu = ({ dataState }: ComponentMenuProps) => {
       <Grid container spacing={1}>
         <Grid size={12}>
           <SelectElement
+            value={selectedItems.cpu?.Name || ''}
             label={ProductEnum.CPU}
             options={generateCPUSelectElement(cpuList, selectedItems)}
             selectChange={changeSelectItem}
@@ -137,6 +160,7 @@ const ComponentMenu = ({ dataState }: ComponentMenuProps) => {
         </Grid>
         <Grid size={12}>
           <SelectElement
+            value={selectedItems.gpu?.Name || ''}
             label={ProductEnum.GPU}
             options={generateGPUSelectElement(gpuList, selectedItems)}
             selectChange={changeSelectItem}
@@ -144,6 +168,7 @@ const ComponentMenu = ({ dataState }: ComponentMenuProps) => {
         </Grid>
         <Grid size={12}>
           <SelectElement
+            value={selectedItems.motherboard?.Name || ''}
             label={ProductEnum.Motherboard}
             options={generateMotherboardSelectElement(
               motherboardList,
@@ -154,6 +179,7 @@ const ComponentMenu = ({ dataState }: ComponentMenuProps) => {
         </Grid>
         <Grid size={12}>
           <SelectElement
+            value={selectedItems.ram?.Name || ''}
             label={ProductEnum.RAM}
             options={generateRAMSelectElement(ramList, selectedItems)}
             selectChange={changeSelectItem}
@@ -161,6 +187,7 @@ const ComponentMenu = ({ dataState }: ComponentMenuProps) => {
         </Grid>
         <Grid size={12}>
           <SelectElement
+            value={selectedItems.ssd?.Name || ''}
             label={ProductEnum.SSD}
             extraNum={0}
             options={generateSSDSelectElement(ssdList, selectedItems)}
@@ -172,6 +199,7 @@ const ComponentMenu = ({ dataState }: ComponentMenuProps) => {
         </Grid>
         <Grid size={12}>
           <SelectElement
+            value={selectedItems.psu?.Name || ''}
             label={ProductEnum.PSU}
             options={generatePSUSelectElement(psuList, selectedItems)}
             selectChange={changeSelectItem}
@@ -179,6 +207,7 @@ const ComponentMenu = ({ dataState }: ComponentMenuProps) => {
         </Grid>
         <Grid size={12}>
           <SelectElement
+            value={selectedItems.pcCase?.Name || ''}
             label={ProductEnum.ComputerCase}
             options={generateCaseSelectElement(caseList, selectedItems)}
             selectChange={changeSelectItem}
@@ -186,6 +215,7 @@ const ComponentMenu = ({ dataState }: ComponentMenuProps) => {
         </Grid>
         <Grid size={12}>
           <SelectElement
+            value={selectedItems.aio?.Name || ''}
             label={ProductEnum.AIO}
             options={generateAIOSelectElement(aioList, selectedItems)}
             selectChange={changeSelectItem}

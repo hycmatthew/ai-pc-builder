@@ -13,9 +13,11 @@ import { styled } from '@mui/material/styles'
 import { addCurrencySign } from '../../../utils/NumberHelper'
 import { brandTranslationKey } from '../../../utils/LabelHelper'
 import { OptionType } from '../../../constant/objectTypes'
+import { useEffect, useState } from 'react'
 
 type SelectElementProps = SelectProps & {
   label: string
+  value: string
   placeholder?: string
   extraNum?: number
   options: OptionType[]
@@ -70,10 +72,16 @@ const GroupItems = styled('ul')({
 const SelectElement = ({
   label,
   options,
+  value,
   extraNum,
   selectChange,
 }: SelectElementProps) => {
   const { t } = useTranslation()
+  const [selectedOption, setSelectedOption] = useState<OptionType | null>(null)
+
+  useEffect(() => {
+    setSelectedOption(getSelectedOption(value))
+  }, [value])
 
   const handleChange = (event: any, newValue: any) => {
     if (selectChange) {
@@ -85,21 +93,27 @@ const SelectElement = ({
     }
   }
 
+  const getSelectedOption = (value: string) => {
+    return options.find((option) => option.name === value) || null
+  }
+
+  /*
   if (options.length === 0) {
     return (
       <CustomAutocomplete
         disabled
         renderInput={(params) => (
-          /* eslint-disable react/jsx-props-no-spreading */
           <CustomTextField
             {...params}
             label={t(label)}
-            InputProps={{
-              endAdornment: (
-                <InputAdornment position="end">
-                  <CircularProgress size={28} />
-                </InputAdornment>
-              ),
+            slotProps={{
+              input: {
+                endAdornment: (
+                  <InputAdornment position="end">
+                    <CircularProgress size={28} />
+                  </InputAdornment>
+                ),
+              },
             }}
           />
         )}
@@ -107,10 +121,12 @@ const SelectElement = ({
       />
     )
   }
+  */
 
   return (
     <CustomAutocomplete
       disablePortal
+      value={selectedOption ?? null}
       id={label}
       options={options}
       groupBy={(option: any) => option.brand}
@@ -146,7 +162,19 @@ const SelectElement = ({
         <CustomTextField
           {...params}
           label={t(label)}
-          InputProps={{ ...params.InputProps, disableUnderline: true }}
+          slotProps={{
+            input: {
+              ...params.InputProps,
+              disableUnderline: true,
+              ...(options.length === 0 && {
+                endAdornment: (
+                  <InputAdornment position="end">
+                    <CircularProgress size={28} />
+                  </InputAdornment>
+                ),
+              }),
+            },
+          }}
           variant="filled"
         />
       )}

@@ -6,22 +6,20 @@ import {
   CaseType,
   AIOType,
   AirCoolerType,
-} from '../constant/objectTypes'
+} from '../../constant/objectTypes'
 
-export const motherboardIncompatibleWithCPU = (
-  motherboard: MotherboardType | null,
-  cpu: CPUType | null
+// Motherboard CPU
+export const cpuIncompatibleWithMotherboard = (
+  cpu: CPUType | null,
+  motherboard: MotherboardType | null
 ) => {
   return cpu && motherboard ? motherboard.Socket !== cpu.Socket : false
 }
 
-export const ramIncompatibleWithCPU = (ram: RAMType, cpu: CPUType | null) => {
-  return cpu && ram ? !ram.Profile.toUpperCase().includes(cpu.Brand.toUpperCase() ) : false
-}
-
-export const ramIncompatibleWithMotherboard = (
-  ram: RAMType,
-  motherboard: MotherboardType | null
+// Motherboard CPU
+export const motherboardIncompatibleWithRam = (
+  motherboard: MotherboardType | null,
+  ram: RAMType
 ) => {
   let result = false
   if (ram && motherboard) {
@@ -32,24 +30,22 @@ export const ramIncompatibleWithMotherboard = (
   return result
 }
 
-export const psuPowerNotEnough = (psuPower: number, totalPower: number) => {
-  return totalPower > psuPower
-}
-
-export const caseIncompatibleWithGPU = (
-  pcCase: CaseType | null,
-  gpu: GPUType | null
-) => {
-  return gpu && pcCase ? gpu.Length > pcCase.MaxVGAlength : false
-}
-
-export const caseIncompatibleWithMotherboard = (
+// Motherboard Case
+export const motherboardIncompatibleWithCase = (
   pcCase: CaseType,
   motherboard: MotherboardType | null
 ) => {
   return motherboard && pcCase.Compatibility
     ? !pcCase.Compatibility.includes(motherboard.FormFactor)
     : false
+}
+
+// GPU Case
+export const gpuIncompatibleWithCase = (
+  pcCase: CaseType | null,
+  gpu: GPUType | null
+) => {
+  return gpu && pcCase ? gpu.Length > pcCase.MaxVGAlength : false
 }
 
 export const caseIncompatibleWithAIO = (
@@ -75,4 +71,8 @@ export const airCoolerIncompatibleWithCase = (
   return airCooler && pcCase
     ? airCooler.maxCoolerHeight > pcCase.MaxCpuCoolorHeight
     : false
+}
+
+export const psuPowerNotEnough = (psuPower: number, totalPower: number) => {
+  return totalPower > psuPower
 }

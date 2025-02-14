@@ -10,7 +10,7 @@ import {
 import {
   motherboardChipsetSuggestion,
   motherboardOverclockSuggestion,
-} from '../suggestionLogic'
+} from '../CompatibleLogic/suggestionLogic'
 
 const getItemMotherboardScore = (
   motherboard: MotherboardType,
