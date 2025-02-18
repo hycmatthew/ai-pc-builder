@@ -1,8 +1,10 @@
 import {
+  CoolerType,
   CaseType,
   CPUType,
   GPUType,
   MotherboardType,
+  PSUType,
   RAMType,
   SSDType,
 } from '../../../constant/objectTypes'
@@ -11,16 +13,21 @@ import {
   ssdPerformanceLogic,
 } from '../../../logic/performanceLogic'
 import { getCurrentPriceNum } from '../../../utils/NumberHelper'
-import buildConfig from '../constant/buildConfig'
+import BuildConfig from '../constant/buildConfig'
 import {
+  MappedCaseType,
+  MappedCoolerType,
   MappedCPUType,
   MappedGPUType,
   MappedMotherboardType,
+  MappedPSUType,
   MappedRAMType,
   MappedSSDType,
 } from '../constant/mappedObjectTypes'
 import { getPricingFactor } from './pricingLogic'
 import { findBestConfiguration } from './selectAlgorithm'
+import { selectBestCase } from './selectCase'
+import { selectBestPSU } from './selectPSULogic'
 
 const weights = {
   gaming: { cpu: 0.3, gpu: 0.6, ram: 0.1 }, // 游戏更依赖 GPU
@@ -35,14 +42,16 @@ export const preFilterDataLogic = (
   ramList: RAMType[],
   ssdList: SSDType[],
   caseList: CaseType[],
+  psuList: PSUType[],
+  coolerList: CoolerType[],
   budget: number,
   type: string
 ) => {
   const selectedWeights = weights['gaming']
   const cpuBudget =
-    budget * getPricingFactor(budget, buildConfig.cpuFactor.CPUBudgetFactor)
+    budget * getPricingFactor(budget, BuildConfig.CPUFactor.CPUBudgetFactor)
   const gpuBudget =
-    budget * getPricingFactor(budget, buildConfig.gpuFactor.GPUBudgetFactor)
+    budget * getPricingFactor(budget, BuildConfig.GPUFactor.GPUBudgetFactor)
 
   const mappedCPUs: MappedCPUType[] = cpuList
     .filter((item) => {
@@ -56,10 +65,10 @@ export const preFilterDataLogic = (
         socket: item.Socket,
         gpu: item.GPU,
         score:
-          item.SingleCoreScore * buildConfig.cpuFactor.singleCoreMultiply +
-          item.MultiCoreScore * buildConfig.cpuFactor.multiCoreMultiply,
+          item.SingleCoreScore * BuildConfig.CPUFactor.SingleCoreMultiply +
+          item.MultiCoreScore * BuildConfig.CPUFactor.MultiCoreMultiply,
         integratedGraphicsScore:
-          item.IntegratedGraphicsScore * buildConfig.gpuFactor.gpuScoreMultiply,
+          item.IntegratedGraphicsScore * BuildConfig.GPUFactor.GPUScoreMultiply,
         power: item.Power,
         price: getCurrentPriceNum(item),
       }
@@ -74,7 +83,7 @@ export const preFilterDataLogic = (
       return {
         name: item.Name,
         brand: item.Brand,
-        score: item.Benchmark * buildConfig.gpuFactor.gpuScoreMultiply,
+        score: item.Benchmark * BuildConfig.GPUFactor.GPUScoreMultiply,
         power: item.Power,
         length: item.Length,
         price: getCurrentPriceNum(item),
@@ -130,6 +139,35 @@ export const preFilterDataLogic = (
     }
   })
 
+  const mappedCases: MappedCaseType[] = caseList.map((item) => {
+    return {
+      id: item.Name,
+      brand: item.Brand,
+      name: item.Name,
+      caseSize: item.CaseSize,
+      powerSupply: item.PowerSupply,
+      compatibility: item.Compatibility,
+      maxVGAlength: item.MaxVGAlength,
+      radiatorSupport: item.RadiatorSupport,
+      maxCpuCoolorHeight: item.MaxCpuCoolorHeight,
+      price: getCurrentPriceNum(item),
+    }
+  })
+
+  const mappedCoolers: MappedCoolerType[] = coolerList.map((item) => {
+    return {
+      id: item.Name,
+      brand: item.Brand,
+      name: item.Name,
+      sockets: item.Sockets,
+      isLiquidCooler: item.IsLiquidCooler,
+      liquidCoolerSize: item.LiquidCoolerSize,
+      airCoolerHeight: item.AirCoolerHeight,
+      noiseLevel: item.NoiseLevel,
+      price: getCurrentPriceNum(item),
+    }
+  })
+
   const bestConfig = findBestConfiguration(
     mappedCPUs,
     mappedGPUs,
@@ -155,5 +193,24 @@ export const preFilterDataLogic = (
 
     console.log('总价格:', totalPrice)
     console.log('总性能分数:', totalScore)
+
+    const mappedPSUs: MappedPSUType[] = psuList.map((item) => {
+      return {
+        brand: item.Brand,
+        name: item.Name,
+        wattage: item.Wattage,
+        size: item.Size,
+        standard: item.Standard,
+        modular: item.Modular,
+        efficiency: item.Efficiency,
+        length: item.Length,
+        price: getCurrentPriceNum(item),
+      }
+    })
+
+    const totalPower =
+      bestConfig.cpu.power + (bestConfig.gpu ? bestConfig.gpu.power : 0)
+    const bestPsu = selectBestPSU(mappedPSUs, totalPower, 200)
+    const bestCase = selectBestCase(bestConfig.motherboard, bestConfig.gpu, null, mappedCases)
   }
 }

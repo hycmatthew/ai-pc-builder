@@ -52,8 +52,7 @@ const ComponentMenu = ({ dataState }: ComponentMenuProps) => {
     ssdList,
     psuList,
     caseList,
-    aioList,
-    airCoolerList,
+    coolerList,
   } = dataState
 
   useEffect(() => {
@@ -78,10 +77,10 @@ const ComponentMenu = ({ dataState }: ComponentMenuProps) => {
     if (caseList.length > 0 && searchParams.get('pcCase')) {
       changeSelectItem(searchParams.get('pcCase') || '', ProductEnum.ComputerCase)
     }
-    if (aioList.length > 0 && searchParams.get('cooler')) {
-      changeSelectItem(searchParams.get('cooler') || '', ProductEnum.AIO)
+    if (coolerList.length > 0 && searchParams.get('cooler')) {
+      changeSelectItem(searchParams.get('cooler') || '', ProductEnum.Cooler)
     }
-  }, [cpuList, gpuList, motherboardList, ramList, ssdList, psuList, caseList, aioList])
+  }, [cpuList, gpuList, motherboardList, ramList, ssdList, psuList, caseList, coolerList])
 
   useEffect(() => {
     // dispatch(sliceActions.clearSelectedItem())
@@ -126,14 +125,9 @@ const ComponentMenu = ({ dataState }: ComponentMenuProps) => {
         dispatch(sliceActions.updateSelectedCase(selectedItem))
         break
       }
-      case ProductEnum.AIO: {
-        const selectedItem = searchAIOItem(aioList, value)
-        dispatch(sliceActions.updateSelectedAIO(selectedItem))
-        break
-      }
-      case ProductEnum.AirCooler: {
-        const selectedItem = searchAirCoolerItem(airCoolerList, value)
-        dispatch(sliceActions.updateSelectedAirCooler(selectedItem))
+      case ProductEnum.Cooler: {
+        const selectedItem = searchAIOItem(coolerList, value)
+        dispatch(sliceActions.updateSelectedCooler(selectedItem))
         break
       }
       default:
@@ -215,9 +209,9 @@ const ComponentMenu = ({ dataState }: ComponentMenuProps) => {
         </Grid>
         <Grid size={12}>
           <SelectElement
-            value={selectedItems.aio?.Name || ''}
-            label={ProductEnum.AIO}
-            options={generateAIOSelectElement(aioList, selectedItems)}
+            value={selectedItems.cooler?.Name || ''}
+            label={ProductEnum.Cooler}
+            options={generateAIOSelectElement(coolerList, selectedItems)}
             selectChange={changeSelectItem}
           />
         </Grid>

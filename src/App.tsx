@@ -6,8 +6,7 @@ import { BrowserRouter } from 'react-router-dom'
 import AppRoutes from './Route'
 
 import {
-  getAIODataList,
-  getAirCoolerDataList,
+  getCoolerDataList,
   getCaseDataList,
   getCPUDataList,
   getGPUDataList,
@@ -29,9 +28,8 @@ function App() {
   store.dispatch(getRAMDataList())
   store.dispatch(getPSUDataList())
   store.dispatch(getCaseDataList())
-  store.dispatch(getAIODataList())
+  store.dispatch(getCoolerDataList())
   store.dispatch(getSSDDataList())
-  store.dispatch(getAirCoolerDataList())
 
   return (
     <Suspense fallback="loading">

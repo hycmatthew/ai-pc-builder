@@ -5,7 +5,7 @@ import { ramIncompatible } from '../../module/common/utils/compatibleLogic'
 import { getSelectedCurrency } from '../../utils/NumberHelper'
 import { convertCurrency, getPricingFactor, isEnoughBudget } from '../../module/aiComponentList/logic/pricingLogic'
 import { ramProfileIsNotMatchCPU } from '../CompatibleLogic/suggestionLogic'
-import buildConfig from '../../module/aiComponentList/constant/buildConfig'
+import BuildConfig from '../../module/aiComponentList/constant/buildConfig'
 import { ramPerformanceLogic } from '../performanceLogic'
 
 const ramCapacityScore = (capacity: number) => {
@@ -17,7 +17,7 @@ const ramCapacityScore = (capacity: number) => {
 }
 
 const getItemRamScore = (item: RAMType, budget: number) => {
-  const ratioList = buildConfig.ramFactor.RAMBudgetFactor
+  const ratioList = BuildConfig.RAMFactor.RAMBudgetFactor
   const priceFactor = getPricingFactor(budget, ratioList)
   const performanceScore = ramPerformanceLogic(item) * ramCapacityScore(item.Capacity)
   return performanceScore / convertCurrency(toNumber(item[getSelectedCurrency()]))

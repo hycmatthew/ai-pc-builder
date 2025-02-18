@@ -1,4 +1,4 @@
-interface AirCoolerType {
+interface FanType {
   name: string
   brand: string
   model: string
@@ -15,4 +15,4 @@ interface AirCoolerType {
   img: string
 }
 
-export default AirCoolerType
+export default FanType

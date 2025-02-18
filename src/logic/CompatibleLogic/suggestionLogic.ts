@@ -4,8 +4,8 @@ import {
   GPUType,
   MotherboardType,
   RAMType,
-  AIOType,
-  AirCoolerType,
+  CoolerType,
+  FanType,
 } from '../../constant/objectTypes'
 import { containStrUtil } from '../../utils/StringUtil'
 
@@ -95,5 +95,5 @@ export const ramSizeSuggestion = (ram: RAMType) => {
   return ram.Capacity > 32
 }
 
-export const aioSuggestion = (aio: AIOType, cpu: CPUType, airCooler: AirCoolerType) => {
+export const aioSuggestion = (aio: CoolerType, cpu: CPUType, airCooler: FanType) => {
 }

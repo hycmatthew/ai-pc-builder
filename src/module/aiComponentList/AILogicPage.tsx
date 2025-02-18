@@ -65,7 +65,6 @@ function AILogicPage() {
   }
 
   const generateListLogic = () => {
-    console.log('generateListLogic')
     preFilterDataLogic(
       dataState.rawData.cpuList,
       dataState.rawData.motherboardList,
@@ -73,6 +72,8 @@ function AILogicPage() {
       dataState.rawData.ramList,
       dataState.rawData.ssdList,
       dataState.rawData.caseList,
+      dataState.rawData.psuList,
+      dataState.rawData.coolerList,
       Number(formData.budget),
       formData.type
     )

@@ -4,8 +4,8 @@ import {
   MotherboardType,
   RAMType,
   CaseType,
-  AIOType,
-  AirCoolerType,
+  CoolerType,
+  FanType,
 } from '../../constant/objectTypes'
 
 // Motherboard CPU
@@ -50,7 +50,7 @@ export const gpuIncompatibleWithCase = (
 
 export const caseIncompatibleWithAIO = (
   pcCase: CaseType,
-  aio: AIOType | null
+  aio: CoolerType | null
 ) => {
   /*
   const listOfAIOSize: number[] = [120, 140, 240, 280, 360, 420]
@@ -65,7 +65,7 @@ export const caseIncompatibleWithAIO = (
 }
 
 export const airCoolerIncompatibleWithCase = (
-  airCooler: AirCoolerType,
+  airCooler: FanType,
   pcCase: CaseType | null
 ) => {
   return airCooler && pcCase

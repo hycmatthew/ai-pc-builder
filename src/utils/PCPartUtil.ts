@@ -17,8 +17,8 @@ export const getTotalPrice = (selectedItems: SelectedItemType) => {
     selectedItems.ram?.[getSelectedCurrency()],
     selectedItems.psu?.[getSelectedCurrency()],
     selectedItems.ssd?.[getSelectedCurrency()],
-    selectedItems.aio?.[getSelectedCurrency()],
-    selectedItems.airCooler?.[getSelectedCurrency()],
+    selectedItems.cooler?.[getSelectedCurrency()],
+    selectedItems.fan?.[getSelectedCurrency()],
     selectedItems.pcCase?.[getSelectedCurrency()],
   ]
 
@@ -87,11 +87,11 @@ export const getSelectItemListText = (
     }${displayPriceLogic(displayPrice, getCurrentPriceWithSign(selectedItems.pcCase))}\n`
     resLink += `&pcCase=${selectedItems.pcCase?.Name}`
   }
-  if (selectedItems.aio) {
-    resStr += `${t(ProductEnum.AIO)}: ${
-      selectedItems.aio?.Name
-    }${displayPriceLogic(displayPrice, getCurrentPriceWithSign(selectedItems.aio))}\n`
-    resLink += `&cooler=${selectedItems.aio?.Name}`
+  if (selectedItems.cooler) {
+    resStr += `${t(ProductEnum.Cooler)}: ${
+      selectedItems.cooler?.Name
+    }${displayPriceLogic(displayPrice, getCurrentPriceWithSign(selectedItems.cooler))}\n`
+    resLink += `&cooler=${selectedItems.cooler?.Name}`
   }
 
   if (displayPrice) {

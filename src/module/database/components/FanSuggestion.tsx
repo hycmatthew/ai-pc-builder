@@ -1,45 +1,44 @@
 import React, { useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { max, min } from 'lodash'
-import {
-  Badge,
-  Button,
-  Grid,
-} from '@mui/material'
+import { Badge, Button, Grid } from '@mui/material'
 import CompareArrowsIcon from '@mui/icons-material/CompareArrows'
 
-import AIOType from '../../../constant/objectTypes/AIOType'
+import FanType from '../../../constant/objectTypes/FanType'
 import SelectElement from '../../common/components/SelectElement'
-import { generateAIOSelectElement } from '../../common/utils/generateSelectElements'
+import { generateAirCoolerSelectElement } from '../../common/utils/generateSelectElements'
 import SelectFilter from '../../common/components/SelectFilter'
-import { getAIOBrand, getAIOSize } from '../../../utils/GroupCategoryHelper'
 
-import { AIO_FILTER_INIT_DATA } from '../data/FilterInitData'
+import { AIR_COOLER_FILTER_INIT_DATA } from '../data/FilterInitData'
 import { generateItemName } from '../../../utils/LabelHelper'
 import ItemCard from './ItemCard'
 import { ComparisonObject, ComparisonSubItem } from '../data/ComparisonObject'
 import ComparisonModal from './ComparisonModal'
-import { getCurrentPrice, getSelectedCurrency, stringToNumber } from '../../../utils/NumberHelper'
+import {
+  getCurrentPrice,
+  getSelectedCurrency,
+  stringToNumber,
+} from '../../../utils/NumberHelper'
 import PriceSlider from '../../common/components/PriceSlider'
+import { getAirCoolerBrand } from '../../../utils/GroupCategoryHelper'
 
-type AIOSuggestionProps = {
-  aioList: AIOType[]
+type FanSuggestionProps = {
+  airCoolerList: FanType[]
   isLoading: boolean
 }
 
-const AIOSuggestion = ({
-  aioList,
+const FanSuggestion = ({
+  airCoolerList,
   isLoading,
-}: AIOSuggestionProps) => {
+}: FanSuggestionProps) => {
   const { t } = useTranslation()
-  const [filterLogic, setfilterLogic] = useState(AIO_FILTER_INIT_DATA)
-  const [selectedItems, setSelectedItems] = useState<AIOType[]>([])
+  const [filterLogic, setfilterLogic] = useState(AIR_COOLER_FILTER_INIT_DATA)
+  const [selectedItems, setSelectedItems] = useState<FanType[]>([])
   const [openCompare, setOpenCompare] = useState(false)
 
-  const brandOptions = getAIOBrand(aioList)
-  const sizeOptions = getAIOSize(aioList)
+  const brandOptions = getAirCoolerBrand(airCoolerList)
 
-  const addComparison = (item: AIOType) => {
+  const addComparison = (item: FanType) => {
     if (selectedItems.length < 4) {
       setSelectedItems([...selectedItems, item])
     }
@@ -57,17 +56,13 @@ const AIOSuggestion = ({
     setfilterLogic({ ...filterLogic, brand })
   }
 
-  const updateFilterSize = (size: string) => {
-    setfilterLogic({ ...filterLogic, size: Number(size) })
-  }
-
   const handleClose = () => {
     setOpenCompare(false)
   }
 
   const removeComparison = (model: string) => {
-    const updatedList: AIOType[] = selectedItems.filter(
-      (element: AIOType) => element.Name !== model
+    const updatedList: FanType[] = selectedItems.filter(
+      (element: FanType) => element.model !== model
     )
     if (updatedList.length === 0) {
       handleClose()
@@ -84,37 +79,41 @@ const AIOSuggestion = ({
   const openComparison = () => {
     let comparsionObjects: ComparisonObject[] = []
     comparsionObjects = selectedItems.map((item) => {
-      const imgStr = item.Img
-      const itemModel = item.Name
-      const itemName = generateItemName(item.Brand, item.Name)
-
-      const fanSize: ComparisonSubItem = {
-        label: 'fan-size',
-        value: item.toString(),
-        isHighlight: item.Size === max(selectedItems.map((element) => element.Size)),
-      }
+      const imgStr = item.img
+      const itemModel = item.model
+      const itemName = generateItemName(item.brand, item.model)
 
       const fanAirflow: ComparisonSubItem = {
-        label: 'airflow',
-        value: item.FanSpeed,
-        isHighlight: item.FanSpeed === max(selectedItems.map((element) => element.FanSpeed)),
+        label: 'fanAirflow',
+        value: item.fanAirflow,
+        isHighlight:
+          item.fanAirflow === max(selectedItems.map((element) => element.fanAirflow)),
       }
 
       const fanNoise: ComparisonSubItem = {
-        label: 'noise',
-        value: item.NoiseLevel.toString(),
-        isHighlight: item.NoiseLevel === min(selectedItems.map((element) => element.NoiseLevel)),
+        label: 'fanNoise',
+        value: item.fanNoise,
+        isHighlight:
+          item.fanNoise === max(selectedItems.map((element) => element.fanNoise)),
       }
 
       const fanSpeed: ComparisonSubItem = {
-        label: 'fan-speed',
-        value: item.FanSpeed,
-        isHighlight: false,
+        label: 'fanSpeed',
+        value: item.fanSpeed,
+        isHighlight:
+          item.fanSpeed === max(selectedItems.map((element) => element.fanSpeed)),
       }
 
-      const isLiquid: ComparisonSubItem = {
-        label: 'is-liquid',
-        value: item.IsLiquidCooler || '-',
+      const maxCoolerHeight: ComparisonSubItem = {
+        label: 'maxCoolerHeight',
+        value: item.maxCoolerHeight.toString(),
+        isHighlight:
+          item.maxCoolerHeight === min(selectedItems.map((element) => element.maxCoolerHeight)),
+      }
+
+      const led: ComparisonSubItem = {
+        label: 'led',
+        value: item.led || '-',
         isHighlight: false,
       }
 
@@ -122,13 +121,7 @@ const AIOSuggestion = ({
         img: imgStr,
         name: itemName,
         model: itemModel,
-        items: [
-          fanSize,
-          fanAirflow,
-          fanNoise,
-          fanSpeed,
-          isLiquid,
-        ],
+        items: [fanAirflow, fanNoise, fanSpeed, maxCoolerHeight, led],
       }
 
       return result
@@ -144,16 +137,13 @@ const AIOSuggestion = ({
     )
   }
 
-  const updatedList = aioList.filter((item) => {
+  const updatedList = airCoolerList.filter((item) => {
     let isMatch = true
     if (filterLogic.model) {
-      isMatch = item.Name === filterLogic.model
+      isMatch = item.model === filterLogic.model
     }
     if (filterLogic.brand && isMatch) {
-      isMatch = (item.Brand === filterLogic.brand)
-    }
-    if (filterLogic.size && isMatch) {
-      isMatch = (item.Size === filterLogic.size)
+      isMatch = item.brand === filterLogic.brand
     }
     if (filterLogic.price !== 0 && isMatch) {
       isMatch = stringToNumber(item[getSelectedCurrency()]) < filterLogic.price
@@ -166,8 +156,8 @@ const AIOSuggestion = ({
       <Grid container spacing={3}>
         <Grid item xs={9}>
           <SelectElement
-            label={t('aio')}
-            options={generateAIOSelectElement(aioList)}
+            label={t('airCooler')}
+            options={generateAirCoolerSelectElement(airCoolerList)}
             selectChange={updateSelectedItem}
             isLoading={isLoading}
           />
@@ -195,23 +185,21 @@ const AIOSuggestion = ({
             selectChange={updateFilterBrand}
           />
         </Grid>
-        <Grid item xs={6}>
-          <SelectFilter
-            label={t('size')}
-            options={sizeOptions}
-            selectChange={updateFilterSize}
-          />
-        </Grid>
       </Grid>
-      <Grid sx={{ paddingTop: 10 }} container spacing={2} columns={{ xs: 6, md: 12 }}>
+      <Grid
+        sx={{ paddingTop: 10 }}
+        container
+        spacing={2}
+        columns={{ xs: 6, md: 12 }}
+      >
         {updatedList.map((item) => (
           <ItemCard
-            itemLabel={generateItemName(item.Brand, item.Name)}
+            itemLabel={generateItemName(item.brand, item.model)}
             priceLabel={getCurrentPrice(item)}
-            imgSrc={item.Img}
+            imgSrc={item.img}
             disable={selectedItems.includes(item)}
             addComparsion={() => addComparison(item)}
-            removeComparsion={() => removeComparison(item.Name)}
+            removeComparsion={() => removeComparison(item.model)}
           />
         ))}
       </Grid>
@@ -219,4 +207,4 @@ const AIOSuggestion = ({
   )
 }
 
-export default AIOSuggestion
+export default FanSuggestion

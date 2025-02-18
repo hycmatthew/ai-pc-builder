@@ -19,11 +19,11 @@ const initialState: BuildLogicState = {
     motherboard: null,
     gpu: null,
     ram: null,
+    ssd: null,
     psu: null,
     pcCase: null,
-    aio: null,
-    ssd: null,
-    airCooler: null,
+    cooler: null,
+    fan: null,
   },
 }
 
@@ -63,14 +63,11 @@ export const aiLogicSlice = createSlice({
     updatePreSelectedPSU: (state, action) => {
       state.preSelectedItem.psu = action.payload
     },
-    updatePreSelectedAIO: (state, action) => {
-      state.preSelectedItem.aio = action.payload
+    updatePreSelectedCooler: (state, action) => {
+      state.preSelectedItem.cooler = action.payload
     },
     updatePreSelectedCase: (state, action) => {
       state.preSelectedItem.pcCase = action.payload
-    },
-    updatePreSelectedAirCooler: (state, action) => {
-      state.preSelectedItem.airCooler = action.payload
     },
   },
 })

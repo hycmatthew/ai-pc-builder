@@ -6,8 +6,8 @@ enum ProductEnum {
   SSD = 'ssd',
   PSU = 'psu',
   ComputerCase = 'computer-case',
-  AIO = 'aio',
-  AirCooler = 'air-cooler',
+  Cooler = 'cpu-cooler',
+  Fan = 'fan',
 }
 
 export default ProductEnum

@@ -26,7 +26,7 @@ const calculateCurrentBudget = (buildLogic: BuildLogicState) => {
     buildLogic.preSelectedItem.ram?.[getSelectedCurrency()],
     buildLogic.preSelectedItem.ssd?.[getSelectedCurrency()],
     buildLogic.preSelectedItem.psu?.[getSelectedCurrency()],
-    buildLogic.preSelectedItem.aio?.[getSelectedCurrency()],
+    buildLogic.preSelectedItem.cooler?.[getSelectedCurrency()],
     buildLogic.preSelectedItem.pcCase?.[getSelectedCurrency()],
     buildLogic.preSelectedItem.airCooler?.[getSelectedCurrency()],
   ]

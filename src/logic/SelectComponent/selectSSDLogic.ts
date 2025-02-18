@@ -3,10 +3,10 @@ import { SSDType } from '../../constant/objectTypes'
 import { BuildLogicState } from '../../module/aiComponentList/store/aiLogicReducer'
 import { getSelectedCurrency } from '../../utils/NumberHelper'
 import { convertCurrency, getPricingFactor, isEnoughBudget } from '../../module/aiComponentList/logic/pricingLogic'
-import buildConfig from '../../module/aiComponentList/constant/buildConfig'
+import BuildConfig from '../../module/aiComponentList/constant/buildConfig'
 
 const getItemSSDScore = (item: SSDType, budget: number) => {
-  const ratioList = buildConfig.ssdFactor.SSDPriceFactor
+  const ratioList = BuildConfig.SSDFactor.SSDPriceFactor
   const priceFactor = getPricingFactor(budget, ratioList)
   const pricingScore = convertCurrency(toNumber(item[getSelectedCurrency()])) * priceFactor
 

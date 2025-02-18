@@ -12,14 +12,14 @@ import RAMSuggestion from '../components/RAMSuggestion'
 import SSDSuggestion from '../components/SSDSuggestion'
 import PSUSuggestion from '../components/PSUSuggestion'
 import CaseSuggestion from '../components/CaseSuggestion'
-import AIOSuggestion from '../components/AIOSuggestion'
-import AirCoolerSuggestion from '../components/AirCoolerSuggestion'
+import CoolerSuggestion from '../components/CoolerSuggestion'
+import FanSuggestion from '../components/FanSuggestion'
 import CusButton from '../../common/components/CusButton'
 
 function Database() {
   const { t } = useTranslation()
   const categoryList = Object.values(ProductEnum).filter(
-    (item) => item !== ProductEnum.AirCooler
+    (item) => item !== ProductEnum.Fan
   )
 
   const dataState = useSelector((state: any) => {
@@ -79,16 +79,16 @@ function Database() {
             isLoading={dataState.isLoading}
           />
         )
-      case ProductEnum.AIO:
+      case ProductEnum.Cooler:
         return (
-          <AIOSuggestion
-            aioList={dataState.aioList}
+          <CoolerSuggestion
+            coolerList={dataState.coolerList}
             isLoading={dataState.isLoading}
           />
         )
-      case ProductEnum.AirCooler:
+      case ProductEnum.Fan:
         return (
-          <AirCoolerSuggestion
+          <FanSuggestion
             airCoolerList={dataState.airCoolerList}
             isLoading={dataState.isLoading}
           />

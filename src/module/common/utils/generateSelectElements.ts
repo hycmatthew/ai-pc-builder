@@ -5,9 +5,9 @@ import {
   RAMType,
   PSUType,
   CaseType,
-  AIOType,
+  CoolerType,
   SSDType,
-  AirCoolerType,
+  FanType,
   OptionType,
 } from '../../../constant/objectTypes'
 import {
@@ -155,10 +155,10 @@ export const generateCaseSelectElement = (
 }
 
 export const generateAIOSelectElement = (
-  list: AIOType[],
+  list: CoolerType[],
   selectedItems?: SelectedItemType
 ): OptionType[] => {
-  const tempMap = list.map((item: AIOType) => {
+  const tempMap = list.map((item: CoolerType) => {
     const price = getCurrentPrice(item)
     const itemLabel = generateItemName(item.Brand, item.Name)
     return {
@@ -192,10 +192,10 @@ export const generateSSDSelectElement = (
 }
 
 export const generateAirCoolerSelectElement = (
-  list: AirCoolerType[],
+  list: FanType[],
   selectedItems?: SelectedItemType
 ): OptionType[] => {
-  const tempMap = list.map((item: AirCoolerType) => {
+  const tempMap = list.map((item: FanType) => {
     const price = getCurrentPrice(item)
     const itemLabel = generateItemName(item.brand, item.name)
 

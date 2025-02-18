@@ -2,21 +2,21 @@ import { forOwn, toNumber } from 'lodash'
 import i18n from '../../../config/i18n'
 import { getSelectedCurrency } from '../../../utils/NumberHelper'
 import { SelectedItemType } from '../../../store/rawDataReducer'
-import buildConfig from '../constant/buildConfig'
+import BuildConfig from '../constant/buildConfig'
 
 export const convertCurrency = (price: number) => {
   switch (i18n.language) {
     case 'zh-TW':
-      return price * buildConfig.hkPricingFactor
+      return price * BuildConfig.HKPricingFactor
     case 'zh-CN':
-      return price * buildConfig.cnPricingFactor
+      return price * BuildConfig.CNPricingFactor
     default:
-      return price * buildConfig.usPricingFactor
+      return price * BuildConfig.USPricingFactor
   }
 }
 
 export const getPricingFactor = (budget: number, factorList: number[]) => {
-  const tempList = buildConfig.priceList
+  const tempList = BuildConfig.PriceList
   const updatedBudget = convertCurrency(budget)
   let factor: number = factorList[0]
 
@@ -29,7 +29,7 @@ export const getPricingFactor = (budget: number, factorList: number[]) => {
 }
 
 export const getBudgetPriceList = () => {
-  const tempList = buildConfig.priceList
+  const tempList = BuildConfig.PriceList
   switch (i18n.language) {
     case 'zh-TW':
       return tempList

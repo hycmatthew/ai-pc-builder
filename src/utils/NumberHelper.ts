@@ -1,6 +1,6 @@
 import { isEmpty, sum, toNumber } from 'lodash'
 import i18n from '../config/i18n'
-import { AIOType, MotherboardType, RAMType } from '../constant/objectTypes'
+import { CoolerType, MotherboardType, RAMType } from '../constant/objectTypes'
 import { SelectedItemType } from '../store/rawDataReducer'
 
 export const getSelectedCurrency = () => {
@@ -63,7 +63,7 @@ export const getCurrentPriceWithSign = (item: any) => {
 }
 
 export const getTotalPower = (selectedItems: SelectedItemType) => {
-  const getAIOPower = (aio: AIOType | null) => {
+  const getAIOPower = (aio: CoolerType | null) => {
     if (aio) {
       switch (aio.LiquidCoolerSize) {
         case 120:
@@ -107,7 +107,7 @@ export const getTotalPower = (selectedItems: SelectedItemType) => {
   const numberList = [
     selectedItems.cpu?.Power,
     selectedItems.gpu?.Power,
-    getAIOPower(selectedItems.aio),
+    getAIOPower(selectedItems.cooler),
     getRamPower(selectedItems.ram),
     getMotherboardPower(selectedItems.motherboard),
   ]

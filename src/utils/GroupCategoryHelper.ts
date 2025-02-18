@@ -1,6 +1,6 @@
 import {
-  AIOType,
-  AirCoolerType,
+  CoolerType,
+  FanType,
   CaseType,
   CPUType,
   GPUType,
@@ -167,8 +167,8 @@ export const getCaseSize = (items: CaseType[]) => {
   return options
 }
 
-export const getAIOBrand = (items: AIOType[]) => {
-  const options = [...new Set(items.map((item: AIOType) => item.Brand))].map(
+export const getAIOBrand = (items: CoolerType[]) => {
+  const options = [...new Set(items.map((item: CoolerType) => item.Brand))].map(
     (item) => {
       return {
         label: brandTranslationKey(item),
@@ -179,8 +179,8 @@ export const getAIOBrand = (items: AIOType[]) => {
   return options
 }
 
-export const getAIOSize = (items: AIOType[]) => {
-  const options = [...new Set(items.map((item: AIOType) => item.LiquidCoolerSize))].map(
+export const getAIOSize = (items: CoolerType[]) => {
+  const options = [...new Set(items.map((item: CoolerType) => item.LiquidCoolerSize))].map(
     (item) => {
       return {
         label: item.toString(),
@@ -191,9 +191,9 @@ export const getAIOSize = (items: AIOType[]) => {
   return options
 }
 
-export const getAirCoolerBrand = (items: AirCoolerType[]) => {
+export const getAirCoolerBrand = (items: FanType[]) => {
   const options = [
-    ...new Set(items.map((item: AirCoolerType) => item.brand)),
+    ...new Set(items.map((item: FanType) => item.brand)),
   ].map((item) => {
     return {
       label: brandTranslationKey(item),

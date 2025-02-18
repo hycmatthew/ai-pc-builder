@@ -49,7 +49,7 @@ function SpecificComponent({
     ssdList,
     psuList,
     caseList,
-    aioList,
+    coolerList,
     airCoolerList,
   } = rawData
 
@@ -90,16 +90,12 @@ function SpecificComponent({
         dispatch(sliceActions.updatePreSelectedCase(selectedItem))
         break
       }
-      case ProductEnum.AIO: {
-        const selectedItem = value ? searchAIOItem(aioList, value) : null
-        dispatch(sliceActions.updatePreSelectedAIO(selectedItem))
+      case ProductEnum.Cooler: {
+        const selectedItem = value ? searchAIOItem(coolerList, value) : null
+        dispatch(sliceActions.updatePreSelectedCooler(selectedItem))
         break
       }
-      case ProductEnum.AirCooler: {
-        const selectedItem = value ? searchAirCoolerItem(airCoolerList, value) : null
-        dispatch(sliceActions.updatePreSelectedAirCooler(selectedItem))
-        break
-      }
+
       default:
         break
     }
@@ -163,8 +159,8 @@ function SpecificComponent({
           </Grid>
           <Grid size={12}>
             <SelectElement
-              label={ProductEnum.AIO}
-              options={generateAIOSelectElement(aioList)}
+              label={ProductEnum.Cooler}
+              options={generateAIOSelectElement(coolerList)}
               selectChange={changeSelectItem}
             />
           </Grid>

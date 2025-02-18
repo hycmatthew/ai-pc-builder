@@ -1,4 +1,4 @@
-interface AIOType {
+interface CoolerType {
   Brand: string
   Name: string
   ReleaseDate: string
@@ -20,4 +20,4 @@ interface AIOType {
   Img: string
 }
 
-export default AIOType
+export default CoolerType

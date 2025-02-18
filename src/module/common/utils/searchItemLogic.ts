@@ -6,8 +6,8 @@ import {
   SSDType,
   PSUType,
   CaseType,
-  AIOType,
-  AirCoolerType,
+  CoolerType,
+  FanType,
 } from '../../../constant/objectTypes'
 
 export const searchCPUItem = (cpuList: CPUType[], name: string) => {
@@ -41,15 +41,15 @@ export const searchCaseItem = (caseList: CaseType[], name: string) => {
   return caseList.find((item: CaseType) => item.Name === name)
 }
 
-export const searchAIOItem = (aioList: AIOType[], name: string) => {
-  return aioList.find((item: AIOType) => item.Name === name)
+export const searchAIOItem = (coolerList: CoolerType[], name: string) => {
+  return coolerList.find((item: CoolerType) => item.Name === name)
 }
 
 export const searchAirCoolerItem = (
-  airCoolerList: AirCoolerType[],
+  airCoolerList: FanType[],
   model: string
 ) => {
-  return airCoolerList.find((item: AirCoolerType) => {
+  return airCoolerList.find((item: FanType) => {
     return item.model === model
   })
 }

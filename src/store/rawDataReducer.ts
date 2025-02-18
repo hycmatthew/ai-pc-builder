@@ -1,12 +1,5 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit'
-import { AirCoolerType, SSDType } from '../constant/objectTypes'
-import AIOType from '../constant/objectTypes/AIOType'
-import CaseType from '../constant/objectTypes/CaseType'
-import CPUType from '../constant/objectTypes/CPUType'
-import GPUType from '../constant/objectTypes/GPUType'
-import MotherboardType from '../constant/objectTypes/MotherboardType'
-import PSUType from '../constant/objectTypes/PSUType'
-import RAMType from '../constant/objectTypes/RAMType'
+import {  CaseType, CoolerType, CPUType, FanType, GPUType, MotherboardType, PSUType, RAMType, SSDType } from '../constant/objectTypes'
 import { RawDataAPI } from '../utils/HttpHelper'
 
 export interface SelectedItemType {
@@ -16,9 +9,9 @@ export interface SelectedItemType {
   ram: RAMType | null
   psu: PSUType | null
   pcCase: CaseType | null
-  aio: AIOType | null
   ssd: SSDType | null
-  airCooler: AirCoolerType | null
+  cooler: CoolerType | null
+  fan: FanType | null
 }
 
 export interface DataState {
@@ -29,9 +22,9 @@ export interface DataState {
   ramList: RAMType[]
   psuList: PSUType[]
   caseList: CaseType[]
-  aioList: AIOType[]
+  coolerList: CoolerType[]
   ssdList: SSDType[]
-  airCoolerList: AirCoolerType[]
+  fanList: FanType[]
   isLoading: boolean
 }
 
@@ -43,9 +36,9 @@ const initialState: DataState = {
     ram: null,
     psu: null,
     pcCase: null,
-    aio: null,
+    cooler: null,
     ssd: null,
-    airCooler: null,
+    fan: null,
   },
   cpuList: [],
   gpuList: [],
@@ -53,9 +46,9 @@ const initialState: DataState = {
   ramList: [],
   psuList: [],
   caseList: [],
-  aioList: [],
+  coolerList: [],
   ssdList: [],
-  airCoolerList: [],
+  fanList: [],
   isLoading: false,
 }
 /*
@@ -112,8 +105,8 @@ export const getCaseDataList: any = createAsyncThunk(
   }
 )
 
-export const getAIODataList: any = createAsyncThunk(
-  'aioList/fetchData',
+export const getCoolerDataList: any = createAsyncThunk(
+  'coolerList/fetchData',
   async () => {
     const response = await RawDataAPI.get('/coolerData.json')
     return response
@@ -127,15 +120,15 @@ export const getSSDDataList: any = createAsyncThunk(
     return response
   }
 )
-
-export const getAirCoolerDataList: any = createAsyncThunk(
-  'airCoolerList/fetchData',
+/*
+export const getFanDataList: any = createAsyncThunk(
+  'fanList/fetchData',
   async () => {
     const response = await RawDataAPI.get('/coolerData.json')
     return response
   }
 )
-
+*/
 export const counterSlice = createSlice({
   name: 'counter',
   initialState,
@@ -158,14 +151,14 @@ export const counterSlice = createSlice({
     updateSelectedCase: (state, action) => {
       state.selectedItems.pcCase = action.payload
     },
-    updateSelectedAIO: (state, action) => {
-      state.selectedItems.aio = action.payload
+    updateSelectedCooler: (state, action) => {
+      state.selectedItems.cooler = action.payload
     },
     updateSelectedSSD: (state, action) => {
       state.selectedItems.ssd = action.payload
     },
-    updateSelectedAirCooler: (state, action) => {
-      state.selectedItems.airCooler = action.payload
+    updateSelectedFan: (state, action) => {
+      state.selectedItems.fan = action.payload
     },
     clearSelectedItem: (state) => {
       state.selectedItems = initialState.selectedItems
@@ -289,19 +282,19 @@ export const counterSlice = createSlice({
         state.isLoading = false
       }
     )
-    // GET AIO
+    // GET Cooler
     builder.addCase(
-      getAIODataList.fulfilled,
+      getCoolerDataList.fulfilled,
       (state: DataState, { payload }) => {
         state.isLoading = false
-        state.aioList = payload
+        state.coolerList = payload
       }
     )
-    builder.addCase(getAIODataList.pending, (state: DataState, { payload }) => {
+    builder.addCase(getCoolerDataList.pending, (state: DataState, { payload }) => {
       state.isLoading = true
     })
     builder.addCase(
-      getAIODataList.rejected,
+      getCoolerDataList.rejected,
       (state: DataState, { payload }) => {
         console.log('rejected')
         state.isLoading = false
@@ -325,28 +318,30 @@ export const counterSlice = createSlice({
         state.isLoading = false
       }
     )
-    // GET Air Cooler
+    // GET Fan
+    /*
     builder.addCase(
-      getAirCoolerDataList.fulfilled,
+      getCoolerDataList.fulfilled,
       (state: DataState, { payload }) => {
         state.isLoading = false
-        state.airCoolerList = payload
+        state.fanList = payload
       }
     )
     builder.addCase(
-      getAirCoolerDataList.pending,
+      getCoolerDataList.pending,
       (state: DataState, { payload }) => {
         console.log('isLoading')
         state.isLoading = true
       }
     )
     builder.addCase(
-      getAirCoolerDataList.rejected,
+      getCoolerDataList.rejected,
       (state: DataState, { payload }) => {
         console.log('rejected')
         state.isLoading = false
       }
     )
+      */
   },
 })
 

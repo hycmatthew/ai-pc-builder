@@ -1,44 +1,53 @@
-import { m } from 'framer-motion'
-import CaseSuggestion from '../../database/components/CaseSuggestion'
-
-const buildConfig = {
-  priceList: [3000, 8000, 15000, 100000],
-  minPrice: 2500,
-  hkPricingFactor: 1,
-  cnPricingFactor: 1.1,
-  usPricingFactor: 8,
-  cpuFactor: {
+const BuildConfig = {
+  PriceList: [3000, 8000, 15000, 100000],
+  MinPrice: 2500,
+  HKPricingFactor: 1,
+  CNPricingFactor: 1.1,
+  USPricingFactor: 8,
+  regularLogic: {
+    formFactor: "ATX",
+  },
+  CPUFactor: {
     CPUBudgetFactor: [0.6, 0.6, 0.4, 0.3],
-    singleCoreMultiply: 5,
-    multiCoreMultiply: 1,
+    SingleCoreMultiply: 5,
+    MultiCoreMultiply: 1,
   },
-  gpuFactor: {
+  GPUFactor: {
     GPUBudgetFactor: [0.5, 0.7, 0.6, 0.5],
-    gpuScoreMultiply: 4,
+    GPUScoreMultiply: 4,
   },
-  ramFactor: {
+  RAMFactor: {
     RAMBudgetFactor: [0.3, 0.3, 0.25, 0.2],
   },
-  ssdFactor: {
+  SSDFactor: {
     SSDPriceFactor: [0.01, 0.01, 0.008, 0.007, 0.005],
+    SSDSuggestion: ['WD BLACK SN770 1TB', 'Samsung 990 EVO 1TB', 'T500 1TB'],
   },
-  psuFactor: {
+  PSUFactor: {
     PSUBudgetFactor: [0.01, 0.01, 0.008, 0.007, 0.005],
   },
-  cpuCoolerFactor: {
-    cpuCoolerSuggestion: {
-      EATX: ['颜之神Mesh雪装版'],
-      ATX: ['朱雀air'],
-      mATX: ['JV13', '平头哥M2 Air'],
+  CPUCoolerFactor: {
+    CPUCoolerSuggestion: {
+      400: ['Peerless Assassin 120 SE'],
+      200: ['Peerless Assassin 120 SE'],
     },
   },
-  caseFactor: {
+  CaseFactor: {
     CaseSuggestion: {
-      EATX: ['颜之神Mesh雪装版'],
-      ATX: ['朱雀air'],
-      mATX: ['JV13', '平头哥M2 Air'],
+      EATX: [
+        'sama-颜之神mesh雪装版',
+        'montech-air-903-max',
+        'lian-li-lancool-216x',
+      ],
+      ATX: [
+        'sama-朱雀air',
+        'montech-air-903-max',
+        'lian-li-lancool-216x',
+        'fractal-design-meshify-c',
+      ],
+      mATX: ['aigo-jv13', 'sama-平头哥m2-air', 'montech-air-100-argb-white'],
     },
   },
 }
 0
-export default buildConfig
+export default BuildConfig

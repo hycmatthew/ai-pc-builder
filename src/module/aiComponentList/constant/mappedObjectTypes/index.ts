@@ -1,4 +1,4 @@
-export type { default as MappedAIOType } from "./AIOType"
+export type { default as MappedCoolerType } from "./MappedCoolerType"
 export type { default as MappedCaseType } from "./MappedCaseType"
 export type { default as MappedCPUType } from "./MappedCPUType"
 export type { default as MappedGPUType } from "./MappedGPUType"

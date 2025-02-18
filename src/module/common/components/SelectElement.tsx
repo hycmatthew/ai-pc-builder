@@ -17,7 +17,7 @@ import { useEffect, useState } from 'react'
 
 type SelectElementProps = SelectProps & {
   label: string
-  value: string
+  value?: string
   placeholder?: string
   extraNum?: number
   options: OptionType[]
@@ -72,7 +72,7 @@ const GroupItems = styled('ul')({
 const SelectElement = ({
   label,
   options,
-  value,
+  value = '',
   extraNum,
   selectChange,
 }: SelectElementProps) => {

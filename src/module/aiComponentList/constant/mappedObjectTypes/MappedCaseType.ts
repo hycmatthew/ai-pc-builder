@@ -1,13 +1,13 @@
 interface MappedCaseType {
-  Brand: string
-  Name: string
-  CaseSize: string
-  PowerSupply: boolean
-  Compatibility: string[]
-  Dimensions: number[]
-  MaxVGAlength: number
-  RadiatorSupport: number
-  MaxCpuCoolorHeight: number
+  id: string
+  brand: string
+  name: string
+  caseSize: string
+  powerSupply: boolean
+  compatibility: string[]
+  maxVGAlength: number
+  radiatorSupport: number
+  maxCpuCoolorHeight: number
   price: number
 }
 

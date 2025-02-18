@@ -3,7 +3,7 @@ import {
   RAMType,
   PSUType,
   CaseType,
-  AirCoolerType,
+  FanType,
   CPUType,
   GPUType,
 } from '../../../constant/objectTypes'
@@ -69,12 +69,12 @@ export const caseIncompatible = (
     item,
     selectedItems.motherboard
   )
-  const aioValid = caseIncompatibleWithAIO(item, selectedItems.aio)
+  const aioValid = caseIncompatibleWithAIO(item, selectedItems.cooler)
   return gpuLengthValid || motherboardValid || aioValid
 }
 
 export const airCoolerIncompatible = (
-  item: AirCoolerType,
+  item: FanType,
   selectedItems: SelectedItemType
 ) => {
   const coolerHeightValid = airCoolerIncompatibleWithCase(
