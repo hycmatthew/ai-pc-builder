@@ -7,7 +7,7 @@ import { DataState, sliceActions } from '../../../store/rawDataReducer'
 import { useAppDispatch } from '../../../store/store'
 import ProductEnum from '../../../constant/ProductEnum'
 import {
-  generateAIOSelectElement,
+  generateAIOSelectElement as generateCoolerSelectElement,
   generateCaseSelectElement,
   generateCPUSelectElement,
   generateGPUSelectElement,
@@ -25,12 +25,12 @@ import {
   searchPSUItem,
   searchCaseItem,
   searchAIOItem,
-  searchAirCoolerItem,
 } from '../../common/utils/searchItemLogic'
 import { useTranslation } from 'react-i18next'
 import { getTotalPrice } from '../../../utils/PCPartUtil'
 import ListCopyModal from '../../common/components/ListCopyModal'
 import { useLocation } from 'react-router-dom'
+import Calculator from './Calculator'
 
 type ComponentMenuProps = {
   dataState: DataState
@@ -40,7 +40,7 @@ const ComponentMenu = ({ dataState }: ComponentMenuProps) => {
   const dispatch = useAppDispatch()
   const { t } = useTranslation()
   const location = useLocation()
-  const searchParams = new URLSearchParams(location.search);
+  const searchParams = new URLSearchParams(location.search)
   const [open, setOpen] = useState(false)
 
   const {
@@ -75,17 +75,28 @@ const ComponentMenu = ({ dataState }: ComponentMenuProps) => {
       changeSelectItem(searchParams.get(ProductEnum.PSU) || '', ProductEnum.PSU)
     }
     if (caseList.length > 0 && searchParams.get('pcCase')) {
-      changeSelectItem(searchParams.get('pcCase') || '', ProductEnum.ComputerCase)
+      changeSelectItem(
+        searchParams.get('pcCase') || '',
+        ProductEnum.ComputerCase
+      )
     }
     if (coolerList.length > 0 && searchParams.get('cooler')) {
       changeSelectItem(searchParams.get('cooler') || '', ProductEnum.Cooler)
     }
-  }, [cpuList, gpuList, motherboardList, ramList, ssdList, psuList, caseList, coolerList])
+  }, [
+    cpuList,
+    gpuList,
+    motherboardList,
+    ramList,
+    ssdList,
+    psuList,
+    caseList,
+    coolerList,
+  ])
 
   useEffect(() => {
     // dispatch(sliceActions.clearSelectedItem())
   }, [dispatch])
-
 
   const changeSelectItem = (value: string, type: string, extraNum?: number) => {
     switch (type) {
@@ -187,9 +198,11 @@ const ComponentMenu = ({ dataState }: ComponentMenuProps) => {
             options={generateSSDSelectElement(ssdList, selectedItems)}
             selectChange={changeSelectItem}
           />
+          {/*
           <Button size="small" variant="text">
             {t('add-extra-ssd')}
           </Button>
+          */}
         </Grid>
         <Grid size={12}>
           <SelectElement
@@ -211,15 +224,19 @@ const ComponentMenu = ({ dataState }: ComponentMenuProps) => {
           <SelectElement
             value={selectedItems.cooler?.Name || ''}
             label={ProductEnum.Cooler}
-            options={generateAIOSelectElement(coolerList, selectedItems)}
+            options={generateCoolerSelectElement(coolerList, selectedItems)}
             selectChange={changeSelectItem}
           />
         </Grid>
-        <Grid size={12}>
+        <Grid size={8}>
+          <Calculator selectedItems={dataState.selectedItems} />
+        </Grid>
+        <Grid size={4}>
           <Button
             disabled={getTotalPrice(dataState.selectedItems) == 0}
             onClick={handleOpen}
             variant="contained"
+            fullWidth
           >
             Contained
           </Button>

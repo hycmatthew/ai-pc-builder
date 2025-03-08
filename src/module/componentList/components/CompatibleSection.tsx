@@ -4,6 +4,7 @@ import Container from '@mui/material/Container'
 import Stack from '@mui/material/Stack'
 import CancelRoundedIcon from '@mui/icons-material/CancelRounded'
 import WarningRoundedIcon from '@mui/icons-material/WarningRounded'
+import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import styled from '@emotion/styled'
 import { Grid2 as Grid } from '@mui/material'
 
@@ -32,14 +33,19 @@ const CustomContainer = styled(Container)({
   padding: '8px',
 })
 
-const WarningStack = styled(Stack)({
+const ErrorStack = styled(Stack)({
   padding: '12px 0px',
   color: '#f44336',
 })
 
-const SuggectStack = styled(Stack)({
+const WarningStack = styled(Stack)({
   padding: '12px 0px',
   color: '#ff9100',
+})
+
+const GreenStack = styled(Stack)({
+  padding: '12px 0px',
+  color: '#04aa6d',
 })
 
 type SuggestionType = {
@@ -50,7 +56,7 @@ type SuggestionType = {
 const CompatibleSection = ({ selectedItems }: CompatibleSectionProps) => {
   const { t } = useTranslation()
 
-  const { cpu, gpu, motherboard, ram, psu, pcCase, aio } = selectedItems
+  const { cpu, gpu, motherboard, ram, psu, pcCase, cooler } = selectedItems
 
   const createSuggestion = () => {
     const suggestion: SuggestionType[] = []
@@ -75,7 +81,7 @@ const CompatibleSection = ({ selectedItems }: CompatibleSectionProps) => {
         type: 'warning',
       })
     }
-    if (pcCase && caseIncompatibleWithAIO(pcCase, aio)) {
+    if (pcCase && caseIncompatibleWithAIO(pcCase, cooler)) {
       suggestion.push({
         value: t('warning-air-cooler-case-incompatible'),
         type: 'warning',
@@ -119,7 +125,7 @@ const CompatibleSection = ({ selectedItems }: CompatibleSectionProps) => {
         <Grid size={12}>
           {suggestions.map((item: SuggestionType) =>
             item.type === 'warning' ? (
-              <WarningStack
+              <ErrorStack
                 direction="row"
                 alignItems="center"
                 spacing={2}
@@ -127,9 +133,9 @@ const CompatibleSection = ({ selectedItems }: CompatibleSectionProps) => {
               >
                 <CancelRoundedIcon style={{ alignSelf: "flex-start" }} />
                 <Typography variant="body2" dangerouslySetInnerHTML={{ __html: item.value }}></Typography>
-              </WarningStack>
+              </ErrorStack>
             ) : (
-              <SuggectStack
+              <WarningStack
                 direction="row"
                 alignItems="center"
                 spacing={2}
@@ -137,14 +143,14 @@ const CompatibleSection = ({ selectedItems }: CompatibleSectionProps) => {
               >
                 <WarningRoundedIcon style={{ alignSelf: "flex-start" }} />
                 <Typography variant="body2" dangerouslySetInnerHTML={{ __html: item.value }}></Typography>
-              </SuggectStack>
+              </WarningStack>
             )
           )}
           {suggestions.length === 0 && (
-            <SuggectStack direction="row" alignItems="center" spacing={2}>
-              <WarningRoundedIcon style={{ alignSelf: "flex-start" }} />
+            <GreenStack direction="row" alignItems="center" spacing={2}>
+              <CheckCircleIcon style={{ alignSelf: "flex-start" }} />
               <Typography variant="body2">{t('no-suggestion')}</Typography>
-            </SuggectStack>
+            </GreenStack>
           )}
         </Grid>
       </Grid>

@@ -20,6 +20,7 @@ const BuildConfig = {
     RAMBudgetFactor: [0.3, 0.3, 0.25, 0.2],
   },
   SSDFactor: {
+    SSDBudgetFactor: [0.3, 0.3, 0.25, 0.2],
     SSDPriceFactor: [0.01, 0.01, 0.008, 0.007, 0.005],
     SSDSuggestion: ['WD BLACK SN770 1TB', 'Samsung 990 EVO 1TB', 'T500 1TB'],
   },

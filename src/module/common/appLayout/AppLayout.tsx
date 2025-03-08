@@ -6,7 +6,7 @@ import './AppLayout.scss'
 import config from '../../../config/config'
 import HeaderLayout from './header'
 import CusTypography from '../components/CusTypography'
-import { Button, Dialog, DialogTitle } from '@mui/material'
+import { Dialog, DialogTitle } from '@mui/material'
 import { useTranslation } from 'react-i18next'
 
 type Props = {
@@ -16,23 +16,25 @@ type Props = {
 interface SimpleDialogProps {
   open: boolean
   onClose: () => void
+  updateLang: (lang: string) => void
 }
 
 function SimpleDialog(props: SimpleDialogProps) {
+  const LangMapping = {
+    en: 'US | EN',
+    'zh-CN': '簡體中文',
+    'zh-TW': '繁體中文',
+  }
   const { onClose, open } = props
+  const { i18n } = useTranslation()
 
   const handleClose = () => {
     onClose()
   }
 
-  const handleListItemClick = (value: string) => {
-    onClose()
-  }
-
-  const { i18n } = useTranslation()
-
-  const changeLanguage = (lng: string) => {
+  const changeLanguage = (lng: keyof typeof LangMapping) => {
     i18n.changeLanguage(lng)
+    props.updateLang(LangMapping[lng])
     handleClose()
   }
 
@@ -40,8 +42,11 @@ function SimpleDialog(props: SimpleDialogProps) {
     <Dialog className="lang-dialog" onClose={handleClose} open={open}>
       <DialogTitle>Change Lanuage</DialogTitle>
       <div className="dialog-lang-btn-container">
-        <button onClick={() => changeLanguage('zh-CN')}>中文</button>
-        <button onClick={() => changeLanguage('en')}>English</button>
+      {Object.keys(LangMapping).map((lng) => (
+          <button key={lng} onClick={() => changeLanguage(lng as keyof typeof LangMapping)}>
+            {LangMapping[lng as keyof typeof LangMapping]}
+          </button>
+        ))}
       </div>
     </Dialog>
   )
@@ -49,8 +54,8 @@ function SimpleDialog(props: SimpleDialogProps) {
 
 function AppLayout({ children }: Props) {
   const location = useLocation()
-
   const [open, setOpen] = useState(false)
+  const [curLang, setCurLang] = useState('US | EN')
 
   const handleClickOpen = () => {
     setOpen(true)
@@ -74,8 +79,8 @@ function AppLayout({ children }: Props) {
         <CusTypography variant="body1">
           {`©${new Date().getFullYear()} buildyourpc.com`}
         </CusTypography>
-        <button onClick={handleClickOpen}>4123</button>
-        <SimpleDialog open={open} onClose={handleClose} />
+        <button onClick={handleClickOpen}>{curLang}</button>
+        <SimpleDialog open={open} onClose={handleClose} updateLang={setCurLang} />
       </div>
     </div>
   )

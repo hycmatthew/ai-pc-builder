@@ -27,7 +27,9 @@ import {
 import { getPricingFactor } from './pricingLogic'
 import { findBestConfiguration } from './selectAlgorithm'
 import { selectBestCase } from './selectCase'
+import { selectBestCooler } from './selectCooler'
 import { selectBestPSU } from './selectPSULogic'
+import { selectBestSSD } from './selectSSD'
 
 const weights = {
   gaming: { cpu: 0.3, gpu: 0.6, ram: 0.1 }, // 游戏更依赖 GPU
@@ -52,6 +54,8 @@ export const preFilterDataLogic = (
     budget * getPricingFactor(budget, BuildConfig.CPUFactor.CPUBudgetFactor)
   const gpuBudget =
     budget * getPricingFactor(budget, BuildConfig.GPUFactor.GPUBudgetFactor)
+  const ssdBudget =
+    budget * getPricingFactor(budget, BuildConfig.SSDFactor.SSDBudgetFactor)
 
   const mappedCPUs: MappedCPUType[] = cpuList
     .filter((item) => {
@@ -128,20 +132,38 @@ export const preFilterDataLogic = (
       }
     })
 
-  const mappedSSDs: MappedSSDType[] = ssdList.map((item) => {
+  const mappedSSDs: MappedSSDType[] = ssdList
+    .filter((item) => {
+      const price = getCurrentPriceNum(item)
+      return price < ssdBudget && price != 0 && (item.Capacity == "1000 GB" || item.Capacity == "1TB")
+    })
+    .map((item) => {
+      return {
+        name: item.Name,
+        brand: item.Brand,
+        capacity: item.Capacity,
+        formFactor: item.FormFactor,
+        score: ssdPerformanceLogic(item),
+        price: getCurrentPriceNum(item),
+      }
+    })
+
+  const mappedPSUs: MappedPSUType[] = psuList.map((item) => {
     return {
-      name: item.Name,
       brand: item.Brand,
-      capacity: item.Capacity,
-      formFactor: item.FormFactor,
-      score: ssdPerformanceLogic(item),
+      name: item.Name,
+      wattage: item.Wattage,
+      size: item.Size,
+      standard: item.Standard,
+      modular: item.Modular,
+      efficiency: item.Efficiency,
+      length: item.Length,
       price: getCurrentPriceNum(item),
     }
   })
 
   const mappedCases: MappedCaseType[] = caseList.map((item) => {
     return {
-      id: item.Name,
       brand: item.Brand,
       name: item.Name,
       caseSize: item.CaseSize,
@@ -156,7 +178,6 @@ export const preFilterDataLogic = (
 
   const mappedCoolers: MappedCoolerType[] = coolerList.map((item) => {
     return {
-      id: item.Name,
       brand: item.Brand,
       name: item.Name,
       sockets: item.Sockets,
@@ -176,6 +197,10 @@ export const preFilterDataLogic = (
     budget,
     selectedWeights
   )
+  let bestSSD = null
+  let bestPsu = null
+  let bestCase = null
+  let bestCooler = null
   console.log(mappedRAMs)
   console.log(bestConfig)
   if (bestConfig) {
@@ -194,23 +219,34 @@ export const preFilterDataLogic = (
     console.log('总价格:', totalPrice)
     console.log('总性能分数:', totalScore)
 
-    const mappedPSUs: MappedPSUType[] = psuList.map((item) => {
-      return {
-        brand: item.Brand,
-        name: item.Name,
-        wattage: item.Wattage,
-        size: item.Size,
-        standard: item.Standard,
-        modular: item.Modular,
-        efficiency: item.Efficiency,
-        length: item.Length,
-        price: getCurrentPriceNum(item),
-      }
-    })
+    bestSSD = selectBestSSD(mappedSSDs, BuildConfig.SSDFactor.SSDSuggestion)
 
     const totalPower =
       bestConfig.cpu.power + (bestConfig.gpu ? bestConfig.gpu.power : 0)
-    const bestPsu = selectBestPSU(mappedPSUs, totalPower, 200)
-    const bestCase = selectBestCase(bestConfig.motherboard, bestConfig.gpu, null, mappedCases)
+    bestPsu = selectBestPSU(mappedPSUs, totalPower, 200)
+    bestCase = selectBestCase(
+      bestConfig.motherboard,
+      bestConfig.gpu,
+      null,
+      mappedCases
+    )
+    if (bestCase) {
+      bestCooler = selectBestCooler(bestConfig.cpu, bestCase, mappedCoolers)
+    }
+    console.log(bestSSD)
+    console.log(bestPsu)
+    console.log(bestCase)
+    console.log(bestCooler)
+  }
+
+  return {
+    cpu: bestConfig?.cpu,
+    gpu: bestConfig?.gpu,
+    motherboard: bestConfig?.motherboard,
+    ram: bestConfig?.ram,
+    ssd: bestSSD,
+    psu: bestPsu,
+    case: bestCase,
+    cooler: bestCooler,
   }
 }

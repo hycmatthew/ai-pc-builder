@@ -13,7 +13,7 @@ export const selectBestCase = (
 ): MappedCaseType | null => {
   const compatibleCases = casePool.filter((caze) => {
     // 主板尺寸兼容性
-    const mbFit = caze.compatibility.includes(selectedMB.formFactor)
+    const mbFit = caze.compatibility ? caze.compatibility.includes(selectedMB.formFactor) : false
 
     // 顯卡長度兼容性
     const gpuFit = selectedGPU ? selectedGPU.length <= caze.maxVGAlength : true

@@ -341,7 +341,7 @@ export const counterSlice = createSlice({
         state.isLoading = false
       }
     )
-      */
+    */
   },
 })
 

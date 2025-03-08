@@ -1,4 +1,3 @@
-import React, { useEffect } from 'react'
 import {
   Button,
   Card,
@@ -9,6 +8,7 @@ import {
 } from '@mui/material'
 
 import { CPUType, MotherboardType } from '../../../constant/objectTypes'
+import CusTypography from '../../common/components/CusTypography'
 
 interface InfoTableProp {
   cpuType?: CPUType
@@ -27,13 +27,13 @@ function ItemInfoTable({ cpuType, motherboardType }: InfoTableProp) {
             alt={cpuType.Name}
           />
           <CardContent>
-            <Typography gutterBottom variant="h5" component="div">
+            <CusTypography variant="h5">
               Lizard
-            </Typography>
-            <Typography variant="body2" color="text.secondary">
+            </CusTypography>
+            <CusTypography variant="body2" color="text.secondary">
               Lizards are a widespread group of squamate reptiles, with over
               6,000 species, ranging across all continents except Antarctica
-            </Typography>
+            </CusTypography>
           </CardContent>
           <CardActions>
             <Button size="small">Share</Button>

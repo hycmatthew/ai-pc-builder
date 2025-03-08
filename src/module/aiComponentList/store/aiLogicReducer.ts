@@ -7,6 +7,16 @@ export interface BuildLogicState {
   gamingUsage: number
   normalUsage: number
   preSelectedItem: SelectedItemType
+  lockItem: {
+    cpu: boolean
+    motherboard: boolean
+    gpu: boolean
+    ram: boolean
+    ssd: boolean
+    psu: boolean
+    pcCase: boolean
+    cooler: boolean
+  }
 }
 
 const initialState: BuildLogicState = {
@@ -25,6 +35,16 @@ const initialState: BuildLogicState = {
     cooler: null,
     fan: null,
   },
+  lockItem: {
+    cpu: false,
+    motherboard: false,
+    gpu: false,
+    ram: false,
+    ssd: false,
+    psu: false,
+    pcCase: false,
+    cooler: false,
+  }
 }
 
 export const aiLogicSlice = createSlice({
@@ -45,7 +65,6 @@ export const aiLogicSlice = createSlice({
       state.gamingUsage = action.payload
     },
     updatePreSelectedCPU: (state, action) => {
-      console.log(action.payload)
       state.preSelectedItem.cpu = action.payload
     },
     updatePreSelectedMotherboard: (state, action) => {

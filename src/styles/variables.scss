@@ -5,3 +5,28 @@ $default-padding: 0rem 1.5rem;
 
 $main-site-color: #1e3d59;
 $image-border-radius: 0.5rem;
+
+// Secondary Colors
+$secondary: #ff6f61; // Secondary red
+$secondary-light: #ffa692; // Light red
+$secondary-dark: #c43d34; // Dark red
+
+// Neutral Colors (Grayscale)
+$white: #ffffff;
+$black: #000000;
+
+// Accent Colors
+$success: #04aa6d; // Green for success
+$error: #f44336; // Yellow for warnings
+$warning: #ff9100; // Red for errors
+$info: #17a2b8; // Blue for informational messages
+
+// Background Colors
+$background-light: #f8f9fa; // Light background
+$background-dark: #343a40; // Dark background
+
+// Text Colors
+$text-primary: #212529; // Main text color
+$text-secondary: #6c757d; // Secondary text color
+$text-muted: #adb5bd; // Muted/disabled text
+$text-light: #ffffff; // Light text on dark backgrounds

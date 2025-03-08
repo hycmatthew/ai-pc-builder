@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import { useSelector } from 'react-redux'
 import { useTranslation } from 'react-i18next'
-import { Box, Stack, Typography } from '@mui/material'
+import { Box, Stack } from '@mui/material'
 import { GridColDef } from '@mui/x-data-grid'
 import CPUType from '../../../constant/objectTypes/CPUType'
 import {
@@ -13,6 +13,7 @@ import { generateItemName, priceLabelHandler } from '../../../utils/LabelHelper'
 import BarMotion from '../../../styles/animation/BarMotion'
 import BenchmarksDataGrid from './BenchmarksDataGrid'
 import { getGradientColor } from '../../../utils/ColorHelper'
+import CusTypography from '../../common/components/CusTypography'
 
 function CPUBenchmarksTable() {
   const { t } = useTranslation()
@@ -73,7 +74,7 @@ function CPUBenchmarksTable() {
             {params.field === selectedField
               ? benchmarksBarWidth(params.field, params.value)
               : ''}
-            <Typography variant="subtitle2">{params.value}</Typography>
+            <CusTypography variant="h6">{params.value}</CusTypography>
           </Stack>
         )
       },
@@ -90,7 +91,7 @@ function CPUBenchmarksTable() {
             {params.field === selectedField
               ? benchmarksBarWidth(params.field, params.value)
               : ''}
-            <Typography variant="subtitle2">{params.value}</Typography>
+            <CusTypography variant="h6">{params.value}</CusTypography>
           </Stack>
         )
       },

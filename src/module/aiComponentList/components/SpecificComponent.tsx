@@ -17,31 +17,22 @@ import {
   generateCaseSelectElement,
   generateAIOSelectElement,
 } from '../../common/utils/generateSelectElements'
-import {
-  searchCPUItem,
-  searchMotherboardItem,
-  searchGPUItem,
-  searchRAMItem,
-  searchSSDItem,
-  searchPSUItem,
-  searchCaseItem,
-  searchAIOItem,
-  searchAirCoolerItem,
-} from '../../common/utils/searchItemLogic'
-import { useAppDispatch } from '../../../store/store'
-import { sliceActions } from '../store/aiLogicReducer'
+import { BuildLogicState } from '../store/aiLogicReducer'
+import { DataState } from '../../../store/rawDataReducer'
 
 type SpecificComponentProps = {
-  rawData: any
-}
+  rawData: DataState,
+  aiLogic: BuildLogicState,
+  changeSelectItem: (value: string, type: string, num?: number) => void
+};
 
 function SpecificComponent({
   rawData,
+  aiLogic,
+  changeSelectItem,
 }: SpecificComponentProps) {
 
-  const dispatch = useAppDispatch()
   const {
-    selectedItems,
     cpuList,
     gpuList,
     motherboardList,
@@ -50,56 +41,11 @@ function SpecificComponent({
     psuList,
     caseList,
     coolerList,
-    airCoolerList,
   } = rawData
 
-  const changeSelectItem = (value: string, type: string, num?: number) => {
-    switch (type) {
-      case ProductEnum.CPU: {
-        const selectedItem = value ? searchCPUItem(cpuList, value) : null
-        dispatch(sliceActions.updatePreSelectedCPU(selectedItem))
-        break
-      }
-      case ProductEnum.Motherboard: {
-        const selectedItem = value ? searchMotherboardItem(motherboardList, value) : null
-        dispatch(sliceActions.updatePreSelectedMotherboard(selectedItem))
-        break
-      }
-      case ProductEnum.GPU: {
-        const selectedItem = value ? searchGPUItem(gpuList, value) : null
-        dispatch(sliceActions.updatePreSelectedGPU(selectedItem))
-        break
-      }
-      case ProductEnum.RAM: {
-        const selectedItem = value ? searchRAMItem(ramList, value) : null
-        dispatch(sliceActions.updatePreSelectedRAM(selectedItem))
-        break
-      }
-      case ProductEnum.SSD: {
-        const selectedItem = value ? searchSSDItem(ssdList, value) : null
-        dispatch(sliceActions.updatePreSelectedSSD(selectedItem))
-        break
-      }
-      case ProductEnum.PSU: {
-        const selectedItem = value ? searchPSUItem(psuList, value) : null
-        dispatch(sliceActions.updatePreSelectedPSU(selectedItem))
-        break
-      }
-      case ProductEnum.ComputerCase: {
-        const selectedItem = value ? searchCaseItem(caseList, value) : null
-        dispatch(sliceActions.updatePreSelectedCase(selectedItem))
-        break
-      }
-      case ProductEnum.Cooler: {
-        const selectedItem = value ? searchAIOItem(coolerList, value) : null
-        dispatch(sliceActions.updatePreSelectedCooler(selectedItem))
-        break
-      }
-
-      default:
-        break
-    }
-  }
+  const {
+    preSelectedItem
+  } = aiLogic
 
   return (
     <Card sx={{ minWidth: 275 }}>
@@ -108,13 +54,15 @@ function SpecificComponent({
           <Grid size={12}>
             <SelectElement
               label={ProductEnum.CPU}
-              options={generateCPUSelectElement(cpuList, selectedItems)}
+              value={preSelectedItem.cpu?.Name || ''}
+              options={generateCPUSelectElement(cpuList, preSelectedItem)}
               selectChange={changeSelectItem}
             />
           </Grid>
           <Grid size={12}>
             <SelectElement
               label={ProductEnum.GPU}
+              value={preSelectedItem.gpu?.Name || ''}
               options={generateGPUSelectElement(gpuList)}
               selectChange={changeSelectItem}
             />
@@ -122,9 +70,10 @@ function SpecificComponent({
           <Grid size={12}>
             <SelectElement
               label={ProductEnum.Motherboard}
+              value={preSelectedItem.motherboard?.Name || ''}
               options={generateMotherboardSelectElement(
                 motherboardList,
-                selectedItems
+                preSelectedItem
               )}
               selectChange={changeSelectItem}
             />
@@ -132,13 +81,15 @@ function SpecificComponent({
           <Grid size={12}>
             <SelectElement
               label={ProductEnum.RAM}
-              options={generateRAMSelectElement(ramList, selectedItems)}
+              value={preSelectedItem.ram?.Name || ''}
+              options={generateRAMSelectElement(ramList, preSelectedItem)}
               selectChange={changeSelectItem}
             />
           </Grid>
           <Grid size={12}>
             <SelectElement
               label={ProductEnum.SSD}
+              value={preSelectedItem.ssd?.Name || ''}
               options={generateSSDSelectElement(ssdList)}
               selectChange={changeSelectItem}
             />
@@ -146,20 +97,23 @@ function SpecificComponent({
           <Grid size={12}>
             <SelectElement
               label={ProductEnum.PSU}
-              options={generatePSUSelectElement(psuList, selectedItems)}
+              value={preSelectedItem.psu?.Name || ''}
+              options={generatePSUSelectElement(psuList, preSelectedItem)}
               selectChange={changeSelectItem}
             />
           </Grid>
           <Grid size={12}>
             <SelectElement
               label={ProductEnum.ComputerCase}
-              options={generateCaseSelectElement(caseList, selectedItems)}
+              value={preSelectedItem.pcCase?.Name || ''}
+              options={generateCaseSelectElement(caseList, preSelectedItem)}
               selectChange={changeSelectItem}
             />
           </Grid>
           <Grid size={12}>
             <SelectElement
               label={ProductEnum.Cooler}
+              value={preSelectedItem.cooler?.Name || ''}
               options={generateAIOSelectElement(coolerList)}
               selectChange={changeSelectItem}
             />

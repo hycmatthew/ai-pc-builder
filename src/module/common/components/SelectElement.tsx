@@ -13,7 +13,6 @@ import { styled } from '@mui/material/styles'
 import { addCurrencySign } from '../../../utils/NumberHelper'
 import { brandTranslationKey } from '../../../utils/LabelHelper'
 import { OptionType } from '../../../constant/objectTypes'
-import { useEffect, useState } from 'react'
 
 type SelectElementProps = SelectProps & {
   label: string
@@ -27,9 +26,32 @@ type SelectElementProps = SelectProps & {
 
 const CustomAutocomplete = styled(Autocomplete)({
   height: '60px',
+  '& .MuiInputBase-input': {},
+  // 边框状态管理
+  '& .MuiTextField-root .MuiFilledInput-root': {
+    borderColor: "#fbfbfb",
+    background: "#fbfbfb",
+    '&:hover fieldset': {
+      borderColor: "#4287f5",
+    },
+    '&.Mui-focused fieldset': {
+      borderColor: "#4287f5",
+    },
+  },
+  // 下拉选项
+  '& .MuiAutocomplete-paper': {
+    backgroundColor: "#4287f5",
+  }
+})
+
+const OptionTypography = styled(Typography)({
+  fontFamily: ["Noto Sans TC", "Open Sans", "sans-serif", "system-ui", "Avenir", "Helvetica"],
+  fontSize: '14px',
+  padding: '2px 0px',
 })
 
 const ValueTypography = styled(Typography)({
+  fontFamily: ["Noto Sans TC", "Open Sans", "sans-serif", "system-ui", "Avenir", "Helvetica"],
   fontSize: '12px',
   fontWeight: 'bold',
   fontStyle: 'italic',
@@ -41,7 +63,7 @@ const CustomTextField = styled(TextField)(({ theme }) => ({
   '& .MuiFilledInput-root': {
     border: '1px solid #e2e2e1',
     overflow: 'hidden',
-    borderRadius: 4,
+    borderRadius: 12,
     backgroundColor: '#fff',
     transition: theme.transitions.create([
       'border-color',
@@ -72,61 +94,26 @@ const GroupItems = styled('ul')({
 const SelectElement = ({
   label,
   options,
-  value = '',
+  value,
   extraNum,
   selectChange,
 }: SelectElementProps) => {
   const { t } = useTranslation()
-  const [selectedOption, setSelectedOption] = useState<OptionType | null>(null)
-
-  useEffect(() => {
-    setSelectedOption(getSelectedOption(value))
-  }, [value])
-
-  const handleChange = (event: any, newValue: any) => {
+  const handleChange = (event: any, value: any) => {
+    // 直接调用父组件回调
     if (selectChange) {
-      if (newValue) {
-        selectChange(newValue.name, label, extraNum)
-      } else {
-        selectChange(newValue, label, extraNum)
-      }
+      console.log('value:', value)
+      selectChange(value?.name || "", label, extraNum);
     }
-  }
+  };
 
-  const getSelectedOption = (value: string) => {
-    return options.find((option) => option.name === value) || null
-  }
-
-  /*
-  if (options.length === 0) {
-    return (
-      <CustomAutocomplete
-        disabled
-        renderInput={(params) => (
-          <CustomTextField
-            {...params}
-            label={t(label)}
-            slotProps={{
-              input: {
-                endAdornment: (
-                  <InputAdornment position="end">
-                    <CircularProgress size={28} />
-                  </InputAdornment>
-                ),
-              },
-            }}
-          />
-        )}
-        options={[]}
-      />
-    )
-  }
-  */
+  // 根据传入的value查找当前选项
+  const selectedOption = options.find(option => option.name === value) || null;
 
   return (
     <CustomAutocomplete
       disablePortal
-      value={selectedOption ?? null}
+      value={selectedOption}
       id={label}
       options={options}
       groupBy={(option: any) => option.brand}
@@ -152,7 +139,7 @@ const SelectElement = ({
             spacing={1}
             // key={`${option.brand}-${option.name}`}
           >
-            <Typography>{option.label}</Typography>
+            <OptionTypography>{option.label}</OptionTypography>
             <ValueTypography>{addCurrencySign(option.value)}</ValueTypography>
           </Stack>
         </Box>

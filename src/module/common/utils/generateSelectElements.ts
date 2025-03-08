@@ -15,7 +15,7 @@ import {
   generateRAMName,
   generateSSDName,
 } from '../../../utils/LabelHelper'
-import { getCurrentPrice } from '../../../utils/NumberHelper'
+import { getCurrentPrice, getCurrentPriceNum } from '../../../utils/NumberHelper'
 import { SelectedItemType } from '../../../store/rawDataReducer'
 import {
   airCoolerIncompatible,
@@ -43,7 +43,7 @@ export const generateCPUSelectElement = (
   list: CPUType[],
   selectedItems?: SelectedItemType
 ): OptionType[] => {
-  const tempMap = list.map((item: CPUType) => {
+  const tempMap = list.filter((item: CPUType) => getCurrentPriceNum(item) != 0).map((item: CPUType) => {
     const price = getCurrentPrice(item)
     const itemLabel = generateItemName(item.Brand, item.Name)
 
@@ -62,7 +62,7 @@ export const generateGPUSelectElement = (
   list: GPUType[],
   selectedItems?: SelectedItemType
 ): OptionType[] => {
-  const tempMap = list.map((item: GPUType) => {
+  const tempMap = list.filter((item: GPUType) => getCurrentPriceNum(item) != 0).map((item: GPUType) => {
     const price = getCurrentPrice(item)
     const itemLabel = generateItemName(item.Brand, item.Name)
 
@@ -81,7 +81,7 @@ export const generateMotherboardSelectElement = (
   list: MotherboardType[],
   selectedItems?: SelectedItemType
 ): OptionType[] => {
-  const tempMap = list.map((item: MotherboardType) => {
+  const tempMap = list.filter((item: MotherboardType) => getCurrentPriceNum(item) != 0).map((item: MotherboardType) => {
     const price = getCurrentPrice(item)
     const itemLabel = generateItemName(item.Brand, item.Name)
 
@@ -102,7 +102,7 @@ export const generateRAMSelectElement = (
   list: RAMType[],
   selectedItems?: SelectedItemType
 ): OptionType[] => {
-  const tempMap = list.map((item: RAMType) => {
+  const tempMap = list.filter((item: RAMType) => getCurrentPriceNum(item) != 0).map((item: RAMType) => {
     const price = getCurrentPrice(item)
     const itemLabel = generateRAMName(item)
 
@@ -121,7 +121,7 @@ export const generatePSUSelectElement = (
   list: PSUType[],
   selectedItems?: SelectedItemType
 ): OptionType[] => {
-  const tempMap = list.map((item: PSUType) => {
+  const tempMap = list.filter((item: PSUType) => getCurrentPriceNum(item) != 0).map((item: PSUType) => {
     const price = getCurrentPrice(item)
     const itemLabel = generateItemName(item.Brand, item.Name)
 
@@ -140,7 +140,7 @@ export const generateCaseSelectElement = (
   list: CaseType[],
   selectedItems?: SelectedItemType
 ): OptionType[] => {
-  const tempMap = list.map((item: CaseType) => {
+  const tempMap = list.filter((item: CaseType) => getCurrentPriceNum(item) != 0).map((item: CaseType) => {
     const price = getCurrentPrice(item)
     const itemLabel = generateItemName(item.Brand, item.Name)
     return {
@@ -158,7 +158,7 @@ export const generateAIOSelectElement = (
   list: CoolerType[],
   selectedItems?: SelectedItemType
 ): OptionType[] => {
-  const tempMap = list.map((item: CoolerType) => {
+  const tempMap = list.filter((item: CoolerType) => getCurrentPriceNum(item) != 0).map((item: CoolerType) => {
     const price = getCurrentPrice(item)
     const itemLabel = generateItemName(item.Brand, item.Name)
     return {
@@ -176,7 +176,7 @@ export const generateSSDSelectElement = (
   list: SSDType[],
   selectedItems?: SelectedItemType
 ): OptionType[] => {
-  const tempMap = list.map((item: SSDType) => {
+  const tempMap = list.filter((item: SSDType) => getCurrentPriceNum(item) != 0).map((item: SSDType) => {
     const price = getCurrentPrice(item)
     const itemLabel = generateSSDName(item)
 
