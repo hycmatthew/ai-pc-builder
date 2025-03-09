@@ -7,7 +7,7 @@ enum ProductEnum {
   PSU = 'psu',
   ComputerCase = 'computer-case',
   Cooler = 'cpu-cooler',
-  Fan = 'fan',
+  // Fan = 'fan',
 }
 
 export default ProductEnum

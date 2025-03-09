@@ -33,7 +33,6 @@ const initialState: BuildLogicState = {
     psu: null,
     pcCase: null,
     cooler: null,
-    fan: null,
   },
   lockItem: {
     cpu: false,
@@ -87,6 +86,30 @@ export const aiLogicSlice = createSlice({
     },
     updatePreSelectedCase: (state, action) => {
       state.preSelectedItem.pcCase = action.payload
+    },
+    updateCPULock: (state, action) => {
+      state.lockItem.cpu = action.payload
+    },
+    updateMotherboardLock: (state, action) => {
+      state.lockItem.motherboard = action.payload
+    },
+    updateGPULock: (state, action) => {
+      state.lockItem.gpu = action.payload
+    },
+    updateRAMLock: (state, action) => {
+      state.lockItem.ram = action.payload
+    },
+    updateSSDLock: (state, action) => {
+      state.lockItem.ssd = action.payload
+    },
+    updatePSULock: (state, action) => {
+      state.lockItem.psu = action.payload
+    },
+    updateCaseLock: (state, action) => {
+      state.lockItem.pcCase = action.payload
+    },
+    updateCoolerLock: (state, action) => {
+      state.lockItem.cooler = action.payload
     },
   },
 })

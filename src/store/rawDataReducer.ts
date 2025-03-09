@@ -11,7 +11,7 @@ export interface SelectedItemType {
   pcCase: CaseType | null
   ssd: SSDType | null
   cooler: CoolerType | null
-  fan: FanType | null
+  // fan: FanType | null
 }
 
 export interface DataState {
@@ -38,7 +38,6 @@ const initialState: DataState = {
     pcCase: null,
     cooler: null,
     ssd: null,
-    fan: null,
   },
   cpuList: [],
   gpuList: [],
@@ -51,84 +50,25 @@ const initialState: DataState = {
   fanList: [],
   isLoading: false,
 }
-/*
-function delay(ms: number) {
-  return new Promise((resolve) => setTimeout(resolve, ms))
-}
-*/
 
-export const getCPUDataList: any = createAsyncThunk(
-  'cpuList/fetchData',
-  async () => {
-    const response = await RawDataAPI.get('/cpuData.json')
-    return response
+export const fetchData = createAsyncThunk(
+  'data/fetch',
+  async ({ url, type }: { url: string, type: string }) => {
+    const response = await RawDataAPI.get(url);
+    return { type, data: response };
   }
-)
+);
 
-export const getGPUDataList: any = createAsyncThunk(
-  'gpuList/fetchData',
-  async () => {
-    const response = await RawDataAPI.get('/gpuData.json')
-    return response
-  }
-)
+export const fetchCPUData = () => fetchData({ url: '/cpuData.json', type: 'cpu' });
+export const fetchGPUData = () => fetchData({ url: '/gpuData.json', type: 'gpu' });
+export const fetchMotherboardData = () => fetchData({ url: '/motherboardData.json', type: 'motherboard' });
+export const fetchRAMData = () => fetchData({ url: '/ramData.json', type: 'ram' });
+export const fetchPSUData = () => fetchData({ url: '/powerData.json', type: 'psu' });
+export const fetchCaseData = () => fetchData({ url: '/caseData.json', type: 'case' });
+export const fetchCoolerData = () => fetchData({ url: '/coolerData.json', type: 'cooler' });
+export const fetchSSDData = () => fetchData({ url: '/ssdData.json', type: 'ssd' });
+// 依此类推，为每种硬件类型定义
 
-export const getMotherboardDataList: any = createAsyncThunk(
-  'motherboardList/fetchData',
-  async () => {
-    const response = await RawDataAPI.get('/motherboardData.json')
-    return response
-  }
-)
-
-export const getRAMDataList: any = createAsyncThunk(
-  'ramList/fetchData',
-  async () => {
-    const response = await RawDataAPI.get('/ramData.json')
-    return response
-  }
-)
-
-export const getPSUDataList: any = createAsyncThunk(
-  'psuList/fetchData',
-  async () => {
-    const response = await RawDataAPI.get('/powerData.json')
-    return response
-  }
-)
-
-export const getCaseDataList: any = createAsyncThunk(
-  'caseList/fetchData',
-  async () => {
-    const response = await RawDataAPI.get('/caseData.json')
-    return response
-  }
-)
-
-export const getCoolerDataList: any = createAsyncThunk(
-  'coolerList/fetchData',
-  async () => {
-    const response = await RawDataAPI.get('/coolerData.json')
-    return response
-  }
-)
-
-export const getSSDDataList: any = createAsyncThunk(
-  'ssdList/fetchData',
-  async () => {
-    const response = await RawDataAPI.get('/ssdData.json')
-    return response
-  }
-)
-/*
-export const getFanDataList: any = createAsyncThunk(
-  'fanList/fetchData',
-  async () => {
-    const response = await RawDataAPI.get('/coolerData.json')
-    return response
-  }
-)
-*/
 export const counterSlice = createSlice({
   name: 'counter',
   initialState,
@@ -157,191 +97,58 @@ export const counterSlice = createSlice({
     updateSelectedSSD: (state, action) => {
       state.selectedItems.ssd = action.payload
     },
-    updateSelectedFan: (state, action) => {
-      state.selectedItems.fan = action.payload
-    },
     clearSelectedItem: (state) => {
       state.selectedItems = initialState.selectedItems
     },
   },
   extraReducers: (builder) => {
-    // GET CPU
     builder.addCase(
-      getCPUDataList.fulfilled,
-      (state: DataState, { payload }) => {
-        state.isLoading = false
-        state.cpuList = payload
-      }
-    )
-    builder.addCase(getCPUDataList.pending, (state: DataState, { payload }) => {
-      state.isLoading = true
-    })
-    builder.addCase(
-      getCPUDataList.rejected,
-      (state: DataState, { payload }) => {
-        console.log('rejected')
-        state.isLoading = false
-      }
-    )
-    // GET GPU
-    builder.addCase(
-      getGPUDataList.fulfilled,
-      (state: DataState, { payload }) => {
-        state.isLoading = false
-        state.gpuList = payload
-      }
-    )
-    builder.addCase(getGPUDataList.pending, (state: DataState, { payload }) => {
-      state.isLoading = true
-    })
-    builder.addCase(
-      getGPUDataList.rejected,
-      (state: DataState, { payload }) => {
-        console.log('rejected')
-        state.isLoading = false
-      }
-    )
-    // GET Motherboard
-    builder.addCase(
-      getMotherboardDataList.fulfilled,
-      (state: DataState, { payload }) => {
-        state.isLoading = false
-        state.motherboardList = payload
+      fetchData.fulfilled,
+      (state, { payload }) => {
+        state.isLoading = false;
+        const { type, data } = payload;
+        switch (type) {
+          case 'cpu':
+            state.cpuList = data;
+            break;
+          case 'gpu':
+            state.gpuList = data;
+            break;
+          case 'motherboard':
+            state.motherboardList = data;
+            break;
+          case 'ram':
+            state.ramList = data;
+            break;
+          case 'psu':
+            state.psuList = data;
+            break;
+          case 'case':
+            state.caseList = data;
+            break;
+          case 'cooler':
+            state.coolerList = data;
+            break;
+          case 'ssd':
+            state.ssdList = data;
+            break;
+          default:
+            break;
+        }
       }
     )
     builder.addCase(
-      getMotherboardDataList.pending,
-      (state: DataState, { payload }) => {
-        console.log('isLoading')
-        state.isLoading = true
+      fetchData.pending,
+      (state) => {
+        state.isLoading = true;
       }
     )
     builder.addCase(
-      getMotherboardDataList.rejected,
-      (state: DataState, { payload }) => {
-        console.log('rejected')
-        state.isLoading = false
+      fetchData.rejected,
+      (state) => {
+        state.isLoading = false;
       }
     )
-    // GET RAM
-    builder.addCase(
-      getRAMDataList.fulfilled,
-      (state: DataState, { payload }) => {
-        state.isLoading = false
-        state.ramList = payload
-      }
-    )
-    builder.addCase(getRAMDataList.pending, (state: DataState, { payload }) => {
-      console.log('isLoading')
-      state.isLoading = true
-    })
-    builder.addCase(
-      getRAMDataList.rejected,
-      (state: DataState, { payload }) => {
-        console.log('rejected')
-        state.isLoading = false
-      }
-    )
-    // GET PSU
-    builder.addCase(
-      getPSUDataList.fulfilled,
-      (state: DataState, { payload }) => {
-        state.isLoading = false
-        state.psuList = payload
-      }
-    )
-    builder.addCase(getPSUDataList.pending, (state: DataState, { payload }) => {
-      console.log('isLoading')
-      state.isLoading = true
-    })
-    builder.addCase(
-      getPSUDataList.rejected,
-      (state: DataState, { payload }) => {
-        console.log('rejected')
-        state.isLoading = false
-      }
-    )
-    // GET PC CASE
-    builder.addCase(
-      getCaseDataList.fulfilled,
-      (state: DataState, { payload }) => {
-        state.isLoading = false
-        state.caseList = payload
-      }
-    )
-    builder.addCase(
-      getCaseDataList.pending,
-      (state: DataState, { payload }) => {
-        state.isLoading = true
-      }
-    )
-    builder.addCase(
-      getCaseDataList.rejected,
-      (state: DataState, { payload }) => {
-        console.log('rejected')
-        state.isLoading = false
-      }
-    )
-    // GET Cooler
-    builder.addCase(
-      getCoolerDataList.fulfilled,
-      (state: DataState, { payload }) => {
-        state.isLoading = false
-        state.coolerList = payload
-      }
-    )
-    builder.addCase(getCoolerDataList.pending, (state: DataState, { payload }) => {
-      state.isLoading = true
-    })
-    builder.addCase(
-      getCoolerDataList.rejected,
-      (state: DataState, { payload }) => {
-        console.log('rejected')
-        state.isLoading = false
-      }
-    )
-    // GET SSD
-    builder.addCase(
-      getSSDDataList.fulfilled,
-      (state: DataState, { payload }) => {
-        state.isLoading = false
-        state.ssdList = payload
-      }
-    )
-    builder.addCase(getSSDDataList.pending, (state: DataState, { payload }) => {
-      state.isLoading = true
-    })
-    builder.addCase(
-      getSSDDataList.rejected,
-      (state: DataState, { payload }) => {
-        console.log('rejected')
-        state.isLoading = false
-      }
-    )
-    // GET Fan
-    /*
-    builder.addCase(
-      getCoolerDataList.fulfilled,
-      (state: DataState, { payload }) => {
-        state.isLoading = false
-        state.fanList = payload
-      }
-    )
-    builder.addCase(
-      getCoolerDataList.pending,
-      (state: DataState, { payload }) => {
-        console.log('isLoading')
-        state.isLoading = true
-      }
-    )
-    builder.addCase(
-      getCoolerDataList.rejected,
-      (state: DataState, { payload }) => {
-        console.log('rejected')
-        state.isLoading = false
-      }
-    )
-    */
   },
 })
 

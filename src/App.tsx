@@ -6,14 +6,14 @@ import { BrowserRouter } from 'react-router-dom'
 import AppRoutes from './Route'
 
 import {
-  getCoolerDataList,
-  getCaseDataList,
-  getCPUDataList,
-  getGPUDataList,
-  getMotherboardDataList,
-  getPSUDataList,
-  getRAMDataList,
-  getSSDDataList,
+  fetchCPUData,
+  fetchGPUData,
+  fetchMotherboardData,
+  fetchRAMData,
+  fetchPSUData,
+  fetchCaseData,
+  fetchCoolerData,
+  fetchSSDData,
 } from './store/rawDataReducer'
 import store from './store/store'
 import config from './config/config'
@@ -22,14 +22,14 @@ import AppLayout from './module/common/appLayout/AppLayout'
 ReactGA.initialize(config.GA_TRACKING_ID)
 
 function App() {
-  store.dispatch(getCPUDataList())
-  store.dispatch(getGPUDataList())
-  store.dispatch(getMotherboardDataList())
-  store.dispatch(getRAMDataList())
-  store.dispatch(getPSUDataList())
-  store.dispatch(getCaseDataList())
-  store.dispatch(getCoolerDataList())
-  store.dispatch(getSSDDataList())
+  store.dispatch(fetchCPUData())
+  store.dispatch(fetchGPUData())
+  store.dispatch(fetchMotherboardData())
+  store.dispatch(fetchRAMData())
+  store.dispatch(fetchPSUData())
+  store.dispatch(fetchCaseData())
+  store.dispatch(fetchCoolerData())
+  store.dispatch(fetchSSDData())
 
   return (
     <Suspense fallback="loading">

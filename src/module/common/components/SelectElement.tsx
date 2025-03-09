@@ -13,6 +13,7 @@ import { styled } from '@mui/material/styles'
 import { addCurrencySign } from '../../../utils/NumberHelper'
 import { brandTranslationKey } from '../../../utils/LabelHelper'
 import { OptionType } from '../../../constant/objectTypes'
+import ProductEnum from '../../../constant/ProductEnum'
 
 type SelectElementProps = SelectProps & {
   label: string
@@ -20,7 +21,7 @@ type SelectElementProps = SelectProps & {
   placeholder?: string
   extraNum?: number
   options: OptionType[]
-  selectChange?: (value: string, type: string, num?: number) => void
+  selectChange?: (value: string, type: ProductEnum, num?: number) => void
   isLoading?: boolean
 }
 
@@ -102,8 +103,8 @@ const SelectElement = ({
   const handleChange = (event: any, value: any) => {
     // 直接调用父组件回调
     if (selectChange) {
-      console.log('value:', value)
-      selectChange(value?.name || "", label, extraNum);
+      console.log('value:', label)
+      selectChange(value?.name || "", label as ProductEnum, extraNum);
     }
   };
 
@@ -113,6 +114,7 @@ const SelectElement = ({
   return (
     <CustomAutocomplete
       disablePortal
+      fullWidth
       value={selectedOption}
       id={label}
       options={options}

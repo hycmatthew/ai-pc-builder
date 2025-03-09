@@ -98,7 +98,7 @@ const ComponentMenu = ({ dataState }: ComponentMenuProps) => {
     // dispatch(sliceActions.clearSelectedItem())
   }, [dispatch])
 
-  const changeSelectItem = (value: string, type: string, extraNum?: number) => {
+  const changeSelectItem = (value: string, type: ProductEnum, extraNum?: number) => {
     switch (type) {
       case ProductEnum.CPU: {
         const selectedItem = value ? searchCPUItem(cpuList, value) : null

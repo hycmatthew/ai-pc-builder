@@ -4,6 +4,7 @@ import {
   CardActions,
   Button,
   Grid2 as Grid,
+  Box,
 } from '@mui/material'
 import ProductEnum from '../../../constant/ProductEnum'
 import SelectElement from '../../common/components/SelectElement'
@@ -19,19 +20,102 @@ import {
 } from '../../common/utils/generateSelectElements'
 import { BuildLogicState } from '../store/aiLogicReducer'
 import { DataState } from '../../../store/rawDataReducer'
+import LockIcon from '@mui/icons-material/Lock'
+import { AnimatePresence, motion } from 'framer-motion'
 
 type SpecificComponentProps = {
-  rawData: DataState,
-  aiLogic: BuildLogicState,
-  changeSelectItem: (value: string, type: string, num?: number) => void
-};
+  rawData: DataState
+  aiLogic: BuildLogicState
+  changeSelectItem: (value: string, type: ProductEnum, num?: number) => void
+}
+
+// 動畫配置
+const containerVariants = {
+  unlocked: { width: '100%' },
+  locked: { width: 'calc(100% - 48px)' },
+}
+
+const lockIconVariants = {
+  initial: { scale: 0, opacity: 0 },
+  animate: { scale: 1, opacity: 1 },
+  exit: { scale: 0, opacity: 0 },
+}
+
+const ProductSelectGrid = ({
+  label,
+  options,
+  value,
+  lockStatus,
+  onChange
+}: {
+  label: string;
+  options: any[];
+  value: string;
+  lockStatus: boolean;
+  onChange: (value: string, type: ProductEnum, num?: number) => void
+}) => (
+  <Grid size={12}>
+    <Box
+      component={motion.div}
+      sx={{
+        display: 'flex',
+        alignItems: 'center',
+        position: 'relative',
+      }}
+      layout
+      animate={lockStatus ? 'locked' : 'unlocked'}
+      variants={containerVariants}
+      transition={{ duration: 0.3, ease: 'easeInOut' }}
+    >
+      <SelectElement
+        label={label}
+        value={value}
+        options={options}
+        selectChange={onChange}
+        sx={{
+          width: '100%',
+          transition: 'none',
+        }}
+      />
+
+      <AnimatedLockIcon visible={lockStatus} />
+    </Box>
+  </Grid>
+);
+
+const AnimatedLockIcon = ({ visible }: { visible: boolean }) => (
+  <AnimatePresence>
+    {visible && (
+      <motion.div
+        key="lock-icon"
+        initial="initial"
+        animate="animate"
+        exit="exit"
+        variants={lockIconVariants}
+        style={{
+          display: 'flex',
+          alignItems: 'center',
+        }}
+      >
+        <LockIcon
+          sx={{
+            margin: 'auto',
+            paddingLeft: '12px',
+            position: 'absolute',
+            color: 'primary.main',
+            fontSize: '1.2rem',
+          }}
+        />
+      </motion.div>
+    )}
+  </AnimatePresence>
+);
 
 function SpecificComponent({
   rawData,
   aiLogic,
   changeSelectItem,
 }: SpecificComponentProps) {
-
   const {
     cpuList,
     gpuList,
@@ -43,85 +127,78 @@ function SpecificComponent({
     coolerList,
   } = rawData
 
-  const {
-    preSelectedItem
-  } = aiLogic
+  const { preSelectedItem, lockItem } = aiLogic
 
+  const productConfigs = [
+    {
+      type: 'cpu',
+      label: ProductEnum.CPU,
+      options: generateCPUSelectElement(cpuList, preSelectedItem),
+      value: preSelectedItem.cpu?.Name || '',
+    },
+    {
+      type: 'gpu',
+      label: ProductEnum.GPU,
+      options: generateGPUSelectElement(gpuList, preSelectedItem),
+      value: preSelectedItem.gpu?.Name || '',
+    },
+    {
+      type: 'motherboard',
+      label: ProductEnum.Motherboard,
+      options: generateMotherboardSelectElement(motherboardList, preSelectedItem),
+      value: preSelectedItem.motherboard?.Name || '',
+    },
+    {
+      type: 'ram',
+      label: ProductEnum.RAM,
+      options: generateRAMSelectElement(ramList, preSelectedItem),
+      value: preSelectedItem.ram?.Name || '',
+    },
+    {
+      type: 'ssd',
+      label: ProductEnum.SSD,
+      options: generateSSDSelectElement(ssdList, preSelectedItem),
+      value: preSelectedItem.ssd?.Name || '',
+    },
+    {
+      type: 'psu',
+      label: ProductEnum.PSU,
+      options: generatePSUSelectElement(psuList, preSelectedItem),
+      value: preSelectedItem.psu?.Name || '',
+    },
+    {
+      type: 'case',
+      label: ProductEnum.ComputerCase,
+      options: generateCaseSelectElement(caseList, preSelectedItem),
+      value: preSelectedItem.pcCase?.Name || '',
+    },
+    {
+      type: 'cooler',
+      label: ProductEnum.Cooler,
+      options: generateAIOSelectElement(coolerList, preSelectedItem),
+      value: preSelectedItem.cooler?.Name || '',
+    },
+  ];
+  
   return (
     <Card sx={{ minWidth: 275 }}>
       <CardContent>
         <Grid container spacing={1}>
-          <Grid size={12}>
-            <SelectElement
-              label={ProductEnum.CPU}
-              value={preSelectedItem.cpu?.Name || ''}
-              options={generateCPUSelectElement(cpuList, preSelectedItem)}
-              selectChange={changeSelectItem}
+          {productConfigs.map(config => (
+            <ProductSelectGrid
+              key={config.type}
+              // productType={config.type as keyof typeof ProductEnum}
+              label={config.label}
+              options={config.options}
+              value={config.value}
+              lockStatus={lockItem[config.type as keyof typeof lockItem]}
+              onChange={changeSelectItem}
             />
-          </Grid>
-          <Grid size={12}>
-            <SelectElement
-              label={ProductEnum.GPU}
-              value={preSelectedItem.gpu?.Name || ''}
-              options={generateGPUSelectElement(gpuList)}
-              selectChange={changeSelectItem}
-            />
-          </Grid>
-          <Grid size={12}>
-            <SelectElement
-              label={ProductEnum.Motherboard}
-              value={preSelectedItem.motherboard?.Name || ''}
-              options={generateMotherboardSelectElement(
-                motherboardList,
-                preSelectedItem
-              )}
-              selectChange={changeSelectItem}
-            />
-          </Grid>
-          <Grid size={12}>
-            <SelectElement
-              label={ProductEnum.RAM}
-              value={preSelectedItem.ram?.Name || ''}
-              options={generateRAMSelectElement(ramList, preSelectedItem)}
-              selectChange={changeSelectItem}
-            />
-          </Grid>
-          <Grid size={12}>
-            <SelectElement
-              label={ProductEnum.SSD}
-              value={preSelectedItem.ssd?.Name || ''}
-              options={generateSSDSelectElement(ssdList)}
-              selectChange={changeSelectItem}
-            />
-          </Grid>
-          <Grid size={12}>
-            <SelectElement
-              label={ProductEnum.PSU}
-              value={preSelectedItem.psu?.Name || ''}
-              options={generatePSUSelectElement(psuList, preSelectedItem)}
-              selectChange={changeSelectItem}
-            />
-          </Grid>
-          <Grid size={12}>
-            <SelectElement
-              label={ProductEnum.ComputerCase}
-              value={preSelectedItem.pcCase?.Name || ''}
-              options={generateCaseSelectElement(caseList, preSelectedItem)}
-              selectChange={changeSelectItem}
-            />
-          </Grid>
-          <Grid size={12}>
-            <SelectElement
-              label={ProductEnum.Cooler}
-              value={preSelectedItem.cooler?.Name || ''}
-              options={generateAIOSelectElement(coolerList)}
-              selectChange={changeSelectItem}
-            />
-          </Grid>
+          ))}
         </Grid>
       </CardContent>
       <CardActions>
-        <Button size="small" onClick={()=>{}}>
+        <Button size="small" onClick={() => {}}>
           Learn More
         </Button>
       </CardActions>

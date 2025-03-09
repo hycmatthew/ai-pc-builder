@@ -1,50 +1,69 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useState, useCallback, useMemo } from 'react'
 import { useLocation } from 'react-router-dom'
 import ReactGA from 'react-ga4'
+import { useTranslation } from 'react-i18next'
+import { Dialog, DialogTitle } from '@mui/material'
 
 import './AppLayout.scss'
 import config from '../../../config/config'
 import HeaderLayout from './header'
 import CusTypography from '../components/CusTypography'
-import { Dialog, DialogTitle } from '@mui/material'
-import { useTranslation } from 'react-i18next'
 
-type Props = {
-  children: JSX.Element
+// 类型定义
+type AppLayoutProps = {
+  children: React.ReactNode
 }
 
-interface SimpleDialogProps {
+type LanguageConfig = {
+  code: string
+  displayText: string
+}
+
+// 全局语言配置
+const LANGUAGE_MAPPING: Record<string, LanguageConfig> = {
+  en: { code: 'en', displayText: 'EN' },
+  'zh-CN': { code: 'zh-CN', displayText: '简' },
+  'zh-TW': { code: 'zh-TW', displayText: '繁' },
+}
+
+// 提取独立Dialog组件
+interface LanguageDialogProps {
   open: boolean
   onClose: () => void
-  updateLang: (lang: string) => void
+  currentLanguage: string
+  onChangeLanguage: (lang: string) => void
 }
 
-function SimpleDialog(props: SimpleDialogProps) {
-  const LangMapping = {
-    en: 'US | EN',
-    'zh-CN': '簡體中文',
-    'zh-TW': '繁體中文',
-  }
-  const { onClose, open } = props
+const LanguageDialog = ({
+  open,
+  onClose,
+  currentLanguage,
+  onChangeLanguage,
+}: LanguageDialogProps) => {
   const { i18n } = useTranslation()
 
-  const handleClose = () => {
-    onClose()
-  }
-
-  const changeLanguage = (lng: keyof typeof LangMapping) => {
-    i18n.changeLanguage(lng)
-    props.updateLang(LangMapping[lng])
-    handleClose()
-  }
+  const handleLanguageChange = useCallback(
+    async (lng: string) => {
+      await i18n.changeLanguage(lng)
+      onChangeLanguage(lng)
+      onClose()
+    },
+    [i18n, onChangeLanguage, onClose]
+  )
 
   return (
-    <Dialog className="lang-dialog" onClose={handleClose} open={open}>
-      <DialogTitle>Change Lanuage</DialogTitle>
+    <Dialog className="lang-dialog" onClose={onClose} open={open}>
+      <DialogTitle>Select Language</DialogTitle>
       <div className="dialog-lang-btn-container">
-      {Object.keys(LangMapping).map((lng) => (
-          <button key={lng} onClick={() => changeLanguage(lng as keyof typeof LangMapping)}>
-            {LangMapping[lng as keyof typeof LangMapping]}
+        {Object.values(LANGUAGE_MAPPING).map((lang) => (
+          <button
+            key={lang.code}
+            className={`app-layout__lang-btn ${
+              currentLanguage === lang.code ? 'active' : ''
+            }`}
+            onClick={() => handleLanguageChange(lang.code)}
+          >
+            {lang.displayText}
           </button>
         ))}
       </div>
@@ -52,36 +71,71 @@ function SimpleDialog(props: SimpleDialogProps) {
   )
 }
 
-function AppLayout({ children }: Props) {
+// 主组件
+const AppLayout = ({ children }: AppLayoutProps) => {
   const location = useLocation()
-  const [open, setOpen] = useState(false)
-  const [curLang, setCurLang] = useState('US | EN')
+  const { i18n } = useTranslation()
+  const [dialogOpen, setDialogOpen] = useState(false)
+  const [currentLang, setCurrentLang] = useState(i18n.language)
 
-  const handleClickOpen = () => {
-    setOpen(true)
-  }
-
-  const handleClose = () => {
-    setOpen(false)
-  }
-
+  // GA跟踪
   useEffect(() => {
     if (config.CURRENT_ENV !== 'dev') {
-      ReactGA.send({ hitType: 'pageview', page: location.pathname })
+      ReactGA.send({
+        hitType: 'pageview',
+        page: location.pathname,
+        language: currentLang, // 添加语言维度
+      })
     }
-  }, [location])
+  }, [location, currentLang])
+
+  // 语言变化监听
+  useEffect(() => {
+    const handleLanguageChange = (lng: string) => {
+      setCurrentLang(lng)
+    }
+    i18n.on('languageChanged', handleLanguageChange)
+    return () => {
+      i18n.off('languageChanged', handleLanguageChange)
+    }
+  }, [i18n])
+
+  // 当前语言显示配置
+  const currentLanguageConfig = useMemo(
+    () => LANGUAGE_MAPPING[currentLang] || LANGUAGE_MAPPING.en,
+    [currentLang]
+  )
+
+  const handleDialogOpen = useCallback(() => {
+    setDialogOpen(true)
+  }, [])
+
+  const handleDialogClose = useCallback(() => {
+    setDialogOpen(false)
+  }, [])
 
   return (
-    <div>
-      <HeaderLayout></HeaderLayout>
-      <div className="main-page">{children}</div>
-      <div className="main-container">
-        <CusTypography variant="body1">
+    <div className="app-layout">
+      <HeaderLayout />
+
+      <main className="main-page">{children}</main>
+
+      <footer className="main-container">
+        <CusTypography variant="body2">
           {`©${new Date().getFullYear()} buildyourpc.com`}
         </CusTypography>
-        <button onClick={handleClickOpen}>{curLang}</button>
-        <SimpleDialog open={open} onClose={handleClose} updateLang={setCurLang} />
-      </div>
+
+        <button className="app-layout__current-lang" onClick={handleDialogOpen}>
+          {currentLanguageConfig.displayText}
+        </button>
+      </footer>
+
+      <LanguageDialog
+        open={dialogOpen}
+        onClose={handleDialogClose}
+        currentLanguage={currentLang}
+        onChangeLanguage={setCurrentLang}
+      />
     </div>
   )
 }

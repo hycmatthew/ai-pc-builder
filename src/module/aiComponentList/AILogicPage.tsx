@@ -29,6 +29,15 @@ import {
 } from '../common/utils/searchItemLogic'
 import { sliceActions } from './store/aiLogicReducer'
 
+type ProductHandlers = {
+  [key in ProductEnum]: {
+    searchFn: (list: any[], value: string) => any
+    listPath: string
+    updateAction: (payload: any) => any
+    lockAction: (payload: boolean) => any
+  }
+}
+
 function AILogicPage() {
   const dataState = useSelector((state: any) => {
     return state
@@ -90,79 +99,102 @@ function AILogicPage() {
       formData.type
     )
     if (res.cpu) {
-      changeSelectItem(res.cpu.name, ProductEnum.CPU)
+      changeSelectItem(res.cpu.name, ProductEnum.CPU, -1)
     }
     if (res.gpu) {
-      changeSelectItem(res.gpu.name, ProductEnum.GPU)
+      changeSelectItem(res.gpu.name, ProductEnum.GPU, -1)
     }
     if (res.motherboard) {
-      changeSelectItem(res.motherboard.name, ProductEnum.Motherboard)
+      changeSelectItem(res.motherboard.name, ProductEnum.Motherboard, -1)
     }
     if (res.ram) {
-      changeSelectItem(res.ram.name, ProductEnum.RAM)
+      changeSelectItem(res.ram.name, ProductEnum.RAM, -1)
     }
     if (res.ssd) {
-      changeSelectItem(res.ssd.name, ProductEnum.SSD)
+      changeSelectItem(res.ssd.name, ProductEnum.SSD, -1)
     }
     if (res.psu) {
-      changeSelectItem(res.psu.name, ProductEnum.PSU)
+      changeSelectItem(res.psu.name, ProductEnum.PSU, -1)
     }
     if (res.case) {
-      changeSelectItem(res.case.name, ProductEnum.ComputerCase)
+      changeSelectItem(res.case.name, ProductEnum.ComputerCase, -1)
     }
     if (res.cooler) {
-      changeSelectItem(res.cooler.name, ProductEnum.Cooler)
+      changeSelectItem(res.cooler.name, ProductEnum.Cooler, -1)
     }
   }
 
-  const changeSelectItem = (value: string, type: string, num?: number) => {
-    console.log('changeSelectItem', value, " - ", type)
-    switch (type) {
-      case ProductEnum.CPU: {
-        const selectedItem = value ? searchCPUItem(dataState.rawData.cpuList, value) : null
-        dispatch(sliceActions.updatePreSelectedCPU(selectedItem))
-        break
-      }
-      case ProductEnum.Motherboard: {
-        const selectedItem = value ? searchMotherboardItem(dataState.rawData.motherboardList, value) : null
-        dispatch(sliceActions.updatePreSelectedMotherboard(selectedItem))
-        break
-      }
-      case ProductEnum.GPU: {
-        const selectedItem = value ? searchGPUItem(dataState.rawData.gpuList, value) : null
-        dispatch(sliceActions.updatePreSelectedGPU(selectedItem))
-        break
-      }
-      case ProductEnum.RAM: {
-        const selectedItem = value ? searchRAMItem(dataState.rawData.ramList, value) : null
-        dispatch(sliceActions.updatePreSelectedRAM(selectedItem))
-        break
-      }
-      case ProductEnum.SSD: {
-        const selectedItem = value ? searchSSDItem(dataState.rawData.ssdList, value) : null
-        dispatch(sliceActions.updatePreSelectedSSD(selectedItem))
-        break
-      }
-      case ProductEnum.PSU: {
-        const selectedItem = value ? searchPSUItem(dataState.rawData.psuList, value) : null
-        console.log('selectedItem psu', selectedItem)
-        dispatch(sliceActions.updatePreSelectedPSU(selectedItem))
-        break
-      }
-      case ProductEnum.ComputerCase: {
-        const selectedItem = value ? searchCaseItem(dataState.rawData.caseList, value) : null
-        console.log('selectedItem case', selectedItem)
-        dispatch(sliceActions.updatePreSelectedCase(selectedItem))
-        break
-      }
-      case ProductEnum.Cooler: {
-        const selectedItem = value ? searchAIOItem(dataState.rawData.coolerList, value) : null
-        console.log('selectedItem cooler', selectedItem)
-        dispatch(sliceActions.updatePreSelectedCooler(selectedItem))
-        break
-      }
-      default:
-        break
+  // 配置映射
+  const PRODUCT_HANDLERS: ProductHandlers = {
+    [ProductEnum.CPU]: {
+      searchFn: searchCPUItem,
+      listPath: 'cpuList',
+      updateAction: sliceActions.updatePreSelectedCPU,
+      lockAction: sliceActions.updateCPULock,
+    },
+    [ProductEnum.Motherboard]: {
+      searchFn: searchMotherboardItem,
+      listPath: 'motherboardList',
+      updateAction: sliceActions.updatePreSelectedMotherboard,
+      lockAction: sliceActions.updateMotherboardLock,
+    },
+    [ProductEnum.GPU]: {
+      searchFn: searchGPUItem,
+      listPath: 'gpuList',
+      updateAction: sliceActions.updatePreSelectedGPU,
+      lockAction: sliceActions.updateGPULock,
+    },
+    [ProductEnum.RAM]: {
+      searchFn: searchRAMItem,
+      listPath: 'ramList',
+      updateAction: sliceActions.updatePreSelectedRAM,
+      lockAction: sliceActions.updateRAMLock,
+    },
+    [ProductEnum.SSD]: {
+      searchFn: searchSSDItem,
+      listPath: 'ssdList',
+      updateAction: sliceActions.updatePreSelectedSSD,
+      lockAction: sliceActions.updateSSDLock,
+    },
+    [ProductEnum.PSU]: {
+      searchFn: searchPSUItem,
+      listPath: 'psuList',
+      updateAction: sliceActions.updatePreSelectedPSU,
+      lockAction: sliceActions.updatePSULock,
+    },
+    [ProductEnum.ComputerCase]: {
+      searchFn: searchCaseItem,
+      listPath: 'caseList',
+      updateAction: sliceActions.updatePreSelectedCase,
+      lockAction: sliceActions.updateCaseLock,
+    },
+    [ProductEnum.Cooler]: {
+      searchFn: searchAIOItem,
+      listPath: 'coolerList',
+      updateAction: sliceActions.updatePreSelectedCooler,
+      lockAction: sliceActions.updateCoolerLock,
+    },
+  }
+
+  // 优化后的统一处理函数
+  const changeSelectItem = (value: string, type: ProductEnum, num?: number) => {
+    console.log('changeSelectItem', value, ' - ', type)
+
+    const handler = PRODUCT_HANDLERS[type]
+    if (!handler) {
+      console.error(`Invalid product type: ${type}`)
+      return
+    }
+
+    const productList = dataState.rawData[handler.listPath]
+    const selectedItem = value ? handler.searchFn(productList, value) : null
+
+    dispatch(handler.updateAction(selectedItem))
+
+    if (selectedItem && num != -1) {
+      dispatch(handler.lockAction(true))
+    } else {
+      dispatch(handler.lockAction(false))
     }
   }
 
@@ -218,7 +250,11 @@ function AILogicPage() {
             </Box>
           </Grid>
           <Grid size={6}>
-            <SpecificComponent rawData={dataState.rawData} aiLogic={dataState.aiLogic} changeSelectItem={changeSelectItem} />
+            <SpecificComponent
+              rawData={dataState.rawData}
+              aiLogic={dataState.aiLogic}
+              changeSelectItem={changeSelectItem}
+            />
           </Grid>
           <Grid size={6}></Grid>
         </Grid>
