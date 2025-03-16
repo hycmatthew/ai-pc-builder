@@ -2,6 +2,7 @@ import { isEmpty, sum, toNumber } from 'lodash'
 import i18n from '../config/i18n'
 import { CoolerType, MotherboardType, RAMType } from '../constant/objectTypes'
 import { SelectedItemType } from '../store/rawDataReducer'
+import { STR_CONSTANTS } from '../constant/StringConstant'
 
 export const getSelectedCurrency = () => {
   switch (i18n.language) {
@@ -37,7 +38,7 @@ export const stringToNumber = (str: string | undefined) => {
 }
 
 export const stringToNumberWithDP = (str: string) => {
-  if (isEmpty(str)) {
+  if (isEmpty(str) || str == STR_CONSTANTS.OUT_OF_STOCK) {
     return ''
   }
   return toNumber(str).toFixed(2)

@@ -1,5 +1,6 @@
 import { createSlice } from '@reduxjs/toolkit'
 import { SelectedItemType } from '../../../store/rawDataReducer'
+import { CaseType, CoolerType, CPUType, GPUType, MotherboardType, PSUType, RAMType, SSDType } from '../../../constant/objectTypes'
 
 export interface BuildLogicState {
   step: number
@@ -8,14 +9,14 @@ export interface BuildLogicState {
   normalUsage: number
   preSelectedItem: SelectedItemType
   lockItem: {
-    cpu: boolean
-    motherboard: boolean
-    gpu: boolean
-    ram: boolean
-    ssd: boolean
-    psu: boolean
-    pcCase: boolean
-    cooler: boolean
+    cpu: CPUType | null
+    motherboard: MotherboardType | null
+    gpu: GPUType | null
+    ram: RAMType | null
+    ssd: SSDType | null
+    psu: PSUType | null
+    pcCase: CaseType | null
+    cooler: CoolerType | null
   }
 }
 
@@ -35,14 +36,14 @@ const initialState: BuildLogicState = {
     cooler: null,
   },
   lockItem: {
-    cpu: false,
-    motherboard: false,
-    gpu: false,
-    ram: false,
-    ssd: false,
-    psu: false,
-    pcCase: false,
-    cooler: false,
+    cpu: null,
+    motherboard: null,
+    gpu: null,
+    ram: null,
+    ssd: null,
+    psu: null,
+    pcCase: null,
+    cooler: null,
   }
 }
 

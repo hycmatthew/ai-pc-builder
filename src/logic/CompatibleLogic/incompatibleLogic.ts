@@ -24,7 +24,7 @@ export const motherboardIncompatibleWithRam = (
   let result = false
   if (ram && motherboard) {
     result =
-      !motherboard.RamSupport.includes(ram.Speed.toString()) ||
+      !motherboard.RamSupport.includes(ram.Speed) ||
       !motherboard.RamType.includes(ram.Type)
   }
   return result

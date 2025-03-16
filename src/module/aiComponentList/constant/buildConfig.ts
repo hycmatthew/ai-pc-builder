@@ -26,6 +26,7 @@ const BuildConfig = {
   },
   PSUFactor: {
     PSUBudgetFactor: [0.01, 0.01, 0.008, 0.007, 0.005],
+    PSUSuggestion: ["seasonic-focus-gx-750-v4", "thermaltake-toughpower-gf-a3-750w", "lian-li-edge-gold-850w"]
   },
   CPUCoolerFactor: {
     CPUCoolerSuggestion: {

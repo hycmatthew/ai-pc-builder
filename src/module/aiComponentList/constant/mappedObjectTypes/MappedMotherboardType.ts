@@ -5,7 +5,7 @@ interface MappedMotherboardType {
   chipset: string
   ramSlot: number
   ramType: string
-  ramSupport: string[]
+  ramSupport: number[]
   ramMax: number
   formFactor: string
   price: number

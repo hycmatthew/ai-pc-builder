@@ -13,13 +13,14 @@ const customTheme = createTheme({
     h5: { fontSize: '1rem', fontWeight: 600 },
     h6: { fontSize: '0.875rem' },
     body1: { fontSize: '1rem', lineHeight: 1.5 },
-    body2: { fontSize: '0.875rem', lineHeight: 1.5 }
+    body2: { fontSize: '0.875rem', lineHeight: 1.5 },
+    caption: { fontSize: '0.75rem', lineHeight: 1.5 },
   }
 })
 
 // 擴展 Props 以支持多個 children 和其他 Typography 屬性
 interface CusTypographyProps extends TypographyProps {
-  variant: 'h1' | 'h2' | 'h3' | 'h4' | 'h5' | 'h6' | 'body1' | 'body2'
+  variant: 'h1' | 'h2' | 'h3' | 'h4' | 'h5' | 'h6' | 'body1' | 'body2' | 'caption'
   children?: React.ReactNode
 }
 

@@ -1,4 +1,5 @@
 interface MappedCaseType {
+  id: string
   brand: string
   name: string
   caseSize: string

@@ -60,7 +60,6 @@ const ProductSelectGrid = ({
       sx={{
         display: 'flex',
         alignItems: 'center',
-        position: 'relative',
       }}
       layout
       animate={lockStatus ? 'locked' : 'unlocked'}
@@ -77,7 +76,6 @@ const ProductSelectGrid = ({
           transition: 'none',
         }}
       />
-
       <AnimatedLockIcon visible={lockStatus} />
     </Box>
   </Grid>
@@ -135,48 +133,56 @@ function SpecificComponent({
       label: ProductEnum.CPU,
       options: generateCPUSelectElement(cpuList, preSelectedItem),
       value: preSelectedItem.cpu?.Name || '',
+      lockStatus: lockItem.cpu !== null,
     },
     {
       type: 'gpu',
       label: ProductEnum.GPU,
       options: generateGPUSelectElement(gpuList, preSelectedItem),
       value: preSelectedItem.gpu?.Name || '',
+      lockStatus: lockItem.gpu !== null,
     },
     {
       type: 'motherboard',
       label: ProductEnum.Motherboard,
       options: generateMotherboardSelectElement(motherboardList, preSelectedItem),
       value: preSelectedItem.motherboard?.Name || '',
+      lockStatus: lockItem.motherboard !== null,
     },
     {
       type: 'ram',
       label: ProductEnum.RAM,
       options: generateRAMSelectElement(ramList, preSelectedItem),
       value: preSelectedItem.ram?.Name || '',
+      lockStatus: lockItem.ram !== null,
     },
     {
       type: 'ssd',
       label: ProductEnum.SSD,
       options: generateSSDSelectElement(ssdList, preSelectedItem),
       value: preSelectedItem.ssd?.Name || '',
+      lockStatus: lockItem.ssd !== null,
     },
     {
       type: 'psu',
       label: ProductEnum.PSU,
       options: generatePSUSelectElement(psuList, preSelectedItem),
       value: preSelectedItem.psu?.Name || '',
+      lockStatus: lockItem.psu !== null,
     },
     {
       type: 'case',
       label: ProductEnum.ComputerCase,
       options: generateCaseSelectElement(caseList, preSelectedItem),
       value: preSelectedItem.pcCase?.Name || '',
+      lockStatus: lockItem.pcCase !== null,
     },
     {
       type: 'cooler',
       label: ProductEnum.Cooler,
       options: generateAIOSelectElement(coolerList, preSelectedItem),
       value: preSelectedItem.cooler?.Name || '',
+      lockStatus: lockItem.cooler !== null,
     },
   ];
   
@@ -187,11 +193,10 @@ function SpecificComponent({
           {productConfigs.map(config => (
             <ProductSelectGrid
               key={config.type}
-              // productType={config.type as keyof typeof ProductEnum}
               label={config.label}
               options={config.options}
               value={config.value}
-              lockStatus={lockItem[config.type as keyof typeof lockItem]}
+              lockStatus={config.lockStatus}
               onChange={changeSelectItem}
             />
           ))}

@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { useSelector } from 'react-redux'
 import {
   Box,
@@ -28,13 +28,14 @@ import {
   searchAIOItem,
 } from '../common/utils/searchItemLogic'
 import { sliceActions } from './store/aiLogicReducer'
+import ResultComponent from './components/ResultComponent'
 
 type ProductHandlers = {
   [key in ProductEnum]: {
     searchFn: (list: any[], value: string) => any
     listPath: string
     updateAction: (payload: any) => any
-    lockAction: (payload: boolean) => any
+    lockAction: (payload: any) => any
   }
 }
 
@@ -49,6 +50,20 @@ function AILogicPage() {
     budget: '',
     size: 'ATX',
   })
+  const [resData, setResData] = useState({
+    cpu: null,
+    motherboard: null,
+    gpu: null,
+    ram: null,
+    psu: null,
+    pcCase: null,
+    ssd: null,
+    cooler: null,
+  })
+
+  useEffect(() => {
+    setResData(dataState.aiLogic.preSelectedItem)
+  }, [dataState.aiLogic.preSelectedItem])
 
   const updateType = (event: any) => {
     setFormData((prevData) => ({
@@ -86,41 +101,61 @@ function AILogicPage() {
   }
 
   const generateListLogic = () => {
+    const logicItems = dataState.aiLogic.lockItem
+
+    const cpus = logicItems.cpu ? [logicItems.cpu] : dataState.rawData.cpuList
+    const gpus = logicItems.gpu ? [logicItems.gpu] : dataState.rawData.gpuList
+    const motherboards = logicItems.motherboard
+      ? [logicItems.motherboard]
+      : dataState.rawData.motherboardList
+    const rams = logicItems.ram ? [logicItems.ram] : dataState.rawData.ramList
+    const ssds = logicItems.ssd ? [logicItems.ssd] : dataState.rawData.ssdList
+    const cases = logicItems.pcCase
+      ? [logicItems.pcCase]
+      : dataState.rawData.caseList
+    const psus = logicItems.psu ? [logicItems.psu] : dataState.rawData.psuList
+    const coolers = logicItems.cooler
+      ? [logicItems.cooler]
+      : dataState.rawData.coolerList
+
     const res = preFilterDataLogic(
-      dataState.rawData.cpuList,
-      dataState.rawData.motherboardList,
-      dataState.rawData.gpuList,
-      dataState.rawData.ramList,
-      dataState.rawData.ssdList,
-      dataState.rawData.caseList,
-      dataState.rawData.psuList,
-      dataState.rawData.coolerList,
+      cpus,
+      motherboards,
+      gpus,
+      rams,
+      ssds,
+      cases,
+      psus,
+      coolers,
       Number(formData.budget),
       formData.type
     )
-    if (res.cpu) {
-      changeSelectItem(res.cpu.name, ProductEnum.CPU, -1)
-    }
-    if (res.gpu) {
-      changeSelectItem(res.gpu.name, ProductEnum.GPU, -1)
-    }
-    if (res.motherboard) {
-      changeSelectItem(res.motherboard.name, ProductEnum.Motherboard, -1)
-    }
-    if (res.ram) {
-      changeSelectItem(res.ram.name, ProductEnum.RAM, -1)
-    }
-    if (res.ssd) {
-      changeSelectItem(res.ssd.name, ProductEnum.SSD, -1)
-    }
-    if (res.psu) {
-      changeSelectItem(res.psu.name, ProductEnum.PSU, -1)
-    }
-    if (res.case) {
-      changeSelectItem(res.case.name, ProductEnum.ComputerCase, -1)
-    }
-    if (res.cooler) {
-      changeSelectItem(res.cooler.name, ProductEnum.Cooler, -1)
+    if (res !== null) {
+      if (res.cpu) {
+        changeSelectItem(res.cpu.name, ProductEnum.CPU, -1)
+      }
+      if (res.gpu) {
+        changeSelectItem(res.gpu.name, ProductEnum.GPU, -1)
+      }
+      if (res.motherboard) {
+        changeSelectItem(res.motherboard.name, ProductEnum.Motherboard, -1)
+      }
+      if (res.ram) {
+        changeSelectItem(res.ram.name, ProductEnum.RAM, -1)
+      }
+      if (res.ssd) {
+        changeSelectItem(res.ssd.name, ProductEnum.SSD, -1)
+      }
+      if (res.psu) {
+        changeSelectItem(res.psu.name, ProductEnum.PSU, -1)
+      }
+      if (res.case) {
+        changeSelectItem(res.case.name, ProductEnum.ComputerCase, -1)
+      }
+      if (res.cooler) {
+        changeSelectItem(res.cooler.name, ProductEnum.Cooler, -1)
+      }
+    } else {
     }
   }
 
@@ -192,9 +227,9 @@ function AILogicPage() {
     dispatch(handler.updateAction(selectedItem))
 
     if (selectedItem && num != -1) {
-      dispatch(handler.lockAction(true))
+      dispatch(handler.lockAction(selectedItem))
     } else {
-      dispatch(handler.lockAction(false))
+      dispatch(handler.lockAction(null))
     }
   }
 
@@ -256,7 +291,9 @@ function AILogicPage() {
               changeSelectItem={changeSelectItem}
             />
           </Grid>
-          <Grid size={6}></Grid>
+          <Grid size={12}>
+            <ResultComponent resultData={resData}></ResultComponent>
+          </Grid>
         </Grid>
       </div>
     </div>

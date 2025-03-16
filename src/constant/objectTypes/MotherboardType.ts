@@ -5,7 +5,7 @@ interface MotherboardType {
   Chipset: string
   RamSlot: number
   RamType: string
-  RamSupport: string[]
+  RamSupport: number[]
   RamMax: number
   Pcie16Slot: number
   Pcie4Slot: number

@@ -23,22 +23,6 @@ import {
   motherboardIncompatible,
 } from './compatibleLogic'
 
-/*  sort Logic tbc
-enum SortBy {
-  model = 'model',
-  speed = 'speed',
-  gpu = 'gpu',
-  chipset = 'chipset',
-  label = 'label',
-}
-
-const listSortingLogic = (arr: OptionType[], sortBy: SortBy) => {
-  return arr
-    .filter((item: any) => item.value !== '0.00')
-    .sort((a, b) => b.brand.concat(b[sortBy]).localeCompare(a.brand.concat(a[sortBy])))
-}
-*/
-
 export const generateCPUSelectElement = (
   list: CPUType[],
   selectedItems?: SelectedItemType

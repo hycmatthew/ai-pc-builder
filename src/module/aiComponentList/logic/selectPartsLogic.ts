@@ -8,33 +8,76 @@ import {
   RAMType,
   SSDType,
 } from '../../../constant/objectTypes'
-import {
-  ramPerformanceLogic,
-  ssdPerformanceLogic,
-} from '../../../logic/performanceLogic'
-import { getCurrentPriceNum } from '../../../utils/NumberHelper'
 import BuildConfig from '../constant/buildConfig'
-import {
-  MappedCaseType,
-  MappedCoolerType,
-  MappedCPUType,
-  MappedGPUType,
-  MappedMotherboardType,
-  MappedPSUType,
-  MappedRAMType,
-  MappedSSDType,
-} from '../constant/mappedObjectTypes'
-import { getPricingFactor } from './pricingLogic'
+import { estimateDefaultPrice, getPricingFactor } from './pricingLogic'
 import { findBestConfiguration } from './selectAlgorithm'
 import { selectBestCase } from './selectCase'
 import { selectBestCooler } from './selectCooler'
 import { selectBestPSU } from './selectPSULogic'
 import { selectBestSSD } from './selectSSD'
+import {
+  getMappedCases,
+  getMappedCoolers,
+  getMappedCPUs,
+  getMappedGPUs,
+  getMappedMotherboards,
+  getMappedPSUs,
+  getMappedRAMs,
+  getMappedSSDs,
+} from './getMappedData'
+import {
+  MappedCPUType,
+  MappedGPUType,
+  MappedMotherboardType,
+  MappedRAMType,
+  MappedSSDType,
+  MappedCaseType,
+  MappedPSUType,
+  MappedCoolerType,
+} from '../constant/mappedObjectTypes'
 
 const weights = {
   gaming: { cpu: 0.3, gpu: 0.6, ram: 0.1 }, // 游戏更依赖 GPU
   office: { cpu: 0.6, gpu: 0.2, ram: 0.2 }, // 办公更依赖 CPU
   rendering: { cpu: 0.5, gpu: 0.4, ram: 0.1 }, // 渲染依赖 CPU 和 GPU
+}
+
+interface CompatibilityFilters {
+  // CPU相关
+  cpuBrand?: string // CPU品牌（Intel, AMD）
+  cpuSocket?: string // CPU插槽类型（如LGA1700, AM5）
+
+  // 主板相关
+  mbFormFactor?: string // 主板尺寸（ATX, Micro-ATX, Mini-ITX）
+  mbSocket?: string
+  mbRamType?: string // 内存类型（DDR4, DDR5）
+  // pcieVersion?: number // PCIe版本（4.0, 5.0）
+
+  // 显卡相关
+  gpuLength?: number // 最大显卡长度（毫米）
+  // gpuPowerConnector?: string;  // 显卡电源接口（如8-pin, 12VHPWR）
+
+  // 内存相关
+  ramType?: string // 内存类型（DDR4, DDR5）
+  ramSpeed?: number // 内存基础频率（MHz）
+  ramSlots?: number // 主板内存插槽数量
+
+  // 存储相关
+  // sataPorts?: number;          // SATA接口数量
+  // m2Slots?: number;            // M.2插槽数量
+
+  // 机箱相关
+  caseCompatibility?: string[] // 支持的机箱类型
+  maxCoolerHeight?: number // 最大散热器高度
+  radiatorSupport?: number // 水冷支持
+  maxGPULength?: number // 最大显卡长度（毫米）
+
+  // 电源相关
+  psuSize?: string // 电源尺寸（ATX, SFX）
+
+  // 散热器相关
+  coolerSocket?: string[] // 支持的CPU插槽类型
+  coolerIsLiquid?: string // 散热器类型（风冷/水冷）
 }
 
 export const preFilterDataLogic = (
@@ -49,6 +92,53 @@ export const preFilterDataLogic = (
   budget: number,
   type: string
 ) => {
+  // 1. 识别用户已选组件并计算已用预算
+  const selectedComponents = {
+    cpu: cpuList.length === 1 ? cpuList[0] : undefined,
+    gpu: gpuList.length === 1 ? gpuList[0] : undefined,
+    motherboard: mbList.length === 1 ? mbList[0] : undefined,
+    ram: ramList.length === 1 ? ramList[0] : undefined,
+    ssd: ssdList.length === 1 ? ssdList[0] : undefined,
+    pcCase: caseList.length === 1 ? caseList[0] : undefined,
+    psu: psuList.length === 1 ? psuList[0] : undefined,
+    cooler: coolerList.length === 1 ? coolerList[0] : undefined,
+  }
+
+  // 计算需要预留的默认组件预算
+  const usedBudget = estimateDefaultPrice(
+    ssdList,
+    caseList,
+    psuList,
+    coolerList
+  )
+  const availableBudget = budget - usedBudget * 0.9
+  console.log('availableBudget : ', availableBudget)
+
+  if (availableBudget < 0) return null
+
+  // 2. 建立兼容性过滤器
+  const filters: CompatibilityFilters = {
+    // CPU相关
+    cpuBrand: selectedComponents.cpu?.Brand,
+    cpuSocket: selectedComponents.cpu?.Socket,
+    // 主板相关
+    mbSocket: selectedComponents.motherboard?.Socket,
+    mbFormFactor: selectedComponents.motherboard?.FormFactor,
+    mbRamType: selectedComponents.motherboard?.RamType,
+    // 显卡相关
+    gpuLength: selectedComponents.gpu?.Length,
+    // 内存相关
+    ramSpeed: selectedComponents.ram?.Speed,
+    ramSlots: selectedComponents.ram?.Channel,
+    ramType: selectedComponents.ram?.Type,
+    // 机箱相关
+    caseCompatibility: selectedComponents.pcCase?.Compatibility,
+    maxGPULength: selectedComponents.pcCase?.MaxVGAlength,
+    maxCoolerHeight: selectedComponents.pcCase?.MaxCpuCoolorHeight,
+    radiatorSupport: selectedComponents.pcCase?.RadiatorSupport,
+    psuSize: selectedComponents.psu?.Size,
+  }
+
   const selectedWeights = weights['gaming']
   const cpuBudget =
     budget * getPricingFactor(budget, BuildConfig.CPUFactor.CPUBudgetFactor)
@@ -57,169 +147,53 @@ export const preFilterDataLogic = (
   const ssdBudget =
     budget * getPricingFactor(budget, BuildConfig.SSDFactor.SSDBudgetFactor)
 
-  const mappedCPUs: MappedCPUType[] = cpuList
-    .filter((item) => {
-      const price = getCurrentPriceNum(item)
-      return price < cpuBudget && price != 0
-    })
-    .map((item) => {
-      return {
-        name: item.Name,
-        brand: item.Brand,
-        socket: item.Socket,
-        gpu: item.GPU,
-        score:
-          item.SingleCoreScore * BuildConfig.CPUFactor.SingleCoreMultiply +
-          item.MultiCoreScore * BuildConfig.CPUFactor.MultiCoreMultiply,
-        integratedGraphicsScore:
-          item.IntegratedGraphicsScore * BuildConfig.GPUFactor.GPUScoreMultiply,
-        power: item.Power,
-        price: getCurrentPriceNum(item),
-      }
-    })
-
-  const mappedGPUs: MappedGPUType[] = gpuList
-    .filter((item) => {
-      const price = getCurrentPriceNum(item)
-      return price < gpuBudget && price != 0
-    })
-    .map((item) => {
-      return {
-        name: item.Name,
-        brand: item.Brand,
-        score: item.Benchmark * BuildConfig.GPUFactor.GPUScoreMultiply,
-        power: item.Power,
-        length: item.Length,
-        price: getCurrentPriceNum(item),
-      }
-    })
-
-  const mappedMotherboards: MappedMotherboardType[] = mbList
-    .filter((item) => {
-      const price = getCurrentPriceNum(item)
-      return price < cpuBudget && price != 0
-    })
-    .map((item) => {
-      return {
-        name: item.Name,
-        brand: item.Brand,
-        socket: item.Socket,
-        chipset: item.Chipset,
-        ramSlot: item.RamSlot,
-        ramType: item.RamType,
-        ramSupport: item.RamSupport,
-        ramMax: item.RamMax,
-        formFactor: item.FormFactor,
-        price: getCurrentPriceNum(item),
-      }
-    })
-
-  const mappedRAMs: MappedRAMType[] = ramList
-    .filter((item) => {
-      const price = getCurrentPriceNum(item)
-      return price < cpuBudget && price != 0
-    })
-    .map((item) => {
-      return {
-        name: item.Name,
-        brand: item.Brand,
-        capacity: item.Capacity,
-        type: item.Type,
-        channel: item.Channel,
-        profile: item.Profile,
-        score: ramPerformanceLogic(item),
-        price: getCurrentPriceNum(item),
-      }
-    })
-
-  const mappedSSDs: MappedSSDType[] = ssdList
-    .filter((item) => {
-      const price = getCurrentPriceNum(item)
-      return price < ssdBudget && price != 0 && (item.Capacity == "1000 GB" || item.Capacity == "1TB")
-    })
-    .map((item) => {
-      return {
-        name: item.Name,
-        brand: item.Brand,
-        capacity: item.Capacity,
-        formFactor: item.FormFactor,
-        score: ssdPerformanceLogic(item),
-        price: getCurrentPriceNum(item),
-      }
-    })
-
-  const mappedPSUs: MappedPSUType[] = psuList.map((item) => {
-    return {
-      brand: item.Brand,
-      name: item.Name,
-      wattage: item.Wattage,
-      size: item.Size,
-      standard: item.Standard,
-      modular: item.Modular,
-      efficiency: item.Efficiency,
-      length: item.Length,
-      price: getCurrentPriceNum(item),
-    }
-  })
-
-  const mappedCases: MappedCaseType[] = caseList.map((item) => {
-    return {
-      brand: item.Brand,
-      name: item.Name,
-      caseSize: item.CaseSize,
-      powerSupply: item.PowerSupply,
-      compatibility: item.Compatibility,
-      maxVGAlength: item.MaxVGAlength,
-      radiatorSupport: item.RadiatorSupport,
-      maxCpuCoolorHeight: item.MaxCpuCoolorHeight,
-      price: getCurrentPriceNum(item),
-    }
-  })
-
-  const mappedCoolers: MappedCoolerType[] = coolerList.map((item) => {
-    return {
-      brand: item.Brand,
-      name: item.Name,
-      sockets: item.Sockets,
-      isLiquidCooler: item.IsLiquidCooler,
-      liquidCoolerSize: item.LiquidCoolerSize,
-      airCoolerHeight: item.AirCoolerHeight,
-      noiseLevel: item.NoiseLevel,
-      price: getCurrentPriceNum(item),
-    }
-  })
+  const mappedCPUs = getMappedCPUs(cpuList, cpuBudget, filters.mbSocket)
+  const mappedGPUs = getMappedGPUs(gpuList, gpuBudget, filters.maxGPULength)
+  const mappedMotherboards = getMappedMotherboards(
+    mbList,
+    cpuBudget,
+    filters.cpuSocket,
+    filters.ramSpeed,
+    filters.ramSlots,
+    filters.ramType,
+    filters.caseCompatibility
+  )
+  const mappedRAMs = getMappedRAMs(
+    ramList,
+    ssdBudget,
+    filters.cpuBrand,
+    filters.mbRamType
+  )
+  const mappedSSDs = getMappedSSDs(ssdList, ssdBudget)
+  const mappedPSUs = getMappedPSUs(psuList, availableBudget)
+  const mappedCases = getMappedCases(
+    caseList,
+    filters.mbFormFactor,
+    filters.gpuLength,
+    availableBudget
+  )
+  const mappedCoolers = getMappedCoolers(
+    coolerList,
+    filters.maxCoolerHeight,
+    filters.radiatorSupport,
+    availableBudget
+  )
 
   const bestConfig = findBestConfiguration(
     mappedCPUs,
     mappedGPUs,
     mappedMotherboards,
     mappedRAMs,
-    budget,
+    availableBudget,
     selectedWeights
   )
   let bestSSD = null
   let bestPsu = null
   let bestCase = null
   let bestCooler = null
-  console.log(mappedRAMs)
-  console.log(bestConfig)
+
   if (bestConfig) {
-    const totalPrice =
-      bestConfig.cpu.price +
-      bestConfig.motherboard.price +
-      bestConfig.ram.price +
-      (bestConfig.gpu ? bestConfig.gpu.price : 0)
-    const totalScore =
-      bestConfig.cpu.score +
-      bestConfig.ram.score +
-      (bestConfig.gpu
-        ? bestConfig.gpu.score
-        : bestConfig.cpu.integratedGraphicsScore)
-
-    console.log('总价格:', totalPrice)
-    console.log('总性能分数:', totalScore)
-
-    bestSSD = selectBestSSD(mappedSSDs, BuildConfig.SSDFactor.SSDSuggestion)
+    bestSSD = selectBestSSD(mappedSSDs)
 
     const totalPower =
       bestConfig.cpu.power + (bestConfig.gpu ? bestConfig.gpu.power : 0)
@@ -233,11 +207,30 @@ export const preFilterDataLogic = (
     if (bestCase) {
       bestCooler = selectBestCooler(bestConfig.cpu, bestCase, mappedCoolers)
     }
-    console.log(bestSSD)
-    console.log(bestPsu)
-    console.log(bestCase)
-    console.log(bestCooler)
   }
+
+  const calRes = calculateTotal({
+    cpu: bestConfig?.cpu,
+    gpu: bestConfig?.gpu,
+    motherboard: bestConfig?.motherboard,
+    ram: bestConfig?.ram,
+    ssd: bestSSD,
+    psu: bestPsu,
+    pcCase: bestCase,
+    cooler: bestCooler,
+  })
+  console.log('price:', calRes.price)
+  console.log('score:', calRes.score)
+  console.log({
+    cpu: bestConfig?.cpu,
+    gpu: bestConfig?.gpu,
+    motherboard: bestConfig?.motherboard,
+    ram: bestConfig?.ram,
+    ssd: bestSSD,
+    psu: bestPsu,
+    case: bestCase,
+    cooler: bestCooler,
+  })
 
   return {
     cpu: bestConfig?.cpu,
@@ -248,5 +241,48 @@ export const preFilterDataLogic = (
     psu: bestPsu,
     case: bestCase,
     cooler: bestCooler,
+  }
+}
+
+interface CalculationResult {
+  price: number
+  score: number
+}
+
+type HardwareComponents = {
+  cpu?: MappedCPUType
+  gpu?: MappedGPUType
+  motherboard?: MappedMotherboardType // 假设这些类型都有 price 属性
+  ram?: MappedRAMType
+  ssd?: MappedSSDType | null
+  pcCase?: MappedCaseType | null
+  psu?: MappedPSUType | null
+  cooler?: MappedCoolerType | null
+}
+
+function calculateTotal(components: HardwareComponents): CalculationResult {
+  // 计算总价格
+  const totalPrice = Object.values(components)
+    .filter(Boolean)
+    .reduce((sum, component) => sum + (component?.price || 0), 0)
+
+  // 计算总分数
+  let totalScore = 0
+
+  // CPU 基础分数
+  if (components.cpu) {
+    totalScore += components.cpu.score || 0
+  }
+
+  // 图形分数处理
+  if (components.gpu) {
+    totalScore += components.gpu.score || 0
+  } else if (components.cpu) {
+    totalScore += components.cpu.integratedGraphicsScore || 0
+  }
+
+  return {
+    price: totalPrice,
+    score: totalScore,
   }
 }

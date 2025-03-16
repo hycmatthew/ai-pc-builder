@@ -1,4 +1,5 @@
 interface CoolerType {
+  Id: string
   Brand: string
   Name: string
   ReleaseDate: string
