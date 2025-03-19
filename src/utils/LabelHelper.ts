@@ -5,7 +5,8 @@ import { addCurrencySign } from './NumberHelper'
 
 export const brandTranslationKey = (brand: string) => {
   const brandKey = brand.toLowerCase().replace('.', '').replace(' ', '-')
-  return i18n.exists(brandKey) ? brandKey : brand
+  // console.log(brandKey + '-' + t('brandKey'))
+  return i18n.exists(brandKey) ? t(brandKey) : brand
 }
 
 export const generateItemName = (brand: string, name: string) => {

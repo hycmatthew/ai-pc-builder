@@ -5,7 +5,6 @@ import {
   RAMType,
   CaseType,
   CoolerType,
-  FanType,
 } from '../../constant/objectTypes'
 
 // Motherboard CPU
@@ -16,26 +15,20 @@ export const cpuIncompatibleWithMotherboard = (
   return cpu && motherboard ? motherboard.Socket !== cpu.Socket : false
 }
 
-// Motherboard CPU
+// Motherboard RAM
 export const motherboardIncompatibleWithRam = (
   motherboard: MotherboardType | null,
-  ram: RAMType
+  ram: RAMType | null
 ) => {
-  let result = false
-  if (ram && motherboard) {
-    result =
-      !motherboard.RamSupport.includes(ram.Speed) ||
-      !motherboard.RamType.includes(ram.Type)
-  }
-  return result
+  return ram && motherboard ? motherboard.RamType != ram.Type : false
 }
 
 // Motherboard Case
 export const motherboardIncompatibleWithCase = (
-  pcCase: CaseType,
+  pcCase: CaseType | null,
   motherboard: MotherboardType | null
 ) => {
-  return motherboard && pcCase.Compatibility
+  return motherboard && pcCase
     ? !pcCase.Compatibility.includes(motherboard.FormFactor)
     : false
 }
@@ -48,28 +41,21 @@ export const gpuIncompatibleWithCase = (
   return gpu && pcCase ? gpu.Length > pcCase.MaxVGAlength : false
 }
 
-export const caseIncompatibleWithAIO = (
-  pcCase: CaseType,
-  aio: CoolerType | null
+export const aioIncompatibleWithCase = (
+  cooler: CoolerType | null,
+  pcCase: CaseType | null,
 ) => {
-  /*
-  const listOfAIOSize: number[] = [120, 140, 240, 280, 360, 420]
-  let radiatorSupportList: number[] = []
-  for (const item of listOfAIOSize) {
-    if (pcCase.RadiatorSupport >= item) {
-      radiatorSupportList.push(item)
-    }
-  }
-  */
-  return aio && pcCase ? aio.LiquidCoolerSize > pcCase.RadiatorSupport : false
+  return cooler && pcCase && cooler.IsLiquidCooler
+    ? cooler.LiquidCoolerSize > pcCase.RadiatorSupport
+    : false
 }
 
 export const airCoolerIncompatibleWithCase = (
-  airCooler: FanType,
+  airCooler: CoolerType | null,
   pcCase: CaseType | null
 ) => {
-  return airCooler && pcCase
-    ? airCooler.maxCoolerHeight > pcCase.MaxCpuCoolorHeight
+  return airCooler && !airCooler.IsLiquidCooler && pcCase
+    ? airCooler.AirCoolerHeight > pcCase.MaxCpuCoolorHeight
     : false
 }
 

@@ -29,6 +29,7 @@ import {
 } from '../common/utils/searchItemLogic'
 import { sliceActions } from './store/aiLogicReducer'
 import ResultComponent from './components/ResultComponent'
+import CompatibleSection from '../componentList/components/CompatibleSection'
 
 type ProductHandlers = {
   [key in ProductEnum]: {
@@ -289,6 +290,11 @@ function AILogicPage() {
               rawData={dataState.rawData}
               aiLogic={dataState.aiLogic}
               changeSelectItem={changeSelectItem}
+            />
+          </Grid>
+          <Grid size={6}>
+            <CompatibleSection
+              selectedItems={dataState.aiLogic.preSelectedItem}
             />
           </Grid>
           <Grid size={12}>

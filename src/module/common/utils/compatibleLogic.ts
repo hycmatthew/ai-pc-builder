@@ -13,7 +13,7 @@ import {
   psuPowerNotEnough,
   gpuIncompatibleWithCase,
   motherboardIncompatibleWithCase,
-  caseIncompatibleWithAIO,
+  aioIncompatibleWithCase,
   airCoolerIncompatibleWithCase,
 } from '../../../logic/CompatibleLogic/incompatibleLogic'
 import { getTotalPower } from '../../../utils/NumberHelper'
@@ -69,7 +69,7 @@ export const caseIncompatible = (
     item,
     selectedItems.motherboard
   )
-  const aioValid = caseIncompatibleWithAIO(item, selectedItems.cooler)
+  const aioValid = aioIncompatibleWithCase(item, selectedItems.cooler)
   return gpuLengthValid || motherboardValid || aioValid
 }
 

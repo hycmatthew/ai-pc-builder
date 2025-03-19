@@ -2,6 +2,7 @@ import i18n from 'i18next'
 import Backend from 'i18next-http-backend';
 import LanguageDetector from 'i18next-browser-languagedetector'
 import { initReactI18next } from 'react-i18next'
+import { DEFAULT_LANG, SUPPORTED_LANGS } from '../constant/supportedLang';
 
 const DETECTION_OPTIONS = {
   caches: ['localStorage'],
@@ -14,7 +15,8 @@ i18n
   .use(LanguageDetector)
   .init({
     detection: DETECTION_OPTIONS,
-    fallbackLng: 'en',
+    supportedLngs: SUPPORTED_LANGS,
+    fallbackLng: DEFAULT_LANG,
     ns: ['translation'],
     defaultNS: 'translation',
     backend: {

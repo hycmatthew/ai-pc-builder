@@ -153,7 +153,7 @@ const ResultCard: React.FC<{
   type: keyof typeof componentConfig
   price: string
   data?: any
-}> = ({ type, data }) => {
+}> = ({ type, price, data }) => {
   const config = componentConfig[type]
 
   if (!data) return null
@@ -171,7 +171,7 @@ const ResultCard: React.FC<{
           },
           // 副标题样式
           '& .MuiCardHeader-subheader': {
-            fontSize: '0.875rem',
+            fontSize: '0.75rem',
           },
         }}
       />
@@ -186,7 +186,10 @@ const ResultCard: React.FC<{
           backgroundColor: 'grey.100', // 加载前的背景色
         }}
         alt="The house from the offer."
-        src={data.Img}
+        src={
+          data.Img ||
+          `https://placehold.co/600x400?text=${data.Brand} ${data.Name}`
+        }
       />
       <CardContent>
         <Grid container spacing={2}>
@@ -198,9 +201,11 @@ const ResultCard: React.FC<{
               <CusTypography variant="caption">{data[prop.key]}</CusTypography>
             </Grid>
           ))}
-          <Grid>
-            <CusTypography variant="h6" color="primary"></CusTypography>
-          </Grid>
+        </Grid>
+        <Grid>
+          <CusTypography variant="h6" color="primary">
+            {price}
+          </CusTypography>
         </Grid>
       </CardContent>
     </Card>

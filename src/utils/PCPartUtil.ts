@@ -18,7 +18,7 @@ export const getTotalPrice = (selectedItems: SelectedItemType) => {
     selectedItems.psu?.[getSelectedCurrency()],
     selectedItems.ssd?.[getSelectedCurrency()],
     selectedItems.cooler?.[getSelectedCurrency()],
-    selectedItems.fan?.[getSelectedCurrency()],
+    // selectedItems.fan?.[getSelectedCurrency()],
     selectedItems.pcCase?.[getSelectedCurrency()],
   ]
 

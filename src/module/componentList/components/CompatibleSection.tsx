@@ -4,7 +4,7 @@ import Container from '@mui/material/Container'
 import Stack from '@mui/material/Stack'
 import CancelRoundedIcon from '@mui/icons-material/CancelRounded'
 import WarningRoundedIcon from '@mui/icons-material/WarningRounded'
-import CheckCircleIcon from '@mui/icons-material/CheckCircle';
+import CheckCircleIcon from '@mui/icons-material/CheckCircle'
 import styled from '@emotion/styled'
 import { Grid2 as Grid } from '@mui/material'
 
@@ -16,13 +16,18 @@ import {
   psuPowerNotEnough,
   gpuIncompatibleWithCase,
   motherboardIncompatibleWithCase,
-  caseIncompatibleWithAIO,
+  aioIncompatibleWithCase,
+  airCoolerIncompatibleWithCase,
 } from '../../../logic/CompatibleLogic/incompatibleLogic'
 import {
   gpuMatchcpuSuggestion,
+  motherboardChipsetSuggestion,
+  motherboardIncompatibleWithRamSpeed,
+  motherboardOverclockSuggestion,
   ramProfileIsNotMatchCPU,
   ramSizeSuggestion,
 } from '../../../logic/CompatibleLogic/suggestionLogic'
+import { useMemo } from 'react'
 
 type CompatibleSectionProps = {
   selectedItems: SelectedItemType
@@ -53,102 +58,150 @@ type SuggestionType = {
   type: string
 }
 
+type SuggestionConfig = {
+  condition: boolean
+  messageKey: string
+  type: 'warning' | 'suggestion'
+  interpolation?: Record<string, unknown>
+}
+
 const CompatibleSection = ({ selectedItems }: CompatibleSectionProps) => {
   const { t } = useTranslation()
-
   const { cpu, gpu, motherboard, ram, psu, pcCase, cooler } = selectedItems
 
-  const createSuggestion = () => {
-    const suggestion: SuggestionType[] = []
-    if (cpuIncompatibleWithMotherboard(cpu, motherboard)) {
-      suggestion.push({
-        value: t('warning-motherboard-cpu-incompatible'),
+  // 使用 useMemo 缓存计算结果
+  const suggestions = useMemo(() => {
+    // 集中管理校验规则配置
+    const validationRules: SuggestionConfig[] = [
+      // 警告类规则
+      {
+        condition: cpuIncompatibleWithMotherboard(cpu, motherboard),
+        messageKey: 'warning-motherboard-cpu-incompatible',
         type: 'warning',
-      })
-    }
-    if (psu && psuPowerNotEnough(psu.Wattage, getTotalPower(selectedItems))) {
-      suggestion.push({ value: t('warning-power-not-enough'), type: 'warning' })
-    }
-    if (pcCase && gpuIncompatibleWithCase(pcCase, gpu)) {
-      suggestion.push({
-        value: t('warning-gpu-case-incompatible', { gpu: gpu?.Length , case: pcCase.MaxVGAlength }),
+      },
+      {
+        condition:
+          Boolean(psu) &&
+          psuPowerNotEnough(psu!.Wattage, getTotalPower(selectedItems)),
+        messageKey: 'warning-power-not-enough',
         type: 'warning',
-      })
-    }
-    if (pcCase && motherboardIncompatibleWithCase(pcCase, motherboard)) {
-      suggestion.push({
-        value: t('warning-motherboard-case-incompatible', { mb: motherboard?.FormFactor }),
+      },
+      {
+        condition: gpuIncompatibleWithCase(pcCase, gpu),
+        messageKey: 'warning-gpu-case-incompatible',
         type: 'warning',
-      })
-    }
-    if (pcCase && caseIncompatibleWithAIO(pcCase, cooler)) {
-      suggestion.push({
-        value: t('warning-air-cooler-case-incompatible'),
+        interpolation: {
+          gpu: gpu?.Length,
+          case: pcCase?.MaxVGAlength,
+        },
+      },
+      {
+        condition: motherboardIncompatibleWithCase(pcCase, motherboard),
+        messageKey: 'warning-motherboard-case-incompatible',
         type: 'warning',
-      })
-    }
+        interpolation: {
+          mb: motherboard?.FormFactor,
+        },
+      },
+      {
+        condition: aioIncompatibleWithCase(cooler, pcCase),
+        messageKey: 'warning-aio-cooler-case-incompatible',
+        type: 'warning',
+      },
+      {
+        condition: airCoolerIncompatibleWithCase(cooler, pcCase),
+        messageKey: 'warning-air-cooler-case-incompatible',
+        type: 'warning',
+      },
+      {
+        condition: motherboardIncompatibleWithRam(motherboard, ram),
+        messageKey: 'suggestion-ram-motherboard-incompatible',
+        type: 'suggestion',
+        interpolation: {
+          ram: ram?.Type,
+        },
+      },
 
-    // suggestion
-    if (ram && motherboardIncompatibleWithRam(motherboard, ram)) {
-      suggestion.push({
-        value: t('suggestion-ram-motherboard-incompatible', { ram: ram?.Speed }),
+      // 建议类规则
+      // Motherboard Overclock Suggestion
+      {
+        condition: motherboardOverclockSuggestion(cpu, motherboard),
+        messageKey: 'suggestion-motherboard-overclock',
         type: 'suggestion',
-      })
-    }
-    if (ram && ramProfileIsNotMatchCPU(ram, cpu)) {
-      suggestion.push({
-        value: t('suggestion-ram-profile-not-match'),
+      },
+      {
+        condition: motherboardChipsetSuggestion(cpu, motherboard),
+        messageKey: 'suggestion-motherboard-type',
         type: 'suggestion',
-      })
-    }
-    if (gpu && cpu && gpuMatchcpuSuggestion(gpu, cpu)) {
-      suggestion.push({
-        value: t('suggestion-gpu-cpu-not-match'),
+      },
+      {
+        condition: motherboardIncompatibleWithRamSpeed(motherboard, ram),
+        messageKey: 'suggestion-ram-motherboard-incompatible-speed',
         type: 'suggestion',
-      })
-    }
+        interpolation: {
+          ram: ram?.Speed,
+        },
+      },
+      {
+        condition: ramProfileIsNotMatchCPU(ram, cpu),
+        messageKey: 'suggestion-ram-profile-not-match',
+        type: 'suggestion',
+      },
+      {
+        condition: gpuMatchcpuSuggestion(gpu, cpu),
+        messageKey: 'suggestion-gpu-cpu-not-match',
+        type: 'suggestion',
+      },
+      {
+        condition: ramSizeSuggestion(ram),
+        messageKey: 'suggestion-ram-capacity',
+        type: 'suggestion',
+      },
+    ]
 
-    if (ram && ramSizeSuggestion(ram)) {
-      suggestion.push({
-        value: t('suggestion-ram-capacity'),
-        type: 'suggestion',
-      })
-    }
-    return suggestion
+    return validationRules.reduce<SuggestionType[]>((acc, rule) => {
+      if (rule.condition) {
+        acc.push({
+          value: t(rule.messageKey, rule.interpolation),
+          type: rule.type,
+        })
+      }
+      return acc
+    }, [])
+  }, [selectedItems, t])
+
+  // 统一渲染消息组件
+  const renderMessage = (item: SuggestionType) => {
+    const IconComponent =
+      item.type === 'warning' ? CancelRoundedIcon : WarningRoundedIcon
+    const StackComponent = item.type === 'warning' ? ErrorStack : WarningStack
+
+    return (
+      <StackComponent
+        direction="row"
+        alignItems="flex-start"
+        spacing={2}
+        key={`${item.type}-${item.value}`}
+      >
+        <IconComponent fontSize="small" sx={{ mt: '3px' }} />
+        <Typography
+          variant="body2"
+          dangerouslySetInnerHTML={{ __html: item.value }}
+          sx={{ lineHeight: 1.4 }}
+        />
+      </StackComponent>
+    )
   }
-
-  const suggestions = createSuggestion()
 
   return (
     <CustomContainer>
       <Grid container spacing={2}>
         <Grid size={12}>
-          {suggestions.map((item: SuggestionType) =>
-            item.type === 'warning' ? (
-              <ErrorStack
-                direction="row"
-                alignItems="center"
-                spacing={2}
-                key={item.value}
-              >
-                <CancelRoundedIcon style={{ alignSelf: "flex-start" }} />
-                <Typography variant="body2" dangerouslySetInnerHTML={{ __html: item.value }}></Typography>
-              </ErrorStack>
-            ) : (
-              <WarningStack
-                direction="row"
-                alignItems="center"
-                spacing={2}
-                key={item.value}
-              >
-                <WarningRoundedIcon style={{ alignSelf: "flex-start" }} />
-                <Typography variant="body2" dangerouslySetInnerHTML={{ __html: item.value }}></Typography>
-              </WarningStack>
-            )
-          )}
+          {suggestions.map(renderMessage)}
+
           {suggestions.length === 0 && (
-            <GreenStack direction="row" alignItems="center" spacing={2}>
-              <CheckCircleIcon style={{ alignSelf: "flex-start" }} />
+            <GreenStack direction="row" alignItems="flex-start" spacing={2}>
+              <CheckCircleIcon fontSize="small" sx={{ mt: '3px' }} />
               <Typography variant="body2">{t('no-suggestion')}</Typography>
             </GreenStack>
           )}

@@ -58,7 +58,7 @@ const LanguageDialog = ({
         {Object.values(LANGUAGE_MAPPING).map((lang) => (
           <button
             key={lang.code}
-            className={`app-layout__lang-btn ${
+            className={`app-layout-lang-btn ${
               currentLanguage === lang.code ? 'active' : ''
             }`}
             onClick={() => handleLanguageChange(lang.code)}

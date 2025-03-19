@@ -10,10 +10,52 @@ import GPUBenchmarksTable from './components/GPUBenchmarksTable'
 import RAMBenchmarksTable from './components/RAMBenchmarks'
 
 const CustomTabs = styled(Tabs)({
-  '.MuiButtonBase-root': {
-    outline: 'none',
+  // 隐藏默认底部指示条
+  '& .MuiTabs-indicator': {
+    display: 'none'
   },
+  // 选项卡容器
+  '& .MuiTabs-flexContainer': {
+    gap: '4px',
+    position: 'relative'
+  }
 })
+
+const IosSegmentedTab = styled(Tab)({
+  // 基础样式
+  zIndex: 1,
+  minHeight: '32px',
+  minWidth: '120px',
+  borderRadius: '6px',
+  transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
+  fontSize: '14px',
+  fontWeight: 500,
+  textTransform: 'none',
+  color: '#3c3c43',
+  border: 'none',
+
+  // 未选中状态
+  '&:not(.Mui-selected)': {
+    '&:hover': {
+      backgroundColor: '#f2f2f2'
+    }
+  },
+
+  // 选中状态
+  '&.Mui-selected': {
+    color: '#000',
+    backgroundColor: '#f2f2f2',
+    '&:hover': {
+      backgroundColor: '#fbfbfb'
+    }
+  },
+
+  // 聚焦状态
+  '&.Mui-focusVisible': {
+    outline: `2px solid #333`,
+    outlineOffset: '2px'
+  }
+});
 
 function Benchmarks() {
   const { t } = useTranslation()
@@ -30,14 +72,15 @@ function Benchmarks() {
       <div className="main-container">
         <Grid container spacing={0}>
           <Grid size={12}>
-            <CustomTabs
+            <CustomTabs 
               value={itemType}
               onChange={handleChange}
               aria-label="basic tabs example"
+              centered
             >
-              <Tab label={t('cpu')} value={ProductEnum.CPU} />
-              <Tab label={t('graphic-card')} value={ProductEnum.GPU} />
-              <Tab label={t('ram')} value={ProductEnum.RAM} />
+              <IosSegmentedTab label={t('cpu')} value={ProductEnum.CPU} />
+              <IosSegmentedTab label={t('graphic-card')} value={ProductEnum.GPU} />
+              <IosSegmentedTab label={t('ram')} value={ProductEnum.RAM} />
             </CustomTabs>
           </Grid>
           <Grid size={12}>
