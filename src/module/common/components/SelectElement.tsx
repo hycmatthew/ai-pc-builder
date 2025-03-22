@@ -110,6 +110,7 @@ const SelectElement = ({
 
   // 根据传入的value查找当前选项
   const selectedOption = options.find(option => option.name === value) || null;
+  const sortedOption = options.sort((a, b) => a.brand.localeCompare(b.brand))
 
   return (
     <CustomAutocomplete
@@ -117,7 +118,7 @@ const SelectElement = ({
       fullWidth
       value={selectedOption}
       id={label}
-      options={options}
+      options={sortedOption}
       groupBy={(option: any) => option.brand}
       onChange={handleChange}
       isOptionEqualToValue={(option: any, value: any) =>

@@ -153,7 +153,7 @@ export function getMappedRAMs(
         // 主板記憶體類型匹配 (DDR4/DDR5)
         !mbRamType || item.Type === mbRamType,
         // CPU 品牌兼容性檢查
-        !cpuBrand || item.Profile?.includes(cpuBrand),
+        !cpuBrand || item.Profile?.toLowerCase().includes(cpuBrand),
       ]
 
       return priceValidation(item, budget) && compatibilityChecks.every(Boolean)
@@ -164,6 +164,7 @@ export function getMappedRAMs(
         brand: item.Brand,
         capacity: item.Capacity,
         type: item.Type,
+        speed: item.Speed,
         channel: item.Channel,
         profile: item.Profile,
         score: ramPerformanceLogic(item),

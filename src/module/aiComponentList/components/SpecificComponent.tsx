@@ -46,12 +46,12 @@ const ProductSelectGrid = ({
   options,
   value,
   lockStatus,
-  onChange
+  onChange,
 }: {
-  label: string;
-  options: any[];
-  value: string;
-  lockStatus: boolean;
+  label: string
+  options: any[]
+  value: string
+  lockStatus: boolean
   onChange: (value: string, type: ProductEnum, num?: number) => void
 }) => (
   <Grid size={12}>
@@ -79,7 +79,7 @@ const ProductSelectGrid = ({
       <AnimatedLockIcon visible={lockStatus} />
     </Box>
   </Grid>
-);
+)
 
 const AnimatedLockIcon = ({ visible }: { visible: boolean }) => (
   <AnimatePresence>
@@ -107,7 +107,7 @@ const AnimatedLockIcon = ({ visible }: { visible: boolean }) => (
       </motion.div>
     )}
   </AnimatePresence>
-);
+)
 
 function SpecificComponent({
   rawData,
@@ -145,7 +145,10 @@ function SpecificComponent({
     {
       type: 'motherboard',
       label: ProductEnum.Motherboard,
-      options: generateMotherboardSelectElement(motherboardList, preSelectedItem),
+      options: generateMotherboardSelectElement(
+        motherboardList,
+        preSelectedItem
+      ),
       value: preSelectedItem.motherboard?.Name || '',
       lockStatus: lockItem.motherboard !== null,
     },
@@ -184,30 +187,21 @@ function SpecificComponent({
       value: preSelectedItem.cooler?.Name || '',
       lockStatus: lockItem.cooler !== null,
     },
-  ];
-  
+  ]
+
   return (
-    <Card sx={{ minWidth: 275 }}>
-      <CardContent>
-        <Grid container spacing={1}>
-          {productConfigs.map(config => (
-            <ProductSelectGrid
-              key={config.type}
-              label={config.label}
-              options={config.options}
-              value={config.value}
-              lockStatus={config.lockStatus}
-              onChange={changeSelectItem}
-            />
-          ))}
-        </Grid>
-      </CardContent>
-      <CardActions>
-        <Button size="small" onClick={() => {}}>
-          Learn More
-        </Button>
-      </CardActions>
-    </Card>
+    <Grid container spacing={1}>
+      {productConfigs.map((config) => (
+        <ProductSelectGrid
+          key={config.type}
+          label={config.label}
+          options={config.options}
+          value={config.value}
+          lockStatus={config.lockStatus}
+          onChange={changeSelectItem}
+        />
+      ))}
+    </Grid>
   )
 }
 

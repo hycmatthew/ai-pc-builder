@@ -85,7 +85,10 @@ export const motherboardIncompatibleWithRamSpeed = (
   motherboard: MotherboardType | null,
   ram: RAMType | null
 ) => {
-  return ram && motherboard ? motherboard.RamSupport.includes(ram.Speed) : false
+  console.log("******************************")
+  console.log(motherboard?.RamSupport)
+  console.log(ram?.Speed)
+  return ram && motherboard ? !motherboard.RamSupport.includes(ram.Speed) : false
 }
 
 export const ramProfileIsNotMatchCPU = (
@@ -93,7 +96,8 @@ export const ramProfileIsNotMatchCPU = (
   cpu: CPUType | null
 ) => {
   if (cpu && ram) {
-    return !ram?.Profile.includes(cpu.Brand)
+    
+    return !ram?.Profile.toLowerCase().includes(cpu.Brand)
   }
   return false
 }

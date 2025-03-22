@@ -261,6 +261,9 @@ function AILogicPage() {
             </FormControl>
           </Grid>
           <Grid size={12}>
+            <FormLabel id="demo-row-radio-buttons-group-label">
+              Budget
+            </FormLabel>
             <Box
               component="form"
               sx={{ '& > :not(style)': { m: 1, width: '25ch' } }}
@@ -269,7 +272,7 @@ function AILogicPage() {
             >
               <TextField
                 id="outlined-basic"
-                label="Budget"
+                hiddenLabel
                 variant="filled"
                 type="number"
                 size="small"
@@ -280,6 +283,7 @@ function AILogicPage() {
                 variant="contained"
                 disabled={disableButtonLogic()}
                 onClick={generateListLogic}
+                sx={{ height: '40px' }}
               >
                 Contained
               </Button>

@@ -178,7 +178,7 @@ export const preFilterDataLogic = (
     filters.radiatorSupport,
     availableBudget
   )
-
+  
   const bestConfig = findBestConfiguration(
     mappedCPUs,
     mappedGPUs,
