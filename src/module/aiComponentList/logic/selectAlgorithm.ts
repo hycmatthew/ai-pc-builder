@@ -1,3 +1,4 @@
+import { isNumber } from 'lodash'
 import {
   MappedCPUType,
   MappedGPUType,
@@ -9,7 +10,7 @@ type BestConfiguration = {
   cpu: MappedCPUType
   motherboard: MappedMotherboardType
   ram: MappedRAMType
-  gpu?: MappedGPUType
+  gpu: MappedGPUType | null
 }
 
 function calculatePerformanceScore(
@@ -61,6 +62,7 @@ export const findBestConfiguration = (
       for (const ram of compatibleRams) {
         // 计算基础成本
         const baseCost = cpu.price + mb.price + ram.price
+        const remainingBudget = budget - baseCost
         if (baseCost > budget) continue
 
         // 情况1: 使用核显
@@ -73,12 +75,11 @@ export const findBestConfiguration = (
           )
           if (currentScore > bestScore) {
             bestScore = currentScore
-            bestConfig = { cpu, motherboard: mb, ram }
+            bestConfig = { cpu, motherboard: mb, ram, gpu: null }
           }
         }
 
         // 情况2: 使用独立显卡
-        const remainingBudget = budget - baseCost
         if (remainingBudget >= 0) {
           const bestGPU = findBestGPU(
             sortedGPUs,
@@ -178,12 +179,14 @@ function calculateAdjustedRamScore(
 ): number {
   // 获取主板支持的最高速度（不超过内存标称速度）
   if (!supportedSpeeds.includes(ram.speed)) {
-    const maxSupported = Math.max(
-      ...supportedSpeeds.filter((s) => s <= ram.speed)
-    )
-    console.log(`ram speed: ${ram.speed} : max speed: ${maxSupported}`)
-    const speedDiff = ram.speed - maxSupported
-    return speedDiff > 0 ? ram.score - speedDiff : ram.score
+    const maxInList = Math.max(...supportedSpeeds)
+    if(!isNumber(maxInList)){
+      console.log(`supportedSpeeds not a number : ${supportedSpeeds}`)
+    }
+    if (ram.speed > maxInList) {
+      const speedDiff = ram.speed - maxInList
+      return ram.score - speedDiff
+    }
   }
   return ram.score
 }

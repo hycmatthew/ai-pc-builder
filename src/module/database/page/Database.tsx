@@ -13,14 +13,12 @@ import SSDSuggestion from '../components/SSDSuggestion'
 import PSUSuggestion from '../components/PSUSuggestion'
 import CaseSuggestion from '../components/CaseSuggestion'
 import CoolerSuggestion from '../components/CoolerSuggestion'
-import FanSuggestion from '../components/FanSuggestion'
-import CusButton from '../../common/components/CusButton'
+import DatabaseTabButton from '../../common/components/DatabaseTabButton'
 
 function Database() {
   const { t } = useTranslation()
-  const categoryList = Object.values(ProductEnum).filter(
-    (item) => item !== ProductEnum.Fan
-  )
+
+  const categoryList = Object.values(ProductEnum)
 
   const dataState = useSelector((state: any) => {
     return state.rawData
@@ -86,6 +84,7 @@ function Database() {
             isLoading={dataState.isLoading}
           />
         )
+      /*
       case ProductEnum.Fan:
         return (
           <FanSuggestion
@@ -93,6 +92,7 @@ function Database() {
             isLoading={dataState.isLoading}
           />
         )
+          */
       default:
         return ''
     }
@@ -100,10 +100,19 @@ function Database() {
 
   return (
     <Grid justifyContent="center" container>
-      <Grid container size={{ xs: 12, md: 8 }} justifyContent="center" spacing={1}>
+      <Grid
+        container
+        size={{ xs: 12, md: 8 }}
+        justifyContent="center"
+        spacing={1}
+      >
         {categoryList.map((item) => (
           <Grid size={{ xs: 6, md: 3 }}>
-            <CusButton label={item} isSelected={item === selectedType} clickedFunc={() => setSelectedType(item)} />
+            <DatabaseTabButton
+              label={item}
+              isSelected={item === selectedType}
+              clickedFunc={() => setSelectedType(item)}
+            />
           </Grid>
         ))}
       </Grid>

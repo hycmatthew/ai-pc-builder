@@ -251,7 +251,7 @@ interface CalculationResult {
 
 type HardwareComponents = {
   cpu?: MappedCPUType
-  gpu?: MappedGPUType
+  gpu?: MappedGPUType | null
   motherboard?: MappedMotherboardType // 假设这些类型都有 price 属性
   ram?: MappedRAMType
   ssd?: MappedSSDType | null

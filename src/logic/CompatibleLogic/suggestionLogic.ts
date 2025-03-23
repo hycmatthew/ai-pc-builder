@@ -85,9 +85,6 @@ export const motherboardIncompatibleWithRamSpeed = (
   motherboard: MotherboardType | null,
   ram: RAMType | null
 ) => {
-  console.log("******************************")
-  console.log(motherboard?.RamSupport)
-  console.log(ram?.Speed)
   return ram && motherboard ? !motherboard.RamSupport.includes(ram.Speed) : false
 }
 
@@ -96,7 +93,6 @@ export const ramProfileIsNotMatchCPU = (
   cpu: CPUType | null
 ) => {
   if (cpu && ram) {
-    
     return !ram?.Profile.toLowerCase().includes(cpu.Brand)
   }
   return false
@@ -110,7 +106,7 @@ export const gpuMatchcpuSuggestion = (gpu: GPUType | null, cpu: CPUType | null) 
 }
 
 export const ramSizeSuggestion = (ram: RAMType | null) => {
-  return ram !== null && ram.Capacity > 32
+  return ram && ram.Capacity > 32
 }
 
 export const aioSuggestion = (

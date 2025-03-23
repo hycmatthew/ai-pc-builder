@@ -8,7 +8,7 @@ import {
 
 export const selectBestCase = (
   selectedMB: MappedMotherboardType,
-  selectedGPU: MappedGPUType | undefined,
+  selectedGPU: MappedGPUType | null,
   selectedCooler: MappedCoolerType | null,
   casePool: MappedCaseType[]
 ): MappedCaseType | null => {
@@ -50,7 +50,7 @@ export const selectBestCase = (
 const validateCaseCompatibility = (
   caze: MappedCaseType,
   selectedMB: MappedMotherboardType,
-  selectedGPU: MappedGPUType | undefined,
+  selectedGPU: MappedGPUType | null,
   selectedCooler: MappedCoolerType | null
 ): boolean => {
   // 主板尺寸验证

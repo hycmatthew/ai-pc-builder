@@ -28,9 +28,10 @@ import {
 } from '../../common/utils/searchItemLogic'
 import { useTranslation } from 'react-i18next'
 import { getTotalPrice } from '../../../utils/PCPartUtil'
-import ListCopyModal from '../../common/components/ListCopyModal'
 import { useLocation } from 'react-router-dom'
 import Calculator from './Calculator'
+import CusButton from '../../common/components/CusButton'
+import ListCopyModal from './ListCopyModal'
 
 type ComponentMenuProps = {
   dataState: DataState
@@ -102,7 +103,6 @@ const ComponentMenu = ({ dataState }: ComponentMenuProps) => {
     switch (type) {
       case ProductEnum.CPU: {
         const selectedItem = value ? searchCPUItem(cpuList, value) : null
-        console.log('selectedItem', selectedItem)
         dispatch(sliceActions.updateSelectedCPU(selectedItem))
         break
       }
@@ -232,18 +232,18 @@ const ComponentMenu = ({ dataState }: ComponentMenuProps) => {
           <Calculator selectedItems={dataState.selectedItems} />
         </Grid>
         <Grid size={4}>
-          <Button
+          <CusButton
             disabled={getTotalPrice(dataState.selectedItems) == 0}
             onClick={handleOpen}
             variant="contained"
             fullWidth
           >
             Contained
-          </Button>
+          </CusButton>          
           <ListCopyModal
             selectedItems={dataState.selectedItems}
             open={open}
-            handleClose={handleClose}
+            onClose={handleClose}
           />
         </Grid>
       </Grid>
