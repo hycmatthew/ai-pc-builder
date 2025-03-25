@@ -52,7 +52,7 @@ function NotifyButton({ copyVal }: NotifyButtonProps) {
   )
 }
 
-const ListCopyModal = ({
+const ListCopyDialog = ({
   selectedItems,
   open,
   onClose: handleClose,
@@ -114,4 +114,4 @@ const ListCopyModal = ({
   )
 }
 
-export default ListCopyModal
+export default ListCopyDialog

@@ -30,6 +30,8 @@ import {
 import { sliceActions } from './store/aiLogicReducer'
 import ResultComponent from './components/ResultComponent'
 import CompatibleSection from '../componentList/components/CompatibleSection'
+import { useTranslation } from 'react-i18next'
+import SegmentedTabs from '../common/components/SegmentedTabs'
 
 type ProductHandlers = {
   [key in ProductEnum]: {
@@ -45,7 +47,22 @@ function AILogicPage() {
     return state
   })
 
+  const { t } = useTranslation()
   const dispatch = useAppDispatch()
+  const [selectedType, setSelectedType] = useState<string>('balance')
+
+  const tabs = [
+    { label: t('balance'), value: 'balance' },
+    { label: t('gaming'), value: 'gaming' },
+    { label: t('professional'), value: 'professional' },
+  ]
+
+  const updateType = (event: React.SyntheticEvent, newValue: any) => {
+    if (newValue !== null) {
+      setSelectedType(newValue as ProductEnum)
+    }
+  }
+
   const [formData, setFormData] = useState({
     type: '',
     budget: '',
@@ -66,13 +83,6 @@ function AILogicPage() {
     setResData(dataState.aiLogic.preSelectedItem)
   }, [dataState.aiLogic.preSelectedItem])
 
-  const updateType = (event: any) => {
-    setFormData((prevData) => ({
-      ...prevData,
-      type: event.target.value,
-    }))
-  }
-
   const budgetTextfieldChanged = (
     event: React.ChangeEvent<HTMLInputElement>
   ) => {
@@ -92,13 +102,7 @@ function AILogicPage() {
   }
 
   const disableButtonLogic = () => {
-    if (formData.type == '') {
-      return true
-    }
-    if (Number(formData.budget) <= 0) {
-      return true
-    }
-    return false
+    return Number(formData.budget) <= 0
   }
 
   const generateListLogic = () => {
@@ -243,21 +247,11 @@ function AILogicPage() {
               <FormLabel id="demo-row-radio-buttons-group-label">
                 Gender
               </FormLabel>
-              <RadioGroup
-                row
-                aria-labelledby="demo-row-radio-buttons-group-label"
-                name="row-radio-buttons-group"
-                value={formData.type}
+              <SegmentedTabs
+                value={selectedType}
                 onChange={updateType}
-              >
-                {buildType.map((item) => (
-                  <FormControlLabel
-                    value={item.value}
-                    control={<Radio />}
-                    label={item.key}
-                  />
-                ))}
-              </RadioGroup>
+                tabs={tabs}
+              />
             </FormControl>
           </Grid>
           <Grid size={12}>

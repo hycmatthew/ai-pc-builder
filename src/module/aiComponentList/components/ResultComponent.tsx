@@ -2,9 +2,11 @@ import { Box, Grid2 as Grid } from '@mui/material'
 import { SelectedItemType } from '../../../store/rawDataReducer'
 import ResultCard from './ResultCard'
 import { getCurrentPrice } from '../../../utils/NumberHelper'
-import { useMemo } from 'react'
+import { useMemo, useState } from 'react'
 import CusTypography from '../../common/components/CusTypography'
 import { useTranslation } from 'react-i18next'
+import DetailDialog from './DetailDialog'
+import { ComponentType } from '../constant/componentConfig'
 
 type ResultComponentProps = {
   resultData: SelectedItemType
@@ -19,16 +21,21 @@ const COMPONENT_TYPES = [
   'psu',
   'pcCase',
   'cooler',
-  // 'ram' 重复项已移除
 ] as const
 
 // type ComponentType = (typeof COMPONENT_TYPES)[number]
 
 function ResultComponent({ resultData }: ResultComponentProps) {
-  console.log(resultData)
   const { t } = useTranslation()
+  const [selectedData, setSelectedData] = useState<{
+    type: ComponentType
+    data: any
+  } | null>(null)
 
-  // 缓存完整性检查结果
+  const handleCardClick = (type: ComponentType, data: any) => {
+    setSelectedData({ type, data })
+  }
+
   const isComplete = useMemo(
     () => Object.values(resultData).every((value) => value !== null),
     [resultData]
@@ -56,9 +63,20 @@ function ResultComponent({ resultData }: ResultComponentProps) {
               type={type}
               price={getCurrentPrice(resultData[type])}
               data={resultData[type]!} // 非空断言（因 isComplete 已验证）
+              onClick={() => handleCardClick(type, resultData[type])}
             />
           </Grid>
         ))}
+        {selectedData && (
+          <DetailDialog
+            open={!!selectedData}
+            onClose={() => setSelectedData(null)}
+            type={selectedData.type}
+            data={selectedData.data}
+            price={getCurrentPrice(selectedData.data)}
+            size="large"
+          />
+        )}
       </Grid>
     </Box>
   )

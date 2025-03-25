@@ -31,7 +31,7 @@ import { getTotalPrice } from '../../../utils/PCPartUtil'
 import { useLocation } from 'react-router-dom'
 import Calculator from './Calculator'
 import CusButton from '../../common/components/CusButton'
-import ListCopyModal from './ListCopyModal'
+import ListCopyDialog from './ListCopyDialog'
 
 type ComponentMenuProps = {
   dataState: DataState
@@ -240,7 +240,7 @@ const ComponentMenu = ({ dataState }: ComponentMenuProps) => {
           >
             Contained
           </CusButton>          
-          <ListCopyModal
+          <ListCopyDialog
             selectedItems={dataState.selectedItems}
             open={open}
             onClose={handleClose}
