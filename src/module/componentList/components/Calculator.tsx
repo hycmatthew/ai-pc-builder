@@ -1,11 +1,11 @@
 import { useTranslation } from 'react-i18next'
 import Container from '@mui/material/Container'
 import styled from '@emotion/styled'
-import { Box, Grid2 as Grid } from '@mui/material'
+import { Grid2 as Grid } from '@mui/material'
 
 import { SelectedItemType } from '../../../store/rawDataReducer'
-import { getTotalPriceStr } from '../../../utils/PCPartUtil'
 import CusTypography from '../../common/components/CusTypography'
+import { getTotalPriceStr } from '../../../utils/NumberHelper'
 
 type CalculatorProps = {
   selectedItems: SelectedItemType

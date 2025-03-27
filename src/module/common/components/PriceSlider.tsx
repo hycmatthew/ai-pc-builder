@@ -6,6 +6,7 @@ import Typography from '@mui/material/Typography'
 import Slider, { SliderProps } from '@mui/material/Slider'
 import MuiInput from '@mui/material/Input'
 import { Grid2 as Grid } from "@mui/material"
+import { LangEnum } from '../../../constant/supportedLang'
 
 const Input = styled(MuiInput)`
   width: 84px;
@@ -19,9 +20,9 @@ const PriceSlider = ({ selectChange }: PriceSliderProps) => {
   const { t, i18n } = useTranslation()
   const getMaximunNumber = () => {
     switch (i18n.language) {
-      case 'zh-TW':
+      case LangEnum.zhTW:
         return 30000
-      case 'zh-CN':
+      case LangEnum.zhCN:
         return 30000
       default:
         return 4000

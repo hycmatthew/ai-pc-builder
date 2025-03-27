@@ -1,37 +1,32 @@
-import { isEmpty, sum, toNumber } from 'lodash'
+import { compact, isEmpty, sum, toNumber } from 'lodash'
 import i18n from '../config/i18n'
 import { CoolerType, MotherboardType, RAMType } from '../constant/objectTypes'
 import { SelectedItemType } from '../store/rawDataReducer'
 import { STR_CONSTANTS } from '../constant/StringConstant'
+import { LangEnum } from '../constant/supportedLang'
 
-export const getSelectedCurrency = () => {
-  switch (i18n.language) {
-    case 'zh-TW':
-      return 'PriceHK'
-    case 'zh-CN':
-      return 'PriceCN'
-    default:
-      return 'PriceUS'
-  }
+// ==================== 價格相關工具函式 ====================
+type PriceKey = 'PriceHK' | 'PriceCN' | 'PriceUS'
+
+// 使用映射表取代 switch-case
+const CURRENCY_MAP: Record<LangEnum, { key: PriceKey; sign: string }> = {
+  [LangEnum.zhTW]: { key: 'PriceHK', sign: '$' },
+  [LangEnum.zhCN]: { key: 'PriceCN', sign: '¥' },
+  [LangEnum.en]: { key: 'PriceUS', sign: '$' },
 }
 
-export const calculateTotalNumber = (numberList: string[]) => {
-  let totalNumber = 0
-  numberList.forEach((item) => {
-    totalNumber += toNumber(item)
-  })
-  return totalNumber
+// 獲取貨幣配置的通用方法
+const getCurrencyConfig = () =>
+  CURRENCY_MAP[i18n.language as LangEnum] || CURRENCY_MAP[LangEnum.en]
+
+// 合併重複的價格處理邏輯
+const handlePriceValue = (value?: string | number) => {
+  if (!value || value === STR_CONSTANTS.OUT_OF_STOCK) return ''
+  return typeof value === 'string' ? stringToNumberWithDP(value) : value.toFixed(2)
 }
 
-export const addCurrencySign = (str: string) => {
-  let currencySign = '$'
-
-  if (i18n.language == 'zh-CN') {
-    currencySign = '¥'
-  }
-
-  return isEmpty(str) ? ' - ' : `${currencySign}${str}`
-}
+// ==================== 核心工具函式 ====================
+export const getSelectedCurrency = (): PriceKey => getCurrencyConfig().key
 
 export const stringToNumber = (str: string | undefined) => {
   return toNumber(str)
@@ -44,73 +39,88 @@ export const stringToNumberWithDP = (str: string) => {
   return toNumber(str).toFixed(2)
 }
 
-export const getCurrentPrice = (item: any) => {
-  switch (i18n.language) {
-    case 'zh-TW':
-      return stringToNumberWithDP(item.PriceHK)
-    case 'zh-CN':
-      return stringToNumberWithDP(item.PriceCN)
-    default:
-      return stringToNumberWithDP(item.PriceUS)
-  }
+export const calculateTotalNumber = (numberList: string[]): number =>
+  numberList.reduce((acc, curr) => acc + toNumber(curr), 0)
+
+export const addCurrencySign = (value?: string | number): string => {
+  const { sign } = getCurrencyConfig()
+  const formattedValue = handlePriceValue(value)
+  return isEmpty(formattedValue) ? ' - ' : `${sign}${formattedValue}`
 }
 
-export const getCurrentPriceNum = (item: any) => {
-   return toNumber(item[getSelectedCurrency()])
-}
+export const getCurrentPrice = (
+  item: Record<PriceKey, string | number>
+): string => handlePriceValue(item[getSelectedCurrency()])
 
-export const getCurrentPriceWithSign = (item: any) => {
-  return addCurrencySign(getCurrentPrice(item))
-}
+export const getCurrentPriceNum = (
+  item: Record<PriceKey, string | number>
+): number => toNumber(item[getSelectedCurrency()])
 
-export const getTotalPower = (selectedItems: SelectedItemType) => {
-  const getAIOPower = (aio: CoolerType | null) => {
-    if (aio) {
-      switch (aio.LiquidCoolerSize) {
-        case 120:
-          return 4
-        case 240:
-          return 7
-        case 280:
-          return 8
-        case 360:
-          return 10
-        default:
-          return 5
-      }
-    }
-    return 0
-  }
+export const getCurrentPriceWithSign = (
+  item: any
+): string => addCurrencySign(getCurrentPrice(item))
 
-  const getRamPower = (ram: RAMType | null) => {
-    let wattNum = 0
-    if (ram) {
-      wattNum = ram.Channel * 3
-    }
-    return wattNum
-  }
 
-  const getMotherboardPower = (motherboard: MotherboardType | null) => {
-    let wattNum = 0
-    if (motherboard) {
-      if (
-        motherboard.Chipset.includes('Z') ||
-        motherboard.Chipset.includes('X')
-      ) {
-        wattNum = 35
-      } else {
-        wattNum = 25
-      }
-    }
-    return wattNum
-  }
-
+export const getTotalPrice = (selectedItems: SelectedItemType) => {
   const numberList = [
+    selectedItems.cpu?.[getSelectedCurrency()],
+    selectedItems.gpu?.[getSelectedCurrency()],
+    selectedItems.motherboard?.[getSelectedCurrency()],
+    selectedItems.ram?.[getSelectedCurrency()],
+    selectedItems.psu?.[getSelectedCurrency()],
+    selectedItems.ssd?.[getSelectedCurrency()],
+    selectedItems.cooler?.[getSelectedCurrency()],
+    // selectedItems.fan?.[getSelectedCurrency()],
+    selectedItems.pcCase?.[getSelectedCurrency()],
+  ]
+
+  return calculateTotalNumber(compact(numberList))
+}
+
+export const getTotalPriceStr = (selectedItems: SelectedItemType) => {
+  const totolPrice = getTotalPrice(selectedItems).toFixed(2).toString()
+  return addCurrencySign(totolPrice)
+}
+
+
+// ==================== 功耗計算工具函式 ====================
+// 功耗計算器類型
+type PowerCalculator<T> = (component: T | null) => number
+
+// AIO 功耗計算
+const calculateAioPower: PowerCalculator<CoolerType> = (aio) => {
+  if (!aio) return 0
+  const powerMap: Record<number, number> = {
+    120: 4,
+    240: 7,
+    280: 8,
+    360: 10,
+  }
+  return powerMap[aio.LiquidCoolerSize] ?? 5
+}
+
+// RAM 功耗計算
+const calculateRamPower: PowerCalculator<RAMType> = (ram) => {
+  return ram?.Channel ? ram.Channel * 3 : 0
+}
+
+// 主機板功耗計算
+const calculateMotherboardPower: PowerCalculator<MotherboardType> = (
+  motherboard
+) => {
+  if (!motherboard) return 0
+  return /[ZX]/.test(motherboard.Chipset) ? 35 : 25
+}
+
+export const getTotalPower = (selectedItems: SelectedItemType): number => {
+  const powerComponents = [
     selectedItems.cpu?.Power,
     selectedItems.gpu?.Power,
-    getAIOPower(selectedItems.cooler),
-    getRamPower(selectedItems.ram),
-    getMotherboardPower(selectedItems.motherboard),
+    calculateAioPower(selectedItems.cooler),
+    calculateRamPower(selectedItems.ram),
+    calculateMotherboardPower(selectedItems.motherboard),
   ]
-  return sum(numberList) || 0
+
+  console.log(`getTotalPower : ${sum(powerComponents)}`)
+  return sum(powerComponents) || 0
 }

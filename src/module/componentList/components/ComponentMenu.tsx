@@ -27,11 +27,11 @@ import {
   searchAIOItem,
 } from '../../common/utils/searchItemLogic'
 import { useTranslation } from 'react-i18next'
-import { getTotalPrice } from '../../../utils/PCPartUtil'
 import { useLocation } from 'react-router-dom'
 import Calculator from './Calculator'
 import CusButton from '../../common/components/CusButton'
 import ListCopyDialog from './ListCopyDialog'
+import { getTotalPrice } from '../../../utils/NumberHelper'
 
 type ComponentMenuProps = {
   dataState: DataState

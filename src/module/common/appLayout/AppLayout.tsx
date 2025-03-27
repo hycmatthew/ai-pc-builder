@@ -8,6 +8,7 @@ import './AppLayout.scss'
 import config from '../../../config/config'
 import HeaderLayout from './header'
 import CusTypography from '../components/CusTypography'
+import { LangEnum } from '../../../constant/supportedLang'
 
 // 类型定义
 type AppLayoutProps = {
@@ -21,9 +22,9 @@ type LanguageConfig = {
 
 // 全局语言配置
 const LANGUAGE_MAPPING: Record<string, LanguageConfig> = {
-  en: { code: 'en', displayText: 'EN' },
-  'zh-CN': { code: 'zh-CN', displayText: '简' },
-  'zh-TW': { code: 'zh-TW', displayText: '繁' },
+  en: { code: LangEnum.en, displayText: 'EN' },
+  'zh-CN': { code: LangEnum.zhCN, displayText: '简' },
+  'zh-TW': { code: LangEnum.zhTW, displayText: '繁' },
 }
 
 // 提取独立Dialog组件

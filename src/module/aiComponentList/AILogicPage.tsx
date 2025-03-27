@@ -1,20 +1,15 @@
 import { useEffect, useState } from 'react'
 import { useSelector } from 'react-redux'
 import {
-  Box,
   Button,
-  FormControl,
-  FormControlLabel,
   FormLabel,
   Grid2 as Grid,
-  Radio,
-  RadioGroup,
+  Stack,
   TextField,
 } from '@mui/material'
 
 import SpecificComponent from './components/SpecificComponent'
 import { useAppDispatch } from './../../store/store'
-import { buildType } from './constant/buildType'
 import { preFilterDataLogic } from './logic/selectPartsLogic'
 import ProductEnum from '../../constant/ProductEnum'
 import {
@@ -68,6 +63,7 @@ function AILogicPage() {
     budget: '',
     size: 'ATX',
   })
+
   const [resData, setResData] = useState({
     cpu: null,
     motherboard: null,
@@ -160,8 +156,15 @@ function AILogicPage() {
       if (res.cooler) {
         changeSelectItem(res.cooler.name, ProductEnum.Cooler, -1)
       }
+      dispatch(sliceActions.updateScoreAndPrirce(res))
     } else {
     }
+  }
+
+  const clearDataLogic = () => {
+    // Define the clearPreSelectedData function here
+    console.log('clearDataLogic')
+    dispatch(sliceActions.clearPreSelectedData())
   }
 
   // 配置映射
@@ -243,27 +246,24 @@ function AILogicPage() {
       <div className="main-overlay-card">
         <Grid size={12} container spacing={0} columns={{ xs: 6, md: 12 }}>
           <Grid size={12}>
-            <FormControl>
-              <FormLabel id="demo-row-radio-buttons-group-label">
-                Gender
-              </FormLabel>
-              <SegmentedTabs
-                value={selectedType}
-                onChange={updateType}
-                tabs={tabs}
-              />
-            </FormControl>
+            <FormLabel id="demo-row-radio-buttons-group-label">
+              Gender
+            </FormLabel>
+          </Grid>
+          <Grid size={12}>
+            <SegmentedTabs
+              value={selectedType}
+              onChange={updateType}
+              tabs={tabs}
+            />
           </Grid>
           <Grid size={12}>
             <FormLabel id="demo-row-radio-buttons-group-label">
               Budget
             </FormLabel>
-            <Box
-              component="form"
-              sx={{ '& > :not(style)': { m: 1, width: '25ch' } }}
-              noValidate
-              autoComplete="off"
-            >
+          </Grid>
+          <Grid size={12}>
+            <Stack spacing={2} direction="row">
               <TextField
                 id="outlined-basic"
                 hiddenLabel
@@ -281,9 +281,16 @@ function AILogicPage() {
               >
                 Contained
               </Button>
-            </Box>
+              <Button
+                variant="contained"
+                onClick={clearDataLogic}
+                sx={{ height: '40px' }}
+              >
+                Clear
+              </Button>
+            </Stack>
           </Grid>
-          <Grid size={6}>
+          <Grid size={6} paddingTop={2}>
             <SpecificComponent
               rawData={dataState.rawData}
               aiLogic={dataState.aiLogic}
@@ -296,7 +303,11 @@ function AILogicPage() {
             />
           </Grid>
           <Grid size={12}>
-            <ResultComponent resultData={resData}></ResultComponent>
+            <ResultComponent
+              resultData={resData}
+              totalPrice={dataState.aiLogic.totalPrice}
+              totalScore={dataState.aiLogic.totalScore}
+            ></ResultComponent>
           </Grid>
         </Grid>
       </div>

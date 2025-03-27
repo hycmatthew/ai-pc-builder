@@ -2,104 +2,73 @@ import { t } from 'i18next'
 import { SelectedItemType } from '../store/rawDataReducer'
 import ProductEnum from '../constant/ProductEnum'
 import {
-  addCurrencySign,
-  calculateTotalNumber,
   getCurrentPriceWithSign,
-  getSelectedCurrency,
+  getTotalPriceStr,
 } from './NumberHelper'
-import { compact } from 'lodash'
+import i18n from '../config/i18n'
+import { LangEnum } from '../constant/supportedLang'
 
-export const getTotalPrice = (selectedItems: SelectedItemType) => {
-  const numberList = [
-    selectedItems.cpu?.[getSelectedCurrency()],
-    selectedItems.gpu?.[getSelectedCurrency()],
-    selectedItems.motherboard?.[getSelectedCurrency()],
-    selectedItems.ram?.[getSelectedCurrency()],
-    selectedItems.psu?.[getSelectedCurrency()],
-    selectedItems.ssd?.[getSelectedCurrency()],
-    selectedItems.cooler?.[getSelectedCurrency()],
-    // selectedItems.fan?.[getSelectedCurrency()],
-    selectedItems.pcCase?.[getSelectedCurrency()],
-  ]
-
-  return calculateTotalNumber(compact(numberList))
-}
-
-export const getTotalPriceStr = (selectedItems: SelectedItemType) => {
-  const totolPrice = getTotalPrice(selectedItems).toFixed(2).toString()
-  return addCurrencySign(totolPrice)
-}
-
-const displayPriceLogic = (displayPrice: boolean, price: string) => {
-  if (displayPrice) {
-    return ` ${price}`
-  } else {
-    return ''
+export const getCurrentSaleLink = (item: any) => {
+  const linkMap: Record<LangEnum, string> = {
+    [LangEnum.zhTW]: 'LinkHK',
+    [LangEnum.zhCN]: 'LinkCN',
+    [LangEnum.en]: 'LinkUS'
   }
+  return item[linkMap[i18n.language as LangEnum]] || item.LinkUS
+}
+
+// ==================== 文字生成邏輯 ====================
+type ProductComponent = keyof SelectedItemType
+
+const componentConfig: Array<{
+  key: ProductComponent
+  productEnum: ProductEnum
+  paramName?: string  // 用於特殊URL參數名稱
+}> = [
+  { key: 'cpu', productEnum: ProductEnum.CPU },
+  { key: 'motherboard', productEnum: ProductEnum.Motherboard, paramName: 'mb' },
+  { key: 'gpu', productEnum: ProductEnum.GPU },
+  { key: 'ram', productEnum: ProductEnum.RAM },
+  { key: 'ssd', productEnum: ProductEnum.SSD },
+  { key: 'psu', productEnum: ProductEnum.PSU },
+  { key: 'pcCase', productEnum: ProductEnum.ComputerCase, paramName: 'pcCase' },
+  { key: 'cooler', productEnum: ProductEnum.Cooler }
+]
+
+const buildComponentLine = (
+  component: SelectedItemType[ProductComponent],
+  productEnum: ProductEnum,
+  displayPrice: boolean
+): string => {
+  if (!component) return ''
+  const pricePart = displayPrice ? ` ${getCurrentPriceWithSign(component)}` : ''
+  return `${t(productEnum)}: ${component.Name}${pricePart}\n`
 }
 
 export const getSelectItemListText = (
   selectedItems: SelectedItemType,
   displayPrice: boolean
-) => {
-  let resStr = ''
-  let resLink = window.location.href+"?"
+): string => {
+  const lines: string[] = []
+  const searchParams = new URLSearchParams()
 
-  if (selectedItems.cpu) {
-    resStr += `${t(ProductEnum.CPU)}: ${
-      selectedItems.cpu?.Name
-    }${displayPriceLogic(displayPrice, getCurrentPriceWithSign(selectedItems.cpu))}\n`
-    resLink += `&${ProductEnum.CPU}=${selectedItems.cpu?.Name}`
-  }
-  if (selectedItems.motherboard) {
-    resStr += `${t(ProductEnum.Motherboard)}: ${
-      selectedItems.motherboard?.Name
-    }${displayPriceLogic(displayPrice, getCurrentPriceWithSign(selectedItems.motherboard))}\n`
-    resLink += `&mb=${selectedItems.motherboard?.Name}`
-  }
-  if (selectedItems.gpu) {
-    resStr += `${t(ProductEnum.GPU)}: ${
-      selectedItems.gpu?.Name
-    }${displayPriceLogic(displayPrice, getCurrentPriceWithSign(selectedItems.gpu))}\n`
-    resLink += `&gpu=${selectedItems.gpu?.Name}`
-  }
-  if (selectedItems.ram) {
-    resStr += `${t(ProductEnum.RAM)}: ${
-      selectedItems.ram?.Name
-    }${displayPriceLogic(displayPrice, getCurrentPriceWithSign(selectedItems.ram))}\n`
-    resLink += `&${ProductEnum.RAM}=${selectedItems.ram?.Name}`
-  }
-  if (selectedItems.ssd) {
-    resStr += `${t(ProductEnum.SSD)}: ${
-      selectedItems.ssd?.Name
-    }${displayPriceLogic(displayPrice, getCurrentPriceWithSign(selectedItems.ssd))}\n`
-    resLink += `&${ProductEnum.SSD}=${selectedItems.ssd?.Name}`
-  }
-  if (selectedItems.psu) {
-    resStr += `${t(ProductEnum.PSU)}: ${
-      selectedItems.psu?.Name
-    }${displayPriceLogic(displayPrice, getCurrentPriceWithSign(selectedItems.psu))}\n`
-    resLink += `&${ProductEnum.PSU}=${selectedItems.psu?.Name}`
-  }
-  if (selectedItems.pcCase) {
-    resStr += `${t(ProductEnum.ComputerCase)}: ${
-      selectedItems.pcCase?.Name
-    }${displayPriceLogic(displayPrice, getCurrentPriceWithSign(selectedItems.pcCase))}\n`
-    resLink += `&pcCase=${selectedItems.pcCase?.Name}`
-  }
-  if (selectedItems.cooler) {
-    resStr += `${t(ProductEnum.Cooler)}: ${
-      selectedItems.cooler?.Name
-    }${displayPriceLogic(displayPrice, getCurrentPriceWithSign(selectedItems.cooler))}\n`
-    resLink += `&cooler=${selectedItems.cooler?.Name}`
-  }
+  componentConfig.forEach(({ key, productEnum, paramName }) => {
+    const component = selectedItems[key]
+    if (component) {
+      lines.push(buildComponentLine(component, productEnum, displayPrice))
+      searchParams.append(paramName || productEnum.toLowerCase(), component.Name)
+    }
+  })
 
   if (displayPrice) {
-    resStr += `${t('price')}: ${getTotalPriceStr(selectedItems)}`
+    lines.push(`${t('price')}: ${getTotalPriceStr(selectedItems)}`)
   }
 
-  if (resLink.includes("&")) {
-    resStr += `\n\n${resLink}`
-  }
-  return resStr
+  const baseUrl = `${window.location.href.split('?')[0]}?`
+  const queryString = searchParams.toString()
+  
+  return [
+    lines.join(''),
+    ...(queryString ? [`\n\n${baseUrl}${queryString}`] : [])
+  ].join('')
 }

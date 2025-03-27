@@ -1,39 +1,40 @@
-import { ReactNode } from 'react'
-import { Grid2 as Grid, Box, Chip } from '@mui/material'
+import { Grid2 as Grid, Box, Chip, Avatar } from '@mui/material'
 import CusTypography from '../../common/components/CusTypography'
 import CustomDialog from '../../common/components/CustomDialog'
 import { componentConfig } from '../constant/componentConfig'
+import { useTranslation } from 'react-i18next'
 
 type HardwareType = keyof typeof componentConfig
 
 interface DetailDialogProps {
   open: boolean
   onClose: () => void
-  title?: ReactNode
   type: HardwareType
   data?: any
   price?: string
+  link?: string
   size?: 'small' | 'medium' | 'large' | 'xlarge'
 }
 
 const DetailDialog = ({
   open,
   onClose,
-  title,
   type,
   data,
   price,
+  link,
   size = 'large',
 }: DetailDialogProps) => {
   if (!data) return null
 
+  const { t } = useTranslation()
   const config = componentConfig[type]
 
   return (
     <CustomDialog
       open={open}
       onClose={onClose}
-      title={title || data.Name}
+      title={`${t(data.Brand)} ${data.Name}`}
       size={size}
     >
       <Grid container spacing={3}>
@@ -48,22 +49,22 @@ const DetailDialog = ({
               borderRadius: 2,
               backgroundColor: '#fbfbfb',
             }}
-            alt={data.Name}
+            alt={`${t(data.Brand)} ${data.Name}`}
             src={
               data.Img ||
               `https://placehold.co/600x400?text=${data.Brand}+${data.Name}`
             }
           />
           {price && (
-            <Box mt={2} textAlign="center">
+            <Box mt={2} textAlign="right">
               <Chip
-                label={`价格: ${price}`}
-                color="primary"
-                sx={{
-                  fontSize: '1.1rem',
-                  padding: '8px 16px',
-                  borderRadius: '8px',
-                }}
+                avatar={<Avatar alt="Natacha" src="/static/images/avatar/1.jpg" />}
+                label={`${price}`}
+                color="success"
+                component="a"
+                href={link}
+                target='_blank'
+                clickable
               />
             </Box>
           )}
@@ -86,7 +87,7 @@ const DetailDialog = ({
             }}
           >
             <Grid container spacing={2}>
-              {config.properties.detail.map((prop, index) => (
+              {config.properties.detail.map((prop: any, index) => (
                 <Grid size={12} key={`${type}-${prop.key}-${index}`}>
                   <Box
                     sx={{
@@ -100,10 +101,12 @@ const DetailDialog = ({
                       color="text.secondary"
                       gutterBottom
                     >
-                      {prop.label}
+                      {t(prop.label)}
                     </CusTypography>
                     <CusTypography variant="body1">
-                      {data[prop.key] || '-'}
+                      {prop.formatter
+                        ? prop.formatter(data)
+                        : data[prop.key] || '-'}
                     </CusTypography>
                   </Box>
                 </Grid>

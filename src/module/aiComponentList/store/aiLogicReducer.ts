@@ -1,12 +1,23 @@
 import { createSlice } from '@reduxjs/toolkit'
 import { SelectedItemType } from '../../../store/rawDataReducer'
-import { CaseType, CoolerType, CPUType, GPUType, MotherboardType, PSUType, RAMType, SSDType } from '../../../constant/objectTypes'
+import {
+  CaseType,
+  CoolerType,
+  CPUType,
+  GPUType,
+  MotherboardType,
+  PSUType,
+  RAMType,
+  SSDType,
+} from '../../../constant/objectTypes'
 
 export interface BuildLogicState {
   step: number
   budget: number
   gamingUsage: number
   normalUsage: number
+  totalPrice: number,
+  totalScore: Number
   preSelectedItem: SelectedItemType
   lockItem: {
     cpu: CPUType | null
@@ -25,6 +36,8 @@ const initialState: BuildLogicState = {
   budget: 0,
   gamingUsage: 0,
   normalUsage: 0,
+  totalPrice: 0,
+  totalScore: 0,
   preSelectedItem: {
     cpu: null,
     motherboard: null,
@@ -44,7 +57,7 @@ const initialState: BuildLogicState = {
     psu: null,
     pcCase: null,
     cooler: null,
-  }
+  },
 }
 
 export const aiLogicSlice = createSlice({
@@ -87,6 +100,22 @@ export const aiLogicSlice = createSlice({
     },
     updatePreSelectedCase: (state, action) => {
       state.preSelectedItem.pcCase = action.payload
+    },
+    updateScoreAndPrirce: (state, action) => {
+      state.totalPrice = action.payload.totalPrice
+      state.totalScore = action.payload.totalScore
+    },
+    clearPreSelectedData: (state) => {
+      state.preSelectedItem = {
+        cpu: null,
+        motherboard: null,
+        gpu: null,
+        ram: null,
+        ssd: null,
+        psu: null,
+        pcCase: null,
+        cooler: null,
+      }
     },
     updateCPULock: (state, action) => {
       state.lockItem.cpu = action.payload

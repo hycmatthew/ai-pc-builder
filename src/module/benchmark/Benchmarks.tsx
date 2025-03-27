@@ -33,6 +33,7 @@ function Benchmarks() {
             value={selectedType}
             onChange={handleChange}
             tabs={tabs}
+            centered
           />
           </Grid>
           <Grid size={12}>

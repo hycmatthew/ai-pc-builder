@@ -178,7 +178,7 @@ export const preFilterDataLogic = (
     filters.radiatorSupport,
     availableBudget
   )
-  
+
   const bestConfig = findBestConfiguration(
     mappedCPUs,
     mappedGPUs,
@@ -219,8 +219,7 @@ export const preFilterDataLogic = (
     pcCase: bestCase,
     cooler: bestCooler,
   })
-  console.log('price:', calRes.price)
-  console.log('score:', calRes.score)
+
   console.log({
     cpu: bestConfig?.cpu,
     gpu: bestConfig?.gpu,
@@ -230,6 +229,8 @@ export const preFilterDataLogic = (
     psu: bestPsu,
     case: bestCase,
     cooler: bestCooler,
+    totalPrice: calRes.price,
+    totalScore: calRes.score,
   })
 
   return {
@@ -241,6 +242,8 @@ export const preFilterDataLogic = (
     psu: bestPsu,
     case: bestCase,
     cooler: bestCooler,
+    totalPrice: calRes.price,
+    totalScore: calRes.score,
   }
 }
 

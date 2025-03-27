@@ -10,14 +10,13 @@ import CusTypography from '../../common/components/CusTypography'
 import {
   componentConfig,
   ComponentType,
-  DisplayType,
 } from '../constant/componentConfig'
+import { useTranslation } from 'react-i18next'
 
 interface ResultCardProps {
   type: ComponentType
   price: string
   data?: any
-  displayType?: DisplayType
   onClick?: () => void
 }
 
@@ -25,9 +24,9 @@ const ResultCard: React.FC<ResultCardProps> = ({
   type,
   price,
   data,
-  displayType = 'simple',
   onClick,
 }) => {
+  const { t } = useTranslation()
   const config = componentConfig[type]
 
   if (!data) return null
@@ -35,8 +34,8 @@ const ResultCard: React.FC<ResultCardProps> = ({
   return (
     <Card sx={{ mb: 2, borderRadius: 2, width: '100%' }} onClick={onClick}>
       <CardHeader
-        title={config.title}
-        subheader={data.Name}
+        title={t(config.title)}
+        subheader={`${t(data.Brand)} ${data.Name}`}
         sx={{
           '& .MuiCardHeader-title': { fontSize: '1.25rem', fontWeight: 600 },
           '& .MuiCardHeader-subheader': { fontSize: '0.75rem' },
@@ -58,13 +57,13 @@ const ResultCard: React.FC<ResultCardProps> = ({
       />
       <CardContent>
         <Grid container spacing={2}>
-          {config.properties[displayType].map((prop: any) => (
+          {config.properties.simple.map((prop: any) => (
             <Grid size={6} key={prop.key}>
               <CusTypography variant="h6" color="text.secondary">
-                {prop.label}
+                {t(prop.label)}
               </CusTypography>
               <CusTypography variant="caption">
-                {data[prop.key] || '-'}
+                {prop.formatter ? prop.formatter(data) : data[prop.key] || '-'}
               </CusTypography>
             </Grid>
           ))}

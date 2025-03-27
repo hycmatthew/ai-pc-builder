@@ -12,12 +12,13 @@ import {
   PSUType,
   SSDType,
 } from '../../../constant/objectTypes'
+import { LangEnum } from '../../../constant/supportedLang'
 
 export const convertCurrency = (price: number) => {
   switch (i18n.language) {
-    case 'zh-TW':
+    case LangEnum.zhTW:
       return price * BuildConfig.HKPricingFactor
-    case 'zh-CN':
+    case LangEnum.zhCN:
       return price * BuildConfig.CNPricingFactor
     default:
       return price * BuildConfig.USPricingFactor
@@ -40,9 +41,9 @@ export const getPricingFactor = (budget: number, factorList: number[]) => {
 export const getBudgetPriceList = () => {
   const tempList = BuildConfig.PriceList
   switch (i18n.language) {
-    case 'zh-TW':
+    case LangEnum.zhTW:
       return tempList
-    case 'zh-CN':
+    case LangEnum.zhCN:
       return tempList.map((item) => {
         return item / convertCurrency(1)
       })

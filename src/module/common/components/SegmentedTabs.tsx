@@ -72,7 +72,6 @@ const SegmentedTabs = ({
       value={value}
       onChange={onChange}
       aria-label="segmented tabs"
-      centered
       {...props}
     >
       {tabs.map((tab) => (

@@ -4,17 +4,24 @@ interface LanguageType {
   label: string
 }
 
+export enum LangEnum {
+  en = 'en',
+  zhCN = 'zh-CN',
+  zhTW = 'zh-TW',
+}
+
+
 const langOptions: LanguageType[] = [
-  { lang: 'en', code: 'us', label: 'English' },
-  { lang: 'zh-CN', code: 'cn', label: '简体中文' },
-  { lang: 'zh-TW', code: 'hk', label: '繁體中文' },
+  { lang: LangEnum.en, code: 'us', label: 'English' },
+  { lang: LangEnum.zhCN, code: 'cn', label: '简体中文' },
+  { lang: LangEnum.zhTW, code: 'hk', label: '繁體中文' },
 ]
 
 export const SUPPORTED_LANGS: string[] = langOptions.map(
   (option) => option.lang
 )
 export type LangType = (typeof SUPPORTED_LANGS)[number]
-export const DEFAULT_LANG: LangType = 'en'
+export const DEFAULT_LANG: LangType = LangEnum.en
 
 export const detectLanguage = (): LangType => {
   // 路径参数检测
