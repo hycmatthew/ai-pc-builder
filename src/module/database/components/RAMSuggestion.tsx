@@ -19,7 +19,7 @@ import { generateRAMName } from '../../../utils/LabelHelper'
 import ItemCard from './ItemCard'
 import { ComparisonObject, ComparisonSubItem } from '../data/ComparisonObject'
 import ComparisonModal from './ComparisonModal'
-import { getCurrentPrice, getSelectedCurrency, stringToNumber } from '../../../utils/NumberHelper'
+import { convertLocalizedPrice, getSelectedCurrency, stringToNumber } from '../../../utils/NumberHelper'
 import PriceSlider from '../../common/components/PriceSlider'
 
 type RAMSuggestionProps = {
@@ -200,7 +200,7 @@ const RAMSuggestion = ({
         {updatedList.map((item) => (
           <ItemCard
             itemLabel={generateRAMName(item)}
-            priceLabel={getCurrentPrice(item)}
+            priceLabel={convertLocalizedPrice(item)}
             imgSrc={item.Img}
             disable={selectedItems.includes(item)}
             addComparsion={() => addComparison(item)}

@@ -19,7 +19,7 @@ import { diskSpeedLabelHandler, generateItemName, generateSSDName } from '../../
 import { ComparisonObject, ComparisonSubItem } from '../data/ComparisonObject'
 import ComparisonModal from './ComparisonModal'
 import ItemCard from './ItemCard'
-import { getCurrentPrice, getSelectedCurrency, stringToNumber } from '../../../utils/NumberHelper'
+import { convertLocalizedPrice, getSelectedCurrency, stringToNumber } from '../../../utils/NumberHelper'
 import PriceSlider from '../../common/components/PriceSlider'
 
 type SSDSuggestionProps = {
@@ -211,7 +211,7 @@ const SSDSuggestion = ({ ssdList, isLoading }: SSDSuggestionProps) => {
         {updatedList.map((item) => (
           <ItemCard
             itemLabel={generateSSDName(item)}
-            priceLabel={getCurrentPrice(item)}
+            priceLabel={convertLocalizedPrice(item)}
             imgSrc={item.Img}
             disable={selectedItems.includes(item)}
             addComparsion={() => addComparison(item)}

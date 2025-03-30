@@ -1,8 +1,7 @@
-import { compact, isEmpty, sum, toNumber } from 'lodash'
+import { compact, sum, toNumber, isNaN } from 'lodash'
 import i18n from '../config/i18n'
 import { CoolerType, MotherboardType, RAMType } from '../constant/objectTypes'
 import { SelectedItemType } from '../store/rawDataReducer'
-import { STR_CONSTANTS } from '../constant/StringConstant'
 import { LangEnum } from '../constant/supportedLang'
 
 // ==================== 價格相關工具函式 ====================
@@ -21,8 +20,9 @@ const getCurrencyConfig = () =>
 
 // 合併重複的價格處理邏輯
 const handlePriceValue = (value?: string | number) => {
-  if (!value || value === STR_CONSTANTS.OUT_OF_STOCK) return ''
-  return typeof value === 'string' ? stringToNumberWithDP(value) : value.toFixed(2)
+  const testVal = toNumber(value)
+  if (isNaN(testVal) || isZero(testVal)) return ''
+  return testVal.toFixed(2)
 }
 
 // ==================== 核心工具函式 ====================
@@ -32,11 +32,21 @@ export const stringToNumber = (str: string | undefined) => {
   return toNumber(str)
 }
 
-export const stringToNumberWithDP = (str: string) => {
-  if (isEmpty(str) || str == STR_CONSTANTS.OUT_OF_STOCK) {
-    return ''
+const isZero = (value: string | number): boolean => {
+  // 处理字符串类型：去空格、空字符串直接返回 false
+  if (typeof value === 'string') {
+    const trimmed = value.trim()
+    if (trimmed === '') return false
+    value = trimmed
   }
-  return toNumber(str).toFixed(2)
+
+  const num = Number(value)
+  return !isNaN(num) && num == 0
+}
+
+export const normalizeNumberWithDP = (str: string | number) => {
+  const res = handlePriceValue(str)
+  return res === '' ? '-' : res
 }
 
 export const calculateTotalNumber = (numberList: string[]): number =>
@@ -44,11 +54,10 @@ export const calculateTotalNumber = (numberList: string[]): number =>
 
 export const addCurrencySign = (value?: string | number): string => {
   const { sign } = getCurrencyConfig()
-  const formattedValue = handlePriceValue(value)
-  return isEmpty(formattedValue) ? ' - ' : `${sign}${formattedValue}`
+  return handlePriceValue(value) === '' ? ' - ' : `${sign}${value}`
 }
 
-export const getCurrentPrice = (
+export const convertLocalizedPrice = (
   item: Record<PriceKey, string | number>
 ): string => handlePriceValue(item[getSelectedCurrency()])
 
@@ -56,10 +65,8 @@ export const getCurrentPriceNum = (
   item: Record<PriceKey, string | number>
 ): number => toNumber(item[getSelectedCurrency()])
 
-export const getCurrentPriceWithSign = (
-  item: any
-): string => addCurrencySign(getCurrentPrice(item))
-
+export const getCurrentPriceWithSign = (item: any): string =>
+  addCurrencySign(convertLocalizedPrice(item))
 
 export const getTotalPrice = (selectedItems: SelectedItemType) => {
   const numberList = [
@@ -81,7 +88,6 @@ export const getTotalPriceStr = (selectedItems: SelectedItemType) => {
   const totolPrice = getTotalPrice(selectedItems).toFixed(2).toString()
   return addCurrencySign(totolPrice)
 }
-
 
 // ==================== 功耗計算工具函式 ====================
 // 功耗計算器類型
@@ -123,4 +129,31 @@ export const getTotalPower = (selectedItems: SelectedItemType): number => {
 
   console.log(`getTotalPower : ${sum(powerComponents)}`)
   return sum(powerComponents) || 0
+}
+
+// ==================== Performance Logic ====================
+export const calculatePricePerformance = (
+  performance: number,
+  price: number | string
+): number => {
+  // 性能分數有效性檢查
+  const validPerformance =
+    typeof performance === 'number' && !isNaN(performance) ? performance : 0
+
+  // 價格轉換與有效性檢查
+  let numericPrice = toNumber(price)
+
+  // 邊界條件檢查
+  if (
+    validPerformance === 0 ||
+    numericPrice === 0 ||
+    isNaN(numericPrice) ||
+    !isFinite(numericPrice)
+  ) {
+    return 0
+  }
+
+  // 核心計算與結果驗證
+  const result = validPerformance / numericPrice
+  return isFinite(result) ? result : 0
 }

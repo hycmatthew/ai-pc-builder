@@ -16,7 +16,7 @@ import { getPSUBrand } from '../../../utils/GroupCategoryHelper'
 
 import { PSU_FILTER_INIT_DATA } from '../data/FilterInitData'
 import { generateItemName, lengthLabelHandler } from '../../../utils/LabelHelper'
-import { getCurrentPrice, getSelectedCurrency, stringToNumber } from '../../../utils/NumberHelper'
+import { convertLocalizedPrice, getSelectedCurrency, stringToNumber } from '../../../utils/NumberHelper'
 import ItemCard from './ItemCard'
 import { ComparisonObject, ComparisonSubItem } from '../data/ComparisonObject'
 import ComparisonModal from './ComparisonModal'
@@ -195,7 +195,7 @@ const PSUSuggestion = ({
         {updatedList.map((item) => (
           <ItemCard
             itemLabel={generateItemName(item.Brand, item.Name)}
-            priceLabel={getCurrentPrice(item)}
+            priceLabel={convertLocalizedPrice(item)}
             imgSrc={item.Img}
             disable={selectedItems.includes(item)}
             addComparsion={() => addComparison(item)}

@@ -1,10 +1,9 @@
-import React from 'react'
 import {
   Card,
   CardActions,
   CardHeader,
   CardMedia,
-  Grid,
+  Grid2 as Grid,
   IconButton,
   Tooltip,
   Typography,
@@ -52,7 +51,7 @@ const ItemCard = ({
   removeComparsion,
 }: ItemCardProps) => {
   return (
-    <Grid key={itemLabel} item xs={3} style={{ display: 'flex' }}>
+    <Grid key={itemLabel} size={3} style={{ display: 'flex' }}>
       <Card
         style={{
           display: 'flex',

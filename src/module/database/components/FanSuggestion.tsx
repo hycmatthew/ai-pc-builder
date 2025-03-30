@@ -15,7 +15,7 @@ import ItemCard from './ItemCard'
 import { ComparisonObject, ComparisonSubItem } from '../data/ComparisonObject'
 import ComparisonModal from './ComparisonModal'
 import {
-  getCurrentPrice,
+  convertLocalizedPrice,
   getSelectedCurrency,
   stringToNumber,
 } from '../../../utils/NumberHelper'
@@ -195,7 +195,7 @@ const FanSuggestion = ({
         {updatedList.map((item) => (
           <ItemCard
             itemLabel={generateItemName(item.brand, item.model)}
-            priceLabel={getCurrentPrice(item)}
+            priceLabel={convertLocalizedPrice(item)}
             imgSrc={item.img}
             disable={selectedItems.includes(item)}
             addComparsion={() => addComparison(item)}

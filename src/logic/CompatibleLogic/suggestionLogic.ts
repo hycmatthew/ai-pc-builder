@@ -106,7 +106,7 @@ export const gpuMatchcpuSuggestion = (gpu: GPUType | null, cpu: CPUType | null) 
 }
 
 export const ramSizeSuggestion = (ram: RAMType | null) => {
-  return ram && ram.Capacity > 32
+  return ram ? ram.Capacity > 32 : false
 }
 
 export const aioSuggestion = (

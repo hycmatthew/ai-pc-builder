@@ -16,7 +16,7 @@ import { generateItemName } from '../../../utils/LabelHelper'
 import { ComparisonObject, ComparisonSubItem } from '../data/ComparisonObject'
 import ComparisonModal from './ComparisonModal'
 import {
-  getCurrentPrice,
+  convertLocalizedPrice,
   getSelectedCurrency,
   stringToNumber,
 } from '../../../utils/NumberHelper'
@@ -208,7 +208,7 @@ const CaseSuggestion = ({ caseList, isLoading }: CaseSuggestionProps) => {
         {updatedList.map((item) => (
           <ItemCard
             itemLabel={generateItemName(item.Brand, item.Name)}
-            priceLabel={getCurrentPrice(item)}
+            priceLabel={convertLocalizedPrice(item)}
             imgSrc={item.Img}
             disable={selectedItems.includes(item)}
             addComparsion={() => addComparison(item)}

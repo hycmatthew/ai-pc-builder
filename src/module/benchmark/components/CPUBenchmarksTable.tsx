@@ -1,26 +1,27 @@
-import React, { useState } from 'react'
+import { useState } from 'react'
 import { useSelector } from 'react-redux'
 import { useTranslation } from 'react-i18next'
 import { Box, Stack } from '@mui/material'
-import { GridColDef } from '@mui/x-data-grid'
 import CPUType from '../../../constant/objectTypes/CPUType'
 import {
-  getSelectedCurrency,
-  stringToNumber,
-  stringToNumberWithDP,
+  addCurrencySign,
+  normalizeNumberWithDP,
+  calculatePricePerformance,
+  getCurrentPriceNum,
 } from '../../../utils/NumberHelper'
-import { generateItemName, priceLabelHandler } from '../../../utils/LabelHelper'
+import { generateItemName } from '../../../utils/LabelHelper'
 import BarMotion from '../../../styles/animation/BarMotion'
 import BenchmarksDataGrid from './BenchmarksDataGrid'
 import { getGradientColor } from '../../../utils/ColorHelper'
 import CusTypography from '../../common/components/CusTypography'
+import { ColumnType } from '../../common/components/DataGrid'
 
 function CPUBenchmarksTable() {
   const { t } = useTranslation()
   const [selectedField, setSelectedField] = useState('multiScore')
 
-  const barWidthShort = 150
-  const barWidthLong = 500
+  const barWidthShort = 120
+  const barWidthLong = 450
 
   const dataState = useSelector((state: any) => {
     return state.rawData
@@ -53,21 +54,16 @@ function CPUBenchmarksTable() {
     )
   }
 
-  const columns: GridColDef[] = [
+  const columns: ColumnType[] = [
     {
       field: 'id',
       headerName: t('name'),
-      sortable: false,
       width: 220,
-      editable: false,
-      disableColumnMenu: true,
     },
     {
       field: 'singleScore',
       headerName: t('cpu-single-score'),
       width: selectedField === 'singleScore' ? barWidthLong : barWidthShort,
-      editable: false,
-      disableColumnMenu: true,
       renderCell: (params) => {
         return (
           <Stack direction="row" alignItems="center" spacing={2}>
@@ -83,8 +79,6 @@ function CPUBenchmarksTable() {
       field: 'multiScore',
       headerName: t('cpu-multi-score'),
       width: selectedField === 'multiScore' ? barWidthLong : barWidthShort,
-      editable: false,
-      disableColumnMenu: true,
       renderCell: (params) => {
         return (
           <Stack direction="row" alignItems="center" spacing={2}>
@@ -99,18 +93,22 @@ function CPUBenchmarksTable() {
     {
       field: 'pricePerformance',
       headerName: t('price-performance'),
-      width: 150,
-      editable: false,
-      disableColumnMenu: true,
-      renderCell: (params) => (Number.isFinite(Number(params.value)) ? Number(params.value).toFixed(2) : '-'),
+      width: 120,
+      renderCell: (params) => (
+        <CusTypography variant="h6">
+          {normalizeNumberWithDP(params.value)}
+        </CusTypography>
+      ),
     },
     {
       field: 'price',
       headerName: t('price'),
-      width: 150,
-      editable: false,
-      disableColumnMenu: true,
-      renderCell: (params) => priceLabelHandler(params.value),
+      width: 120,
+      renderCell: (params) => (
+        <CusTypography variant="h6">
+          {addCurrencySign(params.value)}
+        </CusTypography>
+      ),
     },
   ]
 
@@ -122,15 +120,15 @@ function CPUBenchmarksTable() {
         index,
         singleScore: item.SingleCoreScore,
         multiScore: item.MultiCoreScore,
-        pricePerformance:
-          item.MultiCoreScore / stringToNumber(item[getSelectedCurrency()]),
-        price: stringToNumberWithDP(item[getSelectedCurrency()]),
+        pricePerformance: calculatePricePerformance(item.MultiCoreScore, getCurrentPriceNum(item)),
+        price: getCurrentPriceNum(item),
       }
     })
     return tempOptions.sort((a, b) => b.multiScore - a.multiScore)
   }
 
   const handleColumnHeaderClick = (fieldName: string) => {
+    console.log(fieldName)
     if (fieldName === 'singleScore' || fieldName === 'multiScore') {
       setSelectedField(fieldName)
     }

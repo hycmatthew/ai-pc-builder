@@ -1,21 +1,24 @@
-import React, { useState, useEffect } from 'react'
+import React, { useEffect } from 'react'
 import { useSelector } from 'react-redux'
 import { useTranslation } from 'react-i18next'
 import { Box, Stack, Typography } from '@mui/material'
-import { GridColDef } from '@mui/x-data-grid'
 import AOS from 'aos'
 import 'aos/dist/aos.css'
 import './BenchmarksTable.scss'
 
 import GPUType from '../../../constant/objectTypes/GPUType'
 import {
+  addCurrencySign,
+  getCurrentPriceNum,
   getSelectedCurrency,
-  stringToNumberWithDP,
+  normalizeNumberWithDP,
 } from '../../../utils/NumberHelper'
 import { generateItemName, priceLabelHandler } from '../../../utils/LabelHelper'
 import BarMotion from '../../../styles/animation/BarMotion'
 import BenchmarksDataGrid from './BenchmarksDataGrid'
 import { getGradientColor } from '../../../utils/ColorHelper'
+import { ColumnType } from '../../common/components/DataGrid'
+import CusTypography from '../../common/components/CusTypography'
 
 function GPUBenchmarksTable() {
   const { t } = useTranslation()
@@ -58,21 +61,16 @@ function GPUBenchmarksTable() {
     )
   }
 
-  const columns: GridColDef[] = [
+  const columns: ColumnType[] = [
     {
       field: 'id',
       headerName: t('name'),
-      sortable: false,
       width: 350,
-      editable: false,
-      disableColumnMenu: true,
     },
     {
       field: 'benchmark',
       headerName: 'Benchmark',
       width: 450,
-      editable: false,
-      disableColumnMenu: true,
       renderCell: (params) => {
         return (
           <Stack direction="row" alignItems="center" spacing={2}>
@@ -86,9 +84,11 @@ function GPUBenchmarksTable() {
       field: 'price',
       headerName: t('price'),
       width: 160,
-      editable: false,
-      disableColumnMenu: true,
-      renderCell: (params) => priceLabelHandler(params.value),
+      renderCell: (params) => (
+        <CusTypography variant="h6">
+          {addCurrencySign(params.value)}
+        </CusTypography>
+      ),
     },
   ]
 
@@ -99,14 +99,13 @@ function GPUBenchmarksTable() {
         id: generateItemName(item.Brand, item.Name),
         index,
         benchmark: item.Benchmark,
-        price: stringToNumberWithDP(item[getSelectedCurrency()]),
+        price: getCurrentPriceNum(item),
       }
     })
     return tempOptions.sort((a, b) => b.timespyScore - a.timespyScore)
   }
 
-  const handleColumnHeaderClick = (fieldName: string) => {
-  }
+  const handleColumnHeaderClick = (fieldName: string) => {}
 
   return (
     <BenchmarksDataGrid
