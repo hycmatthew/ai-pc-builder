@@ -1,7 +1,7 @@
-import { useState } from 'react'
+import { useState, useMemo, useCallback, useEffect } from 'react'
 import { useSelector } from 'react-redux'
 import { useTranslation } from 'react-i18next'
-import { Box, Stack } from '@mui/material'
+import { Box, LinearProgress, Stack } from '@mui/material'
 import CPUType from '../../../constant/objectTypes/CPUType'
 import {
   addCurrencySign,
@@ -15,32 +15,89 @@ import BenchmarksDataGrid from './BenchmarksDataGrid'
 import { getGradientColor } from '../../../utils/ColorHelper'
 import CusTypography from '../../common/components/CusTypography'
 import { ColumnType } from '../../common/components/DataGrid'
+import { FilterPanel } from './FilterPanel'
+
+export type BaseDataItemType = {
+  id: string
+  brand: string
+  name: string
+  singleScore: number
+  multiScore: number
+  price: number
+  pricePerformance: number
+}
 
 function CPUBenchmarksTable() {
   const { t } = useTranslation()
   const [selectedField, setSelectedField] = useState('multiScore')
-
-  const barWidthShort = 120
-  const barWidthLong = 450
-
-  const dataState = useSelector((state: any) => {
-    return state.rawData
+  const [filters, setFilters] = useState({
+    nameFilter: '',
+    priceRange: [0, 1000] as [number, number],
   })
 
-  const benchmarksBarWidth = (type: string, score: number) => {
+  const dataState = useSelector((state: any) => state.rawData)
+
+  // 生成基础数据并缓存
+  const baseData = useMemo(() => {
+    return dataState.cpuList.map((item: CPUType) => ({
+      id: generateItemName(item.Brand, item.Name),
+      brand: item.Brand,
+      name: item.Name,
+      singleScore: item.SingleCoreScore,
+      multiScore: item.MultiCoreScore,
+      price: getCurrentPriceNum(item),
+      pricePerformance: calculatePricePerformance(
+        item.MultiCoreScore,
+        getCurrentPriceNum(item)
+      ),
+    }))
+  }, [dataState.cpuList])
+
+  const [isMaxPriceUpdate, setIsMaxPriceUpdate] = useState(false)
+  const minPrice = 0
+  const maxPrice = Math.max(
+    ...baseData.map((item: BaseDataItemType) =>
+      isFinite(item.price) ? item.price : 0
+    )
+  )
+
+  useEffect(() => {
+    if (!isMaxPriceUpdate) {
+      // 只有未修改时才自动更新
+      setFilters((prev) => ({
+        ...prev,
+        priceRange: [minPrice, maxPrice],
+      }))
+      setIsMaxPriceUpdate(true)
+    }
+  }, [minPrice, maxPrice])
+
+  // 过滤后的数据
+  const filteredData = useMemo(() => {
+    return baseData
+      .filter((item: BaseDataItemType) => {
+        const matchesName = item.id
+          .toLowerCase()
+          .includes(filters.nameFilter.toLowerCase())
+        const matchesPrice =
+          item.price >= filters.priceRange[0] &&
+          item.price <= filters.priceRange[1]
+        return matchesName && matchesPrice
+      })
+      .sort(
+        (a: BaseDataItemType, b: BaseDataItemType) =>
+          b.multiScore - a.multiScore
+      )
+  }, [baseData, filters])
+
+  // 柱状图生成逻辑
+  const benchmarksBarWidth = useCallback((type: string, score: number) => {
     const maxWidth = 360
     const maxSingleScore = 3000
     const maxMultiScore = 45000
-    let setLength = 1
+    const setLength =
+      type === 'singleScore' ? score / maxSingleScore : score / maxMultiScore
 
-    switch (type) {
-      case 'singleScore':
-        setLength = score / maxSingleScore
-        break
-      default:
-        setLength = score / maxMultiScore
-        break
-    }
     return (
       <BarMotion>
         <Box
@@ -52,94 +109,110 @@ function CPUBenchmarksTable() {
         />
       </BarMotion>
     )
-  }
+  }, [])
 
-  const columns: ColumnType[] = [
-    {
-      field: 'id',
-      headerName: t('name'),
-      width: 220,
-    },
-    {
-      field: 'singleScore',
-      headerName: t('cpu-single-score'),
-      width: selectedField === 'singleScore' ? barWidthLong : barWidthShort,
-      renderCell: (params) => {
-        return (
+  // 列定义
+  const columns: ColumnType[] = useMemo(
+    () => [
+      {
+        field: 'id',
+        headerName: t('name'),
+        width: 220,
+        renderCell: (params) => (
+          <CusTypography variant="h6">{params.value}</CusTypography>
+        ),
+      },
+      {
+        field: 'singleScore',
+        headerName: t('cpu-single-score'),
+        width: selectedField === 'singleScore' ? 450 : 120,
+        renderCell: (params) => (
           <Stack direction="row" alignItems="center" spacing={2}>
-            {params.field === selectedField
-              ? benchmarksBarWidth(params.field, params.value)
-              : ''}
+            {params.field === selectedField &&
+              benchmarksBarWidth(params.field, params.value)}
             <CusTypography variant="h6">{params.value}</CusTypography>
           </Stack>
-        )
+        ),
       },
-    },
-    {
-      field: 'multiScore',
-      headerName: t('cpu-multi-score'),
-      width: selectedField === 'multiScore' ? barWidthLong : barWidthShort,
-      renderCell: (params) => {
-        return (
+      {
+        field: 'multiScore',
+        headerName: t('cpu-multi-score'),
+        width: selectedField === 'multiScore' ? 450 : 120,
+        renderCell: (params) => (
           <Stack direction="row" alignItems="center" spacing={2}>
-            {params.field === selectedField
-              ? benchmarksBarWidth(params.field, params.value)
-              : ''}
+            {params.field === selectedField &&
+              benchmarksBarWidth(params.field, params.value)}
             <CusTypography variant="h6">{params.value}</CusTypography>
           </Stack>
-        )
+        ),
       },
-    },
-    {
-      field: 'pricePerformance',
-      headerName: t('price-performance'),
-      width: 120,
-      renderCell: (params) => (
-        <CusTypography variant="h6">
-          {normalizeNumberWithDP(params.value)}
-        </CusTypography>
-      ),
-    },
-    {
-      field: 'price',
-      headerName: t('price'),
-      width: 120,
-      renderCell: (params) => (
-        <CusTypography variant="h6">
-          {addCurrencySign(params.value)}
-        </CusTypography>
-      ),
-    },
-  ]
+      {
+        field: 'pricePerformance',
+        headerName: t('price-performance'),
+        width: 120,
+        renderCell: (params) => (
+          <CusTypography variant="h6">
+            {normalizeNumberWithDP(params.value)}
+          </CusTypography>
+        ),
+      },
+      {
+        field: 'price',
+        headerName: t('price'),
+        width: 120,
+        renderCell: (params) => (
+          <CusTypography variant="h6">
+            {addCurrencySign(params.value)}
+          </CusTypography>
+        ),
+      },
+    ],
+    [t, selectedField, benchmarksBarWidth]
+  )
 
-  const createListOptions = () => {
-    let tempOptions: any[] = []
-    tempOptions = dataState.cpuList.map((item: CPUType, index: number) => {
-      return {
-        id: generateItemName(item.Brand, item.Name),
-        index,
-        singleScore: item.SingleCoreScore,
-        multiScore: item.MultiCoreScore,
-        pricePerformance: calculatePricePerformance(item.MultiCoreScore, getCurrentPriceNum(item)),
-        price: getCurrentPriceNum(item),
-      }
-    })
-    return tempOptions.sort((a, b) => b.multiScore - a.multiScore)
-  }
-
-  const handleColumnHeaderClick = (fieldName: string) => {
-    console.log(fieldName)
-    if (fieldName === 'singleScore' || fieldName === 'multiScore') {
+  // 处理列头点击
+  const handleColumnHeaderClick = useCallback((fieldName: string) => {
+    if (['singleScore', 'multiScore'].includes(fieldName)) {
       setSelectedField(fieldName)
     }
-  }
+  }, [])
+
+  // 处理过滤变化
+  const handleFilterChange = useCallback(
+    (newFilters: Partial<typeof filters>) => {
+      setFilters((prev) => ({ ...prev, ...newFilters }))
+    },
+    []
+  )
 
   return (
-    <BenchmarksDataGrid
-      rows={createListOptions()}
-      columns={columns}
-      headerClick={handleColumnHeaderClick}
-    />
+    <Box sx={{ height: '100%', display: 'flex', flexDirection: 'column' }}>
+      {isMaxPriceUpdate ? (
+        <>
+          <FilterPanel
+            nameFilter={filters.nameFilter}
+            priceRange={filters.priceRange}
+            minPrice={minPrice}
+            maxPrice={maxPrice}
+            onNameFilterChange={(value) =>
+              handleFilterChange({ nameFilter: value })
+            }
+            onPriceRangeChange={(range) =>
+              handleFilterChange({ priceRange: [range[0] || 0, range[1] || 0] })
+            }
+          />
+          <BenchmarksDataGrid
+            rows={filteredData}
+            columns={columns}
+            headerClick={handleColumnHeaderClick}
+          />
+        </>
+      ) : (
+        <Box sx={{ width: '100%' }}>
+          <LinearProgress />
+        </Box>
+      )}
+    </Box>
   )
 }
 

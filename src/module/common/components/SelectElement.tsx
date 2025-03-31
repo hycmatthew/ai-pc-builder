@@ -171,11 +171,5 @@ const SelectElement = ({
     />
   )
 }
-/*
-SelectElement.defaultProps = {
-  placeholder: 'Select',
-  selectChange: () => {},
-  isLoading: false,
-}
-*/
+
 export default SelectElement
