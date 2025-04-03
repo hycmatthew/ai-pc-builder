@@ -5,13 +5,13 @@ import React from 'react'
 // 將 theme 提取到組件外避免重複創建
 const customTheme = createTheme({
   typography: {
-    fontFamily: '"Noto Sans TC", "Open Sans", sans-serif, system-ui, Avenir, Helvetica',
+    fontFamily: ' "Noto Sans SC", "Noto Sans TC", "Open Sans", sans-serif, system-ui, Avenir, Helvetica',
     h1: { fontSize: '2.5rem', fontWeight: 600, marginBottom: '1rem' },
     h2: { fontSize: '2rem', fontWeight: 600 },
     h3: { fontSize: '1.5rem', fontWeight: 600 },
     h4: { fontSize: '1.25rem', fontWeight: 600 },
     h5: { fontSize: '1rem', fontWeight: 600 },
-    h6: { fontSize: '0.875rem' },
+    h6: { fontSize: '0.875rem' },// sub header
     body1: { fontSize: '1rem', lineHeight: 1.5 },
     body2: { fontSize: '0.875rem', lineHeight: 1.5 },
     caption: { fontSize: '0.75rem', lineHeight: 1.5 },

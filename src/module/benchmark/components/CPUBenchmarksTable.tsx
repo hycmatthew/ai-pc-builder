@@ -137,7 +137,7 @@ function CPUBenchmarksTable() {
       {
         field: 'multiScore',
         headerName: t('cpu-multi-score'),
-        width: selectedField === 'multiScore' ? 450 : 120,
+        width: selectedField === 'multiScore' ? 400 : 120,
         renderCell: (params) => (
           <Stack direction="row" alignItems="center" spacing={2}>
             {params.field === selectedField &&

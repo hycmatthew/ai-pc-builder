@@ -17,7 +17,7 @@ const StyledButton = styled(Button)(({ theme }) => ({
   boxShadow: 'none',
 
   // Contained variant 專用樣式
-  backgroundColor: theme.palette.primary.main,
+  backgroundColor: '#0077c0',
   '&:hover': {
     backgroundColor: theme.palette.primary.dark,
     boxShadow: 'none',
@@ -37,7 +37,7 @@ const StyledButton = styled(Button)(({ theme }) => ({
   },
 }))
 
-const CusButton = ({
+const CustomButton = ({
   label,
   children,
   ...props
@@ -55,4 +55,4 @@ const CusButton = ({
   )
 }
 
-export default CusButton
+export default CustomButton

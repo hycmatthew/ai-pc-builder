@@ -46,13 +46,13 @@ const CustomAutocomplete = styled(Autocomplete)({
 })
 
 const OptionTypography = styled(Typography)({
-  fontFamily: ["Noto Sans TC", "Open Sans", "sans-serif", "system-ui", "Avenir", "Helvetica"],
+  fontFamily: [ "Noto Sans SC", "Noto Sans TC", "Open Sans", "sans-serif", "system-ui", "Avenir", "Helvetica"],
   fontSize: '14px',
   padding: '2px 0px',
 })
 
 const ValueTypography = styled(Typography)({
-  fontFamily: ["Noto Sans TC", "Open Sans", "sans-serif", "system-ui", "Avenir", "Helvetica"],
+  fontFamily: [ "Noto Sans SC", "Noto Sans TC", "Open Sans", "sans-serif", "system-ui", "Avenir", "Helvetica"],
   fontSize: '12px',
   fontWeight: 'bold',
   fontStyle: 'italic',

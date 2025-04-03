@@ -121,7 +121,8 @@ const AppLayout = ({ children }: AppLayoutProps) => {
 
       <main className="main-page">{children}</main>
 
-      <footer className="main-container">
+      <footer>
+        <div className='main-container'>
         <CusTypography variant="body2">
           {`©${new Date().getFullYear()} buildyourpc.com`}
         </CusTypography>
@@ -129,6 +130,7 @@ const AppLayout = ({ children }: AppLayoutProps) => {
         <button className="app-layout__current-lang" onClick={handleDialogOpen}>
           {currentLanguageConfig.displayText}
         </button>
+        </div>
       </footer>
 
       <LanguageDialog

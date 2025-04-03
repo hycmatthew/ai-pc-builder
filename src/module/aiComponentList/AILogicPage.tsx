@@ -1,12 +1,6 @@
 import { useEffect, useState } from 'react'
 import { useSelector } from 'react-redux'
-import {
-  Button,
-  FormLabel,
-  Grid2 as Grid,
-  Stack,
-  TextField,
-} from '@mui/material'
+import { FormLabel, Grid2 as Grid, Stack } from '@mui/material'
 
 import SpecificComponent from './components/SpecificComponent'
 import { useAppDispatch } from './../../store/store'
@@ -27,6 +21,8 @@ import ResultComponent from './components/ResultComponent'
 import CompatibleSection from '../componentList/components/CompatibleSection'
 import { useTranslation } from 'react-i18next'
 import SegmentedTabs from '../common/components/SegmentedTabs'
+import CustomTextField from '../common/components/CustomTextField'
+import CustomButton from '../common/components/CustomButton'
 
 type ProductHandlers = {
   [key in ProductEnum]: {
@@ -242,74 +238,73 @@ function AILogicPage() {
   }
 
   return (
-    <div className="main-container">
-      <div className="main-overlay-card">
-        <Grid size={12} container spacing={0} columns={{ xs: 6, md: 12 }}>
-          <Grid size={12}>
-            <FormLabel id="demo-row-radio-buttons-group-label">
-              Gender
-            </FormLabel>
-          </Grid>
-          <Grid size={12}>
-            <SegmentedTabs
-              value={selectedType}
-              onChange={updateType}
-              tabs={tabs}
-            />
-          </Grid>
-          <Grid size={12}>
-            <FormLabel id="demo-row-radio-buttons-group-label">
-              Budget
-            </FormLabel>
-          </Grid>
-          <Grid size={12}>
-            <Stack spacing={2} direction="row">
-              <TextField
-                id="outlined-basic"
-                hiddenLabel
-                variant="filled"
-                type="number"
-                size="small"
-                value={formData.budget}
-                onChange={budgetTextfieldChanged}
+    <div className="bg-container blue-bg">
+      <div className="main-container">
+        <div className="main-overlay-card">
+          <Grid size={12} container spacing={0} columns={{ xs: 6, md: 12 }}>
+            <Grid size={12}>
+              <FormLabel id="demo-row-radio-buttons-group-label">
+                Usage
+              </FormLabel>
+            </Grid>
+            <Grid size={12}>
+              <SegmentedTabs
+                value={selectedType}
+                onChange={updateType}
+                tabs={tabs}
               />
-              <Button
-                variant="contained"
-                disabled={disableButtonLogic()}
-                onClick={generateListLogic}
-                sx={{ height: '40px' }}
-              >
-                Contained
-              </Button>
-              <Button
-                variant="contained"
-                onClick={clearDataLogic}
-                sx={{ height: '40px' }}
-              >
-                Clear
-              </Button>
-            </Stack>
+            </Grid>
+            <Grid size={12}>
+              <FormLabel id="demo-row-radio-buttons-group-label">
+                Budget
+              </FormLabel>
+            </Grid>
+            <Grid size={12}>
+              <Stack spacing={2} direction="row">
+                <CustomTextField
+                  type="number"
+                  value={formData.budget}
+                  onChange={budgetTextfieldChanged}
+                  width={200}
+                />
+                <CustomButton
+                  variant="contained"
+                  disabled={disableButtonLogic()}
+                  onClick={generateListLogic}
+                  sx={{ height: '40px' }}
+                >
+                  Contained
+                </CustomButton>
+                <CustomButton
+                  variant="contained"
+                  onClick={clearDataLogic}
+                  sx={{ height: '40px' }}
+                >
+                  Clear
+                </CustomButton>
+              </Stack>
+            </Grid>
+            <Grid size={6} paddingTop={2}>
+              <SpecificComponent
+                rawData={dataState.rawData}
+                aiLogic={dataState.aiLogic}
+                changeSelectItem={changeSelectItem}
+              />
+            </Grid>
+            <Grid size={6}>
+              <CompatibleSection
+                selectedItems={dataState.aiLogic.preSelectedItem}
+              />
+            </Grid>
+            <Grid size={12}>
+              <ResultComponent
+                resultData={resData}
+                totalPrice={dataState.aiLogic.totalPrice}
+                totalScore={dataState.aiLogic.totalScore}
+              ></ResultComponent>
+            </Grid>
           </Grid>
-          <Grid size={6} paddingTop={2}>
-            <SpecificComponent
-              rawData={dataState.rawData}
-              aiLogic={dataState.aiLogic}
-              changeSelectItem={changeSelectItem}
-            />
-          </Grid>
-          <Grid size={6}>
-            <CompatibleSection
-              selectedItems={dataState.aiLogic.preSelectedItem}
-            />
-          </Grid>
-          <Grid size={12}>
-            <ResultComponent
-              resultData={resData}
-              totalPrice={dataState.aiLogic.totalPrice}
-              totalScore={dataState.aiLogic.totalScore}
-            ></ResultComponent>
-          </Grid>
-        </Grid>
+        </div>
       </div>
     </div>
   )

@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import { Button, Grid2 as Grid } from '@mui/material'
+import { Grid2 as Grid } from '@mui/material'
 import { NotificationsProvider } from '@toolpad/core/useNotifications'
 
 import SelectElement from '../../common/components/SelectElement'
@@ -29,7 +29,7 @@ import {
 import { useTranslation } from 'react-i18next'
 import { useLocation } from 'react-router-dom'
 import Calculator from './Calculator'
-import CusButton from '../../common/components/CusButton'
+import CustomButton from '../../common/components/CustomButton'
 import ListCopyDialog from './ListCopyDialog'
 import { getTotalPrice } from '../../../utils/NumberHelper'
 
@@ -232,14 +232,13 @@ const ComponentMenu = ({ dataState }: ComponentMenuProps) => {
           <Calculator selectedItems={dataState.selectedItems} />
         </Grid>
         <Grid size={4}>
-          <CusButton
+          <CustomButton
             disabled={getTotalPrice(dataState.selectedItems) == 0}
             onClick={handleOpen}
-            variant="contained"
             fullWidth
           >
             Contained
-          </CusButton>          
+          </CustomButton>
           <ListCopyDialog
             selectedItems={dataState.selectedItems}
             open={open}

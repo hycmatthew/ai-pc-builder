@@ -1,35 +1,61 @@
-@use '../../../styles/variables.scss' as *;;
+@use '../../../styles/variables.scss' as *;
 
-body{
+body {
   margin: 0px;
 }
 
-.main_container .header-link-grid a{
-  text-decoration: none;
-}
-
-.MuiAutocomplete-root .MuiOutlinedInput-root{
-  background: #fff;
-}
-
-.main-container {
+.app-layout {
   display: flex;
-  justify-content: space-between;
-  align-items: center;
-  max-width: $lg-screen-width;
-  margin: 0 auto;
-  padding: 1rem 1.5rem;
+  flex-direction: column;
+  min-height: 100vh;
+
+  .main-page {
+    flex: 1; /* 关键属性 - 占据剩余空间 */
+  }
+
+  .main_container .header-link-grid a {
+    text-decoration: none;
+  }
+
+  .MuiAutocomplete-root .MuiOutlinedInput-root {
+    background: #fff;
+  }
+
+  .main-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    max-width: $lg-screen-width;
+    margin: 0 auto;
+    padding: 1rem 1.5rem;
+  }
+
+  footer {
+    background-color: #1b1b1b;
+    width: 100%;
+    color: #fff;
+
+    button {
+      background-color: transparent;
+      color: #fff;
+      text-decoration: underline;
+
+      &:hover {
+        border-color: #fff;
+      }
+    }
+  }
 }
 
-.lang-dialog .MuiDialog-container .MuiDialog-paper{
+.lang-dialog .MuiDialog-container .MuiDialog-paper {
   width: 600px;
   height: auto;
   padding: 24px;
 
-  .dialog-lang-btn-container{
+  .dialog-lang-btn-container {
     display: flex;
 
-    button{
+    button {
       width: 25%;
       margin: 8px;
     }

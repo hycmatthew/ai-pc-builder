@@ -183,11 +183,18 @@ function DataGrid<T extends { id: string | number }>({
 
           return (
             <Cell key={String(col.field)} width={col.width} role="gridcell">
-              {col.renderCell ? (
-                col.renderCell({ ...params, field: String(col.field) })
-              ) : (
-                <CusTypography variant="h6">{String(value)}</CusTypography>
-              )}
+              <Box
+                height="100%"
+                display="flex"
+                flexDirection="column"
+                justifyContent="center"
+              >
+                {col.renderCell ? (
+                  col.renderCell({ ...params, field: String(col.field) })
+                ) : (
+                  <CusTypography variant="h6">{String(value)}</CusTypography>
+                )}
+              </Box>
             </Cell>
           )
         })}

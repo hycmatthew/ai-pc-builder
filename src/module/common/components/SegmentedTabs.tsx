@@ -30,7 +30,7 @@ const IosSegmentedTab = styled(Tab)<TabProps>(() => ({
   zIndex: 1,
   minHeight: '32px',
   minWidth: '120px',
-  borderRadius: '6px',
+  borderRadius: '8px',
   transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
   fontSize: '14px',
   fontWeight: 500,

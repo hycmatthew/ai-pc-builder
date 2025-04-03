@@ -1,10 +1,12 @@
-import { Slider, TextField, Box, styled } from '@mui/material'
+import { Slider, Box, styled, Grid2 as Grid, Typography } from '@mui/material'
 import { useState } from 'react'
+import CustomTextField from './CustomTextField'
+import CusTypography from './CusTypography'
 
-const iOSBoxShadow =
+const SliderBoxShadow =
   '0 3px 1px rgba(0,0,0,0.1),0 4px 8px rgba(0,0,0,0.13),0 0 0 1px rgba(0,0,0,0.02)'
 
-const IOSSlider = styled(Slider)(({ theme }) => ({
+const CustomSlider = styled(Slider)(({ theme }) => ({
   color: theme.palette.primary.main,
   height: 4,
   padding: '15px 0',
@@ -12,12 +14,12 @@ const IOSSlider = styled(Slider)(({ theme }) => ({
     height: 28,
     width: 28,
     backgroundColor: '#fff',
-    boxShadow: iOSBoxShadow,
+    boxShadow: SliderBoxShadow,
     '&:focus, &:hover, &.Mui-active': {
       boxShadow:
         '0 3px 1px rgba(0,0,0,0.1),0 4px 8px rgba(0,0,0,0.3),0 0 0 1px rgba(0,0,0,0.02)',
       '@media (hover: none)': {
-        boxShadow: iOSBoxShadow,
+        boxShadow: SliderBoxShadow,
       },
     },
   },
@@ -41,28 +43,8 @@ const IOSSlider = styled(Slider)(({ theme }) => ({
   },
 }))
 
-const Input = styled(TextField)({
-  width: 80,
-  '& input': {
-    textAlign: 'center',
-    padding: '8px 12px',
-  },
-  '& .MuiOutlinedInput-root': {
-    borderRadius: 12,
-    '& fieldset': {
-      borderColor: '#e0e0e0',
-    },
-    '&:hover fieldset': {
-      borderColor: '#b3b3b3',
-    },
-    '&.Mui-focused fieldset': {
-      borderColor: '#007aff',
-      borderWidth: 1,
-    },
-  },
-})
-
 interface RangeSliderProps {
+  label?: string
   min?: number
   max?: number
   step?: number
@@ -103,34 +85,78 @@ export const RangeSlider = ({
     }
 
   return (
-    <Box sx={{ width: '100%', display: 'flex', alignItems: 'center', gap: 2 }}>
-      <Input
-        value={value[0]}
-        onChange={handleInputChange(0)}
-        variant="outlined"
-        slotProps={{
-          htmlInput: { min, max },
-        }}
-      />
+    <Box sx={{ width: '100%' }}>
+      {/* 标签行 */}
+      <CusTypography variant="h6">价格范围</CusTypography>
 
-      <IOSSlider
-        value={value}
-        onChange={handleSliderChange}
-        valueLabelDisplay="auto"
-        min={min}
-        max={max}
-        step={step}
-        disableSwap
-      />
+      {/* 控制项容器 */}
+      <Grid container spacing={2} alignItems="center" paddingTop={1}>
+        {/* 手机端输入框（下方） */}
+        <Grid size={12} sx={{ display: { xs: 'block', md: 'none' } }}>
+          <Grid size={12}>
+            <CustomSlider
+              value={value}
+              onChange={handleSliderChange}
+              valueLabelDisplay="auto"
+              min={min}
+              max={max}
+              step={step}
+              disableSwap
+            />
+          </Grid>
+          <Grid
+            size={12}
+            sx={{
+              display: 'flex',
+              gap: 2,
+              width: '100%',
+              justifyContent: 'space-between',
+            }}
+          >
+            <CustomTextField
+              type="number"
+              value={value[0]}
+              onChange={handleInputChange(0)}
+              fullWidth
+            />
+            <CustomTextField
+              type="number"
+              value={value[1]}
+              onChange={handleInputChange(1)}
+              fullWidth
+            />
+          </Grid>
+        </Grid>
 
-      <Input
-        value={value[1]}
-        onChange={handleInputChange(1)}
-        variant="outlined"
-        slotProps={{
-          htmlInput: { min, max },
-        }}
-      />
+        {/* 桌面端输入框（右侧） */}
+        <Grid size={12} sx={{ display: { xs: 'none', md: 'block' } }}>
+          <Box sx={{ display: 'flex', gap: 4 }}>
+            <CustomTextField
+              type="number"
+              value={value[0]}
+              onChange={handleInputChange(0)}
+              width={150}
+            />
+            <Grid size={12}>
+              <CustomSlider
+                value={value}
+                onChange={handleSliderChange}
+                valueLabelDisplay="auto"
+                min={min}
+                max={max}
+                step={step}
+                disableSwap
+              />
+            </Grid>
+            <CustomTextField
+              type="number"
+              value={value[1]}
+              onChange={handleInputChange(1)}
+              width={150}
+            />
+          </Box>
+        </Grid>
+      </Grid>
     </Box>
   )
 }
