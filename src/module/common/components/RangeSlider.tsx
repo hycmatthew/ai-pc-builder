@@ -1,23 +1,22 @@
-import { Slider, Box, styled, Grid2 as Grid, Typography } from '@mui/material'
+import { Slider, Box, styled, Grid2 as Grid } from '@mui/material'
 import { useState } from 'react'
 import CustomTextField from './CustomTextField'
 import CusTypography from './CusTypography'
 
 const SliderBoxShadow =
-  '0 3px 1px rgba(0,0,0,0.1),0 4px 8px rgba(0,0,0,0.13),0 0 0 1px rgba(0,0,0,0.02)'
+  '0 0px 1px rgba(0,0,0,0.1),0 4px 8px rgba(0,0,0,0.13),0 0 0 1px rgba(0,0,0,0.02)'
 
 const CustomSlider = styled(Slider)(({ theme }) => ({
   color: theme.palette.primary.main,
   height: 4,
   padding: '15px 0',
   '& .MuiSlider-thumb': {
-    height: 28,
-    width: 28,
+    height: 18,
+    width: 18,
     backgroundColor: '#fff',
-    boxShadow: SliderBoxShadow,
+    boxShadow: '0 0 2px 0px rgba(0, 0, 0, 0.1)',
     '&:focus, &:hover, &.Mui-active': {
-      boxShadow:
-        '0 3px 1px rgba(0,0,0,0.1),0 4px 8px rgba(0,0,0,0.3),0 0 0 1px rgba(0,0,0,0.02)',
+      boxShadow: '0px 0px 3px 1px rgba(0, 0, 0, 0.1)',
       '@media (hover: none)': {
         boxShadow: SliderBoxShadow,
       },

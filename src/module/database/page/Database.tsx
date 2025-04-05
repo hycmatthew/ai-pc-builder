@@ -3,7 +3,6 @@ import { useTranslation } from 'react-i18next'
 import { Grid2 as Grid } from '@mui/material'
 
 import { useSelector } from 'react-redux'
-import ItemInfoTable from '../components/ItemInfoTable'
 import ProductEnum from '../../../constant/ProductEnum'
 import CPUSuggestion from '../components/CPUSuggestion'
 import GPUSuggestion from '../components/GPUSuggestion'
@@ -15,14 +14,11 @@ import CaseSuggestion from '../components/CaseSuggestion'
 import CoolerSuggestion from '../components/CoolerSuggestion'
 import DatabaseTabButton from '../../common/components/DatabaseTabButton'
 
-function Database() {
+const Database = () => {
   const { t } = useTranslation()
+  const categoryList = Object.values(ProductEnum) // Assume ProductEnum is defined elsewhere
 
-  const categoryList = Object.values(ProductEnum)
-
-  const dataState = useSelector((state: any) => {
-    return state.rawData
-  })
+  const dataState = useSelector((state: any) => state.rawData)
 
   const [selectedType, setSelectedType] = useState(ProductEnum.CPU)
 
@@ -84,54 +80,29 @@ function Database() {
             isLoading={dataState.isLoading}
           />
         )
-      /*
-      case ProductEnum.Fan:
-        return (
-          <FanSuggestion
-            airCoolerList={dataState.airCoolerList}
-            isLoading={dataState.isLoading}
-          />
-        )
-          */
       default:
         return ''
     }
   }
 
   return (
-    <Grid justifyContent="center" container>
-      <Grid
-        container
-        size={{ xs: 12, md: 8 }}
-        justifyContent="center"
-        spacing={1}
-      >
-        {categoryList.map((item) => (
-          <Grid size={{ xs: 6, md: 3 }}>
-            <DatabaseTabButton
-              label={item}
-              isSelected={item === selectedType}
-              clickedFunc={() => setSelectedType(item)}
-            />
+    <Grid container justifyContent="center">
+      <Grid container spacing={2} size={{ xs: 12, md: 8 }}>
+        <Grid size={{ xs: 6, md: 3 }}>
+          <Grid container direction="column" spacing={1}>
+            {categoryList.map((item) => (
+              <Grid key={item} size={12}>
+                <DatabaseTabButton
+                  label={item}
+                  isSelected={item === selectedType}
+                  clickedFunc={() => setSelectedType(item)}
+                />
+              </Grid>
+            ))}
           </Grid>
-        ))}
-      </Grid>
-      <Grid
-        container
-        size={{ xs: 12, md: 8 }}
-        justifyContent="center"
-        sx={{ paddingTop: '24px' }}
-      >
-        <Grid size={12}>{createSelectLogic(selectedType)}</Grid>
-      </Grid>
-      <Grid
-        container
-        size={{ xs: 12, md: 8 }}
-        justifyContent="center"
-        sx={{ paddingTop: '24px' }}
-      >
-        <Grid size={12}>
-          <ItemInfoTable />
+        </Grid>
+        <Grid size={{ xs: 6, md: 9 }} sx={{ paddingTop: '24px' }}>
+          {createSelectLogic(selectedType)}
         </Grid>
       </Grid>
     </Grid>

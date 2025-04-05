@@ -1,6 +1,14 @@
 import { useEffect, useState } from 'react'
 import { useSelector } from 'react-redux'
-import { FormLabel, Grid2 as Grid, Stack } from '@mui/material'
+import {
+  FormLabel,
+  Grid2 as Grid,
+  Stack,
+  Step,
+  StepLabel,
+  Stepper,
+  styled,
+} from '@mui/material'
 
 import SpecificComponent from './components/SpecificComponent'
 import { useAppDispatch } from './../../store/store'
@@ -33,6 +41,25 @@ type ProductHandlers = {
   }
 }
 
+const steps = ['Select Usage', 'Configure Parts', 'Build Result']
+
+const AnimatedGrid = styled(Grid)(({ theme }) => ({
+  animation: 'fadeInSlideUp 0.5s ease-out',
+  overflow: 'hidden',
+  '@keyframes fadeInSlideUp': {
+    '0%': {
+      opacity: 0,
+      transform: 'translateY(20px)',
+      maxHeight: 0,
+    },
+    '100%': {
+      opacity: 1,
+      transform: 'translateY(0)',
+      maxHeight: '1000px', // 根据实际最大高度调整
+    },
+  },
+}))
+
 function AILogicPage() {
   const dataState = useSelector((state: any) => {
     return state
@@ -48,9 +75,20 @@ function AILogicPage() {
     { label: t('professional'), value: 'professional' },
   ]
 
+  const [activeStep, setActiveStep] = useState(0)
+
+  const handleNext = () => {
+    generateListLogic()
+    setActiveStep(2)
+  }
+
   const updateType = (event: React.SyntheticEvent, newValue: any) => {
     if (newValue !== null) {
       setSelectedType(newValue as ProductEnum)
+      // 选择usage后自动允许进入下一步
+      if (activeStep === 0) {
+        setActiveStep(1)
+      }
     }
   }
 
@@ -153,14 +191,15 @@ function AILogicPage() {
         changeSelectItem(res.cooler.name, ProductEnum.Cooler, -1)
       }
       dispatch(sliceActions.updateScoreAndPrirce(res))
-    } else {
     }
   }
 
   const clearDataLogic = () => {
     // Define the clearPreSelectedData function here
     console.log('clearDataLogic')
+    setActiveStep(1)
     dispatch(sliceActions.clearPreSelectedData())
+    setFormData({ ...formData, budget: '' })
   }
 
   // 配置映射
@@ -241,68 +280,81 @@ function AILogicPage() {
     <div className="bg-container blue-bg">
       <div className="main-container">
         <div className="main-overlay-card">
-          <Grid size={12} container spacing={0} columns={{ xs: 6, md: 12 }}>
+          <Grid container spacing={0} columns={{ xs: 6, md: 12 }}>
             <Grid size={12}>
-              <FormLabel id="demo-row-radio-buttons-group-label">
-                Usage
-              </FormLabel>
+              <Stepper activeStep={activeStep} alternativeLabel sx={{ mb: 4 }}>
+                {steps.map((label) => (
+                  <Step key={label}>
+                    <StepLabel>{t(label)}</StepLabel>
+                  </Step>
+                ))}
+              </Stepper>
             </Grid>
-            <Grid size={12}>
+            {/* Step 1 - Usage Selection */}
+            <AnimatedGrid size={12}>
+              <FormLabel>{t('Usage')}</FormLabel>
               <SegmentedTabs
                 value={selectedType}
                 onChange={updateType}
                 tabs={tabs}
               />
-            </Grid>
-            <Grid size={12}>
-              <FormLabel id="demo-row-radio-buttons-group-label">
-                Budget
-              </FormLabel>
-            </Grid>
-            <Grid size={12}>
-              <Stack spacing={2} direction="row">
-                <CustomTextField
-                  type="number"
-                  value={formData.budget}
-                  onChange={budgetTextfieldChanged}
-                  width={200}
+            </AnimatedGrid>
+            {/* Step 2 - Budget & Parts Selection */}
+            {activeStep > 0 && (
+              <>
+                <AnimatedGrid size={12}>
+                  <FormLabel>{t('Budget')}</FormLabel>
+                </AnimatedGrid>
+                <AnimatedGrid size={12}>
+                  <Stack spacing={2} direction="row">
+                    <CustomTextField
+                      type="number"
+                      value={formData.budget}
+                      onChange={budgetTextfieldChanged}
+                      width={200}
+                    />
+                    <CustomButton
+                      variant="contained"
+                      onClick={handleNext}
+                      disabled={disableButtonLogic()}
+                      sx={{ height: '40px' }}
+                    >
+                      {t('confirm')}
+                    </CustomButton>
+                    <CustomButton
+                      variant="outlined"
+                      onClick={clearDataLogic}
+                      sx={{ height: '40px' }}
+                    >
+                      {t('clear')}
+                    </CustomButton>
+                  </Stack>
+                </AnimatedGrid>
+                <AnimatedGrid size={6} paddingTop={2}>
+                  <SpecificComponent
+                    rawData={dataState.rawData}
+                    aiLogic={dataState.aiLogic}
+                    changeSelectItem={changeSelectItem}
+                  />
+                </AnimatedGrid>
+                <AnimatedGrid size={6}>
+                  <CompatibleSection
+                    selectedItems={dataState.aiLogic.preSelectedItem}
+                  />
+                </AnimatedGrid>
+              </>
+            )}
+
+            {/* Step 3 - Results */}
+            {activeStep === 2 && (
+              <AnimatedGrid size={12}>
+                <ResultComponent
+                  resultData={resData}
+                  totalPrice={dataState.aiLogic.totalPrice}
+                  totalScore={dataState.aiLogic.totalScore}
                 />
-                <CustomButton
-                  variant="contained"
-                  disabled={disableButtonLogic()}
-                  onClick={generateListLogic}
-                  sx={{ height: '40px' }}
-                >
-                  Contained
-                </CustomButton>
-                <CustomButton
-                  variant="contained"
-                  onClick={clearDataLogic}
-                  sx={{ height: '40px' }}
-                >
-                  Clear
-                </CustomButton>
-              </Stack>
-            </Grid>
-            <Grid size={6} paddingTop={2}>
-              <SpecificComponent
-                rawData={dataState.rawData}
-                aiLogic={dataState.aiLogic}
-                changeSelectItem={changeSelectItem}
-              />
-            </Grid>
-            <Grid size={6}>
-              <CompatibleSection
-                selectedItems={dataState.aiLogic.preSelectedItem}
-              />
-            </Grid>
-            <Grid size={12}>
-              <ResultComponent
-                resultData={resData}
-                totalPrice={dataState.aiLogic.totalPrice}
-                totalScore={dataState.aiLogic.totalScore}
-              ></ResultComponent>
-            </Grid>
+              </AnimatedGrid>
+            )}
           </Grid>
         </div>
       </div>

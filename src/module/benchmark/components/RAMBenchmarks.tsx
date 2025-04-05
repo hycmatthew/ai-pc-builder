@@ -1,8 +1,7 @@
-import React, { useState, useEffect } from 'react'
+import { useState } from 'react'
 import { useSelector } from 'react-redux'
 import { useTranslation } from 'react-i18next'
 import { Box, Stack, Typography } from '@mui/material'
-import AOS from 'aos'
 import 'aos/dist/aos.css'
 import './BenchmarksTable.scss'
 
@@ -22,13 +21,6 @@ function RAMBenchmarksTable() {
   const dataState = useSelector((state: any) => {
     return state.rawData
   })
-
-  useEffect(() => {
-    AOS.init({
-      duration: 2000,
-      mirror: false,
-    })
-  }, [])
 
   const benchmarksBarWidth = (type: string, score: number, index: number) => {
     const maxWidth = 400
@@ -94,7 +86,7 @@ function RAMBenchmarksTable() {
         index,
         speed: item.Speed,
         performance: ramPerformanceLogic(item),
-        cl: item.Timing,
+        cl: item.Latency,
         price: normalizeNumberWithDP(item[getSelectedCurrency()]),
       }
     })

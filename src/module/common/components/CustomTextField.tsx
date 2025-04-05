@@ -47,8 +47,14 @@ const CustomTextField = styled(
     '& :before': {
       borderBottom: 'none !important',
     },
+    label: {
+      fontFamily:
+        '"Noto Sans SC", "Noto Sans TC", "Open Sans", sans-serif, system-ui, Avenir, Helvetica',
+    },
     // 基础样式
     '& .MuiFilledInput-root': {
+      fontFamily:
+        '"Noto Sans SC", "Noto Sans TC", "Open Sans", sans-serif, system-ui, Avenir, Helvetica',
       overflow: 'hidden',
       borderRadius,
       border: '1px solid',

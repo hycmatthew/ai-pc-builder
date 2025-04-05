@@ -23,14 +23,15 @@ export type BaseDataItemType = {
   name: string
   singleScore: number
   multiScore: number
-  price: number
   pricePerformance: number
+  price: number
 }
 
 function CPUBenchmarksTable() {
   const { t } = useTranslation()
   const [selectedField, setSelectedField] = useState('multiScore')
   const [filters, setFilters] = useState({
+    brandFilter: '',
     nameFilter: '',
     priceRange: [0, 1000] as [number, number],
   })
@@ -52,6 +53,14 @@ function CPUBenchmarksTable() {
       ),
     }))
   }, [dataState.cpuList])
+
+   // 获取唯一品牌列表
+    const uniqueBrands = useMemo(() => {
+      const brands: string = baseData.map(
+        (item: BaseDataItemType) => item.brand
+      )
+      return Array.from(new Set(brands))
+    }, [baseData])
 
   const [isMaxPriceUpdate, setIsMaxPriceUpdate] = useState(false)
   const minPrice = 0
@@ -76,19 +85,24 @@ function CPUBenchmarksTable() {
   const filteredData = useMemo(() => {
     return baseData
       .filter((item: BaseDataItemType) => {
+        const matchesBrand =
+          filters.brandFilter === '' || item.brand === filters.brandFilter
         const matchesName = item.id
           .toLowerCase()
           .includes(filters.nameFilter.toLowerCase())
         const matchesPrice =
           item.price >= filters.priceRange[0] &&
           item.price <= filters.priceRange[1]
-        return matchesName && matchesPrice
+        return matchesBrand && matchesName && matchesPrice
       })
       .sort(
         (a: BaseDataItemType, b: BaseDataItemType) =>
           b.multiScore - a.multiScore
       )
   }, [baseData, filters])
+
+  // console.log('filteredData:', filteredData)
+  // console.log('filters:', filters)
 
   // 柱状图生成逻辑
   const benchmarksBarWidth = useCallback((type: string, score: number) => {
@@ -190,10 +204,15 @@ function CPUBenchmarksTable() {
       {isMaxPriceUpdate ? (
         <>
           <FilterPanel
+            brands={uniqueBrands}
+            brandFilter={filters.brandFilter}
             nameFilter={filters.nameFilter}
             priceRange={filters.priceRange}
             minPrice={minPrice}
             maxPrice={maxPrice}
+            onBrandFilterChange={(value) =>
+              handleFilterChange({ brandFilter: value })
+            }
             onNameFilterChange={(value) =>
               handleFilterChange({ nameFilter: value })
             }
