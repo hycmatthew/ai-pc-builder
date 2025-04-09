@@ -96,7 +96,7 @@ export const estimateDefaultPrice = (
   const suggestedSSDs = ssdList.filter((ssd) =>
     SSDSuggestion.some((name) => ssd.Name == name)
   )
-  console.log(suggestedSSDs)
+
   defaultPrices.ssd =
     ssdList.length == 1
       ? getCurrentPriceNum(ssdList[0])

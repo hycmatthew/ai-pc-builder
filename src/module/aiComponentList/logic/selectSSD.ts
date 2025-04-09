@@ -7,6 +7,7 @@ export const selectBestSSD = (
   if (ssds.length === 0) return null;
 
   // 优先处理推荐列表中有有效价格的SSD
+  console.log(suggestedSSD)
   const validSuggested = ssds.filter(ssd => 
     suggestedSSD.includes(ssd.name) && ssd.price > 0
   );

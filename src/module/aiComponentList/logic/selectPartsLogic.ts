@@ -193,7 +193,7 @@ export const preFilterDataLogic = (
   let bestCooler = null
 
   if (bestConfig) {
-    bestSSD = selectBestSSD(mappedSSDs)
+    bestSSD = selectBestSSD(mappedSSDs, BuildConfig.SSDFactor.SSDSuggestion)
 
     const totalPower =
       bestConfig.cpu.power + (bestConfig.gpu ? bestConfig.gpu.power : 0)

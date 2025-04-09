@@ -43,7 +43,7 @@ export const FilterPanel = ({
         {/* Brand 过滤 */}
         <Grid size={3}>
           <CustomAutocomplete
-            value={brandFilter}
+            value={t(brandFilter)}
             options={brands}
             label="Brand"
             renderOption={(props, option) => (
