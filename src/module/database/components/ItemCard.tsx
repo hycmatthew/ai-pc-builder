@@ -3,7 +3,6 @@ import {
   CardActions,
   CardHeader,
   CardMedia,
-  Grid2 as Grid,
   IconButton,
   Tooltip,
   Typography,
@@ -25,7 +24,7 @@ type ItemCardProps = {
 
 const CustomCardHeader = styled(CardHeader)({
   padding: '14px 9px',
-  textAlign: 'center'
+  textAlign: 'center',
 })
 
 const CustomCardActions = styled(CardActions)({
@@ -51,13 +50,13 @@ const ItemCard = ({
   removeComparsion,
 }: ItemCardProps) => {
   return (
-    <Grid key={itemLabel} size={3} style={{ display: 'flex' }}>
       <Card
         style={{
           display: 'flex',
           justifyContent: 'space-between',
           flexDirection: 'column',
-          padding: '5px'
+          padding: '5px',
+          height: '100%',
         }}
       >
         <CustomCardHeader titleTypographyProps={{ fontSize: '14px' }} title={itemLabel} />
@@ -66,7 +65,7 @@ const ItemCard = ({
           image={imgSrc || EMPTY_IMG_DATA}
           alt={itemLabel}
         />
-        <CustomCardActions>
+        <CustomCardActions sx={{ display: 'flex', justifyContent: 'space-between' }}>
           <PriceTypography>{priceLabelHandler(priceLabel)}</PriceTypography>
           {disable ? (
             <Tooltip title="Remove from Comparison">
@@ -83,7 +82,6 @@ const ItemCard = ({
           )}
         </CustomCardActions>
       </Card>
-    </Grid>
   )
 }
 

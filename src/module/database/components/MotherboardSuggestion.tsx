@@ -3,7 +3,7 @@ import { useTranslation } from 'react-i18next'
 import {
   Badge,
   Button,
-  Grid,
+  Grid2 as Grid,
 } from '@mui/material'
 import CompareArrowsIcon from '@mui/icons-material/CompareArrows'
 
@@ -20,6 +20,7 @@ import { MOTHERBOARD_FILTER_INIT_DATA } from '../data/FilterInitData'
 import { generateItemName } from '../../../utils/LabelHelper'
 import { ComparisonObject, ComparisonSubItem } from '../data/ComparisonObject'
 import { convertLocalizedPrice, getSelectedCurrency, stringToNumber } from '../../../utils/NumberHelper'
+import { FixedSizeGrid } from 'react-window'
 
 type MotherboardSuggestionProps = {
   motherboardList: MotherboardType[]
@@ -160,7 +161,7 @@ const MotherboardSuggestion = ({
   return (
     <>
       <Grid container spacing={3} columns={{ xs: 6, md: 12 }}>
-        <Grid item xs={9}>
+        <Grid size={9}>
           <SelectElement
             label={t('motherboard')}
             options={generateMotherboardSelectElement(motherboardList)}
@@ -168,7 +169,7 @@ const MotherboardSuggestion = ({
             isLoading={isLoading}
           />
         </Grid>
-        <Grid item xs={3}>
+        <Grid size={3}>
           <Badge badgeContent={selectedItems.length} color="error">
             <Button
               startIcon={<CompareArrowsIcon />}
@@ -181,17 +182,17 @@ const MotherboardSuggestion = ({
           </Badge>
         </Grid>
         {openComparison()}
-        <Grid item xs={9}>
+        <Grid size={9}>
           <PriceSlider selectChange={updateMaxPrice} />
         </Grid>
-        <Grid item xs={6}>
+        <Grid size={6}>
           <SelectFilter
             label={t('brand')}
             options={brandOptions}
             selectChange={updateFilterBrand}
           />
         </Grid>
-        <Grid item xs={6}>
+        <Grid size={6}>
           <SelectFilter
             label={t('chipset')}
             options={chipsetOptions}
@@ -199,17 +200,55 @@ const MotherboardSuggestion = ({
           />
         </Grid>
       </Grid>
-      <Grid sx={{ paddingTop: 10 }} container spacing={2} columns={{ xs: 6, md: 12 }}>
-        {updatedList.map((item) => (
-          <ItemCard
-            itemLabel={generateItemName(item.Brand, item.Name)}
-            priceLabel={convertLocalizedPrice(item)}
-            imgSrc={item.Img}
-            disable={selectedItems.includes(item)}
-            addComparsion={() => addComparison(item)}
-            removeComparsion={() => removeComparison(item.Name)}
-          />
-        ))}
+      <Grid
+        sx={{ paddingTop: 10 }}
+        container
+        spacing={2}
+        columns={{ xs: 6, md: 12 }}
+      >
+        <Grid
+          style={{
+            height: '100%',
+            width: '100%',
+            padding: '8px', // 补偿间距
+          }}
+        >
+          <FixedSizeGrid
+            columnCount={4} // 12 / 3 = 4 columns
+            columnWidth={192} // 根据实际卡片宽度调整
+            rowCount={Math.ceil(updatedList.length / 4)}
+            rowHeight={300} // 根据实际卡片高度调整
+            height={800} // 容器高度
+            width={800} // 容器宽度
+            itemData={updatedList} // 传递数据
+          >
+            {({ columnIndex, rowIndex, style }) => {
+              const index = rowIndex * 4 + columnIndex
+              const item = updatedList[index]
+
+              if (!item) return null
+
+              return (
+                <div
+                  style={{
+                    ...style,
+                    padding: 8, // 补偿间距
+                  }}
+                >
+                  <ItemCard
+                    key={generateItemName(item.Brand, item.Name)}
+                    itemLabel={generateItemName(item.Brand, item.Name)}
+                    priceLabel={convertLocalizedPrice(item)}
+                    imgSrc={item.Img}
+                    disable={selectedItems.includes(item)}
+                    addComparsion={() => addComparison(item)}
+                    removeComparsion={() => removeComparison(item.Name)}
+                  />
+                </div>
+              )
+            }}
+          </FixedSizeGrid>
+        </Grid>
       </Grid>
     </>
   )

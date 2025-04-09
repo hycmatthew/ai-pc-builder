@@ -1,19 +1,12 @@
-import React, { useState } from 'react'
+import { useMemo, useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import {
-  Badge,
-  Button,
-  Grid,
-} from '@mui/material'
+import { Badge, Box, Button, Grid2 as Grid, Pagination } from '@mui/material'
 import CompareArrowsIcon from '@mui/icons-material/CompareArrows'
-import { max, min, sum } from 'lodash'
+import { max, min } from 'lodash'
 
 import CPUType from '../../../constant/objectTypes/CPUType'
 import SelectElement from '../../common/components/SelectElement'
-import PriceSlider from '../../common/components/PriceSlider'
 import { generateCPUSelectElement } from '../../common/utils/generateSelectElements'
-import SelectFilter from '../../common/components/SelectFilter'
-import { getCPUBrand } from '../../../utils/GroupCategoryHelper'
 import ItemCard from './ItemCard'
 
 import { CPU_FILTER_INIT_DATA } from '../data/FilterInitData'
@@ -25,6 +18,8 @@ import {
 import { generateItemName } from '../../../utils/LabelHelper'
 import ComparisonModal from './ComparisonModal'
 import { ComparisonObject, ComparisonSubItem } from '../data/ComparisonObject'
+import ProductEnum from '../../../constant/ProductEnum'
+import CustomButton from '../../common/components/CustomButton'
 
 type CPUSuggestionProps = {
   cpuList: CPUType[]
@@ -34,10 +29,11 @@ type CPUSuggestionProps = {
 const CPUSuggestion = ({ cpuList, isLoading }: CPUSuggestionProps) => {
   const { t } = useTranslation()
   const [filterLogic, setfilterLogic] = useState(CPU_FILTER_INIT_DATA)
+  const [selectedItem, setSelectedItem] = useState<string | undefined>(
+    undefined
+  )
   const [selectedItems, setSelectedItems] = useState<CPUType[]>([])
   const [openCompare, setOpenCompare] = useState(false)
-
-  const brandOptions = getCPUBrand(cpuList)
 
   const addComparison = (item: CPUType) => {
     if (selectedItems.length < 4) {
@@ -46,15 +42,8 @@ const CPUSuggestion = ({ cpuList, isLoading }: CPUSuggestionProps) => {
   }
 
   const updateSelectedItem = (item: string) => {
+    setSelectedItem(item)
     setfilterLogic({ ...filterLogic, model: item })
-  }
-
-  const updateMaxPrice = (price: number) => {
-    setfilterLogic({ ...filterLogic, price })
-  }
-
-  const updateFilterBrand = (brand: string) => {
-    setfilterLogic({ ...filterLogic, brand })
   }
 
   const handleClose = () => {
@@ -77,11 +66,6 @@ const CPUSuggestion = ({ cpuList, isLoading }: CPUSuggestionProps) => {
     }
   }
 
-  const getCoresNumber = (coreStr: string) => {
-    const coreList = coreStr.split('/').map((item) => Number(item))
-    return sum(coreList)
-  }
-
   const openComparison = () => {
     let comparsionObjects: ComparisonObject[] = []
     comparsionObjects = selectedItems.map((item) => {
@@ -99,7 +83,7 @@ const CPUSuggestion = ({ cpuList, isLoading }: CPUSuggestionProps) => {
         label: 'cpu-cores',
         value: item.Cores.toString(),
         isHighlight:
-        item.Cores === max(selectedItems.map((element) => element.Cores)),
+          item.Cores === max(selectedItems.map((element) => element.Cores)),
       }
 
       const cpuDisplay: ComparisonSubItem = {
@@ -112,14 +96,16 @@ const CPUSuggestion = ({ cpuList, isLoading }: CPUSuggestionProps) => {
         label: 'single-core',
         value: item.SingleCoreScore.toString(),
         isHighlight:
-          item.SingleCoreScore === max(selectedItems.map((element) => element.SingleCoreScore)),
+          item.SingleCoreScore ===
+          max(selectedItems.map((element) => element.SingleCoreScore)),
       }
 
       const multiScore: ComparisonSubItem = {
         label: 'multi-core',
         value: item.MultiCoreScore.toString(),
         isHighlight:
-          item.MultiCoreScore === max(selectedItems.map((element) => element.MultiCoreScore)),
+          item.MultiCoreScore ===
+          max(selectedItems.map((element) => element.MultiCoreScore)),
       }
 
       const power: ComparisonSubItem = {
@@ -170,53 +156,78 @@ const CPUSuggestion = ({ cpuList, isLoading }: CPUSuggestionProps) => {
     return isMatch
   })
 
+  const [page, setPage] = useState(1)
+  const [itemsPerPage, setItemsPerPage] = useState(20) // 每页显示数量
+
+  const paginatedList = useMemo(() => {
+    const start = (page - 1) * itemsPerPage
+    const end = start + itemsPerPage
+    return updatedList.slice(start, end)
+  }, [updatedList, page, itemsPerPage])
+
   return (
     <>
       <Grid container spacing={3} columns={{ xs: 6, md: 12 }}>
-        <Grid item xs={9}>
+        <Grid size={9}>
           <SelectElement
-            label={t('cpu')}
+            label={ProductEnum.CPU}
             options={generateCPUSelectElement(cpuList)}
             selectChange={updateSelectedItem}
             isLoading={isLoading}
+            value={selectedItem}
           />
         </Grid>
-        <Grid item xs={3}>
+        <Grid size={3}>
           <Badge badgeContent={selectedItems.length} color="error">
-            <Button
+            <CustomButton
               startIcon={<CompareArrowsIcon />}
               variant="contained"
               disabled={selectedItems.length === 0}
               onClick={() => openCompareLogic()}
+              sx={{ height: '54px' }}
             >
-              {t('compare')}
-            </Button>
+              {t('confirm')}
+            </CustomButton>
           </Badge>
         </Grid>
         {openComparison()}
-        <Grid item xs={9}>
-          <PriceSlider selectChange={updateMaxPrice} />
-        </Grid>
-        <Grid item xs={6}>
-          <SelectFilter
-            label={t('brand')}
-            options={brandOptions}
-            selectChange={updateFilterBrand}
-          />
-        </Grid>
       </Grid>
-      <Grid sx={{ paddingTop: 10 }} container spacing={2} columns={{ xs: 6, md: 12 }}>
-        {updatedList.map((item) => (
-          <ItemCard
-            itemLabel={generateItemName(item.Brand, item.Name)}
-            priceLabel={convertLocalizedPrice(item)}
-            imgSrc={item.Img}
-            disable={selectedItems.includes(item)}
-            addComparsion={() => addComparison(item)}
-            removeComparsion={() => removeComparison(item.Name)}
-          />
+      <Grid
+        sx={{ paddingTop: 4 }}
+        container
+        spacing={2}
+        columns={{ xs: 6, md: 12 }}
+      >
+        {paginatedList.map((item) => (
+          <Grid size={3} key={generateItemName(item.Brand, item.Name)}>
+            <ItemCard
+              itemLabel={generateItemName(item.Brand, item.Name)}
+              priceLabel={convertLocalizedPrice(item)}
+              imgSrc={item.Img}
+              disable={selectedItems.includes(item)}
+              addComparsion={() => addComparison(item)}
+              removeComparsion={() => removeComparison(item.Name)}
+            />
+          </Grid>
         ))}
       </Grid>
+      {/* 分页控制器 */}
+      <Box
+        sx={{
+          display: 'flex',
+          justifyContent: 'center',
+          py: 3,
+        }}
+      >
+        <Pagination
+          count={Math.ceil(updatedList.length / itemsPerPage)}
+          page={page}
+          onChange={(_, value) => setPage(value)}
+          color="primary"
+          showFirstButton
+          showLastButton
+        />
+      </Box>
     </>
   )
 }

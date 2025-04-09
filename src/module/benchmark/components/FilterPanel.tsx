@@ -2,6 +2,7 @@ import { Box, Grid2 as Grid, Paper } from '@mui/material'
 import { RangeSlider } from '../../common/components/RangeSlider'
 import CustomTextField from '../../common/components/CustomTextField'
 import CustomAutocomplete from '../../common/components/CustomAutocomplete'
+import { useTranslation } from 'react-i18next'
 
 export type PriceRange = [number, number]
 
@@ -28,6 +29,7 @@ export const FilterPanel = ({
   onNameFilterChange,
   onPriceRangeChange,
 }: FilterPanelProps) => {
+  const { t } = useTranslation()
   return (
     <Paper
       sx={{
@@ -37,15 +39,7 @@ export const FilterPanel = ({
         boxShadow: '0 2px 8px rgba(0,0,0,0.1)',
       }}
     >
-      <Grid
-        container
-        sx={{
-          display: 'flex',
-          gap: 2,
-          alignItems: 'center',
-          flexDirection: { xs: 'column', md: 'row' },
-        }}
-      >
+      <Grid container spacing={2}>
         {/* Brand 过滤 */}
         <Grid size={3}>
           <CustomAutocomplete
@@ -54,7 +48,7 @@ export const FilterPanel = ({
             label="Brand"
             renderOption={(props, option) => (
               <li {...props} style={{ padding: '8px 16px' }}>
-                {option}
+                {t(option)}
               </li>
             )}
             onChange={(e, val) => onBrandFilterChange(val === null ? '' : val)}
@@ -71,7 +65,7 @@ export const FilterPanel = ({
         </Grid>
 
         {/* 价格过滤 */}
-        <Grid size={5}>
+        <Grid size={6}>
           <Box sx={{ flex: 2, minWidth: 300, width: '100%' }}>
             <RangeSlider
               min={minPrice}
@@ -85,3 +79,4 @@ export const FilterPanel = ({
     </Paper>
   )
 }
+

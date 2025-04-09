@@ -119,6 +119,8 @@ function CPUBenchmarksTable() {
             width: setLength * maxWidth,
             backgroundColor: getGradientColor('#006bd6', '#ff0000', setLength),
             height: 16,
+            borderTopRightRadius: 4,
+            borderBottomRightRadius: 4,
           }}
         />
       </BarMotion>
