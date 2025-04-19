@@ -1,7 +1,10 @@
+import PriceType from "../PriceType"
+
 interface CoolerType {
   Id: string
   Brand: string
   Name: string
+  NameCN: string
   ReleaseDate: string
   Sockets: string[]
   IsLiquidCooler: boolean
@@ -12,12 +15,7 @@ interface CoolerType {
   Airflow: string
   Pressure: string
   LED: string
-  PriceUS: string
-  PriceHK: string
-  PriceCN: string
-  LinkUS: string
-  LinkHK: string
-  LinkCN: string
+  Prices: PriceType[]
   Img: string
 }
 

@@ -15,7 +15,7 @@ import CoolerSuggestion from '../components/CoolerSuggestion'
 import SegmentedTabs from '../../common/components/SegmentedTabs'
 import CustomAutocomplete from '../../common/components/CustomAutocomplete'
 import { RangeSlider } from '../../common/components/RangeSlider'
-import { getCurrentPriceNum } from '../../../utils/NumberHelper'
+import { getLocalizedPriceNum } from '../../../utils/NumberHelper'
 
 const Database = () => {
   const { t } = useTranslation()
@@ -71,7 +71,7 @@ const Database = () => {
     const currentList = dataMap[selectedType] || []
     // 提取價格並轉換為數字
     const prices = currentList.map((item: any) => {
-      const itemPrice = getCurrentPriceNum(item) // 使用 getCurrentPriceNum 函数获取价格
+      const itemPrice = getLocalizedPriceNum(item) // 使用 getCurrentPriceNum 函数获取价格
       return isFinite(itemPrice) ? itemPrice : 0
     })
 
@@ -184,7 +184,7 @@ const Database = () => {
       // 品牌篩選
       const brandMatch = !selectedBrand || item.Brand === selectedBrand
       // 價格篩選
-      const price = getCurrentPriceNum(item) // 使用 getCurrentPriceNum 函数获取价格
+      const price = getLocalizedPriceNum(item) // 使用 getCurrentPriceNum 函数获取价格
       const priceMatch = price >= selectedPrice[0] && price <= selectedPrice[1]
 
       return brandMatch && priceMatch

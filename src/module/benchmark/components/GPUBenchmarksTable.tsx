@@ -8,7 +8,7 @@ import GPUType from '../../../constant/objectTypes/GPUType'
 import {
   addCurrencySign,
   calculatePricePerformance,
-  getCurrentPriceNum,
+  getLocalizedPriceNum,
   normalizeNumberWithDP,
 } from '../../../utils/NumberHelper'
 import { generateItemName } from '../../../utils/LabelHelper'
@@ -50,10 +50,10 @@ function GPUBenchmarksTable() {
       brand: item.Brand,
       name: item.Name,
       timespyScore: item.Benchmark,
-      price: getCurrentPriceNum(item),
+      price: getLocalizedPriceNum(item),
       pricePerformance: calculatePricePerformance(
         item.Benchmark,
-        getCurrentPriceNum(item)
+        getLocalizedPriceNum(item)
       ),
     }))
   }, [dataState.gpuList])

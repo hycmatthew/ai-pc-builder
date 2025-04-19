@@ -1,6 +1,9 @@
+import PriceType from "../PriceType"
+
 interface GPUType {
   Id: string
   Name: string
+  NameCN: string
   Brand: string
   Manufacturer: string
   Series: string
@@ -14,12 +17,7 @@ interface GPUType {
   Power: number
   Length: number
   Slot: string
-  LinkCN: string
-  LinkUS: string
-  LinkHK: string
-  PriceUS: string
-  PriceHK: string
-  PriceCN: string
+  Prices: PriceType[]
   Img: string
 }
 

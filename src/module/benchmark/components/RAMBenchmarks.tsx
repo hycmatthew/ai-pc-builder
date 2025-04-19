@@ -6,7 +6,7 @@ import 'aos/dist/aos.css'
 import './BenchmarksTable.scss'
 
 import { RAMType } from '../../../constant/objectTypes'
-import { getSelectedCurrency, normalizeNumberWithDP } from '../../../utils/NumberHelper'
+import { convertLocalizedPrice, normalizeNumberWithDP } from '../../../utils/NumberHelper'
 import { ramPerformanceLogic } from '../../../logic/performanceLogic'
 import { generateRAMName, priceLabelHandler } from '../../../utils/LabelHelper'
 import BarMotion from '../../../styles/animation/BarMotion'
@@ -87,7 +87,7 @@ function RAMBenchmarksTable() {
         speed: item.Speed,
         performance: ramPerformanceLogic(item),
         cl: item.Latency,
-        price: normalizeNumberWithDP(item[getSelectedCurrency()]),
+        price: normalizeNumberWithDP(convertLocalizedPrice(item)),
       }
     })
     return tempOptions.sort((a, b) => b.performance - a.performance)

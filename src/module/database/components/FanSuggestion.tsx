@@ -16,8 +16,7 @@ import { ComparisonObject, ComparisonSubItem } from '../data/ComparisonObject'
 import ComparisonModal from './ComparisonModal'
 import {
   convertLocalizedPrice,
-  getSelectedCurrency,
-  stringToNumber,
+  getLocalizedPriceNum,
 } from '../../../utils/NumberHelper'
 import PriceSlider from '../../common/components/PriceSlider'
 import { getAirCoolerBrand } from '../../../utils/GroupCategoryHelper'
@@ -146,7 +145,7 @@ const FanSuggestion = ({
       isMatch = item.brand === filterLogic.brand
     }
     if (filterLogic.price !== 0 && isMatch) {
-      isMatch = stringToNumber(item[getSelectedCurrency()]) < filterLogic.price
+      isMatch = getLocalizedPriceNum(item) < filterLogic.price
     }
     return isMatch
   })

@@ -19,7 +19,7 @@ import ItemCard from './ItemCard'
 import { MOTHERBOARD_FILTER_INIT_DATA } from '../data/FilterInitData'
 import { generateItemName } from '../../../utils/LabelHelper'
 import { ComparisonObject, ComparisonSubItem } from '../data/ComparisonObject'
-import { convertLocalizedPrice, getSelectedCurrency, stringToNumber } from '../../../utils/NumberHelper'
+import { convertLocalizedPrice, getLocalizedPriceNum } from '../../../utils/NumberHelper'
 import { FixedSizeGrid } from 'react-window'
 
 type MotherboardSuggestionProps = {
@@ -153,7 +153,7 @@ const MotherboardSuggestion = ({
       isMatch = item.Chipset === filterLogic.chipset
     }
     if (filterLogic.price !== 0 && isMatch) {
-      isMatch = stringToNumber(item[getSelectedCurrency()]) < filterLogic.price
+      isMatch = getLocalizedPriceNum(item) < filterLogic.price
     }
     return isMatch
   })

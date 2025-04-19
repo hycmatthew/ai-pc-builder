@@ -3,15 +3,16 @@ import i18n from '../config/i18n'
 import { CoolerType, MotherboardType, RAMType } from '../constant/objectTypes'
 import { SelectedItemType } from '../store/rawDataReducer'
 import { LangEnum } from '../constant/supportedLang'
+import PriceType from '../constant/PriceType'
 
 // ==================== 價格相關工具函式 ====================
-type PriceKey = 'PriceHK' | 'PriceCN' | 'PriceUS'
+type RegionKey = 'HK' | 'CN' | 'US' // 根據實際需求擴展
 
-// 使用映射表取代 switch-case
-const CURRENCY_MAP: Record<LangEnum, { key: PriceKey; sign: string }> = {
-  [LangEnum.zhTW]: { key: 'PriceHK', sign: '$' },
-  [LangEnum.zhCN]: { key: 'PriceCN', sign: '¥' },
-  [LangEnum.en]: { key: 'PriceUS', sign: '$' },
+// 使用映射表取代 switch-case（調整為使用 Region）
+const CURRENCY_MAP: Record<LangEnum, { region: RegionKey; sign: string }> = {
+  [LangEnum.zhTW]: { region: 'HK', sign: '$' },
+  [LangEnum.zhCN]: { region: 'CN', sign: '¥' },
+  [LangEnum.en]: { region: 'US', sign: '$' },
 }
 
 // 獲取貨幣配置的通用方法
@@ -24,9 +25,6 @@ const handlePriceValue = (value?: string | number) => {
   if (isNaN(testVal) || isZero(testVal)) return ''
   return testVal.toFixed(2)
 }
-
-// ==================== 核心工具函式 ====================
-export const getSelectedCurrency = (): PriceKey => getCurrencyConfig().key
 
 export const stringToNumber = (str: string | undefined) => {
   return toNumber(str)
@@ -52,38 +50,51 @@ export const normalizeNumberWithDP = (str: string | number) => {
 export const calculateTotalNumber = (numberList: string[]): number =>
   numberList.reduce((acc, curr) => acc + toNumber(curr), 0)
 
+// ==================== 核心工具函式 ====================
+const getPriceByRegion = (prices: PriceType[] | null, region: RegionKey) => {
+  return prices?.find(p => p.Region === region)?.Price?.trim() || ''
+}
+
+// 調整貨幣符號添加方式
 export const addCurrencySign = (value?: string | number): string => {
   const { sign } = getCurrencyConfig()
   return handlePriceValue(value) === '' ? ' - ' : `${sign}${value}`
 }
 
-export const convertLocalizedPrice = (
-  item: Record<PriceKey, string | number>
-): string => handlePriceValue(item[getSelectedCurrency()])
-
-export const getCurrentPriceNum = (
-  item: Record<PriceKey, string | number>
-): number => toNumber(item[getSelectedCurrency()])
-
 export const getCurrentPriceWithSign = (item: any): string =>
-  addCurrencySign(convertLocalizedPrice(item))
+  addCurrencySign(convertLocalizedPrice(item.Prices))
 
+// 調整本地化價格轉換
+export const convertLocalizedPrice = (item: any): string => {
+  const { region } = getCurrencyConfig()
+  return handlePriceValue(getPriceByRegion(item.Prices, region))
+}
+
+// 調整獲取當前價格數值
+export const getLocalizedPriceNum = (item: { Prices: PriceType[] }): number => {
+  const { region } = getCurrencyConfig()
+  return toNumber(getPriceByRegion(item.Prices, region))
+}
+
+// 調整總價計算邏輯
 export const getTotalPrice = (selectedItems: SelectedItemType) => {
+  const { region } = getCurrencyConfig()
+
   const numberList = [
-    selectedItems.cpu?.[getSelectedCurrency()],
-    selectedItems.gpu?.[getSelectedCurrency()],
-    selectedItems.motherboard?.[getSelectedCurrency()],
-    selectedItems.ram?.[getSelectedCurrency()],
-    selectedItems.psu?.[getSelectedCurrency()],
-    selectedItems.ssd?.[getSelectedCurrency()],
-    selectedItems.cooler?.[getSelectedCurrency()],
-    // selectedItems.fan?.[getSelectedCurrency()],
-    selectedItems.pcCase?.[getSelectedCurrency()],
+    getPriceByRegion(selectedItems.cpu?.Prices || [], region),
+    getPriceByRegion(selectedItems.gpu?.Prices || [], region),
+    getPriceByRegion(selectedItems.motherboard?.Prices || [], region),
+    getPriceByRegion(selectedItems.ram?.Prices || [], region),
+    getPriceByRegion(selectedItems.psu?.Prices || [], region),
+    getPriceByRegion(selectedItems.ssd?.Prices || [], region),
+    getPriceByRegion(selectedItems.cooler?.Prices || [], region),
+    getPriceByRegion(selectedItems.pcCase?.Prices || [], region),
   ]
 
   return calculateTotalNumber(compact(numberList))
 }
 
+// 保持其他函式簽名不變
 export const getTotalPriceStr = (selectedItems: SelectedItemType) => {
   const totolPrice = getTotalPrice(selectedItems).toFixed(2).toString()
   return addCurrencySign(totolPrice)

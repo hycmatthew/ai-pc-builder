@@ -16,7 +16,7 @@ import { getPSUBrand } from '../../../utils/GroupCategoryHelper'
 
 import { PSU_FILTER_INIT_DATA } from '../data/FilterInitData'
 import { generateItemName, lengthLabelHandler } from '../../../utils/LabelHelper'
-import { convertLocalizedPrice, getSelectedCurrency, stringToNumber } from '../../../utils/NumberHelper'
+import { convertLocalizedPrice, getLocalizedPriceNum } from '../../../utils/NumberHelper'
 import ItemCard from './ItemCard'
 import { ComparisonObject, ComparisonSubItem } from '../data/ComparisonObject'
 import ComparisonModal from './ComparisonModal'
@@ -151,7 +151,7 @@ const PSUSuggestion = ({
       isMatch = (item.Brand === filterLogic.brand)
     }
     if (filterLogic.price !== 0 && isMatch) {
-      isMatch = stringToNumber(item[getSelectedCurrency()]) < filterLogic.price
+      isMatch = getLocalizedPriceNum(item) < filterLogic.price
     }
     return isMatch
   })

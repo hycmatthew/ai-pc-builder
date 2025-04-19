@@ -1,16 +1,16 @@
 import { toNumber } from 'lodash'
 import { SSDType } from '../../constant/objectTypes'
 import { BuildLogicState } from '../../module/aiComponentList/store/aiLogicReducer'
-import { getSelectedCurrency } from '../../utils/NumberHelper'
+import { convertLocalizedPrice, getLocalizedPriceNum } from '../../utils/NumberHelper'
 import { convertCurrency, getPricingFactor, isEnoughBudget } from '../../module/aiComponentList/logic/pricingLogic'
 import BuildConfig from '../../module/aiComponentList/constant/buildConfig'
 
 const getItemSSDScore = (item: SSDType, budget: number) => {
   const ratioList = BuildConfig.SSDFactor.SSDPriceFactor
   const priceFactor = getPricingFactor(budget, ratioList)
-  const pricingScore = convertCurrency(toNumber(item[getSelectedCurrency()])) * priceFactor
+  const pricingScore = convertCurrency(getLocalizedPriceNum(item)) * priceFactor
 
-  return item.score + pricingScore
+  return item + pricingScore
 }
 
 const ssdFilterLogic = (
@@ -21,7 +21,7 @@ const ssdFilterLogic = (
   const enoughBudget = isEnoughBudget(
     buildLogic.budget,
     buildLogic.preSelectedItem,
-    item[getSelectedCurrency()]
+    convertLocalizedPrice(item)
   )
   return capacityFilter && enoughBudget
 }

@@ -10,7 +10,8 @@ import { BuildLogicState } from '../module/aiComponentList/store/aiLogicReducer'
 import { ramIncompatible } from '../module/common/utils/compatibleLogic'
 import {
   calculateTotalNumber,
-  getSelectedCurrency,
+  convertLocalizedPrice,
+  getLocalizedPriceNum,
 } from '../utils/NumberHelper'
 import { ramPerformanceLogic } from './performanceLogic'
 
@@ -20,15 +21,15 @@ export const selectComponentLogic = (budget: number, type: number) => {
 
 const calculateCurrentBudget = (buildLogic: BuildLogicState) => {
   const dataList = [
-    buildLogic.preSelectedItem.cpu?.[getSelectedCurrency()],
-    buildLogic.preSelectedItem.gpu?.[getSelectedCurrency()],
-    buildLogic.preSelectedItem.motherboard?.[getSelectedCurrency()],
-    buildLogic.preSelectedItem.ram?.[getSelectedCurrency()],
-    buildLogic.preSelectedItem.ssd?.[getSelectedCurrency()],
-    buildLogic.preSelectedItem.psu?.[getSelectedCurrency()],
-    buildLogic.preSelectedItem.cooler?.[getSelectedCurrency()],
-    buildLogic.preSelectedItem.pcCase?.[getSelectedCurrency()],
-    buildLogic.preSelectedItem.airCooler?.[getSelectedCurrency()],
+    convertLocalizedPrice(buildLogic.preSelectedItem.cpu),
+    convertLocalizedPrice(buildLogic.preSelectedItem.gpu),
+    convertLocalizedPrice(buildLogic.preSelectedItem.motherboard),
+    convertLocalizedPrice(buildLogic.preSelectedItem.ram),
+    convertLocalizedPrice(buildLogic.preSelectedItem.ssd),
+    convertLocalizedPrice(buildLogic.preSelectedItem.psu),
+    convertLocalizedPrice(buildLogic.preSelectedItem.cooler),
+    convertLocalizedPrice(buildLogic.preSelectedItem.pcCase),
+    //convertLocalizedPrice(buildLogic.preSelectedItem.airCooler),
   ]
   return calculateTotalNumber(compact(dataList))
 }
@@ -43,7 +44,7 @@ export const selectRAMLogic = (
     const ramValid = ramIncompatible(item, buildLogic.preSelectedItem)
     if (
       !ramValid &&
-      buildLogic.budget > toNumber(item[getSelectedCurrency()])
+      buildLogic.budget > getLocalizedPriceNum(item)
     ) {
       const performance = ramPerformanceLogic(item)
       selectedRAM = item

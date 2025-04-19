@@ -1,13 +1,11 @@
-import { toNumber } from 'lodash'
-import i18n from '../../config/i18n'
 import { GPUType } from '../../constant/objectTypes'
 import { isEnoughBudget } from '../../module/aiComponentList/logic/pricingLogic'
 import { BuildLogicState } from '../../module/aiComponentList/store/aiLogicReducer'
 import { gpuIncompatible } from '../../module/common/utils/compatibleLogic'
-import { getSelectedCurrency } from '../../utils/NumberHelper'
+import { convertLocalizedPrice } from '../../utils/NumberHelper'
 
 const countGPUScore = (item: GPUType, buildLogic: BuildLogicState) => {
-  return item.firestrikeScore + item.timespyScore
+  return item.Benchmark
 }
 
 const gpuFilterLogic = (
@@ -18,7 +16,7 @@ const gpuFilterLogic = (
   const enoughBudget = isEnoughBudget(
     buildLogic.budget,
     buildLogic.preSelectedItem,
-    item[getSelectedCurrency()]
+    convertLocalizedPrice(item)
   )
   return compatible && enoughBudget
 }

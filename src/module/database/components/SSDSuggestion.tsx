@@ -15,11 +15,11 @@ import SelectFilter from '../../common/components/SelectFilter'
 import { getSSDBrand, getSSDCapacity } from '../../../utils/GroupCategoryHelper'
 
 import { SSD_FILTER_INIT_DATA } from '../data/FilterInitData'
-import { diskSpeedLabelHandler, generateItemName, generateSSDName } from '../../../utils/LabelHelper'
+import { diskSpeedLabelHandler, generateSSDName } from '../../../utils/LabelHelper'
 import { ComparisonObject, ComparisonSubItem } from '../data/ComparisonObject'
 import ComparisonModal from './ComparisonModal'
 import ItemCard from './ItemCard'
-import { convertLocalizedPrice, getSelectedCurrency, stringToNumber } from '../../../utils/NumberHelper'
+import { convertLocalizedPrice, getLocalizedPriceNum } from '../../../utils/NumberHelper'
 import PriceSlider from '../../common/components/PriceSlider'
 
 type SSDSuggestionProps = {
@@ -160,7 +160,7 @@ const SSDSuggestion = ({ ssdList, isLoading }: SSDSuggestionProps) => {
       isMatch = item.Capacity === filterLogic.capacity
     }
     if (filterLogic.price !== 0 && isMatch) {
-      isMatch = stringToNumber(item[getSelectedCurrency()]) < filterLogic.price
+      isMatch = getLocalizedPriceNum(item) < filterLogic.price
     }
     return isMatch
   })

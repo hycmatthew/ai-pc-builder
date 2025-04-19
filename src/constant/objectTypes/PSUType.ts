@@ -1,7 +1,10 @@
+import PriceType from "../PriceType"
+
 interface PSUType {
   Id: string
   Brand: string
   Name: string
+  NameCN: string
   ReleaseDate: string
   Wattage: number
   Size: string
@@ -9,12 +12,7 @@ interface PSUType {
   Modular: string
   Efficiency: string
   Length: number
-  PriceUS: string
-  PriceHK: string
-  PriceCN: string
-  LinkUS: string
-  LinkHK: string
-  LinkCN: string
+  Prices: PriceType[]
   Img: string
 }
 

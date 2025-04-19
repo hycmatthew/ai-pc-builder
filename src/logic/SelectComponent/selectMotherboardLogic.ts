@@ -1,8 +1,7 @@
-import { toNumber } from 'lodash'
 import { MotherboardType } from '../../constant/objectTypes'
 import { BuildLogicState } from '../../module/aiComponentList/store/aiLogicReducer'
 import { motherboardIncompatible } from '../../module/common/utils/compatibleLogic'
-import { getSelectedCurrency } from '../../utils/NumberHelper'
+import { convertLocalizedPrice, getLocalizedPriceNum } from '../../utils/NumberHelper'
 import {
   convertCurrency,
   isEnoughBudget,
@@ -16,8 +15,8 @@ const getItemMotherboardScore = (
   motherboard: MotherboardType,
   budget: number
 ) => {
-  const sizeScore = motherboard.sizeType === 'ATX' ? 300 : 0
-  const budgetScore = budget - convertCurrency(toNumber(motherboard[getSelectedCurrency()]))
+  const sizeScore = motherboard.FormFactor === 'ATX' ? 300 : 0
+  const budgetScore = budget - convertCurrency(getLocalizedPriceNum(motherboard))
   return sizeScore + budgetScore
 }
 
@@ -27,17 +26,17 @@ const motherboardFilterLogic = (
 ) => {
   const compatible = !motherboardIncompatible(item, buildLogic.preSelectedItem)
   const chipsetSuggestion = !motherboardChipsetSuggestion(
+    buildLogic.preSelectedItem.cpu,
     item,
-    buildLogic.preSelectedItem.cpu
   )
   const overclockSuggestion = !motherboardOverclockSuggestion(
-    item,
-    buildLogic.preSelectedItem.cpu
+    buildLogic.preSelectedItem.cpu,
+    item
   )
   const enoughBudget = isEnoughBudget(
     buildLogic.budget,
     buildLogic.preSelectedItem,
-    item[getSelectedCurrency()]
+    convertLocalizedPrice(item)
   )
   return compatible && chipsetSuggestion && overclockSuggestion && enoughBudget
 }

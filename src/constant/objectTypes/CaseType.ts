@@ -1,7 +1,10 @@
+import PriceType from '../PriceType'
+
 interface CaseType {
   Id: string
   Brand: string
   Name: string
+  NameCN: string
   ReleaseDate: string
   Color: string
   CaseSize: string
@@ -14,12 +17,7 @@ interface CaseType {
   RadiatorSupport: number
   MaxCpuCoolorHeight: number
   SlotsNum: number
-  PriceUS: string
-  PriceHK: string
-  PriceCN: string
-  LinkUS: string
-  LinkHK: string
-  LinkCN: string
+  Prices: PriceType[]
   Img: string
 }
 

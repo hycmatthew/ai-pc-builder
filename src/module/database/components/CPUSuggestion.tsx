@@ -12,8 +12,7 @@ import ItemCard from './ItemCard'
 import { CPU_FILTER_INIT_DATA } from '../data/FilterInitData'
 import {
   convertLocalizedPrice,
-  getSelectedCurrency,
-  stringToNumber,
+  getLocalizedPriceNum,
 } from '../../../utils/NumberHelper'
 import { generateItemName } from '../../../utils/LabelHelper'
 import ComparisonModal from './ComparisonModal'
@@ -151,7 +150,7 @@ const CPUSuggestion = ({ cpuList, isLoading }: CPUSuggestionProps) => {
       isMatch = item.Brand === filterLogic.brand
     }
     if (filterLogic.price !== 0 && isMatch) {
-      isMatch = stringToNumber(item[getSelectedCurrency()]) < filterLogic.price
+      isMatch = getLocalizedPriceNum(item) < filterLogic.price
     }
     return isMatch
   })

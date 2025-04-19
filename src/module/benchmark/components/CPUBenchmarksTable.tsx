@@ -7,7 +7,7 @@ import {
   addCurrencySign,
   normalizeNumberWithDP,
   calculatePricePerformance,
-  getCurrentPriceNum,
+  getLocalizedPriceNum,
 } from '../../../utils/NumberHelper'
 import { generateItemName } from '../../../utils/LabelHelper'
 import BarMotion from '../../../styles/animation/BarMotion'
@@ -46,10 +46,10 @@ function CPUBenchmarksTable() {
       name: item.Name,
       singleScore: item.SingleCoreScore,
       multiScore: item.MultiCoreScore,
-      price: getCurrentPriceNum(item),
+      price: getLocalizedPriceNum(item),
       pricePerformance: calculatePricePerformance(
         item.MultiCoreScore,
-        getCurrentPriceNum(item)
+        getLocalizedPriceNum(item)
       ),
     }))
   }, [dataState.cpuList])

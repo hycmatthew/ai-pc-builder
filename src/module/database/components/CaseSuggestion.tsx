@@ -15,11 +15,7 @@ import { CASE_FILTER_INIT_DATA } from '../data/FilterInitData'
 import { generateItemName } from '../../../utils/LabelHelper'
 import { ComparisonObject, ComparisonSubItem } from '../data/ComparisonObject'
 import ComparisonModal from './ComparisonModal'
-import {
-  convertLocalizedPrice,
-  getSelectedCurrency,
-  stringToNumber,
-} from '../../../utils/NumberHelper'
+import { convertLocalizedPrice, getLocalizedPriceNum } from '../../../utils/NumberHelper'
 import { getCaseBrand, getCaseSize } from '../../../utils/GroupCategoryHelper'
 
 type CaseSuggestionProps = {
@@ -104,7 +100,8 @@ const CaseSuggestion = ({ caseList, isLoading }: CaseSuggestionProps) => {
         label: 'max-gpu-length',
         value: item.MaxVGAlength.toString(),
         isHighlight:
-          item.MaxVGAlength === max(selectedItems.map((element) => element.MaxVGAlength)),
+          item.MaxVGAlength ===
+          max(selectedItems.map((element) => element.MaxVGAlength)),
       }
 
       // tbc
@@ -112,19 +109,15 @@ const CaseSuggestion = ({ caseList, isLoading }: CaseSuggestionProps) => {
         label: 'motherboard-compatibility',
         value: item.Compatibility.toString() || '-',
         isHighlight:
-          item.Compatibility.length === max(selectedItems.map((element) => element.Compatibility.length)),
+          item.Compatibility.length ===
+          max(selectedItems.map((element) => element.Compatibility.length)),
       }
 
       const result: ComparisonObject = {
         img: imgStr,
         name: itemName,
         model: itemModel,
-        items: [
-          size,
-          color,
-          maxGPULength,
-          motherboardCompatibility,
-        ],
+        items: [size, color, maxGPULength, motherboardCompatibility],
       }
 
       return result
@@ -152,7 +145,7 @@ const CaseSuggestion = ({ caseList, isLoading }: CaseSuggestionProps) => {
       isMatch = item.CaseSize === filterLogic.size
     }
     if (filterLogic.price !== 0 && isMatch) {
-      isMatch = stringToNumber(item[getSelectedCurrency()]) < filterLogic.price
+      isMatch = getLocalizedPriceNum(item) < filterLogic.price
     }
     return isMatch
   })

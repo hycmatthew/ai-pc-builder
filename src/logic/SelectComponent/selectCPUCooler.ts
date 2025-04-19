@@ -1,7 +1,6 @@
-import { toNumber } from 'lodash'
 import { CPUType } from '../../constant/objectTypes'
 import { BuildLogicState } from '../../module/aiComponentList/store/aiLogicReducer'
-import { getSelectedCurrency } from '../../utils/NumberHelper'
+import { getLocalizedPriceNum } from '../../utils/NumberHelper'
 import { getBudgetPriceList } from '../../module/aiComponentList/logic/pricingLogic'
 
 const getItemCPUCoolerBudget = (budget: number) => {
@@ -25,10 +24,10 @@ const selectCPUCoolerLogic = (buildLogic: BuildLogicState, cpuList: CPUType[]) =
   let selectedCPU: CPUType | null = null
   let currentScore = 0
   cpuList.forEach((item: CPUType) => {
-    if (cpuBudget > toNumber(item[getSelectedCurrency()])) {
-      if (item.multiCoreScore + item.singleCoreScore > currentScore) {
+    if (cpuBudget > getLocalizedPriceNum(item)) {
+      if (item.MultiCoreScore + item.SingleCoreScore > currentScore) {
         selectedCPU = item
-        currentScore = item.multiCoreScore + item.singleCoreScore
+        currentScore = item.MultiCoreScore + item.SingleCoreScore
       }
     }
   })

@@ -1,5 +1,9 @@
+import PriceType from "../PriceType"
+
 interface MotherboardType {
+  Id: string
   Name: string
+  NameCN: string
   Brand: string
   Socket: string
   Chipset: string
@@ -14,12 +18,7 @@ interface MotherboardType {
   SataSlot: number
   FormFactor: string
   Wireless: boolean
-  PriceUS: string
-  PriceHK: string
-  PriceCN: string
-  LinkUS: string
-  LinkHK: string
-  LinkCN: string
+  Prices: PriceType[]
   Img: string
 }
 

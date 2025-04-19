@@ -12,7 +12,7 @@ import {
   ramPerformanceLogic,
   ssdPerformanceLogic,
 } from '../../../logic/performanceLogic'
-import { getCurrentPriceNum } from '../../../utils/NumberHelper'
+import { getLocalizedPriceNum } from '../../../utils/NumberHelper'
 import BuildConfig from '../constant/buildConfig'
 import {
   MappedCaseType,
@@ -26,7 +26,7 @@ import {
 } from '../constant/mappedObjectTypes'
 
 const priceValidation = (item: any, budget: number): boolean => {
-  const price = getCurrentPriceNum(item)
+  const price = getLocalizedPriceNum(item)
   return price < budget && price !== 0
 }
 
@@ -55,7 +55,7 @@ export function getMappedCPUs(
         integratedGraphicsScore:
           item.IntegratedGraphicsScore * BuildConfig.GPUFactor.GPUScoreMultiply,
         power: item.Power,
-        price: getCurrentPriceNum(item),
+        price: getLocalizedPriceNum(item),
       }
     })
   return mappedCPUs
@@ -84,7 +84,7 @@ export function getMappedGPUs(
         score: item.Benchmark * BuildConfig.GPUFactor.GPUScoreMultiply,
         power: item.Power,
         length: item.Length,
-        price: getCurrentPriceNum(item),
+        price: getLocalizedPriceNum(item),
       }
     })
   return mappedGPUs
@@ -131,7 +131,7 @@ export function getMappedMotherboards(
         ramSupport: item.RamSupport,
         ramMax: item.RamMax,
         formFactor: item.FormFactor,
-        price: getCurrentPriceNum(item),
+        price: getLocalizedPriceNum(item),
       }
     })
   return mappedMotherboards
@@ -168,7 +168,7 @@ export function getMappedRAMs(
         channel: item.Channel,
         profile: item.Profile,
         score: ramPerformanceLogic(item),
-        price: getCurrentPriceNum(item),
+        price: getLocalizedPriceNum(item),
       }
     })
 }
@@ -194,7 +194,7 @@ export function getMappedSSDs(
         capacity: item.Capacity,
         formFactor: item.FormFactor,
         score: ssdPerformanceLogic(item),
-        price: getCurrentPriceNum(item),
+        price: getLocalizedPriceNum(item),
       }
     })
 }
@@ -220,7 +220,7 @@ export function getMappedPSUs(
         modular: item.Modular,
         efficiency: item.Efficiency,
         length: item.Length,
-        price: getCurrentPriceNum(item),
+        price: getLocalizedPriceNum(item),
       }
     })
 }
@@ -257,7 +257,7 @@ export function getMappedCases(
         maxVGAlength: item.MaxVGAlength,
         radiatorSupport: item.RadiatorSupport,
         maxCpuCoolorHeight: item.MaxCpuCoolorHeight,
-        price: getCurrentPriceNum(item),
+        price: getLocalizedPriceNum(item),
       }
     })
 }
@@ -298,7 +298,7 @@ export function getMappedCoolers(
         liquidCoolerSize: item.LiquidCoolerSize,
         airCoolerHeight: item.AirCoolerHeight,
         noiseLevel: item.NoiseLevel,
-        price: getCurrentPriceNum(item),
+        price: getLocalizedPriceNum(item),
       }
     })
 }

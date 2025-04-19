@@ -1,8 +1,7 @@
 import { forOwn, toNumber } from 'lodash'
 import i18n from '../../../config/i18n'
 import {
-  getCurrentPriceNum,
-  getSelectedCurrency,
+  getLocalizedPriceNum,
 } from '../../../utils/NumberHelper'
 import { SelectedItemType } from '../../../store/rawDataReducer'
 import BuildConfig from '../constant/buildConfig'
@@ -68,7 +67,7 @@ export const isEnoughBudget = (
 ) => {
   let countBudget = budget
   forOwn(preSelectedItems, (item) => {
-    countBudget -= item ? toNumber(item[getSelectedCurrency()]) : 0
+    countBudget -= item ? getLocalizedPriceNum(item) : 0
   })
 
   const priceNum = toNumber(itemPrice)
@@ -99,8 +98,8 @@ export const estimateDefaultPrice = (
 
   defaultPrices.ssd =
     ssdList.length == 1
-      ? getCurrentPriceNum(ssdList[0])
-      : suggestedSSDs.reduce((sum, ssd) => sum + getCurrentPriceNum(ssd), 0) /
+      ? getLocalizedPriceNum(ssdList[0])
+      : suggestedSSDs.reduce((sum, ssd) => sum + getLocalizedPriceNum(ssd), 0) /
         suggestedSSDs.length
 
   // 估算机箱价格
@@ -112,8 +111,8 @@ export const estimateDefaultPrice = (
   )
   defaultPrices.pcCase =
     caseList.length == 1
-      ? getCurrentPriceNum(caseList[0])
-      : suggestedCases.reduce((sum, c) => sum + getCurrentPriceNum(c), 0) /
+      ? getLocalizedPriceNum(caseList[0])
+      : suggestedCases.reduce((sum, c) => sum + getLocalizedPriceNum(c), 0) /
         suggestedCases.length
 
   // 估算电源价格
@@ -123,8 +122,8 @@ export const estimateDefaultPrice = (
   )
   defaultPrices.psu =
     psuList.length == 1
-      ? getCurrentPriceNum(psuList[0])
-      : suggestedPSU.reduce((sum, item) => sum + getCurrentPriceNum(item), 0) /
+      ? getLocalizedPriceNum(psuList[0])
+      : suggestedPSU.reduce((sum, item) => sum + getLocalizedPriceNum(item), 0) /
         suggestedPSU.length
 
   // 估算散热器价格
@@ -134,8 +133,8 @@ export const estimateDefaultPrice = (
   )
   defaultPrices.cooler =
     coolerList.length == 1
-      ? getCurrentPriceNum(coolerList[0])
-      : suggestedCooler.reduce((sum, c) => sum + getCurrentPriceNum(c), 0) /
+      ? getLocalizedPriceNum(coolerList[0])
+      : suggestedCooler.reduce((sum, c) => sum + getLocalizedPriceNum(c), 0) /
         suggestedCooler.length
 
   const sumPrices = (prices: { [key: string]: number }): number => {

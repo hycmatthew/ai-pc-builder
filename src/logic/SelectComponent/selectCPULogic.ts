@@ -1,7 +1,6 @@
-import { toNumber } from 'lodash'
 import { CPUType } from '../../constant/objectTypes'
 import { BuildLogicState } from '../../module/aiComponentList/store/aiLogicReducer'
-import { getSelectedCurrency } from '../../utils/NumberHelper'
+import { convertLocalizedPrice, getLocalizedPriceNum } from '../../utils/NumberHelper'
 import { convertCurrency, getPricingFactor, isEnoughBudget } from '../../module/aiComponentList/logic/pricingLogic'
 import BuildConfig from '../../module/aiComponentList/constant/buildConfig'
 import { cpuIncompatible } from '../../module/common/utils/compatibleLogic'
@@ -15,9 +14,9 @@ const cpuHaveInternalGPU = (cpu: CPUType) => {
 }
 
 const cpuPricingLogic = (item: CPUType, budget: number) => {
-  const ratioList = BuildConfig.CPUFactor.CPUBudgetGFactor
+  const ratioList = BuildConfig.CPUFactor.CPUBudgetFactor
   const priceFactor = getPricingFactor(budget, ratioList)
-  return (budget * priceFactor) > convertCurrency(toNumber(item[getSelectedCurrency()]))
+  return (budget * priceFactor) > convertCurrency(getLocalizedPriceNum(item))
 }
 
 const countCPUScore = (item: CPUType) => {
@@ -33,17 +32,17 @@ const cpuFilterLogic = (
 ) => {
   const compatible = !cpuIncompatible(item, buildLogic.preSelectedItem)
   const chipsetSuggestion = !motherboardChipsetSuggestion(
+    item,
     buildLogic.preSelectedItem.motherboard,
-    item
   )
   const overclockSuggestion = !motherboardOverclockSuggestion(
+    item,
     buildLogic.preSelectedItem.motherboard,
-    item
   )
   const enoughBudget = isEnoughBudget(
     buildLogic.budget,
     buildLogic.preSelectedItem,
-    item[getSelectedCurrency()]
+    convertLocalizedPrice(item)
   )
 
   const cpuBudget = cpuPricingLogic(item, buildLogic.budget)

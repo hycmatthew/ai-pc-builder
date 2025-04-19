@@ -8,6 +8,7 @@ const HeaderLayout = () => {
     { label: t('pc-builder'), link: '/' },
     { label: t('benchmark'), link: `/${i18n.language}/benchmarks` },
     { label: t('ai-list'), link: `/${i18n.language}/ai-build` },
+    // { label: t('pc-builds'), link: `/${i18n.language}/completed-builds` },
     { label: t('database'), link: `/${i18n.language}/database` },
   ]
 

@@ -14,7 +14,7 @@ import PriceSlider from '../../common/components/PriceSlider'
 import { generateGPUSelectElement } from '../../common/utils/generateSelectElements'
 import SelectFilter from '../../common/components/SelectFilter'
 import { getGPUBrand, getGPUManufacturer, getGPUType } from '../../../utils/GroupCategoryHelper'
-import { stringToNumber, getSelectedCurrency, convertLocalizedPrice } from '../../../utils/NumberHelper'
+import { convertLocalizedPrice, getLocalizedPriceNum } from '../../../utils/NumberHelper'
 import ItemCard from './ItemCard'
 
 import { GPU_FILTER_INIT_DATA } from '../data/FilterInitData'
@@ -176,7 +176,7 @@ const GPUSuggestion = ({
       isMatch = (item.Series === filterLogic.gpu)
     }
     if (filterLogic.price !== 0 && isMatch) {
-      isMatch = (stringToNumber(item[getSelectedCurrency()]) < filterLogic.price)
+      isMatch = (getLocalizedPriceNum(item) < filterLogic.price)
     }
     return isMatch
   })

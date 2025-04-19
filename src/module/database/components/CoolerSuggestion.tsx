@@ -19,7 +19,7 @@ import { generateItemName } from '../../../utils/LabelHelper'
 import ItemCard from './ItemCard'
 import { ComparisonObject, ComparisonSubItem } from '../data/ComparisonObject'
 import ComparisonModal from './ComparisonModal'
-import { convertLocalizedPrice, getSelectedCurrency, stringToNumber } from '../../../utils/NumberHelper'
+import { convertLocalizedPrice, getLocalizedPriceNum } from '../../../utils/NumberHelper'
 import PriceSlider from '../../common/components/PriceSlider'
 
 type CoolerSuggestionProps = {
@@ -91,7 +91,7 @@ const CoolerSuggestion = ({
       const fanSize: ComparisonSubItem = {
         label: 'fan-size',
         value: item.toString(),
-        isHighlight: item.Size === max(selectedItems.map((element) => element.Size)),
+        isHighlight: item.LiquidCoolerSize === max(selectedItems.map((element) => element.LiquidCoolerSize)),
       }
 
       const fanAirflow: ComparisonSubItem = {
@@ -114,7 +114,7 @@ const CoolerSuggestion = ({
 
       const isLiquid: ComparisonSubItem = {
         label: 'is-liquid',
-        value: item.IsLiquidCooler || '-',
+        value: item.IsLiquidCooler.toString() || '-',
         isHighlight: false,
       }
 
@@ -153,10 +153,10 @@ const CoolerSuggestion = ({
       isMatch = (item.Brand === filterLogic.brand)
     }
     if (filterLogic.size && isMatch) {
-      isMatch = (item.Size === filterLogic.size)
+      isMatch = (item.LiquidCoolerSize === filterLogic.size)
     }
     if (filterLogic.price !== 0 && isMatch) {
-      isMatch = stringToNumber(item[getSelectedCurrency()]) < filterLogic.price
+      isMatch = getLocalizedPriceNum(item) < filterLogic.price
     }
     return isMatch
   })

@@ -1,25 +1,27 @@
 import React, { useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import { isEmpty, max, min } from 'lodash'
-import {
-  Badge,
-  Button,
-  Grid,
-} from '@mui/material'
+import { max, min } from 'lodash'
+import { Badge, Button, Grid } from '@mui/material'
 import CompareArrowsIcon from '@mui/icons-material/CompareArrows'
 
 import RAMType from '../../../constant/objectTypes/RAMType'
 import SelectElement from '../../common/components/SelectElement'
 import { generateRAMSelectElement } from '../../common/utils/generateSelectElements'
 import SelectFilter from '../../common/components/SelectFilter'
-import { getRAMBrand, getRAMGeneration } from '../../../utils/GroupCategoryHelper'
+import {
+  getRAMBrand,
+  getRAMGeneration,
+} from '../../../utils/GroupCategoryHelper'
 
 import { RAM_FILTER_INIT_DATA } from '../data/FilterInitData'
 import { generateRAMName } from '../../../utils/LabelHelper'
 import ItemCard from './ItemCard'
 import { ComparisonObject, ComparisonSubItem } from '../data/ComparisonObject'
 import ComparisonModal from './ComparisonModal'
-import { convertLocalizedPrice, getSelectedCurrency, stringToNumber } from '../../../utils/NumberHelper'
+import {
+  convertLocalizedPrice,
+  getLocalizedPriceNum,
+} from '../../../utils/NumberHelper'
 import PriceSlider from '../../common/components/PriceSlider'
 
 type RAMSuggestionProps = {
@@ -27,10 +29,7 @@ type RAMSuggestionProps = {
   isLoading: boolean
 }
 
-const RAMSuggestion = ({
-  ramList,
-  isLoading,
-}: RAMSuggestionProps) => {
+const RAMSuggestion = ({ ramList, isLoading }: RAMSuggestionProps) => {
   const { t } = useTranslation()
   const [filterLogic, setfilterLogic] = useState(RAM_FILTER_INIT_DATA)
   const [selectedItems, setSelectedItems] = useState<RAMType[]>([])
@@ -90,20 +89,24 @@ const RAMSuggestion = ({
 
       const capacity: ComparisonSubItem = {
         label: 'capacity',
-        value: item.Capacity,
-        isHighlight: item.Capacity === max(selectedItems.map((element) => element.Capacity)),
+        value: item.Capacity.toString(),
+        isHighlight:
+          item.Capacity ===
+          max(selectedItems.map((element) => element.Capacity)),
       }
 
       const speed: ComparisonSubItem = {
         label: 'ram-frequency',
         value: item.Speed.toString(),
-        isHighlight: item.Speed === max(selectedItems.map((element) => element.Speed)),
+        isHighlight:
+          item.Speed === max(selectedItems.map((element) => element.Speed)),
       }
 
       const timing: ComparisonSubItem = {
         label: 'ram-timing',
         value: item.Timing || '-',
-        isHighlight: item.Timing === min(selectedItems.map((element) => element.Timing)),
+        isHighlight:
+          item.Timing === min(selectedItems.map((element) => element.Timing)),
       }
 
       const rgb: ComparisonSubItem = {
@@ -116,12 +119,7 @@ const RAMSuggestion = ({
         img: imgStr,
         name: itemName,
         model: itemModel,
-        items: [
-          capacity,
-          speed,
-          timing,
-          rgb
-        ],
+        items: [capacity, speed, timing, rgb],
       }
 
       return result
@@ -143,13 +141,13 @@ const RAMSuggestion = ({
       isMatch = item.Model === filterLogic.model
     }
     if (filterLogic.brand && isMatch) {
-      isMatch = (item.Brand === filterLogic.brand)
+      isMatch = item.Brand === filterLogic.brand
     }
     if (filterLogic.generation && isMatch) {
-      isMatch = (item.Type === filterLogic.generation)
+      isMatch = item.Type === filterLogic.generation
     }
     if (filterLogic.price !== 0 && isMatch) {
-      isMatch = stringToNumber(item[getSelectedCurrency()]) < filterLogic.price
+      isMatch = getLocalizedPriceNum(item) < filterLogic.price
     }
     return isMatch
   })
@@ -196,7 +194,12 @@ const RAMSuggestion = ({
           />
         </Grid>
       </Grid>
-      <Grid sx={{ paddingTop: 10 }} container spacing={2} columns={{ xs: 6, md: 12 }}>
+      <Grid
+        sx={{ paddingTop: 10 }}
+        container
+        spacing={2}
+        columns={{ xs: 6, md: 12 }}
+      >
         {updatedList.map((item) => (
           <ItemCard
             itemLabel={generateRAMName(item)}

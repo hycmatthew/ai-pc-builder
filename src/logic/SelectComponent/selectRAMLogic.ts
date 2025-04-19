@@ -2,7 +2,7 @@ import { toNumber } from 'lodash'
 import { RAMType } from '../../constant/objectTypes'
 import { BuildLogicState } from '../../module/aiComponentList/store/aiLogicReducer'
 import { ramIncompatible } from '../../module/common/utils/compatibleLogic'
-import { getSelectedCurrency } from '../../utils/NumberHelper'
+import { convertLocalizedPrice, getLocalizedPriceNum } from '../../utils/NumberHelper'
 import { convertCurrency, getPricingFactor, isEnoughBudget } from '../../module/aiComponentList/logic/pricingLogic'
 import { ramProfileIsNotMatchCPU } from '../CompatibleLogic/suggestionLogic'
 import BuildConfig from '../../module/aiComponentList/constant/buildConfig'
@@ -20,7 +20,7 @@ const getItemRamScore = (item: RAMType, budget: number) => {
   const ratioList = BuildConfig.RAMFactor.RAMBudgetFactor
   const priceFactor = getPricingFactor(budget, ratioList)
   const performanceScore = ramPerformanceLogic(item) * ramCapacityScore(item.Capacity)
-  return performanceScore / convertCurrency(toNumber(item[getSelectedCurrency()]))
+  return performanceScore / convertCurrency(getLocalizedPriceNum(item))
 }
 
 const ramFilterLogic = (
@@ -35,7 +35,7 @@ const ramFilterLogic = (
   const enoughBudget = isEnoughBudget(
     buildLogic.budget,
     buildLogic.preSelectedItem,
-    item[getSelectedCurrency()]
+    convertLocalizedPrice(item)
   )
   return compatible && chipsetSuggestion && enoughBudget
 }

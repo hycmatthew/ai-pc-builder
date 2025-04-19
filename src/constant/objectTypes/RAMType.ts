@@ -1,6 +1,9 @@
+import PriceType from "../PriceType"
+
 interface RAMType {
   Brand: string
   Name: string
+  NameCN: string
   Series: string
   Model: string
   Capacity: number
@@ -13,12 +16,7 @@ interface RAMType {
   Profile: string
   LED: string
   HeatSpreader: boolean
-  PriceUS: string
-  PriceHK: string
-  PriceCN: string
-  LinkUS: string
-  LinkHK: string
-  LinkCN: string
+  Prices: PriceType[]
   Img: string
 }
 

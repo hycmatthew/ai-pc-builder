@@ -1,5 +1,9 @@
+import PriceType from "../PriceType"
+
 interface CPUType {
+  Id: string
   Name: string
+  NameCN: string
   Brand: string
   Socket: string
   Cores: number
@@ -9,12 +13,7 @@ interface CPUType {
   MultiCoreScore: number
   IntegratedGraphicsScore: number
   Power: number
-  PriceUS: string
-  PriceHK: string
-  PriceCN: string
-  LinkUS: string
-  LinkHK: string
-  LinkCN: string
+  Prices: PriceType[]
   Img: string
 }
 
