@@ -145,7 +145,7 @@ const FanSuggestion = ({
       isMatch = item.brand === filterLogic.brand
     }
     if (filterLogic.price !== 0 && isMatch) {
-      isMatch = getLocalizedPriceNum(item) < filterLogic.price
+      // isMatch = getLocalizedPriceNum(item) < filterLogic.price
     }
     return isMatch
   })

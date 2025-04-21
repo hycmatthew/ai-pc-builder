@@ -26,12 +26,7 @@ import {
   searchCaseItem,
   searchAIOItem,
 } from '../../common/utils/searchItemLogic'
-import { useTranslation } from 'react-i18next'
 import { useLocation } from 'react-router-dom'
-import Calculator from './Calculator'
-import CustomButton from '../../common/components/CustomButton'
-import ListCopyDialog from './ListCopyDialog'
-import { getTotalPrice } from '../../../utils/NumberHelper'
 
 type ComponentMenuProps = {
   dataState: DataState
@@ -39,10 +34,8 @@ type ComponentMenuProps = {
 
 const ComponentMenu = ({ dataState }: ComponentMenuProps) => {
   const dispatch = useAppDispatch()
-  const { t } = useTranslation()
   const location = useLocation()
   const searchParams = new URLSearchParams(location.search)
-  const [open, setOpen] = useState(false)
 
   const {
     selectedItems,
@@ -146,12 +139,6 @@ const ComponentMenu = ({ dataState }: ComponentMenuProps) => {
     }
   }
 
-  const handleOpen = () => {
-    setOpen(true)
-  }
-
-  const handleClose = () => setOpen(false)
-
   return (
     <NotificationsProvider>
       <Grid container spacing={1}>
@@ -226,23 +213,6 @@ const ComponentMenu = ({ dataState }: ComponentMenuProps) => {
             label={ProductEnum.Cooler}
             options={generateCoolerSelectElement(coolerList, selectedItems)}
             selectChange={changeSelectItem}
-          />
-        </Grid>
-        <Grid size={8}>
-          <Calculator selectedItems={dataState.selectedItems} />
-        </Grid>
-        <Grid size={4}>
-          <CustomButton
-            disabled={getTotalPrice(dataState.selectedItems) == 0}
-            onClick={handleOpen}
-            fullWidth
-          >
-            Contained
-          </CustomButton>
-          <ListCopyDialog
-            selectedItems={dataState.selectedItems}
-            open={open}
-            onClose={handleClose}
           />
         </Grid>
       </Grid>

@@ -51,7 +51,13 @@ export const calculateTotalNumber = (numberList: string[]): number =>
   numberList.reduce((acc, curr) => acc + toNumber(curr), 0)
 
 // ==================== 核心工具函式 ====================
-const getPriceByRegion = (prices: PriceType[] | null, region: RegionKey) => {
+export const getAllPriceByRegion = (prices: PriceType[] | null) => {
+  const { region } = getCurrencyConfig()
+  return prices?.filter(p => p.Region === region) || []
+}
+
+const getPriceByRegion = (prices: PriceType[] | null) => {
+  const { region } = getCurrencyConfig()
   return prices?.find(p => p.Region === region)?.Price?.trim() || ''
 }
 
@@ -66,29 +72,26 @@ export const getCurrentPriceWithSign = (item: any): string =>
 
 // 調整本地化價格轉換
 export const convertLocalizedPrice = (item: any): string => {
-  const { region } = getCurrencyConfig()
-  return handlePriceValue(getPriceByRegion(item.Prices, region))
+  return handlePriceValue(getPriceByRegion(item.Prices))
 }
 
 // 調整獲取當前價格數值
 export const getLocalizedPriceNum = (item: { Prices: PriceType[] }): number => {
-  const { region } = getCurrencyConfig()
-  return toNumber(getPriceByRegion(item.Prices, region))
+  return toNumber(getPriceByRegion(item.Prices))
 }
 
 // 調整總價計算邏輯
 export const getTotalPrice = (selectedItems: SelectedItemType) => {
-  const { region } = getCurrencyConfig()
 
   const numberList = [
-    getPriceByRegion(selectedItems.cpu?.Prices || [], region),
-    getPriceByRegion(selectedItems.gpu?.Prices || [], region),
-    getPriceByRegion(selectedItems.motherboard?.Prices || [], region),
-    getPriceByRegion(selectedItems.ram?.Prices || [], region),
-    getPriceByRegion(selectedItems.psu?.Prices || [], region),
-    getPriceByRegion(selectedItems.ssd?.Prices || [], region),
-    getPriceByRegion(selectedItems.cooler?.Prices || [], region),
-    getPriceByRegion(selectedItems.pcCase?.Prices || [], region),
+    getPriceByRegion(selectedItems.cpu?.Prices || []),
+    getPriceByRegion(selectedItems.gpu?.Prices || []),
+    getPriceByRegion(selectedItems.motherboard?.Prices || []),
+    getPriceByRegion(selectedItems.ram?.Prices || []),
+    getPriceByRegion(selectedItems.psu?.Prices || []),
+    getPriceByRegion(selectedItems.ssd?.Prices || []),
+    getPriceByRegion(selectedItems.cooler?.Prices || []),
+    getPriceByRegion(selectedItems.pcCase?.Prices || []),
   ]
 
   return calculateTotalNumber(compact(numberList))

@@ -2,57 +2,51 @@ import Button, { ButtonProps } from '@mui/material/Button'
 import { useTranslation } from 'react-i18next'
 import { styled } from '@mui/material/styles'
 import { ReactNode } from 'react'
+import { Link } from '@mui/material'
+import { color } from 'framer-motion'
 
 type CusButtonProps = ButtonProps & {
   /** 支持直接传递翻译键名或已翻译文本 */
   label?: ReactNode
 }
 
-const StyledButton = styled(Button)(({ theme }) => ({
+const StyledLink = styled(Link)(({ theme }) => ({
   // 基礎樣式
   transition: theme.transitions.create(['all'], {
     duration: theme.transitions.duration.short,
   }),
-  borderRadius: '8px',
+  borderRadius: '16px',
+  backgroundColor: '#fba126',
   boxShadow: 'none',
+  fontSize: '16px',
+  verticalAlign: 'middle',
+  color: '#fff',
+  textDecoration: 'none',
+  marginRight: '16px',
 
-  // Contained variant 專用樣式
-  backgroundColor: '#0077c0',
-  '&:hover': {
-    backgroundColor: theme.palette.primary.dark,
-    boxShadow: 'none',
-  },
-  '&:active': {
-    boxShadow: 'none',
-  },
-  '&:focus': {
-    outline: 'none',
-    boxShadow: 'none',
-  },
+  float: 'right',
+  padding: '4px 16px',
 
   // 禁用狀態
+  '&:hover': {
+    color: '#fff',
+    backgroundColor: '#fa9409',
+  },
   '&.Mui-disabled': {
     opacity: 0.7,
     backgroundColor: theme.palette.action.disabledBackground,
   },
 }))
 
-const CustomButton = ({
-  label,
-  children,
-  ...props
-}: CusButtonProps) => {
+const BuyButton = ({ label, children, ...props }: CusButtonProps) => {
   const { t } = useTranslation()
 
   return (
-    <StyledButton
-      variant="contained" // 强制指定 variant
-      {...props}
-    >
-      {/* 優先顯示 children，其次處理翻譯 */}
+    <StyledLink href={props.href} target="_blank">
+      {/* 使用 Link 组件包裹按钮 */}
       {children || (typeof label === 'string' ? t(label) : label)}
-    </StyledButton>
+    </StyledLink>
   )
 }
 
-export default CustomButton
+export default BuyButton
