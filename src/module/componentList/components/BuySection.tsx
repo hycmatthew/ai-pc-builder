@@ -1,5 +1,5 @@
 import { useTranslation } from 'react-i18next'
-import { Box, Grid2 as Grid } from '@mui/material'
+import { Box, Divider, Grid2 as Grid } from '@mui/material'
 
 import { DataState, SelectedItemType } from '../../../store/rawDataReducer'
 import { addCurrencySign, getAllPriceByRegion, getTotalPrice } from '../../../utils/NumberHelper'
@@ -103,25 +103,20 @@ const HardwareSection = ({
 
 const BuySection = ({ dataState }: BuySectioProps) => {
   const selectedItems = dataState.selectedItems
-  const [open, setOpen] = useState(false)
-  const { t } = useTranslation()
-
-  const handleOpen = () => {
-    setOpen(true)
-  }
-
-  const handleClose = () => setOpen(false)
 
   const hardwareEntries = (
     Object.entries(selectedItems) as unknown as [
       keyof SelectedItemType,
       SelectedItemType[keyof SelectedItemType],
     ][]
-  ).filter(([, item]) => item !== null)
+  ).filter(([, item]) => item != null)
 
-  return (
+  const hasHardware = hardwareEntries.length > 0;
+
+  return hasHardware && (
     <>
-      <Grid container spacing={2}>
+      <Divider sx={{ paddingTop: '2rem' }} />
+      <Grid container paddingTop={4} spacing={2}>
         {hardwareEntries.map(([key, item]) => (
             <HardwareSection item={item!} key={key} />
         ))}

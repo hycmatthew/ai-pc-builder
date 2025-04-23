@@ -1,8 +1,6 @@
-import React, { useState } from 'react'
+import { useMemo, useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import { max, min } from 'lodash'
-import { Badge, Button, Grid } from '@mui/material'
-import CompareArrowsIcon from '@mui/icons-material/CompareArrows'
+import { Grid2 as Grid } from '@mui/material'
 
 import RAMType from '../../../constant/objectTypes/RAMType'
 import SelectElement from '../../common/components/SelectElement'
@@ -15,14 +13,12 @@ import {
 
 import { RAM_FILTER_INIT_DATA } from '../data/FilterInitData'
 import { generateRAMName } from '../../../utils/LabelHelper'
-import ItemCard from './ItemCard'
-import { ComparisonObject, ComparisonSubItem } from '../data/ComparisonObject'
-import ComparisonModal from './ComparisonModal'
+import { ComparisonObject } from '../data/ComparisonObject'
 import {
   convertLocalizedPrice,
   getLocalizedPriceNum,
 } from '../../../utils/NumberHelper'
-import PriceSlider from '../../common/components/PriceSlider'
+import HardwareSuggestion from './HardwarePage'
 
 type RAMSuggestionProps = {
   ramList: RAMType[]
@@ -31,188 +27,141 @@ type RAMSuggestionProps = {
 
 const RAMSuggestion = ({ ramList, isLoading }: RAMSuggestionProps) => {
   const { t } = useTranslation()
-  const [filterLogic, setfilterLogic] = useState(RAM_FILTER_INIT_DATA)
-  const [selectedItems, setSelectedItems] = useState<RAMType[]>([])
-  const [openCompare, setOpenCompare] = useState(false)
+  const [filterLogic, setFilterLogic] = useState(RAM_FILTER_INIT_DATA)
 
-  const brandOptions = getRAMBrand(ramList)
-  const generationOptions = getRAMGeneration(ramList)
+  // 过滤逻辑
+  const filteredList = useMemo(
+    () =>
+      ramList.filter((item) => {
+        let isMatch = true
 
-  const addComparison = (item: RAMType) => {
-    if (selectedItems.length < 4) {
-      setSelectedItems([...selectedItems, item])
-    }
-  }
+        // 型号过滤
+        if (filterLogic.model) {
+          isMatch = item.Model === filterLogic.model
+        }
 
-  const updateSelectedItem = (item: any) => {
-    setfilterLogic({ ...filterLogic, model: item })
-  }
+        // 品牌过滤
+        if (filterLogic.brand && isMatch) {
+          isMatch = item.Brand === filterLogic.brand
+        }
 
-  const updateMaxPrice = (price: number) => {
-    setfilterLogic({ ...filterLogic, price })
-  }
+        // 代际过滤
+        if (filterLogic.generation && isMatch) {
+          isMatch = item.Type === filterLogic.generation
+        }
 
-  const updateFilterBrand = (brand: string) => {
-    setfilterLogic({ ...filterLogic, brand })
-  }
+        // 价格过滤
+        if (filterLogic.price > 0 && isMatch) {
+          isMatch = getLocalizedPriceNum(item) <= filterLogic.price
+        }
 
-  const updateFilterGeneration = (generation: string) => {
-    setfilterLogic({ ...filterLogic, generation })
-  }
+        return isMatch
+      }),
+    [ramList, filterLogic]
+  )
 
-  const handleClose = () => {
-    setOpenCompare(false)
-  }
-
-  const removeComparison = (model: string) => {
-    const updatedList: RAMType[] = selectedItems.filter(
-      (element: RAMType) => element.Model !== model
-    )
-    if (updatedList.length === 0) {
-      handleClose()
-    }
-    setSelectedItems([...updatedList])
-  }
-
-  const openCompareLogic = () => {
-    if (selectedItems.length > 0) {
-      setOpenCompare(true)
-    }
-  }
-
-  const openComparison = () => {
-    let comparsionObjects: ComparisonObject[] = []
-    comparsionObjects = selectedItems.map((item) => {
-      const imgStr = item.Img
-      const itemModel = item.Model
-      const itemName = generateRAMName(item)
-
-      const capacity: ComparisonSubItem = {
-        label: 'capacity',
-        value: item.Capacity.toString(),
-        isHighlight:
-          item.Capacity ===
-          max(selectedItems.map((element) => element.Capacity)),
+  // 比较对象生成
+  const buildComparisonObjects = (
+    selectedItems: RAMType[]
+  ): ComparisonObject[] => {
+    return selectedItems.map((item) => {
+      const specs = {
+        capacity: item.Capacity,
+        speed: item.Speed,
+        timing: item.Timing,
+        rgb: item.LED,
       }
 
-      const speed: ComparisonSubItem = {
-        label: 'ram-frequency',
-        value: item.Speed.toString(),
-        isHighlight:
-          item.Speed === max(selectedItems.map((element) => element.Speed)),
-      }
+      // 获取比较基准值
+      const maxCapacity = Math.max(...selectedItems.map((ram) => ram.Capacity))
+      const maxSpeed = Math.max(...selectedItems.map((ram) => ram.Speed))
+      const minTiming = Math.min(
+        ...selectedItems.map((ram) => parseTiming(ram.Timing))
+      )
 
-      const timing: ComparisonSubItem = {
-        label: 'ram-timing',
-        value: item.Timing || '-',
-        isHighlight:
-          item.Timing === min(selectedItems.map((element) => element.Timing)),
+      return {
+        img: item.Img,
+        name: generateRAMName(item),
+        model: item.Model,
+        items: [
+          {
+            label: 'capacity',
+            value: `${specs.capacity}GB`,
+            isHighlight: specs.capacity === maxCapacity,
+          },
+          {
+            label: 'ram-frequency',
+            value: `${specs.speed}MHz`,
+            isHighlight: specs.speed === maxSpeed,
+          },
+          {
+            label: 'ram-timing',
+            value: formatTiming(specs.timing),
+            isHighlight: parseTiming(specs.timing) === minTiming,
+          },
+          {
+            label: 'is-rgb',
+            value: specs.rgb ? t('yes') : t('no'),
+            isHighlight: !!specs.rgb,
+          },
+        ],
       }
-
-      const rgb: ComparisonSubItem = {
-        label: 'is-rgb',
-        value: item.LED ? 'RGB' : '-',
-        isHighlight: false,
-      }
-
-      const result: ComparisonObject = {
-        img: imgStr,
-        name: itemName,
-        model: itemModel,
-        items: [capacity, speed, timing, rgb],
-      }
-
-      return result
     })
-
-    return (
-      <ComparisonModal
-        comparisonObjects={comparsionObjects}
-        isOpen={openCompare}
-        handleClose={handleClose}
-        handleRemove={removeComparison}
-      />
-    )
   }
-
-  const updatedList = ramList.filter((item) => {
-    let isMatch = true
-    if (filterLogic.model) {
-      isMatch = item.Model === filterLogic.model
-    }
-    if (filterLogic.brand && isMatch) {
-      isMatch = item.Brand === filterLogic.brand
-    }
-    if (filterLogic.generation && isMatch) {
-      isMatch = item.Type === filterLogic.generation
-    }
-    if (filterLogic.price !== 0 && isMatch) {
-      isMatch = getLocalizedPriceNum(item) < filterLogic.price
-    }
-    return isMatch
-  })
 
   return (
-    <>
-      <Grid container spacing={3}>
-        <Grid item xs={9}>
-          <SelectElement
-            label={t('ram')}
-            options={generateRAMSelectElement(ramList)}
-            selectChange={updateSelectedItem}
-            isLoading={isLoading}
-          />
-        </Grid>
-        <Grid item xs={3}>
-          <Badge badgeContent={selectedItems.length} color="error">
-            <Button
-              startIcon={<CompareArrowsIcon />}
-              variant="contained"
-              disabled={selectedItems.length === 0}
-              onClick={() => openCompareLogic()}
-            >
-              {t('compare')}
-            </Button>
-          </Badge>
-        </Grid>
-        {openComparison()}
-        <Grid item xs={9}>
-          <PriceSlider selectChange={updateMaxPrice} />
-        </Grid>
-        <Grid item xs={6}>
-          <SelectFilter
-            label={t('brand')}
-            options={brandOptions}
-            selectChange={updateFilterBrand}
-          />
-        </Grid>
-        <Grid item xs={6}>
-          <SelectFilter
-            label={t('generations')}
-            options={generationOptions}
-            selectChange={updateFilterGeneration}
-          />
-        </Grid>
-      </Grid>
-      <Grid
-        sx={{ paddingTop: 10 }}
-        container
-        spacing={2}
-        columns={{ xs: 6, md: 12 }}
-      >
-        {updatedList.map((item) => (
-          <ItemCard
-            itemLabel={generateRAMName(item)}
-            priceLabel={convertLocalizedPrice(item)}
-            imgSrc={item.Img}
-            disable={selectedItems.includes(item)}
-            addComparsion={() => addComparison(item)}
-            removeComparsion={() => removeComparison(item.Model)}
-          />
-        ))}
-      </Grid>
-    </>
+    <HardwareSuggestion<RAMType>
+      filteredList={filteredList}
+      isLoading={isLoading}
+      buildComparisonObjects={buildComparisonObjects}
+      renderFilterForm={
+        <>
+          <Grid size={9}>
+            <SelectElement
+              label={t('ram')}
+              options={generateRAMSelectElement(ramList)}
+              selectChange={(model) =>
+                setFilterLogic((prev) => ({ ...prev, model }))
+              }
+              isLoading={isLoading}
+            />
+          </Grid>
+          <Grid size={6}>
+            <SelectFilter
+              label={t('brand')}
+              options={getRAMBrand(ramList)}
+              selectChange={(brand) =>
+                setFilterLogic((prev) => ({ ...prev, brand }))
+              }
+            />
+          </Grid>
+          <Grid size={6}>
+            <SelectFilter
+              label={t('generations')}
+              options={getRAMGeneration(ramList)}
+              selectChange={(generation) =>
+                setFilterLogic((prev) => ({ ...prev, generation }))
+              }
+            />
+          </Grid>
+        </>
+      }
+      getItemLabel={(item) => generateRAMName(item)}
+      getPriceLabel={(item) => convertLocalizedPrice(item)}
+      getImgSrc={(item) => item.Img}
+      getItemIdentifier={(item) => item.Model}
+    />
   )
+}
+
+// 辅助函数
+const parseTiming = (timing: string) => {
+  const numbers = timing?.split('-').map(Number) || [99]
+  return numbers.reduce((a, b) => a + b, 0)
+}
+
+const formatTiming = (timing?: string) => {
+  return timing ? `CL${timing}` : '-'
 }
 
 export default RAMSuggestion

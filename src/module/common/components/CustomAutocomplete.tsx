@@ -59,9 +59,9 @@ const CustomAutocomplete = styled(
       fontFamily: 'inherit',
       overflow: 'hidden',
       borderRadius,
-      border: '1px solid',
+      border: '0px',
       backgroundColor: theme.palette.mode === 'dark' ? '#1A2027' : '#F3F6F9',
-      borderColor: theme.palette.mode === 'dark' ? '#2D3843' : '#E0E3E7',
+      borderColor: 'transparent',
       transition: theme.transitions.create([
         'border-color',
         'background-color',

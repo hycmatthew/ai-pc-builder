@@ -1,22 +1,18 @@
-import React, { useState } from 'react'
+import { useMemo, useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import { max, min } from 'lodash'
-import { Badge, Button, Grid } from '@mui/material'
-import CompareArrowsIcon from '@mui/icons-material/CompareArrows'
 
-import PriceSlider from '../../common/components/PriceSlider'
-import ItemCard from './ItemCard'
 import CaseType from '../../../constant/objectTypes/CaseType'
-import SelectElement from '../../common/components/SelectElement'
-import { generateCaseSelectElement } from '../../common/utils/generateSelectElements'
 import SelectFilter from '../../common/components/SelectFilter'
 
 import { CASE_FILTER_INIT_DATA } from '../data/FilterInitData'
 import { generateItemName } from '../../../utils/LabelHelper'
-import { ComparisonObject, ComparisonSubItem } from '../data/ComparisonObject'
-import ComparisonModal from './ComparisonModal'
-import { convertLocalizedPrice, getLocalizedPriceNum } from '../../../utils/NumberHelper'
+import { ComparisonObject } from '../data/ComparisonObject'
+import {
+  convertLocalizedPrice,
+  getLocalizedPriceNum,
+} from '../../../utils/NumberHelper'
 import { getCaseBrand, getCaseSize } from '../../../utils/GroupCategoryHelper'
+import HardwareSuggestion from './HardwarePage'
 
 type CaseSuggestionProps = {
   caseList: CaseType[]
@@ -25,191 +21,118 @@ type CaseSuggestionProps = {
 
 const CaseSuggestion = ({ caseList, isLoading }: CaseSuggestionProps) => {
   const { t } = useTranslation()
-  const [filterLogic, setfilterLogic] = useState(CASE_FILTER_INIT_DATA)
-  const [selectedItems, setSelectedItems] = useState<CaseType[]>([])
-  const [openCompare, setOpenCompare] = useState(false)
-
+  const [filterLogic, setFilterLogic] = useState(CASE_FILTER_INIT_DATA)
   const brandOptions = getCaseBrand(caseList)
-  const typeOptions = getCaseSize(caseList)
+  const sizeOptions = getCaseSize(caseList)
 
-  const addComparison = (item: CaseType) => {
-    if (selectedItems.length < 4) {
-      setSelectedItems([...selectedItems, item])
-    }
-  }
+  // Case 过滤逻辑
+  const filteredList = useMemo(
+    () =>
+      caseList.filter((item) => {
+        let isMatch = true
 
-  const updateSelectedItem = (item: any) => {
-    setfilterLogic({ ...filterLogic, model: item })
-  }
+        // 型号过滤
+        if (filterLogic.model) {
+          isMatch = item.Name === filterLogic.model
+        }
 
-  const updateMaxPrice = (price: number) => {
-    setfilterLogic({ ...filterLogic, price })
-  }
+        // 品牌过滤
+        if (filterLogic.brand && isMatch) {
+          isMatch = item.Brand === filterLogic.brand
+        }
 
-  const updateFilterBrand = (brand: string) => {
-    setfilterLogic({ ...filterLogic, brand })
-  }
+        // 机箱尺寸过滤
+        if (filterLogic.size && isMatch) {
+          isMatch = item.CaseSize === filterLogic.size
+        }
 
-  const updateFilterSize = (size: string) => {
-    setfilterLogic({ ...filterLogic, size })
-  }
+        // 价格过滤
+        if (filterLogic.price > 0 && isMatch) {
+          isMatch = getLocalizedPriceNum(item) <= filterLogic.price
+        }
 
-  const handleClose = () => {
-    setOpenCompare(false)
-  }
+        return isMatch
+      }),
+    [caseList, filterLogic]
+  )
 
-  const removeComparison = (model: string) => {
-    const updatedList: CaseType[] = selectedItems.filter(
-      (element: CaseType) => element.Name !== model
-    )
-    if (updatedList.length === 0) {
-      handleClose()
-    }
-    setSelectedItems([...updatedList])
-  }
-
-  const openCompareLogic = () => {
-    if (selectedItems.length > 0) {
-      setOpenCompare(true)
-    }
-  }
-
-  const openComparison = () => {
-    let comparsionObjects: ComparisonObject[] = []
-    comparsionObjects = selectedItems.map((item) => {
-      const imgStr = item.Img
-      const itemModel = item.Name
-      const itemName = generateItemName(item.Brand, item.Name)
-
-      const size: ComparisonSubItem = {
-        label: 'size',
-        value:
-          item.CaseSize.length > 2
-            ? `${item.CaseSize[0]} * ${item.CaseSize[1]} * ${item.CaseSize[2]}`
-            : '',
-        isHighlight: false,
+  // Case 比较对象生成逻辑
+  const buildComparisonObjects = (
+    selectedItems: CaseType[]
+  ): ComparisonObject[] => {
+    return selectedItems.map((item) => {
+      const specs = {
+        size: item.CaseSize,
+        color: item.Color || '-',
+        maxVGALength: item.MaxVGAlength,
+        compatibility: item.Compatibility || [],
       }
 
-      const color: ComparisonSubItem = {
-        label: 'color',
-        value: item.Color,
-        isHighlight: false,
-      }
+      // 获取比较基准值
+      const maxVGALength = Math.max(...selectedItems.map((c) => c.MaxVGAlength))
+      const maxCompatibility = Math.max(
+        ...selectedItems.map((c) => c.Compatibility?.length || 0)
+      )
 
-      const maxGPULength: ComparisonSubItem = {
-        label: 'max-gpu-length',
-        value: item.MaxVGAlength.toString(),
-        isHighlight:
-          item.MaxVGAlength ===
-          max(selectedItems.map((element) => element.MaxVGAlength)),
+      return {
+        img: item.Img,
+        name: generateItemName(item.Brand, item.Name),
+        model: item.Name,
+        items: [
+          {
+            label: 'case-size',
+            value: specs.size,
+            isHighlight: false,
+          },
+          {
+            label: 'color',
+            value: specs.color,
+            isHighlight: specs.color !== '-',
+          },
+          {
+            label: 'max-gpu-length',
+            value: specs.maxVGALength.toString() + 'mm',
+            isHighlight: specs.maxVGALength === maxVGALength,
+          },
+          {
+            label: 'motherboard-compatibility',
+            value: specs.compatibility.join(' / ') || '-',
+            isHighlight:
+              (specs.compatibility?.length || 0) === maxCompatibility,
+          },
+        ],
       }
-
-      // tbc
-      const motherboardCompatibility: ComparisonSubItem = {
-        label: 'motherboard-compatibility',
-        value: item.Compatibility.toString() || '-',
-        isHighlight:
-          item.Compatibility.length ===
-          max(selectedItems.map((element) => element.Compatibility.length)),
-      }
-
-      const result: ComparisonObject = {
-        img: imgStr,
-        name: itemName,
-        model: itemModel,
-        items: [size, color, maxGPULength, motherboardCompatibility],
-      }
-
-      return result
     })
-
-    return (
-      <ComparisonModal
-        comparisonObjects={comparsionObjects}
-        isOpen={openCompare}
-        handleClose={handleClose}
-        handleRemove={removeComparison}
-      />
-    )
   }
-
-  const updatedList = caseList.filter((item) => {
-    let isMatch = true
-    if (filterLogic.model) {
-      isMatch = item.Name === filterLogic.model
-    }
-    if (filterLogic.brand && isMatch) {
-      isMatch = item.Brand === filterLogic.brand
-    }
-    if (filterLogic.size && isMatch) {
-      isMatch = item.CaseSize === filterLogic.size
-    }
-    if (filterLogic.price !== 0 && isMatch) {
-      isMatch = getLocalizedPriceNum(item) < filterLogic.price
-    }
-    return isMatch
-  })
 
   return (
-    <>
-      <Grid container spacing={3}>
-        <Grid item xs={9}>
-          <SelectElement
-            label={t('computer-case')}
-            options={generateCaseSelectElement(caseList)}
-            selectChange={updateSelectedItem}
-            isLoading={isLoading}
-          />
-        </Grid>
-        <Grid item xs={3}>
-          <Badge badgeContent={selectedItems.length} color="error">
-            <Button
-              startIcon={<CompareArrowsIcon />}
-              variant="contained"
-              disabled={selectedItems.length === 0}
-              onClick={() => openCompareLogic()}
-            >
-              {t('compare')}
-            </Button>
-          </Badge>
-        </Grid>
-        {openComparison()}
-        <Grid item xs={9}>
-          <PriceSlider selectChange={updateMaxPrice} />
-        </Grid>
-        <Grid item xs={6}>
+    <HardwareSuggestion<CaseType>
+      filteredList={filteredList}
+      isLoading={isLoading}
+      buildComparisonObjects={buildComparisonObjects}
+      renderFilterForm={
+        <>
           <SelectFilter
             label={t('brand')}
             options={brandOptions}
-            selectChange={updateFilterBrand}
+            selectChange={(brand) =>
+              setFilterLogic((prev) => ({ ...prev, brand }))
+            }
           />
-        </Grid>
-        <Grid item xs={6}>
           <SelectFilter
             label={t('size')}
-            options={typeOptions}
-            selectChange={updateFilterSize}
+            options={sizeOptions}
+            selectChange={(size) =>
+              setFilterLogic((prev) => ({ ...prev, size }))
+            }
           />
-        </Grid>
-      </Grid>
-      <Grid
-        sx={{ paddingTop: 10 }}
-        container
-        spacing={2}
-        columns={{ xs: 6, md: 12 }}
-      >
-        {updatedList.map((item) => (
-          <ItemCard
-            itemLabel={generateItemName(item.Brand, item.Name)}
-            priceLabel={convertLocalizedPrice(item)}
-            imgSrc={item.Img}
-            disable={selectedItems.includes(item)}
-            addComparsion={() => addComparison(item)}
-            removeComparsion={() => removeComparison(item.Name)}
-          />
-        ))}
-      </Grid>
-    </>
+        </>
+      }
+      getItemLabel={(item) => generateItemName(item.Brand, item.Name)}
+      getPriceLabel={(item) => convertLocalizedPrice(item)}
+      getImgSrc={(item) => item.Img}
+      getItemIdentifier={(item) => item.Name}
+    />
   )
 }
 

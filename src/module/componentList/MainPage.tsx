@@ -15,7 +15,7 @@ import CustomButton from '../common/components/CustomButton'
 import Calculator from './components/Calculator'
 import ListCopyDialog from './components/ListCopyDialog'
 import { useState } from 'react'
-import { Link, useNavigate } from 'react-router-dom'
+import { Link } from 'react-router-dom'
 
 const CustomContainer = styled(Container)({
   backgroundColor: '#ffffff',
@@ -79,11 +79,9 @@ function MainPage() {
                 <CompatibleSection selectedItems={dataState.selectedItems} />
               </Grid>
             </Grid>
-          </Box>
-        </Box>
-        <Box className="main-container">
-          <Box className="main-overlay-card">
-            <BuySection dataState={dataState} />
+            <Box>
+              <BuySection dataState={dataState} />
+            </Box>
           </Box>
         </Box>
       </Box>

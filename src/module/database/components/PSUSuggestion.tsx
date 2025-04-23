@@ -1,210 +1,153 @@
-import React, { useState } from 'react'
+import { useMemo, useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import { isEmpty, max, min } from 'lodash'
-import {
-  Badge,
-  Button,
-  Grid,
-} from '@mui/material'
-import CompareArrowsIcon from '@mui/icons-material/CompareArrows'
+import { Grid2 as Grid } from '@mui/material'
 
 import PSUType from '../../../constant/objectTypes/PSUType'
 import SelectElement from '../../common/components/SelectElement'
 import { generatePSUSelectElement } from '../../common/utils/generateSelectElements'
-import SelectFilter from '../../common/components/SelectFilter'
-import { getPSUBrand } from '../../../utils/GroupCategoryHelper'
 
 import { PSU_FILTER_INIT_DATA } from '../data/FilterInitData'
-import { generateItemName, lengthLabelHandler } from '../../../utils/LabelHelper'
-import { convertLocalizedPrice, getLocalizedPriceNum } from '../../../utils/NumberHelper'
-import ItemCard from './ItemCard'
-import { ComparisonObject, ComparisonSubItem } from '../data/ComparisonObject'
-import ComparisonModal from './ComparisonModal'
-import PriceSlider from '../../common/components/PriceSlider'
+import { generateItemName } from '../../../utils/LabelHelper'
+import {
+  convertLocalizedPrice,
+  getLocalizedPriceNum,
+} from '../../../utils/NumberHelper'
+import { ComparisonObject } from '../data/ComparisonObject'
+import HardwareSuggestion from './HardwarePage'
 
 type PSUSuggestionProps = {
   psuList: PSUType[]
   isLoading: boolean
 }
 
-const PSUSuggestion = ({
-  psuList,
-  isLoading,
-}: PSUSuggestionProps) => {
+const PSUSuggestion = ({ psuList, isLoading }: PSUSuggestionProps) => {
   const { t } = useTranslation()
-  const [filterLogic, setfilterLogic] = useState(PSU_FILTER_INIT_DATA)
-  const [selectedItems, setSelectedItems] = useState<PSUType[]>([])
-  const [openCompare, setOpenCompare] = useState(false)
+  const [filterLogic, setFilterLogic] = useState(PSU_FILTER_INIT_DATA)
 
-  const brandOptions = getPSUBrand(psuList)
+  // 过滤逻辑
+  const filteredList = useMemo(
+    () =>
+      psuList.filter((item) => {
+        let isMatch = true
 
-  const addComparison = (item: PSUType) => {
-    if (selectedItems.length < 4) {
-      setSelectedItems([...selectedItems, item])
-    }
-  }
+        // 型号过滤
+        if (filterLogic.model) {
+          isMatch = item.Name === filterLogic.model
+        }
 
-  const updateSelectedItem = (item: any) => {
-    setfilterLogic({ ...filterLogic, model: item })
-  }
+        // 品牌过滤
+        if (filterLogic.brand && isMatch) {
+          isMatch = item.Brand === filterLogic.brand
+        }
 
-  const updateMaxPrice = (price: number) => {
-    setfilterLogic({ ...filterLogic, price })
-  }
+        // 功率过滤
+        if (filterLogic.power > 0 && isMatch) {
+          isMatch = item.Wattage >= filterLogic.power
+        }
 
-  const updateFilterBrand = (brand: string) => {
-    setfilterLogic({ ...filterLogic, brand })
-  }
+        // 价格过滤
+        if (filterLogic.price > 0 && isMatch) {
+          isMatch = getLocalizedPriceNum(item) <= filterLogic.price
+        }
 
-  const updateFilterPower = (power: number) => {
-    setfilterLogic({ ...filterLogic, power })
-  }
+        return isMatch
+      }),
+    [psuList, filterLogic]
+  )
 
-  const handleClose = () => {
-    setOpenCompare(false)
-  }
-
-  const removeComparison = (model: string) => {
-    const updatedList: PSUType[] = selectedItems.filter(
-      (element: PSUType) => element.Name !== model
-    )
-    if (updatedList.length === 0) {
-      handleClose()
-    }
-    setSelectedItems([...updatedList])
-  }
-
-  const openCompareLogic = () => {
-    if (selectedItems.length > 0) {
-      setOpenCompare(true)
-    }
-  }
-
-  const openComparison = () => {
-    let comparsionObjects: ComparisonObject[] = []
-    comparsionObjects = selectedItems.map((item) => {
-      const imgStr = item.Img
-      const itemModel = item.Name
-      const itemName = generateItemName(item.Brand, item.Name)
-
-      const type: ComparisonSubItem = {
-        label: 'type',
-        value: item.Size,
-        isHighlight: false,
+  // 比较对象生成
+  const buildComparisonObjects = (
+    selectedItems: PSUType[]
+  ): ComparisonObject[] => {
+    return selectedItems.map((item) => {
+      const specs = {
+        type: item.Size,
+        wattage: item.Wattage,
+        efficiency: item.Efficiency,
+        modular: item.Modular,
+        length: item.Length,
       }
 
-      const psuPower: ComparisonSubItem = {
-        label: 'power',
-        value: item.Wattage.toString(),
-        isHighlight: false,
-      }
+      // 比较基准值
+      const maxWattage = Math.max(...selectedItems.map((psu) => psu.Wattage))
+      const maxEfficiency = Math.max(
+        ...selectedItems.map((psu) => efficiencyToNumber(psu.Efficiency))
+      )
+      const minLength = Math.min(...selectedItems.map((psu) => psu.Length))
 
-      const efficiency: ComparisonSubItem = {
-        label: 'efficiency',
-        value: item.Efficiency,
-        isHighlight: item.Efficiency === max(selectedItems.map((element) => element.Efficiency)),
-      }
-
-      const moduleType: ComparisonSubItem = {
-        label: 'modular-design',
-        value: item.Modular,
-        isHighlight: item.Modular.includes('Full'),
-      }
-
-      const length: ComparisonSubItem = {
-        label: 'length',
-        value: lengthLabelHandler(item.Length),
-        isHighlight: item.Length === min(selectedItems.map((element) => element.Length)),
-      }
-
-      const result: ComparisonObject = {
-        img: imgStr,
-        name: itemName,
-        model: itemModel,
+      return {
+        img: item.Img,
+        name: generateItemName(item.Brand, item.Name),
+        model: item.Name,
         items: [
-          type,
-          psuPower,
-          efficiency,
-          moduleType,
-          length
+          {
+            label: 'psu-type',
+            value: specs.type,
+            isHighlight: false,
+          },
+          {
+            label: 'wattage',
+            value: `${specs.wattage}W`,
+            isHighlight: specs.wattage === maxWattage,
+          },
+          {
+            label: 'efficiency',
+            value: specs.efficiency,
+            isHighlight: efficiencyToNumber(specs.efficiency) === maxEfficiency,
+          },
+          {
+            label: 'modular-design',
+            value: t(specs.modular.toLowerCase()),
+            isHighlight: specs.modular === 'Full',
+          },
+          {
+            label: 'length',
+            value: `${specs.length}mm`,
+            isHighlight: specs.length === minLength,
+          },
         ],
       }
-      return result
     })
-
-    return (
-      <ComparisonModal
-        comparisonObjects={comparsionObjects}
-        isOpen={openCompare}
-        handleClose={handleClose}
-        handleRemove={removeComparison}
-      />
-    )
   }
 
-  const updatedList = psuList.filter((item) => {
-    let isMatch = true
-    if (filterLogic.model) {
-      isMatch = item.Name === filterLogic.model
-    }
-    if (!isEmpty(filterLogic.brand) && isMatch) {
-      isMatch = (item.Brand === filterLogic.brand)
-    }
-    if (filterLogic.price !== 0 && isMatch) {
-      isMatch = getLocalizedPriceNum(item) < filterLogic.price
-    }
-    return isMatch
-  })
-
   return (
-    <>
-      <Grid container spacing={3}>
-        <Grid item xs={9}>
-          <SelectElement
-            label={t('psu')}
-            options={generatePSUSelectElement(psuList)}
-            selectChange={updateSelectedItem}
-            isLoading={isLoading}
-          />
-        </Grid>
-        <Grid item xs={3}>
-          <Badge badgeContent={selectedItems.length} color="error">
-            <Button
-              startIcon={<CompareArrowsIcon />}
-              variant="contained"
-              disabled={selectedItems.length === 0}
-              onClick={() => openCompareLogic()}
-            >
-              {t('compare')}
-            </Button>
-          </Badge>
-        </Grid>
-        {openComparison()}
-        <Grid item xs={9}>
-          <PriceSlider selectChange={updateMaxPrice} />
-        </Grid>
-        <Grid item xs={6}>
-          <SelectFilter
-            label={t('brand')}
-            options={brandOptions}
-            selectChange={updateFilterBrand}
-          />
-        </Grid>
-      </Grid>
-      <Grid sx={{ paddingTop: 10 }} container spacing={2} columns={{ xs: 6, md: 12 }}>
-        {updatedList.map((item) => (
-          <ItemCard
-            itemLabel={generateItemName(item.Brand, item.Name)}
-            priceLabel={convertLocalizedPrice(item)}
-            imgSrc={item.Img}
-            disable={selectedItems.includes(item)}
-            addComparsion={() => addComparison(item)}
-            removeComparsion={() => removeComparison(item.Name)}
-          />
-        ))}
-      </Grid>
-    </>
+    <HardwareSuggestion<PSUType>
+      filteredList={filteredList}
+      isLoading={isLoading}
+      buildComparisonObjects={buildComparisonObjects}
+      renderFilterForm={
+        <>
+          <Grid size={9}>
+            <SelectElement
+              label={t('psu')}
+              options={generatePSUSelectElement(psuList)}
+              selectChange={(model) =>
+                setFilterLogic((prev) => ({ ...prev, model }))
+              }
+              isLoading={isLoading}
+            />
+          </Grid>
+        </>
+      }
+      getItemLabel={(item) => generateItemName(item.Brand, item.Name)}
+      getPriceLabel={(item) => convertLocalizedPrice(item)}
+      getImgSrc={(item) => item.Img}
+      getItemIdentifier={(item) => item.Name}
+    />
   )
+}
+
+// 辅助函数
+const efficiencyToNumber = (rating: string) => {
+  const map: Record<string, number> = {
+    '80plus': 80,
+    bronze: 85,
+    silver: 88,
+    gold: 90,
+    platinum: 92,
+    titanium: 94,
+  }
+  return map[rating.toLowerCase()] || 0
 }
 
 export default PSUSuggestion
