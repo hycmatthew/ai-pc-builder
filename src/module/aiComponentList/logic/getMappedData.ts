@@ -14,6 +14,7 @@ import {
 } from '../../../logic/performanceLogic'
 import { getLocalizedPriceNum } from '../../../utils/NumberHelper'
 import BuildConfig from '../constant/buildConfig'
+import { BuildType } from '../constant/buildType'
 import {
   MappedCaseType,
   MappedCoolerType,
@@ -33,7 +34,8 @@ const priceValidation = (item: any, budget: number): boolean => {
 export function getMappedCPUs(
   cpuList: CPUType[],
   budget: number,
-  mbSocket: string | undefined
+  mbSocket: string | undefined,
+  type: BuildType
 ): MappedCPUType[] {
   const mappedCPUs: MappedCPUType[] = cpuList
     .filter((item) => {
@@ -49,9 +51,7 @@ export function getMappedCPUs(
         brand: item.Brand,
         socket: item.Socket,
         gpu: item.GPU,
-        score:
-          item.SingleCoreScore * BuildConfig.CPUFactor.SingleCoreMultiply +
-          item.MultiCoreScore * BuildConfig.CPUFactor.MultiCoreMultiply,
+        score: ScoreAdjusters.cpu(item, type),
         integratedGraphicsScore:
           item.IntegratedGraphicsScore * BuildConfig.GPUFactor.GPUScoreMultiply,
         power: item.Power,
@@ -64,7 +64,8 @@ export function getMappedCPUs(
 export function getMappedGPUs(
   gpuList: GPUType[],
   budget: number,
-  maxGPULength: number | undefined
+  maxGPULength: number | undefined,
+  type: BuildType
 ): MappedGPUType[] {
   const mappedGPUs = gpuList
     .filter((item) => {
@@ -81,7 +82,7 @@ export function getMappedGPUs(
       return {
         name: item.Name,
         brand: item.Brand,
-        score: item.Benchmark * BuildConfig.GPUFactor.GPUScoreMultiply,
+        score: ScoreAdjusters.gpu(item, type),
         power: item.Power,
         length: item.Length,
         price: getLocalizedPriceNum(item),
@@ -302,3 +303,60 @@ export function getMappedCoolers(
       }
     })
 }
+
+// 專用條件檢查函數 ▼
+const Conditions = {
+  isAffectedIntel14thGen: (cpu: CPUType) =>
+    /^(Core\s+)?i[79][-\s]*14(700|900)/i.test(cpu.Name.trim()),
+
+  isGamingBuildWithAMD3D: (cpu: CPUType, buildType: BuildType) =>
+    buildType === BuildType.Gaming && /3D/i.test(cpu.Name),
+
+  isNvidiaGPU: (gpu: GPUType) => gpu.Brand === 'NVIDIA',
+
+  isRTX50Series: (gpu: GPUType) => /RTX\s*50/i.test(gpu.Name),
+} as const
+
+// 分數調整器 ▼
+const ScoreAdjusters = {
+  cpu: (item: CPUType, buildType: BuildType) => {
+    let score =
+      item.SingleCoreScore * BuildConfig.CPUFactor.SingleCoreMultiply +
+      item.MultiCoreScore * BuildConfig.CPUFactor.MultiCoreMultiply
+
+    if (Conditions.isAffectedIntel14thGen(item)) {
+      // Intel 14代懲罰
+      score *= 0.92
+    }
+
+    if (Conditions.isGamingBuildWithAMD3D(item, buildType)) {
+      // AMD 3D V-Cache 加成
+      score *= 1.08
+    }
+
+    return score
+  },
+
+  gpu: (item: GPUType, buildType: BuildType) => {
+    let score = item.Benchmark * BuildConfig.GPUFactor.GPUScoreMultiply
+
+    if (Conditions.isNvidiaGPU(item)) {
+      // 基礎加成
+      let multiplier = 1.05
+
+      // 專業應用加成
+      if (buildType === BuildType.Professional) {
+        multiplier = 1.5
+      }
+
+      // RTX 50系列額外加成
+      if (Conditions.isRTX50Series(item)) {
+        multiplier = 1.1
+      }
+
+      score *= multiplier
+    }
+
+    return score
+  },
+} as const

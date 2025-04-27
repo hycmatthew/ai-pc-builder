@@ -5,16 +5,11 @@ import ComponentMenu from './components/ComponentMenu'
 import PowerCalculator from './components/PowerCalculator'
 import CompatibleSection from './components/CompatibleSection'
 import ScoreSection from './components/ScoreSection'
-import HighLight from './components/HighLight/HighLight'
 
 import './MainPage.scss'
 import BuySection from './components/BuySection'
 import { t } from 'i18next'
-import { getTotalPrice } from '../../utils/NumberHelper'
 import CustomButton from '../common/components/CustomButton'
-import Calculator from './components/Calculator'
-import ListCopyDialog from './components/ListCopyDialog'
-import { useState } from 'react'
 import { Link } from 'react-router-dom'
 
 const CustomContainer = styled(Container)({
@@ -26,13 +21,6 @@ function MainPage() {
   const dataState = useSelector((state: any) => {
     return state.rawData
   })
-  const [open, setOpen] = useState(false)
-
-  const handleOpen = () => {
-    setOpen(true)
-  }
-
-  const handleClose = () => setOpen(false)
 
   return (
     <Box className="bg-container">
@@ -47,20 +35,6 @@ function MainPage() {
                 <CustomContainer>
                   <Grid container spacing={2} marginBottom={2}>
                     <Grid size="auto">
-                      <CustomButton
-                        disabled={getTotalPrice(dataState.selectedItems) == 0}
-                        onClick={handleOpen}
-                        fullWidth
-                      >
-                        {t('open')}
-                      </CustomButton>
-                      <ListCopyDialog
-                        selectedItems={dataState.selectedItems}
-                        open={open}
-                        onClose={handleClose}
-                      />
-                    </Grid>
-                    <Grid size="auto">
                       <Link to={`/${dataState.language}/ai-build`}>
                         <CustomButton fullWidth>{t('ai-list')}</CustomButton>
                       </Link>
@@ -69,13 +43,6 @@ function MainPage() {
                 </CustomContainer>
                 <ScoreSection selectedItems={dataState.selectedItems} />
                 <PowerCalculator selectedItems={dataState.selectedItems} />
-                <CustomContainer>
-                  <Grid container spacing={2} marginBottom={2}>
-                    <Grid size={8}>
-                      <Calculator selectedItems={dataState.selectedItems} />
-                    </Grid>
-                  </Grid>
-                </CustomContainer>
                 <CompatibleSection selectedItems={dataState.selectedItems} />
               </Grid>
             </Grid>
@@ -85,6 +52,7 @@ function MainPage() {
           </Box>
         </Box>
       </Box>
+      {/*
       <Box className="bg-container">
         <Box className="main-container">
           <Box className="highlight-container">
@@ -101,6 +69,7 @@ function MainPage() {
           </Box>
         </Box>
       </Box>
+    */}
     </Box>
   )
 }

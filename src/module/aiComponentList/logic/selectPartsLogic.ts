@@ -35,6 +35,7 @@ import {
   MappedPSUType,
   MappedCoolerType,
 } from '../constant/mappedObjectTypes'
+import { BuildType } from '../constant/buildType'
 
 const weights = {
   gaming: { cpu: 0.3, gpu: 0.6, ram: 0.1 }, // 游戏更依赖 GPU
@@ -90,7 +91,7 @@ export const preFilterDataLogic = (
   psuList: PSUType[],
   coolerList: CoolerType[],
   budget: number,
-  type: string
+  type: BuildType
 ) => {
   // 1. 识别用户已选组件并计算已用预算
   const selectedComponents = {
@@ -147,8 +148,8 @@ export const preFilterDataLogic = (
   const ssdBudget =
     budget * getPricingFactor(budget, BuildConfig.SSDFactor.SSDBudgetFactor)
 
-  const mappedCPUs = getMappedCPUs(cpuList, cpuBudget, filters.mbSocket)
-  const mappedGPUs = getMappedGPUs(gpuList, gpuBudget, filters.maxGPULength)
+  const mappedCPUs = getMappedCPUs(cpuList, cpuBudget, filters.mbSocket, type)
+  const mappedGPUs = getMappedGPUs(gpuList, gpuBudget, filters.maxGPULength, type)
   const mappedMotherboards = getMappedMotherboards(
     mbList,
     cpuBudget,

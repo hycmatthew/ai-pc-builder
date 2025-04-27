@@ -1,7 +1,10 @@
 import { Box, Grid2 as Grid } from '@mui/material'
 import { SelectedItemType } from '../../../store/rawDataReducer'
 import ResultCard from './ResultCard'
-import { addCurrencySign, getCurrentPriceWithSign } from '../../../utils/NumberHelper'
+import {
+  addCurrencySign,
+  getCurrentPriceWithSign,
+} from '../../../utils/NumberHelper'
 import { useMemo, useState } from 'react'
 import CusTypography from '../../common/components/CusTypography'
 import { useTranslation } from 'react-i18next'
@@ -28,7 +31,11 @@ const COMPONENT_TYPES = [
 
 // type ComponentType = (typeof COMPONENT_TYPES)[number]
 
-function ResultComponent({ resultData, totalPrice, totalScore }: ResultComponentProps) {
+function ResultComponent({
+  resultData,
+  totalPrice,
+  totalScore,
+}: ResultComponentProps) {
   const { t } = useTranslation()
   const [selectedData, setSelectedData] = useState<{
     type: ComponentType
@@ -52,7 +59,9 @@ function ResultComponent({ resultData, totalPrice, totalScore }: ResultComponent
       <Grid container spacing={2}>
         <Grid size={3}>
           <CusTypography variant="h6">{t('price')}</CusTypography>
-          <CusTypography variant="h4">{addCurrencySign(totalPrice)}</CusTypography>
+          <CusTypography variant="h4">
+            {addCurrencySign(totalPrice.toFixed(2))}
+          </CusTypography>
         </Grid>
         <Grid size={3}>
           <CusTypography variant="h6">{t('score')}</CusTypography>

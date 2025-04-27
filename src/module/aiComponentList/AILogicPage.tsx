@@ -31,6 +31,7 @@ import { useTranslation } from 'react-i18next'
 import SegmentedTabs from '../common/components/SegmentedTabs'
 import CustomTextField from '../common/components/CustomTextField'
 import CustomButton from '../common/components/CustomButton'
+import { BuildType } from './constant/buildType'
 
 type ProductHandlers = {
   [key in ProductEnum]: {
@@ -67,12 +68,12 @@ function AILogicPage() {
 
   const { t } = useTranslation()
   const dispatch = useAppDispatch()
-  const [selectedType, setSelectedType] = useState<string>('balance')
+  const [selectedType, setSelectedType] = useState<BuildType>(BuildType.Balance)
 
   const tabs = [
-    { label: t('balance'), value: 'balance' },
-    { label: t('gaming'), value: 'gaming' },
-    { label: t('professional'), value: 'professional' },
+    { label: t(BuildType.Balance), value: BuildType.Balance },
+    { label: t(BuildType.Gaming), value: BuildType.Gaming },
+    { label: t(BuildType.Professional), value: BuildType.Professional },
   ]
 
   const [activeStep, setActiveStep] = useState(0)
@@ -84,7 +85,7 @@ function AILogicPage() {
 
   const updateType = (event: React.SyntheticEvent, newValue: any) => {
     if (newValue !== null) {
-      setSelectedType(newValue as ProductEnum)
+      setSelectedType(newValue as BuildType)
       // 选择usage后自动允许进入下一步
       if (activeStep === 0) {
         setActiveStep(1)
@@ -163,7 +164,7 @@ function AILogicPage() {
       psus,
       coolers,
       Number(formData.budget),
-      formData.type
+      selectedType
     )
     if (res !== null) {
       if (res.cpu) {
@@ -293,11 +294,13 @@ function AILogicPage() {
             {/* Step 1 - Usage Selection */}
             <AnimatedGrid size={12}>
               <FormLabel>{t('Usage')}</FormLabel>
-              <SegmentedTabs
-                value={selectedType}
-                onChange={updateType}
-                tabs={tabs}
-              />
+              <Stack padding={1}>
+                <SegmentedTabs
+                  value={selectedType}
+                  onChange={updateType}
+                  tabs={tabs}
+                />
+              </Stack>
             </AnimatedGrid>
             {/* Step 2 - Budget & Parts Selection */}
             {activeStep > 0 && (
@@ -306,7 +309,7 @@ function AILogicPage() {
                   <FormLabel>{t('Budget')}</FormLabel>
                 </AnimatedGrid>
                 <AnimatedGrid size={12}>
-                  <Stack spacing={2} direction="row">
+                  <Stack spacing={2} padding={1} direction="row">
                     <CustomTextField
                       type="number"
                       value={formData.budget}

@@ -5,13 +5,14 @@ import {
   CardHeader,
   Grid2 as Grid,
   Box,
+  Divider,
 } from '@mui/material'
 import CusTypography from '../../common/components/CusTypography'
-import {
-  componentConfig,
-  ComponentType,
-} from '../constant/componentConfig'
+import { componentConfig, ComponentType } from '../constant/componentConfig'
 import { useTranslation } from 'react-i18next'
+import { addCurrencySign, getAllPriceByRegion } from '../../../utils/NumberHelper'
+import PlatformIcon from '../../common/components/PlatformIcon'
+import BuyButton from '../../common/components/BuyButton'
 
 interface ResultCardProps {
   type: ComponentType
@@ -30,6 +31,8 @@ const ResultCard: React.FC<ResultCardProps> = ({
   const config = componentConfig[type]
 
   if (!data) return null
+
+  const currentPrices = getAllPriceByRegion(data.Prices)
 
   return (
     <Card sx={{ mb: 2, borderRadius: 2, width: '100%' }} onClick={onClick}>
@@ -68,12 +71,38 @@ const ResultCard: React.FC<ResultCardProps> = ({
             </Grid>
           ))}
         </Grid>
-        <Box mt={2}>
-          <CusTypography variant="h6" color="primary">
-            {price}
-          </CusTypography>
-        </Box>
       </CardContent>
+      <Divider />
+      <Grid container spacing={1} padding={1}>
+        {currentPrices.map((price, index) => (
+          <Grid size={12} key={`${data.Name}-price-${index}`}>
+            <Grid container spacing={1}>
+              <Grid size="auto">
+                <PlatformIcon platform={price.Platform} />
+              </Grid>
+              <Grid size="auto">
+                <CusTypography variant="h6" lineHeight={2}>
+                  {t(price.Platform)}
+                </CusTypography>
+              </Grid>
+              <Grid size="auto">
+                <CusTypography variant="h6" lineHeight={2}>
+                  {addCurrencySign(price.Price)}
+                </CusTypography>
+              </Grid>
+              <Grid size="grow" paddingRight={1}>
+                <BuyButton
+                  href={currentPrices[0].PriceLink}
+                  variant="contained"
+                  color="primary"
+                >
+                  {t('buyNow')}
+                </BuyButton>
+              </Grid>
+            </Grid>
+          </Grid>
+        ))}
+      </Grid>
     </Card>
   )
 }

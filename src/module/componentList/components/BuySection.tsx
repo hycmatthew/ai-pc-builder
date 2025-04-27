@@ -2,14 +2,17 @@ import { useTranslation } from 'react-i18next'
 import { Box, Divider, Grid2 as Grid } from '@mui/material'
 
 import { DataState, SelectedItemType } from '../../../store/rawDataReducer'
-import { addCurrencySign, getAllPriceByRegion, getTotalPrice } from '../../../utils/NumberHelper'
+import {
+  addCurrencySign,
+  getAllPriceByRegion,
+} from '../../../utils/NumberHelper'
 import CusTypography from '../../common/components/CusTypography'
 import CustomButton from '../../common/components/CustomButton'
-import Calculator from './Calculator'
-import ListCopyDialog from './ListCopyDialog'
-import { useState } from 'react'
 import PlatformIcon from '../../common/components/PlatformIcon'
 import BuyButton from '../../common/components/BuyButton'
+import { useState } from 'react'
+import ListCopyDialog from './ListCopyDialog'
+import Calculator from './Calculator'
 
 type BuySectioProps = {
   dataState: DataState
@@ -22,7 +25,7 @@ const HardwareSection = ({
 }) => {
   const { t } = useTranslation()
   const SectionHeight = 128
-  console.log(item)
+
   // 过滤当前区域的价格信息
   const currentPrices = item ? getAllPriceByRegion(item.Prices) : []
   if (currentPrices.length === 0) return null
@@ -46,7 +49,7 @@ const HardwareSection = ({
             height: SectionHeight,
             objectFit: 'cover',
             backgroundColor: 'grey.100',
-            borderRadius: "16px 0 0 16px",
+            borderRadius: '16px 0 0 16px',
           }}
           alt={item.Name}
           src={
@@ -76,17 +79,20 @@ const HardwareSection = ({
                     <PlatformIcon platform={price.Platform} />
                   </Grid>
                   <Grid size="auto">
-                    <CusTypography variant="h6" lineHeight={2}>{t(price.Platform)}</CusTypography>
+                    <CusTypography variant="h6" lineHeight={2}>
+                      {t(price.Platform)}
+                    </CusTypography>
                   </Grid>
                   <Grid size="auto">
-                    <CusTypography variant="h6" lineHeight={2}>{addCurrencySign(price.Price)}</CusTypography>
+                    <CusTypography variant="h6" lineHeight={2}>
+                      {addCurrencySign(price.Price)}
+                    </CusTypography>
                   </Grid>
-                  <Grid size="grow">
+                  <Grid size="grow" paddingRight={2}>
                     <BuyButton
                       href={currentPrices[0].PriceLink}
                       variant="contained"
                       color="primary"
-                      sx={{ float: 'right' }}
                     >
                       {t('buyNow')}
                     </BuyButton>
@@ -103,6 +109,13 @@ const HardwareSection = ({
 
 const BuySection = ({ dataState }: BuySectioProps) => {
   const selectedItems = dataState.selectedItems
+  const { t } = useTranslation()
+  const [open, setOpen] = useState(false)
+  const handleClose = () => setOpen(false)
+
+  const handleOpen = () => {
+    setOpen(true)
+  }
 
   const hardwareEntries = (
     Object.entries(selectedItems) as unknown as [
@@ -111,17 +124,34 @@ const BuySection = ({ dataState }: BuySectioProps) => {
     ][]
   ).filter(([, item]) => item != null)
 
-  const hasHardware = hardwareEntries.length > 0;
+  const hasHardware = hardwareEntries.length > 0
 
-  return hasHardware && (
-    <>
-      <Divider sx={{ paddingTop: '2rem' }} />
-      <Grid container paddingTop={4} spacing={2}>
-        {hardwareEntries.map(([key, item]) => (
+  return (
+    hasHardware && (
+      <>
+        <Divider sx={{ paddingTop: '2rem' }} />
+        <Grid container paddingTop={2} spacing={2}>
+          <Grid size="grow">
+            <Calculator selectedItems={dataState.selectedItems} />
+          </Grid>
+          <Grid size="auto">
+            <ListCopyDialog
+              selectedItems={dataState.selectedItems}
+              open={open}
+              onClose={handleClose}
+            />
+            <CustomButton onClick={handleOpen} fullWidth>
+              {t('open')}
+            </CustomButton>
+          </Grid>
+        </Grid>
+        <Grid container paddingTop={4} spacing={2}>
+          {hardwareEntries.map(([key, item]) => (
             <HardwareSection item={item!} key={key} />
-        ))}
-      </Grid>
-    </>
+          ))}
+        </Grid>
+      </>
+    )
   )
 }
 

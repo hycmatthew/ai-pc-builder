@@ -1,14 +1,10 @@
-import {
-  CPUType,
-  GPUType,
-  RAMType,
-  SSDType
-} from '../constant/objectTypes'
+import { CPUType, GPUType, RAMType, SSDType } from '../constant/objectTypes'
 
 export const ramPerformanceLogic = (ram: RAMType | null) => {
   if (ram) {
-    const timingNum = ram.Latency;
-    return ram.Speed - (timingNum * 80)
+    const timingNum = ram.Latency
+    const sizeMultiply = ram.Capacity > 16 ? 1 : ram.Capacity === 16 ? 0.8 : 0.5
+    return ram.Speed * sizeMultiply - timingNum * 80
   }
   return 0
 }

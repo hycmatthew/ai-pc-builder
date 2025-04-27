@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import { Grid2 as Grid } from '@mui/material'
+import { Box, Grid2 as Grid } from '@mui/material'
 
 import { useSelector } from 'react-redux'
 import ProductEnum from '../../../constant/ProductEnum'
@@ -178,16 +178,167 @@ const Database = () => {
     }
   }
 
+  // 新增：特定過濾器狀態（使用物件存儲不同類型的過濾條件）
+  const [specificFilters, setSpecificFilters] = useState<Record<string, any>>(
+    {}
+  )
+
+  // 定義各硬體類型專用過濾器配置
+  const specificFilterConfig: Partial<Record<ProductEnum, any[]>> = useMemo(
+    () => ({
+      [ProductEnum.GPU]: [
+        {
+          type: 'select',
+          key: 'Manufacturer',
+          label: t('manufacturer'),
+          getOptions: (list: any[]) =>
+            [...new Set(list.map((item) => item.Manufacturer))]
+              .filter(Boolean)
+              .sort(),
+        },
+        {
+          type: 'select',
+          key: 'Chipset',
+          label: t('chipset'),
+          getOptions: (list: any[]) =>
+            [...new Set(list.map((item) => item.Chipset))]
+              .filter(Boolean)
+              .sort(),
+        },
+        {
+          type: 'select',
+          key: 'MemorySize',
+          label: t('memory-size'),
+          getOptions: (list: any[]) => {
+            const sizes = [
+              ...new Set(list.map((item) => item.MemorySize)),
+            ].filter(
+              (size): size is number => typeof size === 'number' && !isNaN(size)
+            )
+
+            return sizes.sort((a, b) => a - b)
+          },
+        },
+      ],
+      [ProductEnum.RAM]: [
+        {
+          type: 'range',
+          key: 'Capacity',
+          label: t('capacity'),
+          getRange: (list: any[]) => ({
+            min: Math.min(...list.map((item) => item.Capacity || 0)),
+            max: Math.max(...list.map((item) => item.Capacity || 0)),
+          }),
+        },
+      ],
+      [ProductEnum.Motherboard]: [
+        {
+          type: 'select',
+          key: 'FormFactor',
+          label: t('form-factor'),
+          getOptions: (list: any[]) =>
+            [...new Set(list.map((item) => item.FormFactor))]
+              .filter(Boolean)
+              .sort(),
+        },
+      ],
+      // 添加其他硬體類型配置...
+    }),
+    [t]
+  )
+
+  // 獲取當前硬體類型的數據列表
+  const currentList = useMemo(() => {
+    const dataMap: Record<ProductEnum, any[]> = {
+      [ProductEnum.CPU]: dataState.cpuList,
+      [ProductEnum.GPU]: dataState.gpuList,
+      [ProductEnum.Motherboard]: dataState.motherboardList,
+      [ProductEnum.RAM]: dataState.ramList,
+      [ProductEnum.SSD]: dataState.ssdList,
+      [ProductEnum.PSU]: dataState.psuList,
+      [ProductEnum.ComputerCase]: dataState.caseList,
+      [ProductEnum.Cooler]: dataState.coolerList,
+    }
+    return dataMap[selectedType] || []
+  }, [selectedType, dataState])
+
+  // 生成特定過濾器元件
+  const renderSpecificFilters = useMemo(() => {
+    const config = specificFilterConfig[selectedType] || []
+    return config.map((filter: any) => {
+      switch (filter.type) {
+        case 'range': {
+          const range = filter.getRange(currentList)
+          return (
+            <Box paddingY={1} key={filter.key}>
+              <RangeSlider
+                min={range.min}
+                max={range.max}
+                label={filter.label}
+                defaultValue={[range.min, range.max]}
+                inputLayout="below"
+                onChange={(value) =>
+                  setSpecificFilters((prev) => ({
+                    ...prev,
+                    [filter.key]: value,
+                  }))
+                }
+              />
+            </Box>
+          )
+        }
+        case 'select': {
+          const options = filter.getOptions(currentList)
+          return (
+            <Box paddingY={1} key={filter.key}>
+              <CustomAutocomplete
+                key={filter.key}
+                options={options.map((opt: any) => ({
+                  label: opt,
+                  value: opt,
+                }))}
+                label={filter.label}
+                onChange={(_, value) =>
+                  setSpecificFilters((prev) => ({
+                    ...prev,
+                    [filter.key]: value?.value || null,
+                  }))
+                }
+              />
+            </Box>
+          )
+        }
+        default:
+          return null
+      }
+    })
+  }, [selectedType, currentList])
+
   // 通用列表筛选逻辑
   const filterList = (list: any[]) => {
     return list.filter((item) => {
-      // 品牌篩選
+      // 原有品牌和價格篩選
       const brandMatch = !selectedBrand || item.Brand === selectedBrand
-      // 價格篩選
-      const price = getLocalizedPriceNum(item) // 使用 getCurrentPriceNum 函数获取价格
+      const price = getLocalizedPriceNum(item)
       const priceMatch = price >= selectedPrice[0] && price <= selectedPrice[1]
 
-      return brandMatch && priceMatch
+      // 新增：特定條件篩選
+      const specificFilter = specificFilterConfig[selectedType] || []
+      const specificMatch = specificFilter.every(({ key, type }) => {
+        const filterValue = specificFilters[key]
+        if (!filterValue) return true // 未設置篩選條件時跳過
+
+        switch (type) {
+          case 'range':
+            return item[key] >= filterValue[0] && item[key] <= filterValue[1]
+          case 'select':
+            return item[key] === filterValue
+          default:
+            return true
+        }
+      })
+
+      return brandMatch && priceMatch && specificMatch
     })
   }
 
@@ -205,34 +356,39 @@ const Database = () => {
               />
             </Grid>
             <Grid size={12}>
-              <CustomAutocomplete
-                options={brandOptions}
-                value={
-                  selectedBrand
-                    ? { label: selectedBrand, value: selectedBrand }
-                    : null
-                }
-                label={t('filter-by-brand')}
-                isOptionEqualToValue={(option, value) =>
-                  option.value === value.value
-                }
-                onChange={(_, newValue) =>
-                  setSelectedBrand(newValue?.value || null)
-                }
-                disabled={dataState.isLoading}
-                renderOption={(props, option) => (
-                  <li {...props} style={{ padding: '8px 16px' }}>
-                    {option.label}
-                  </li>
-                )}
-              />
-              <RangeSlider
-                min={minPrice}
-                max={maxPrice}
-                defaultValue={priceRange}
-                inputLayout="below"
-                onChange={handlePriceChange}
-              />
+              <Box paddingY={1}>
+                <CustomAutocomplete
+                  options={brandOptions}
+                  value={
+                    selectedBrand
+                      ? { label: selectedBrand, value: selectedBrand }
+                      : null
+                  }
+                  label={t('filter-by-brand')}
+                  isOptionEqualToValue={(option, value) =>
+                    option.value === value.value
+                  }
+                  onChange={(_, newValue) =>
+                    setSelectedBrand(newValue?.value || null)
+                  }
+                  disabled={dataState.isLoading}
+                  renderOption={(props, option) => (
+                    <li {...props} style={{ padding: '8px 16px' }}>
+                      {option.label}
+                    </li>
+                  )}
+                />
+              </Box>
+              <Box paddingY={1}>
+                <RangeSlider
+                  min={minPrice}
+                  max={maxPrice}
+                  defaultValue={priceRange}
+                  inputLayout="below"
+                  onChange={handlePriceChange}
+                />
+              </Box>
+              {renderSpecificFilters}
             </Grid>
           </Grid>
         </Grid>

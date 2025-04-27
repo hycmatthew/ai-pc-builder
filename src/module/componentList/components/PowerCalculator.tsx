@@ -17,7 +17,7 @@ const CustomContainer = styled(Container)({
   padding: '8px',
 })
 
-const Calculator = ({ selectedItems }: CalculatorProps) => {
+const PowerCalculator = ({ selectedItems }: CalculatorProps) => {
   const { t } = useTranslation()
   const totalPower = getTotalPower(selectedItems)
 
@@ -53,4 +53,4 @@ const Calculator = ({ selectedItems }: CalculatorProps) => {
   )
 }
 
-export default Calculator
+export default PowerCalculator

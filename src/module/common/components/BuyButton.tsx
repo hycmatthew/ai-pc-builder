@@ -1,9 +1,8 @@
-import Button, { ButtonProps } from '@mui/material/Button'
+import { ButtonProps } from '@mui/material/Button'
 import { useTranslation } from 'react-i18next'
 import { styled } from '@mui/material/styles'
 import { ReactNode } from 'react'
 import { Link } from '@mui/material'
-import { color } from 'framer-motion'
 
 type CusButtonProps = ButtonProps & {
   /** 支持直接传递翻译键名或已翻译文本 */
@@ -18,11 +17,10 @@ const StyledLink = styled(Link)(({ theme }) => ({
   borderRadius: '16px',
   backgroundColor: '#fba126',
   boxShadow: 'none',
-  fontSize: '16px',
+  fontSize: '13px',
   verticalAlign: 'middle',
   color: '#fff',
   textDecoration: 'none',
-  marginRight: '16px',
 
   float: 'right',
   padding: '4px 16px',

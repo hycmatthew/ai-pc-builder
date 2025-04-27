@@ -5,11 +5,6 @@ import { Grid2 as Grid } from '@mui/material'
 import GPUType from '../../../constant/objectTypes/GPUType'
 import SelectElement from '../../common/components/SelectElement'
 import { generateGPUSelectElement } from '../../common/utils/generateSelectElements'
-import SelectFilter from '../../common/components/SelectFilter'
-import {
-  getGPUManufacturer,
-  getGPUType,
-} from '../../../utils/GroupCategoryHelper'
 import {
   convertLocalizedPrice,
   getLocalizedPriceNum,
@@ -137,7 +132,7 @@ const GPUSuggestion = ({ gpuList, isLoading }: GPUSuggestionProps) => {
       buildComparisonObjects={buildComparisonObjects}
       renderFilterForm={
         <>
-          <Grid size={9}>
+          <Grid size={12}>
             <SelectElement
               label={t('graphic-card')}
               options={generateGPUSelectElement(gpuList)}
@@ -145,24 +140,6 @@ const GPUSuggestion = ({ gpuList, isLoading }: GPUSuggestionProps) => {
                 setFilterLogic((prev) => ({ ...prev, model }))
               }
               isLoading={isLoading}
-            />
-          </Grid>
-          <Grid size={6}>
-            <SelectFilter
-              label={t('manufacturer')}
-              options={getGPUManufacturer(gpuList)}
-              selectChange={(manufacturer) =>
-                setFilterLogic((prev) => ({ ...prev, manufacturer }))
-              }
-            />
-          </Grid>
-          <Grid size={6}>
-            <SelectFilter
-              label={t('graphics-processing-unit')}
-              options={getGPUType(gpuList)}
-              selectChange={(gpu) =>
-                setFilterLogic((prev) => ({ ...prev, gpu }))
-              }
             />
           </Grid>
         </>

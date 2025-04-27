@@ -180,7 +180,7 @@ function calculateAdjustedRamScore(
   // 获取主板支持的最高速度（不超过内存标称速度）
   if (!supportedSpeeds.includes(ram.speed)) {
     const maxInList = Math.max(...supportedSpeeds)
-    if(!isNumber(maxInList)){
+    if (!isNumber(maxInList)) {
       console.log(`supportedSpeeds not a number : ${supportedSpeeds}`)
     }
     if (ram.speed > maxInList) {
