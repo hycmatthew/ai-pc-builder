@@ -2,6 +2,7 @@ import { Slider, Box, styled, Grid2 as Grid } from '@mui/material'
 import { useState } from 'react'
 import CustomTextField from './CustomTextField'
 import CusTypography from './CusTypography'
+import { useTranslation } from 'react-i18next'
 
 type InputLayout =
   | 'responsive' // 默认响应式
@@ -66,6 +67,7 @@ export const RangeSlider = ({
   inputLayout = 'responsive', // 默认响应式
   onChange,
 }: RangeSliderProps) => {
+  const { t } = useTranslation()
   const [value, setValue] = useState<number[]>(defaultValue)
 
   // 计算布局显示条件
@@ -107,7 +109,7 @@ export const RangeSlider = ({
   return (
     <Box sx={{ width: '100%' }}>
       {/* 标签行 */}
-      <CusTypography variant="h6">价格范围</CusTypography>
+      <CusTypography variant="h6">{t('price')}</CusTypography>
 
       {/* 控制项容器 */}
       <Grid container spacing={2} alignItems="center" paddingTop={1}>

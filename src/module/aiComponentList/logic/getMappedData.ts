@@ -1,3 +1,4 @@
+import { m } from 'framer-motion'
 import {
   CaseType,
   CoolerType,
@@ -82,6 +83,7 @@ export function getMappedGPUs(
       return {
         name: item.Name,
         brand: item.Brand,
+        manufacturer: item.Manufacturer,
         score: ScoreAdjusters.gpu(item, type),
         power: item.Power,
         length: item.Length,

@@ -58,7 +58,7 @@ export const FilterPanel = ({
         {/* 名称过滤 */}
         <Grid size={3}>
           <CustomTextField
-            label="搜索名称"
+            label="Keyword"
             value={nameFilter}
             onChange={(e) => onNameFilterChange(e.target.value)}
           />

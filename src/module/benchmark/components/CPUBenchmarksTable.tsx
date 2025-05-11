@@ -141,7 +141,7 @@ function CPUBenchmarksTable() {
       {
         field: 'singleScore',
         headerName: t('cpu-single-score'),
-        width: selectedField === 'singleScore' ? 450 : 120,
+        width: selectedField === 'singleScore' ? 400 : 200,
         renderCell: (params) => (
           <Stack direction="row" alignItems="center" spacing={2}>
             {params.field === selectedField &&
@@ -153,7 +153,7 @@ function CPUBenchmarksTable() {
       {
         field: 'multiScore',
         headerName: t('cpu-multi-score'),
-        width: selectedField === 'multiScore' ? 400 : 120,
+        width: selectedField === 'multiScore' ? 400 : 200,
         renderCell: (params) => (
           <Stack direction="row" alignItems="center" spacing={2}>
             {params.field === selectedField &&
@@ -165,7 +165,7 @@ function CPUBenchmarksTable() {
       {
         field: 'pricePerformance',
         headerName: t('price-performance'),
-        width: 120,
+        width: 150,
         renderCell: (params) => (
           <CusTypography variant="h6">
             {normalizeNumberWithDP(params.value)}

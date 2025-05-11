@@ -6,8 +6,8 @@ interface ScoredPSU extends MappedPSUType {
 
 // 品牌评分表（可自行扩展）
 const BRAND_SCORES: Record<string, number> = {
-  Corsair: 1.0,
-  Seasonic: 0.9,
+  Seasonic: 1.0,
+  Corsair: 0.8,
   EVGA: 0.8,
   'be quiet!': 0.7,
   Thermaltake: 0.6,
@@ -28,10 +28,10 @@ const EFFICIENCY_SCORE: Record<string, number> = {
 // 基础权重配置
 const BASE_WEIGHTS = {
   price: 0.45, // 价格
-  efficiency: 0.25, // 效率
-  modular: 0.15, // 模块化
-  wattage: 0.1, // 功率
-  brand: 0.05, // 品牌
+  wattage: 0.2, // 功率
+  efficiency: 0.15, // 效率
+  modular: 0.1, // 模块化
+  brand: 0.1, // 品牌
 }
 
 // 动态权重调整函数
@@ -55,7 +55,8 @@ const calculateDynamicWeights = (
 export const selectBestPSU = (
   psus: MappedPSUType[],
   requiredWattage: number,
-  maxLength: number
+  maxLength: number,
+  isNvidiaGPU: boolean = false
 ): MappedPSUType | null => {
   // 第一步：基础筛选（允许5%功率不足但其他参数优秀）
   const validPSUs = psus.filter(
@@ -102,12 +103,21 @@ export const selectBestPSU = (
     const brandScore = psu.brandScore
 
     // 综合得分
-    const totalScore =
+    let totalScore =
       dynamicWeights.price * priceScore +
       dynamicWeights.efficiency * efficiencyScore +
       dynamicWeights.modular * psu.modularScore +
       dynamicWeights.wattage * wattageScore +
       dynamicWeights.brand * brandScore
+
+    // NVIDIA GPU專用加成
+    const isATX3 = psu.standard.toUpperCase().includes('ATX 3')
+    totalScore
+    if (isNvidiaGPU) {
+      totalScore *= isATX3 ? 1.5 : 1
+    } else {
+      totalScore *= isATX3 ? 1.2 : 1
+    }
 
     return { ...psu, score: totalScore }
   }) as ScoredPSU[]
@@ -123,4 +133,3 @@ export const selectBestPSU = (
     return aDiff - bDiff
   })[0]
 }
-

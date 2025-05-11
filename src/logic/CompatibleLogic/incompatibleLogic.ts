@@ -43,7 +43,7 @@ export const gpuIncompatibleWithCase = (
 
 export const aioIncompatibleWithCase = (
   cooler: CoolerType | null,
-  pcCase: CaseType | null,
+  pcCase: CaseType | null
 ) => {
   return cooler && pcCase && cooler.IsLiquidCooler
     ? cooler.LiquidCoolerSize > pcCase.RadiatorSupport

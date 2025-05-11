@@ -9,7 +9,6 @@ import ScoreSection from './components/ScoreSection'
 import './MainPage.scss'
 import BuySection from './components/BuySection'
 import { t } from 'i18next'
-import CustomButton from '../common/components/CustomButton'
 import { Link } from 'react-router-dom'
 
 const CustomContainer = styled(Container)({
@@ -34,9 +33,10 @@ function MainPage() {
               <Grid size={6}>
                 <CustomContainer>
                   <Grid container spacing={2} marginBottom={2}>
+                    {t('try-ai-build-header')}
                     <Grid size="auto">
                       <Link to={`/${dataState.language}/ai-build`}>
-                        <CustomButton fullWidth>{t('ai-list')}</CustomButton>
+                        {t('try-ai-build-button')} ➜
                       </Link>
                     </Grid>
                   </Grid>

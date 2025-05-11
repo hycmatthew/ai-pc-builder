@@ -149,7 +149,12 @@ export const preFilterDataLogic = (
     budget * getPricingFactor(budget, BuildConfig.SSDFactor.SSDBudgetFactor)
 
   const mappedCPUs = getMappedCPUs(cpuList, cpuBudget, filters.mbSocket, type)
-  const mappedGPUs = getMappedGPUs(gpuList, gpuBudget, filters.maxGPULength, type)
+  const mappedGPUs = getMappedGPUs(
+    gpuList,
+    gpuBudget,
+    filters.maxGPULength,
+    type
+  )
   const mappedMotherboards = getMappedMotherboards(
     mbList,
     cpuBudget,
@@ -197,8 +202,9 @@ export const preFilterDataLogic = (
     bestSSD = selectBestSSD(mappedSSDs, BuildConfig.SSDFactor.SSDSuggestion)
 
     const totalPower =
-      bestConfig.cpu.power + (bestConfig.gpu ? bestConfig.gpu.power : 0)
-    bestPsu = selectBestPSU(mappedPSUs, totalPower, 200)
+      bestConfig.cpu.power + (bestConfig.gpu ? bestConfig.gpu.power : 0) + 80
+    const isNvidiaGPU = bestConfig.gpu?.manufacturer === 'NVIDIA'
+    bestPsu = selectBestPSU(mappedPSUs, totalPower, 200, isNvidiaGPU)
     bestCase = selectBestCase(
       bestConfig.motherboard,
       bestConfig.gpu,

@@ -24,10 +24,10 @@ import {
   motherboardChipsetSuggestion,
   motherboardIncompatibleWithRamSpeed,
   motherboardOverclockSuggestion,
-  ramProfileIsNotMatchCPU,
   ramSizeSuggestion,
 } from '../../../logic/CompatibleLogic/suggestionLogic'
 import { useMemo } from 'react'
+import { psuWithATX3 } from '../../../logic/CompatibleLogic/successLogic'
 
 type CompatibleSectionProps = {
   selectedItems: SelectedItemType
@@ -61,7 +61,7 @@ type SuggestionType = {
 type SuggestionConfig = {
   condition: boolean
   messageKey: string
-  type: 'warning' | 'suggestion'
+  type: 'warning' | 'suggestion' | 'success'
   interpolation?: Record<string, unknown>
 }
 
@@ -143,11 +143,6 @@ const CompatibleSection = ({ selectedItems }: CompatibleSectionProps) => {
         },
       },
       {
-        condition: ramProfileIsNotMatchCPU(ram, cpu),
-        messageKey: 'suggestion-ram-profile-not-match',
-        type: 'suggestion',
-      },
-      {
         condition: gpuMatchcpuSuggestion(gpu, cpu),
         messageKey: 'suggestion-gpu-cpu-not-match',
         type: 'suggestion',
@@ -156,6 +151,12 @@ const CompatibleSection = ({ selectedItems }: CompatibleSectionProps) => {
         condition: ramSizeSuggestion(ram),
         messageKey: 'suggestion-ram-capacity',
         type: 'suggestion',
+      },
+      // Success规则
+      {
+        condition: psuWithATX3(psu),
+        messageKey: 'success-ram-capacity',
+        type: 'success',
       },
     ]
 
@@ -172,9 +173,21 @@ const CompatibleSection = ({ selectedItems }: CompatibleSectionProps) => {
 
   // 统一渲染消息组件
   const renderMessage = (item: SuggestionType) => {
-    const IconComponent =
-      item.type === 'warning' ? CancelRoundedIcon : WarningRoundedIcon
-    const StackComponent = item.type === 'warning' ? ErrorStack : WarningStack
+    let IconComponent = CheckCircleIcon
+    let StackComponent = GreenStack
+    switch (item.type) {
+      case 'warning':
+        IconComponent = CancelRoundedIcon
+        StackComponent = ErrorStack
+        break
+      case 'suggestion':
+        IconComponent = WarningRoundedIcon
+        StackComponent = WarningStack
+        break
+      default:
+        IconComponent = CheckCircleIcon
+        StackComponent = GreenStack
+    }
 
     return (
       <StackComponent

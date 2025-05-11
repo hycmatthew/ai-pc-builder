@@ -7,7 +7,7 @@ const HeaderLayout = () => {
   const pages = [
     { label: t('pc-builder'), link: '/' },
     { label: t('benchmark'), link: `/${i18n.language}/benchmarks` },
-    { label: t('ai-list'), link: `/${i18n.language}/ai-build` },
+    { label: t('ai-builder'), link: `/${i18n.language}/ai-build` },
     // { label: t('pc-builds'), link: `/${i18n.language}/completed-builds` },
     { label: t('database'), link: `/${i18n.language}/database` },
   ]
@@ -17,7 +17,7 @@ const HeaderLayout = () => {
       <div className="header-container">
         <div className="header-menu-container">
           <div className="header-icon">
-            <h3>Header</h3>
+            <h3>BuildYourPC.com</h3>
           </div>
           <div className="header-menu">
             <div className="menu-list-container">

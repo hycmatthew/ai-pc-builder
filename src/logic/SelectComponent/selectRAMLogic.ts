@@ -1,4 +1,3 @@
-import { toNumber } from 'lodash'
 import { RAMType } from '../../constant/objectTypes'
 import { BuildLogicState } from '../../module/aiComponentList/store/aiLogicReducer'
 import { ramIncompatible } from '../../module/common/utils/compatibleLogic'
