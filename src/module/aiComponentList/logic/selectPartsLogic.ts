@@ -39,8 +39,9 @@ import { BuildType } from '../constant/buildType'
 
 const weights = {
   gaming: { cpu: 0.3, gpu: 0.6, ram: 0.1 }, // 游戏更依赖 GPU
-  office: { cpu: 0.6, gpu: 0.2, ram: 0.2 }, // 办公更依赖 CPU
-  rendering: { cpu: 0.5, gpu: 0.4, ram: 0.1 }, // 渲染依赖 CPU 和 GPU
+  balance: { cpu: 0.5, gpu: 0.3, ram: 0.2 }, // 办公更依赖 CPU
+  rendering: { cpu: 0.4, gpu: 0.4, ram: 0.2 }, // 渲染依赖 CPU 和 GPU
+  ai: { cpu: 0.2, gpu: 0.7, ram: 0.1 },
 }
 
 interface CompatibilityFilters {
@@ -91,6 +92,7 @@ export const preFilterDataLogic = (
   psuList: PSUType[],
   coolerList: CoolerType[],
   budget: number,
+  storage: number,
   type: BuildType
 ) => {
   // 1. 识别用户已选组件并计算已用预算
@@ -107,12 +109,11 @@ export const preFilterDataLogic = (
 
   // 计算需要预留的默认组件预算
   const usedBudget = estimateDefaultPrice(
-    ssdList,
     caseList,
     psuList,
     coolerList
   )
-  const availableBudget = budget - usedBudget * 0.9
+  let availableBudget = budget - usedBudget * 0.9
   console.log('availableBudget : ', availableBudget)
 
   if (availableBudget < 0) return null
@@ -140,7 +141,7 @@ export const preFilterDataLogic = (
     psuSize: selectedComponents.psu?.Size,
   }
 
-  const selectedWeights = weights['gaming']
+  const selectedWeights = weights[type]
   const cpuBudget =
     budget * getPricingFactor(budget, BuildConfig.CPUFactor.CPUBudgetFactor)
   const gpuBudget =
@@ -170,7 +171,7 @@ export const preFilterDataLogic = (
     filters.cpuBrand,
     filters.mbRamType
   )
-  const mappedSSDs = getMappedSSDs(ssdList, ssdBudget)
+  const mappedSSDs = getMappedSSDs(ssdList, ssdBudget, storage)
   const mappedPSUs = getMappedPSUs(psuList, availableBudget)
   const mappedCases = getMappedCases(
     caseList,
@@ -185,6 +186,14 @@ export const preFilterDataLogic = (
     availableBudget
   )
 
+  /** Start the config logic */
+  let bestSSD = null
+  let bestPsu = null
+  let bestCase = null
+  let bestCooler = null
+  bestSSD = selectBestSSD(mappedSSDs, BuildConfig.SSDFactor.SSDSuggestion)
+  availableBudget -= bestSSD ? bestSSD.price : 0
+
   const bestConfig = findBestConfiguration(
     mappedCPUs,
     mappedGPUs,
@@ -193,14 +202,8 @@ export const preFilterDataLogic = (
     availableBudget,
     selectedWeights
   )
-  let bestSSD = null
-  let bestPsu = null
-  let bestCase = null
-  let bestCooler = null
 
   if (bestConfig) {
-    bestSSD = selectBestSSD(mappedSSDs, BuildConfig.SSDFactor.SSDSuggestion)
-
     const totalPower =
       bestConfig.cpu.power + (bestConfig.gpu ? bestConfig.gpu.power : 0) + 80
     const isNvidiaGPU = bestConfig.gpu?.manufacturer === 'NVIDIA'

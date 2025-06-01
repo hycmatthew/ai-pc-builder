@@ -9,7 +9,7 @@ import {
   RAMType,
   SSDType,
 } from '../constant/objectTypes'
-import { brandTranslationKey } from './LabelHelper'
+import { brandTranslationKey, formatSSDCapacity } from './LabelHelper'
 
 export const getCPUBrand = (items: CPUType[]) => {
   const options = [...new Set(items.map((item: CPUType) => item.Brand))].map(
@@ -135,7 +135,7 @@ export const getSSDCapacity = (items: SSDType[]) => {
   const options = [...new Set(items.map((item: SSDType) => item.Capacity))].map(
     (item) => {
       return {
-        label: item,
+        label: formatSSDCapacity(item),
         value: item,
       }
     }

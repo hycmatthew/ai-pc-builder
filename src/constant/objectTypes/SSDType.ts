@@ -1,4 +1,4 @@
-import PriceType from "../PriceType"
+import PriceType from '../PriceType'
 
 interface SSDType {
   Brand: string
@@ -6,12 +6,15 @@ interface SSDType {
   NameCN: string
   ReleaseDate: string
   Model: string
-  Capacity: string
-  MaxRead: number
-  MaxWrite: number
+  Capacity: number
   Interface: string
   FlashType: string
   FormFactor: string
+  DRam: boolean
+  MaxRead: number
+  MaxWrite: number
+  Read4K: number
+  Write4K: number
   Prices: PriceType[]
   Img: string
 }

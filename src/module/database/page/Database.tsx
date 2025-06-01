@@ -186,6 +186,17 @@ const Database = () => {
   // 定義各硬體類型專用過濾器配置
   const specificFilterConfig: Partial<Record<ProductEnum, any[]>> = useMemo(
     () => ({
+      [ProductEnum.CPU]: [
+        {
+          type: 'select',
+          key: 'Socket',
+          label: t('socket'),
+          getOptions: (list: any[]) =>
+            [...new Set(list.map((item) => item.Socket))]
+              .filter(Boolean)
+              .sort(),
+        },
+      ],
       [ProductEnum.GPU]: [
         {
           type: 'select',
@@ -215,7 +226,7 @@ const Database = () => {
             ].filter(
               (size): size is number => typeof size === 'number' && !isNaN(size)
             )
-
+            console.log('sizes', new Set(list.map((item) => item.MemorySize)))
             return sizes.sort((a, b) => a - b)
           },
         },
@@ -238,6 +249,15 @@ const Database = () => {
           label: t('form-factor'),
           getOptions: (list: any[]) =>
             [...new Set(list.map((item) => item.FormFactor))]
+              .filter(Boolean)
+              .sort(),
+        },
+        {
+          type: 'select',
+          key: 'Chipset',
+          label: t('chipset'),
+          getOptions: (list: any[]) =>
+            [...new Set(list.map((item) => item.Chipset))]
               .filter(Boolean)
               .sort(),
         },
@@ -294,7 +314,7 @@ const Database = () => {
               <CustomAutocomplete
                 key={filter.key}
                 options={options.map((opt: any) => ({
-                  label: opt,
+                  label: opt.toString(),
                   value: opt,
                 }))}
                 label={filter.label}
@@ -341,6 +361,8 @@ const Database = () => {
       return brandMatch && priceMatch && specificMatch
     })
   }
+
+  console.log(filterList)
 
   return (
     <Grid container justifyContent="center">

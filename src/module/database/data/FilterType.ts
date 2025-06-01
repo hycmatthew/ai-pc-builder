@@ -32,7 +32,7 @@ export interface SSDFilterType {
     brand: string
     model: string
     price: number
-    capacity: string
+    capacity: number
 }
 
 export interface PSUFilterType {

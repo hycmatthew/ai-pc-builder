@@ -1,6 +1,5 @@
-import React, { useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import { SelectProps, TextField, alpha } from '@mui/material'
+import { SelectProps, TextField } from '@mui/material'
 import Autocomplete from '@mui/material/Autocomplete'
 import { styled } from '@mui/material/styles'
 
@@ -30,7 +29,7 @@ const CustomTextField = styled(TextField)(({ theme }) => ({
 
 interface OptionsType {
   label: string,
-  value: string
+  value: string | number,
 }
 
 type SelectFiltertProps = SelectProps & {

@@ -44,7 +44,7 @@ export const SSD_FILTER_INIT_DATA: SSDFilterType = {
   brand: '',
   model: '',
   price: 0,
-  capacity: '',
+  capacity: 0,
 }
 
 export const PSU_FILTER_INIT_DATA: PSUFilterType = {

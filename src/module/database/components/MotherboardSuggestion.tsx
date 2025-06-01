@@ -116,27 +116,14 @@ const MotherboardSuggestion = ({
       isLoading={isLoading}
       buildComparisonObjects={buildComparisonObjects}
       renderFilterForm={
-        <>
-          <Grid size={9}>
-            <SelectElement
-              label={t('motherboard')}
-              options={generateMotherboardSelectElement(motherboardList)}
-              selectChange={(model) =>
-                setFilterLogic((prev) => ({ ...prev, model }))
-              }
-              isLoading={isLoading}
-            />
-          </Grid>
-          <Grid size={6}>
-            <SelectFilter
-              label={t('chipset')}
-              options={getMotherboardChipset(motherboardList)}
-              selectChange={(chipset) =>
-                setFilterLogic((prev) => ({ ...prev, chipset }))
-              }
-            />
-          </Grid>
-        </>
+        <SelectElement
+          label={t('motherboard')}
+          options={generateMotherboardSelectElement(motherboardList)}
+          selectChange={(model) =>
+            setFilterLogic((prev) => ({ ...prev, model }))
+          }
+          isLoading={isLoading}
+        />
       }
       getItemLabel={(item) => generateItemName(item.Brand, item.Name)}
       getPriceLabel={(item) => convertLocalizedPrice(item)}

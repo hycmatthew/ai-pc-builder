@@ -5,7 +5,7 @@ const BuildConfig = {
   CNPricingFactor: 1.1,
   USPricingFactor: 8,
   regularLogic: {
-    formFactor: "ATX",
+    formFactor: 'ATX',
   },
   CPUFactor: {
     CPUBudgetFactor: [0.6, 0.6, 0.4, 0.3],
@@ -23,10 +23,15 @@ const BuildConfig = {
     SSDBudgetFactor: [0.3, 0.3, 0.25, 0.2],
     SSDPriceFactor: [0.01, 0.01, 0.008, 0.007, 0.005],
     SSDSuggestion: ['WD BLACK SN770 1TB', 'Samsung 990 EVO 1TB', 'T500 1TB'],
+    DefaultCapacity: 1000,
   },
   PSUFactor: {
     PSUBudgetFactor: [0.01, 0.01, 0.008, 0.007, 0.005],
-    PSUSuggestion: ["seasonic-focus-gx-750-v4", "thermaltake-toughpower-gf-a3-750w", "lian-li-edge-gold-850w"]
+    PSUSuggestion: [
+      'seasonic-focus-gx-750-v4',
+      'thermaltake-toughpower-gf-a3-750w',
+      'lian-li-edge-gold-850w',
+    ],
   },
   CPUCoolerFactor: {
     CPUCoolerSuggestion: {

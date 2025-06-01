@@ -1,61 +1,85 @@
-import { MappedSSDType } from '../constant/mappedObjectTypes';
+import { MappedSSDType } from '../constant/mappedObjectTypes'
+
+interface Weights {
+  recommended: number
+  price: number
+  performance: number
+  flashTypeQLC: number
+  brand: number
+}
+
+const BRAND_BONUS: Record<string, number> = {
+  samsung: 3,
+  westerndigital: 2,
+  kingston: 1,
+  crucial: 1,
+}
 
 export const selectBestSSD = (
   ssds: MappedSSDType[],
-  suggestedSSD: string[]
-): MappedSSDType | null => {
-  if (ssds.length === 0) return null;
-
-  // 优先处理推荐列表中有有效价格的SSD
-  console.log(suggestedSSD)
-  const validSuggested = ssds.filter(ssd => 
-    suggestedSSD.includes(ssd.name) && ssd.price > 0
-  );
-  
-  if (validSuggested.length > 0) {
-    return [...validSuggested].sort((a, b) => a.price - b.price)[0];
+  suggestedSSDs: string[],
+  weights: Weights = {
+    recommended: 0.3,
+    price: 0.25,
+    performance: 0.3,
+    flashTypeQLC: -0.1,
+    brand: 0.15,
   }
+): MappedSSDType | null => {
+  // 1. 過濾符合容量要求的 SSD
 
-  // 非推荐列表选择逻辑
-  const candidates = ssds.filter(ssd => ssd.price > 0);
-  if (candidates.length === 0) return null;
+  if (ssds.length === 0) return null
 
-  // 计算归一化参数
-  const scores = candidates.map(ssd => ssd.score);
-  const prices = candidates.map(ssd => ssd.price);
-  
-  const minScore = Math.min(...scores);
-  const maxScore = Math.max(...scores);
-  const minPrice = Math.min(...prices);
-  const maxPrice = Math.max(...prices);
+  // 2. 計算各項指標範圍
+  const prices = ssds.map((ssd) => ssd.price)
+  const maxReads = ssds.map((ssd) => ssd.maxRead)
+  const maxWrites = ssds.map((ssd) => ssd.maxWrite)
+  const read4Ks = ssds.map((ssd) => ssd.read4K)
+  const write4Ks = ssds.map((ssd) => ssd.write4K)
 
-  // 计算综合性价比指标
-  const scoredSSDs = candidates.map(ssd => {
-    const scoreRange = maxScore - minScore;
-    const priceRange = maxPrice - minPrice;
-    
-    // 归一化处理（0-1范围）
-    const normScore = scoreRange !== 0 ? (ssd.score - minScore) / scoreRange : 0.5;
-    const normPrice = priceRange !== 0 ? (maxPrice - ssd.price) / priceRange : 0.5;
-    
-    // 平衡权重（可根据需求调整）
-    const combined = normScore * 0.6 + normPrice * 0.4;
+  const [minPrice, maxPrice] = [Math.min(...prices), Math.max(...prices)]
+  const maxMaxRead = Math.max(...maxReads)
+  const maxMaxWrite = Math.max(...maxWrites)
+  const maxRead4K = Math.max(...read4Ks)
+  const maxWrite4K = Math.max(...write4Ks)
 
-    return {
-      ...ssd,
-      combined
-    };
-  });
+  // 3. 計算總分
+  const scoredSSDs = ssds.map((ssd) => {
+    // 推薦列表加分
+    const recommendedScore = suggestedSSDs.includes(ssd.name)
+      ? weights.recommended
+      : 0
 
-  // 多条件排序
-  const sorted = scoredSSDs.sort((a, b) => {
-    // 先按综合指标
-    if (b.combined !== a.combined) return b.combined - a.combined;
-    // 次按原始分数
-    if (b.score !== a.score) return b.score - a.score;
-    // 最后按价格
-    return a.price - b.price;
-  });
+    // 價格分數（反向計算，價格越低分數越高）
+    const priceScore =
+      ((maxPrice - ssd.price) / (maxPrice - minPrice)) * weights.price
 
-  return sorted[0];
-};
+    // 性能分數
+    const performanceScore =
+      ((ssd.maxRead / maxMaxRead) * 0.25 +
+        (ssd.maxWrite / maxMaxWrite) * 0.25 +
+        (ssd.read4K / maxRead4K) * 0.6 +
+        (ssd.write4K / maxWrite4K) * 0.3) *
+      weights.performance
+
+    // console.log(`SSD: ${ssd.name},${ssd.price} Price Score: ${priceScore}, Performance Score: ${performanceScore}`)
+
+    // QLC 減分（需要自行添加QLC判斷邏輯到您的數據中）
+    const qlcPenalty = ssd.flashType === 'QLC' ? weights.flashTypeQLC : 0
+
+    // 品牌加分
+    const brandBonus = BRAND_BONUS[ssd.brand]
+      ? BRAND_BONUS[ssd.brand] * weights.brand
+      : 0
+
+    const totalScore =
+      recommendedScore + priceScore + performanceScore + qlcPenalty + brandBonus
+
+    return { ...ssd, calculatedScore: totalScore }
+  })
+
+  // 4. 排序並返回最佳
+  scoredSSDs.sort((a, b) => b.calculatedScore - a.calculatedScore)
+  // console.log(scoredSSDs)
+  return scoredSSDs[0]
+}

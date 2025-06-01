@@ -34,3 +34,15 @@ export const lengthLabelHandler = (length: number) => {
 export const diskSpeedLabelHandler = (speed: number) => {
   return `${speed} MB/s`
 }
+
+export const formatSSDCapacity = (capacity: number) => {
+  // 处理特殊值
+  if (capacity === 500) return '500GB'
+  if (capacity === 1000) return '1TB'
+  
+  // 通用处理逻辑
+  if (capacity >= 1000 && capacity % 1000 === 0) {
+    return `${capacity / 1000}TB`
+  }
+  return `${capacity}GB`
+}

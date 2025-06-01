@@ -147,7 +147,7 @@ const SSDSuggestion = ({ ssdList, isLoading }: SSDSuggestionProps) => {
               selectChange={(capacity) =>
                 setFilterLogic((prev) => ({
                   ...prev,
-                  capacity: capacity,
+                  capacity: Number(capacity),
                 }))
               }
             />

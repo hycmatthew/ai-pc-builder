@@ -1,7 +1,7 @@
 import { useTranslation } from 'react-i18next'
 import Container from '@mui/material/Container'
 import styled from '@emotion/styled'
-import { Grid2 as Grid } from '@mui/material'
+import { Box, Button, Grid2 as Grid } from '@mui/material'
 
 import { SelectedItemType } from '../../../store/rawDataReducer'
 import {
@@ -11,6 +11,7 @@ import {
   ssdPerformanceLogic,
 } from '../../../logic/performanceLogic'
 import CusTypography from '../../common/components/CusTypography'
+import CustomTooltip from '../../common/components/CustomTooltip'
 
 type ScoreSectionProps = {
   selectedItems: SelectedItemType
@@ -37,13 +38,19 @@ const ScoreSection = ({ selectedItems }: ScoreSectionProps) => {
     <CustomContainer>
       <Grid container spacing={2}>
         <Grid size={6}>
-          <CusTypography variant="h6">{t('cpu-score')}</CusTypography>
+          <Box display="flex">
+            <CusTypography variant="h6">{t('cpu-score')}</CusTypography>
+            <CustomTooltip title="4132132" />
+          </Box>
           <CusTypography variant="h4">
             {cpuPerformanceLogic(selectedItems.cpu)}
           </CusTypography>
         </Grid>
         <Grid size={6}>
-          <CusTypography variant="h6">{t('gpu-score')}</CusTypography>
+          <Box display="flex">
+            <CusTypography variant="h6">{t('gpu-score')}</CusTypography>
+            <CustomTooltip title="4132132" />
+          </Box>
           <CusTypography variant="h4">
             {gpuPerformanceLogic(selectedItems.gpu)}
           </CusTypography>

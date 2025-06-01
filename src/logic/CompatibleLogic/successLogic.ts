@@ -1,12 +1,4 @@
-import {
-  CPUType,
-  GPUType,
-  MotherboardType,
-  RAMType,
-  CaseType,
-  CoolerType,
-  PSUType,
-} from '../../constant/objectTypes'
+import { PSUType } from '../../constant/objectTypes'
 
 // Motherboard CPU
 export const psuWithATX3 = (psu: PSUType | null) => {

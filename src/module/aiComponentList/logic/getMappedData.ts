@@ -178,17 +178,15 @@ export function getMappedRAMs(
 
 export function getMappedSSDs(
   ssdList: SSDType[],
-  budget: number
+  budget: number,
+  storage: number
 ): MappedSSDType[] {
   return ssdList
     .filter((item) => {
       if (ssdList.length === 1) {
         return true
       }
-      return (
-        priceValidation(item, budget) &&
-        (item.Capacity == '1000 GB' || item.Capacity == '1TB')
-      )
+      return priceValidation(item, budget) && item.Capacity == storage
     })
     .map((item) => {
       return {
@@ -196,6 +194,13 @@ export function getMappedSSDs(
         brand: item.Brand,
         capacity: item.Capacity,
         formFactor: item.FormFactor,
+        flashType: item.FlashType,
+        interface: item.Interface,
+        dram: item.DRam,
+        maxRead: item.MaxRead,
+        maxWrite: item.MaxWrite,
+        read4K: item.Read4K,
+        write4K: item.Write4K,
         score: ssdPerformanceLogic(item),
         price: getLocalizedPriceNum(item),
       }
@@ -347,7 +352,7 @@ const ScoreAdjusters = {
       let multiplier = 1.05
 
       // 專業應用加成
-      if (buildType === BuildType.Professional) {
+      if (buildType === BuildType.AI) {
         multiplier = 1.5
       }
 

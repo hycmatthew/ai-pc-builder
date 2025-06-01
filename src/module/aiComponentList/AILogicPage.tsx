@@ -69,11 +69,20 @@ function AILogicPage() {
   const { t } = useTranslation()
   const dispatch = useAppDispatch()
   const [selectedType, setSelectedType] = useState<BuildType>(BuildType.Balance)
+  const [selectedStorage, setSelectedStorage] = useState(1000)
 
   const tabs = [
     { label: t(BuildType.Balance), value: BuildType.Balance },
     { label: t(BuildType.Gaming), value: BuildType.Gaming },
-    { label: t(BuildType.Professional), value: BuildType.Professional },
+    { label: t(BuildType.Rendering), value: BuildType.Rendering },
+    { label: t(BuildType.AI), value: BuildType.AI },
+  ]
+
+  const storageTabs = [
+    { label: '500GB', value: 500 },
+    { label: '1TB', value: 1000 },
+    { label: '2TB', value: 2000 },
+    { label: '4TB', value: 4000 },
   ]
 
   const [activeStep, setActiveStep] = useState(0)
@@ -91,6 +100,13 @@ function AILogicPage() {
         setActiveStep(1)
       }
     }
+  }
+
+  const updateSelectedStorage = (
+    event: React.SyntheticEvent,
+    newValue: any
+  ) => {
+    setSelectedStorage(newValue)
   }
 
   const [formData, setFormData] = useState({
@@ -164,6 +180,7 @@ function AILogicPage() {
       psus,
       coolers,
       Number(formData.budget),
+      selectedStorage,
       selectedType
     )
     if (res !== null) {
@@ -305,6 +322,16 @@ function AILogicPage() {
             {/* Step 2 - Budget & Parts Selection */}
             {activeStep > 0 && (
               <>
+                <AnimatedGrid size={12}>
+                  <FormLabel>{t('Storage')}</FormLabel>
+                  <Stack padding={1}>
+                    <SegmentedTabs
+                      value={selectedStorage}
+                      onChange={updateSelectedStorage}
+                      tabs={storageTabs}
+                    />
+                  </Stack>
+                </AnimatedGrid>
                 <AnimatedGrid size={12}>
                   <FormLabel>{t('Budget')}</FormLabel>
                 </AnimatedGrid>

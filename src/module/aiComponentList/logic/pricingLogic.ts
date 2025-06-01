@@ -78,7 +78,6 @@ export const isEnoughBudget = (
 // ====================================================================================================
 // 新增默认组件价格估算
 export const estimateDefaultPrice = (
-  ssdList: SSDType[],
   caseList: CaseType[],
   psuList: PSUType[],
   coolerList: CoolerType[]
@@ -89,18 +88,6 @@ export const estimateDefaultPrice = (
     pcCase: 0,
     cooler: 0,
   }
-
-  // 估算SSD价格
-  const SSDSuggestion = BuildConfig.SSDFactor.SSDSuggestion
-  const suggestedSSDs = ssdList.filter((ssd) =>
-    SSDSuggestion.some((name) => ssd.Name == name)
-  )
-
-  defaultPrices.ssd =
-    ssdList.length == 1
-      ? getLocalizedPriceNum(ssdList[0])
-      : suggestedSSDs.reduce((sum, ssd) => sum + getLocalizedPriceNum(ssd), 0) /
-        suggestedSSDs.length
 
   // 估算机箱价格
   const caseSuggestion = BuildConfig.CaseFactor.CaseSuggestion.ATX.concat(
@@ -142,7 +129,7 @@ export const estimateDefaultPrice = (
   }
 
   // Calculate the total
-  console.log(defaultPrices)
+  console.log("defaultPrices: ", defaultPrices)
 
   return sumPrices(defaultPrices)
 }
