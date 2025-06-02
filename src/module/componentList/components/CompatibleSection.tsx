@@ -82,7 +82,7 @@ const CompatibleSection = ({ selectedItems }: CompatibleSectionProps) => {
       {
         condition:
           Boolean(psu) &&
-          psuPowerNotEnough(psu!.Wattage, getTotalPower(selectedItems)),
+          psuPowerNotEnough(psu!.wattage, getTotalPower(selectedItems)),
         messageKey: 'warning-power-not-enough',
         type: 'warning',
       },
@@ -91,8 +91,8 @@ const CompatibleSection = ({ selectedItems }: CompatibleSectionProps) => {
         messageKey: 'warning-gpu-case-incompatible',
         type: 'warning',
         interpolation: {
-          gpu: gpu?.Length,
-          case: pcCase?.MaxVGAlength,
+          gpu: gpu?.length,
+          case: pcCase?.max_vga_length,
         },
       },
       {
@@ -100,7 +100,7 @@ const CompatibleSection = ({ selectedItems }: CompatibleSectionProps) => {
         messageKey: 'warning-motherboard-case-incompatible',
         type: 'warning',
         interpolation: {
-          mb: motherboard?.FormFactor,
+          mb: motherboard?.form_factor,
         },
       },
       {
@@ -118,7 +118,7 @@ const CompatibleSection = ({ selectedItems }: CompatibleSectionProps) => {
         messageKey: 'suggestion-ram-motherboard-incompatible',
         type: 'suggestion',
         interpolation: {
-          ram: ram?.Type,
+          ram: ram?.type,
         },
       },
 
@@ -139,7 +139,7 @@ const CompatibleSection = ({ selectedItems }: CompatibleSectionProps) => {
         messageKey: 'suggestion-ram-motherboard-incompatible-speed',
         type: 'suggestion',
         interpolation: {
-          ram: ram?.Speed,
+          ram: ram?.speed,
         },
       },
       {

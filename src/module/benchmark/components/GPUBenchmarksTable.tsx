@@ -46,13 +46,13 @@ function GPUBenchmarksTable() {
   // 生成基础数据并缓存
   const baseData = useMemo(() => {
     return dataState.gpuList.map((item: GPUType) => ({
-      id: generateItemName(item.Brand, item.Name),
-      brand: item.Brand,
-      name: item.Name,
-      timespyScore: item.Benchmark,
+      id: generateItemName(item.brand, item.name),
+      brand: item.brand,
+      name: item.name,
+      timespyScore: item.benchmark,
       price: getLocalizedPriceNum(item),
       pricePerformance: calculatePricePerformance(
-        item.Benchmark,
+        item.benchmark,
         getLocalizedPriceNum(item)
       ),
     }))

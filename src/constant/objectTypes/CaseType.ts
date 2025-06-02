@@ -1,24 +1,24 @@
 import PriceType from '../PriceType'
 
 interface CaseType {
-  Id: string
-  Brand: string
-  Name: string
-  NameCN: string
-  ReleaseDate: string
-  Color: string
-  CaseSize: string
-  PowerSupply: boolean
-  DriveBays2: number
-  DriveBays3: number
-  Compatibility: string[]
-  Dimensions: number[]
-  MaxVGAlength: number
-  RadiatorSupport: number
-  MaxCpuCoolorHeight: number
-  SlotsNum: number
-  Prices: PriceType[]
-  Img: string
+  id: string
+  brand: string
+  name: string
+  name_cn: string
+  release_date: string
+  color: string
+  case_size: string
+  power_supply: boolean
+  drive_bays_2: number
+  drive_bays_3: number
+  compatibility: string[]
+  dimensions: number[]
+  max_vga_length: number
+  radiator_support: number
+  max_cpu_cooler_height: number
+  slots_num: number
+  prices: PriceType[]
+  img: string
 }
 
 export default CaseType

@@ -12,7 +12,7 @@ import {
 import { brandTranslationKey, formatSSDCapacity } from './LabelHelper'
 
 export const getCPUBrand = (items: CPUType[]) => {
-  const options = [...new Set(items.map((item: CPUType) => item.Brand))].map(
+  const options = [...new Set(items.map((item: CPUType) => item.brand))].map(
     (item) => {
       return {
         label: brandTranslationKey(item),
@@ -24,7 +24,7 @@ export const getCPUBrand = (items: CPUType[]) => {
 }
 
 export const getGPUBrand = (items: GPUType[]) => {
-  const options = [...new Set(items.map((item: GPUType) => item.Brand))].map(
+  const options = [...new Set(items.map((item: GPUType) => item.brand))].map(
     (item) => {
       return {
         label: brandTranslationKey(item),
@@ -37,7 +37,7 @@ export const getGPUBrand = (items: GPUType[]) => {
 
 export const getGPUManufacturer = (items: GPUType[]) => {
   const options = [
-    ...new Set(items.map((item: GPUType) => item.Manufacturer)),
+    ...new Set(items.map((item: GPUType) => item.manufacturer)),
   ].map((item) => {
     return {
       label: brandTranslationKey(item),
@@ -48,7 +48,7 @@ export const getGPUManufacturer = (items: GPUType[]) => {
 }
 
 export const getGPUType = (items: GPUType[]) => {
-  const options = [...new Set(items.map((item: GPUType) => item.Generation))].map(
+  const options = [...new Set(items.map((item: GPUType) => item.generation))].map(
     (item) => {
       return {
         label: item,
@@ -61,7 +61,7 @@ export const getGPUType = (items: GPUType[]) => {
 
 export const getMotherboardBrand = (items: MotherboardType[]) => {
   const options = [
-    ...new Set(items.map((item: MotherboardType) => item.Brand)),
+    ...new Set(items.map((item: MotherboardType) => item.brand)),
   ].map((item) => {
     return {
       label: brandTranslationKey(item),
@@ -73,7 +73,7 @@ export const getMotherboardBrand = (items: MotherboardType[]) => {
 
 export const getMotherboardChipset = (items: MotherboardType[]) => {
   const options = [
-    ...new Set(items.map((item: MotherboardType) => item.Chipset)),
+    ...new Set(items.map((item: MotherboardType) => item.chipset)),
   ].map((item) => {
     return {
       label: item,
@@ -84,7 +84,7 @@ export const getMotherboardChipset = (items: MotherboardType[]) => {
 }
 
 export const getRAMBrand = (items: RAMType[]) => {
-  const options = [...new Set(items.map((item: RAMType) => item.Brand))].map(
+  const options = [...new Set(items.map((item: RAMType) => item.brand))].map(
     (item) => {
       return {
         label: brandTranslationKey(item),
@@ -96,7 +96,7 @@ export const getRAMBrand = (items: RAMType[]) => {
 }
 
 export const getRAMGeneration = (items: RAMType[]) => {
-  const options = [...new Set(items.map((item: RAMType) => item.Type))].map(
+  const options = [...new Set(items.map((item: RAMType) => item.type))].map(
     (item) => {
       return {
         label: item,
@@ -108,7 +108,7 @@ export const getRAMGeneration = (items: RAMType[]) => {
 }
 
 export const getSSDBrand = (items: SSDType[]) => {
-  const options = [...new Set(items.map((item: SSDType) => item.Brand))].map(
+  const options = [...new Set(items.map((item: SSDType) => item.brand))].map(
     (item) => {
       return {
         label: brandTranslationKey(item),
@@ -120,7 +120,7 @@ export const getSSDBrand = (items: SSDType[]) => {
 }
 
 export const getPSUBrand = (items: PSUType[]) => {
-  const options = [...new Set(items.map((item: PSUType) => item.Brand))].map(
+  const options = [...new Set(items.map((item: PSUType) => item.brand))].map(
     (item) => {
       return {
         label: brandTranslationKey(item),
@@ -132,7 +132,7 @@ export const getPSUBrand = (items: PSUType[]) => {
 }
 
 export const getSSDCapacity = (items: SSDType[]) => {
-  const options = [...new Set(items.map((item: SSDType) => item.Capacity))].map(
+  const options = [...new Set(items.map((item: SSDType) => item.capacity))].map(
     (item) => {
       return {
         label: formatSSDCapacity(item),
@@ -144,7 +144,7 @@ export const getSSDCapacity = (items: SSDType[]) => {
 }
 
 export const getCaseBrand = (items: CaseType[]) => {
-  const options = [...new Set(items.map((item: CaseType) => item.Brand))].map(
+  const options = [...new Set(items.map((item: CaseType) => item.brand))].map(
     (item) => {
       return {
         label: brandTranslationKey(item),
@@ -156,7 +156,7 @@ export const getCaseBrand = (items: CaseType[]) => {
 }
 
 export const getCaseSize = (items: CaseType[]) => {
-  const options = [...new Set(items.map((item: CaseType) => item.CaseSize))].map(
+  const options = [...new Set(items.map((item: CaseType) => item.case_size))].map(
     (item) => {
       return {
         label: item,
@@ -168,7 +168,7 @@ export const getCaseSize = (items: CaseType[]) => {
 }
 
 export const getAIOBrand = (items: CoolerType[]) => {
-  const options = [...new Set(items.map((item: CoolerType) => item.Brand))].map(
+  const options = [...new Set(items.map((item: CoolerType) => item.brand))].map(
     (item) => {
       return {
         label: brandTranslationKey(item),
@@ -180,7 +180,7 @@ export const getAIOBrand = (items: CoolerType[]) => {
 }
 
 export const getAIOSize = (items: CoolerType[]) => {
-  const options = [...new Set(items.map((item: CoolerType) => item.LiquidCoolerSize))].map(
+  const options = [...new Set(items.map((item: CoolerType) => item.liquid_cooler_size))].map(
     (item) => {
       return {
         label: item.toString(),

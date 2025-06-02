@@ -42,7 +42,7 @@ const buildComponentLine = (
 ): string => {
   if (!component) return ''
   const pricePart = displayPrice ? ` ${getCurrentPriceWithSign(component)}` : ''
-  return `${t(productEnum)}: ${component.Name}${pricePart}\n`
+  return `${t(productEnum)}: ${component.name}${pricePart}\n`
 }
 
 export const getSelectItemListText = (
@@ -56,7 +56,7 @@ export const getSelectItemListText = (
     const component = selectedItems[key]
     if (component) {
       lines.push(buildComponentLine(component, productEnum, displayPrice))
-      searchParams.append(paramName || productEnum.toLowerCase(), component.Name)
+      searchParams.append(paramName || productEnum.toLowerCase(), component.name)
     }
   })
 

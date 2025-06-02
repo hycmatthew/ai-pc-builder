@@ -29,11 +29,11 @@ export const generateCPUSelectElement = (
 ): OptionType[] => {
   const tempMap = list.filter((item: CPUType) => getLocalizedPriceNum(item) != 0).map((item: CPUType) => {
     const price = convertLocalizedPrice(item)
-    const itemLabel = generateItemName(item.Brand, item.Name)
+    const itemLabel = generateItemName(item.brand, item.name)
 
     return {
-      name: item.Name,
-      brand: item.Brand,
+      name: item.name,
+      brand: item.brand,
       label: itemLabel,
       value: price,
       disabled: selectedItems ? cpuIncompatible(item, selectedItems) : false,
@@ -48,11 +48,11 @@ export const generateGPUSelectElement = (
 ): OptionType[] => {
   const tempMap = list.filter((item: GPUType) => getLocalizedPriceNum(item) != 0).map((item: GPUType) => {
     const price = convertLocalizedPrice(item)
-    const itemLabel = generateItemName(item.Brand, item.Name)
+    const itemLabel = generateItemName(item.brand, item.name)
 
     return {
-      name: item.Name,
-      brand: item.Brand,
+      name: item.name,
+      brand: item.brand,
       label: itemLabel,
       value: price,
       disabled: false,
@@ -67,11 +67,11 @@ export const generateMotherboardSelectElement = (
 ): OptionType[] => {
   const tempMap = list.filter((item: MotherboardType) => getLocalizedPriceNum(item) != 0).map((item: MotherboardType) => {
     const price = convertLocalizedPrice(item)
-    const itemLabel = generateItemName(item.Brand, item.Name)
+    const itemLabel = generateItemName(item.brand, item.name)
 
     return {
-      name: item.Name,
-      brand: item.Brand,
+      name: item.name,
+      brand: item.brand,
       label: itemLabel,
       value: price,
       disabled: selectedItems
@@ -91,8 +91,8 @@ export const generateRAMSelectElement = (
     const itemLabel = generateRAMName(item)
 
     return {
-      name: item.Name,
-      brand: item.Brand,
+      name: item.name,
+      brand: item.brand,
       label: itemLabel,
       value: price,
       disabled: false,
@@ -107,11 +107,11 @@ export const generatePSUSelectElement = (
 ): OptionType[] => {
   const tempMap = list.filter((item: PSUType) => getLocalizedPriceNum(item) != 0).map((item: PSUType) => {
     const price = convertLocalizedPrice(item)
-    const itemLabel = generateItemName(item.Brand, item.Name)
+    const itemLabel = generateItemName(item.brand, item.name)
 
     return {
-      name: item.Name,
-      brand: item.Brand,
+      name: item.name,
+      brand: item.brand,
       label: itemLabel,
       value: price,
       disabled: false,
@@ -126,10 +126,10 @@ export const generateCaseSelectElement = (
 ): OptionType[] => {
   const tempMap = list.filter((item: CaseType) => getLocalizedPriceNum(item) != 0).map((item: CaseType) => {
     const price = convertLocalizedPrice(item)
-    const itemLabel = generateItemName(item.Brand, item.Name)
+    const itemLabel = generateItemName(item.brand, item.name)
     return {
-      name: item.Name,
-      brand: item.Brand,
+      name: item.name,
+      brand: item.brand,
       label: itemLabel,
       value: price,
       disabled: false,
@@ -144,10 +144,10 @@ export const generateAIOSelectElement = (
 ): OptionType[] => {
   const tempMap = list.filter((item: CoolerType) => getLocalizedPriceNum(item) != 0).map((item: CoolerType) => {
     const price = convertLocalizedPrice(item)
-    const itemLabel = generateItemName(item.Brand, item.Name)
+    const itemLabel = generateItemName(item.brand, item.name)
     return {
-      name: item.Name,
-      brand: item.Brand,
+      name: item.name,
+      brand: item.brand,
       label: itemLabel,
       value: price,
       disabled: false,
@@ -165,8 +165,8 @@ export const generateSSDSelectElement = (
     const itemLabel = generateSSDName(item)
 
     return {
-      name: item.Name,
-      brand: item.Brand,
+      name: item.name,
+      brand: item.brand,
       label: itemLabel,
       value: price,
       disabled: false,

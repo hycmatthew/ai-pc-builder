@@ -33,13 +33,13 @@ const CoolerSuggestion = ({ coolerList, isLoading }: CoolerSuggestionProps) => {
         let isMatch = true
 
         if (filterLogic.model) {
-          isMatch = item.Name === filterLogic.model
+          isMatch = item.name === filterLogic.model
         }
         if (filterLogic.brand && isMatch) {
-          isMatch = item.Brand === filterLogic.brand
+          isMatch = item.brand === filterLogic.brand
         }
         if (filterLogic.size && isMatch) {
-          isMatch = item.LiquidCoolerSize === filterLogic.size
+          isMatch = item.liquid_cooler_size === filterLogic.size
         }
         if (filterLogic.price > 0 && isMatch) {
           isMatch = getLocalizedPriceNum(item) <= filterLogic.price
@@ -55,19 +55,19 @@ const CoolerSuggestion = ({ coolerList, isLoading }: CoolerSuggestionProps) => {
   ): ComparisonObject[] => {
     return selectedItems.map((item) => {
       const specs = {
-        size: item.LiquidCoolerSize,
-        airflow: item.FanSpeed,
-        noise: item.NoiseLevel,
-        speed: item.FanSpeed,
-        isLiquid: item.IsLiquidCooler,
+        size: item.liquid_cooler_size,
+        airflow: item.fan_speed,
+        noise: item.noise_level,
+        speed: item.fan_speed,
+        isLiquid: item.is_liquid_cooler,
       }
 
-      const maxSize = Math.max(...selectedItems.map((c) => c.LiquidCoolerSize))
+      const maxSize = Math.max(...selectedItems.map((c) => c.liquid_cooler_size))
 
       return {
-        img: item.Img,
-        name: generateItemName(item.Brand, item.Name),
-        model: item.Name,
+        img: item.img,
+        name: generateItemName(item.brand, item.name),
+        model: item.name,
         items: [
           {
             label: 'fan-size',
@@ -130,10 +130,10 @@ const CoolerSuggestion = ({ coolerList, isLoading }: CoolerSuggestionProps) => {
           </Grid>
         </>
       }
-      getItemLabel={(item) => generateItemName(item.Brand, item.Name)}
+      getItemLabel={(item) => generateItemName(item.brand, item.name)}
       getPriceLabel={(item) => convertLocalizedPrice(item)}
-      getImgSrc={(item) => item.Img}
-      getItemIdentifier={(item) => item.Name}
+      getImgSrc={(item) => item.img}
+      getItemIdentifier={(item) => item.name}
     />
   )
 }

@@ -36,13 +36,13 @@ const MotherboardSuggestion = ({
         let isMatch = true
 
         if (filterLogic.model) {
-          isMatch = item.Name === filterLogic.model
+          isMatch = item.name === filterLogic.model
         }
         if (filterLogic.brand && isMatch) {
-          isMatch = item.Brand === filterLogic.brand
+          isMatch = item.brand === filterLogic.brand
         }
         if (filterLogic.chipset && isMatch) {
-          isMatch = item.Chipset === filterLogic.chipset
+          isMatch = item.chipset === filterLogic.chipset
         }
         if (filterLogic.price > 0 && isMatch) {
           isMatch = getLocalizedPriceNum(item) <= filterLogic.price
@@ -58,18 +58,18 @@ const MotherboardSuggestion = ({
   ): ComparisonObject[] => {
     return selectedItems.map((item) => {
       const specs = {
-        socket: item.Socket,
-        chipset: item.Chipset,
-        ramType: item.RamType,
-        formFactor: item.FormFactor,
-        pcieSlots: item.Pcie4Slot,
-        m2Slots: item.M2Slot,
+        socket: item.socket,
+        chipset: item.chipset,
+        ramType: item.ram_type,
+        formFactor: item.form_factor,
+        pcieSlots: item.pcie_4_slot,
+        m2Slots: item.m2_slot,
       }
 
       return {
-        img: item.Img,
-        name: generateItemName(item.Brand, item.Name),
-        model: item.Name,
+        img: item.img,
+        name: generateItemName(item.brand, item.name),
+        model: item.name,
         items: [
           {
             label: 'cpu-socket',
@@ -96,14 +96,14 @@ const MotherboardSuggestion = ({
             value: specs.pcieSlots.toString(),
             isHighlight:
               specs.pcieSlots ===
-              Math.max(...selectedItems.map((mb) => mb.Pcie4Slot)),
+              Math.max(...selectedItems.map((mb) => mb.pcie_4_slot)),
           },
           {
             label: 'm2-slots',
             value: specs.m2Slots.toString(),
             isHighlight:
               specs.m2Slots ===
-              Math.max(...selectedItems.map((mb) => mb.M2Slot)),
+              Math.max(...selectedItems.map((mb) => mb.m2_slot)),
           },
         ],
       }
@@ -125,10 +125,10 @@ const MotherboardSuggestion = ({
           isLoading={isLoading}
         />
       }
-      getItemLabel={(item) => generateItemName(item.Brand, item.Name)}
+      getItemLabel={(item) => generateItemName(item.brand, item.name)}
       getPriceLabel={(item) => convertLocalizedPrice(item)}
-      getImgSrc={(item) => item.Img}
-      getItemIdentifier={(item) => item.Name}
+      getImgSrc={(item) => item.img}
+      getItemIdentifier={(item) => item.name}
     />
   )
 }

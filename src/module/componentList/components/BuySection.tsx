@@ -27,7 +27,7 @@ const HardwareSection = ({
   const SectionHeight = 128
 
   // 过滤当前区域的价格信息
-  const currentPrices = item ? getAllPriceByRegion(item.Prices) : []
+  const currentPrices = item ? getAllPriceByRegion(item.prices) : []
   if (currentPrices.length === 0) return null
 
   return (
@@ -51,10 +51,10 @@ const HardwareSection = ({
             backgroundColor: 'grey.100',
             borderRadius: '16px 0 0 16px',
           }}
-          alt={item.Name}
+          alt={item.name}
           src={
-            item.Img ||
-            `https://placehold.co/600x400?text=${item.Brand}+${item.Name}`
+            item.img ||
+            `https://placehold.co/600x400?text=${item.brand}+${item.name}`
           }
         />
       </Grid>
@@ -66,31 +66,31 @@ const HardwareSection = ({
           paddingY={1}
         >
           <CusTypography variant="h5" component="div">
-            {item.Name}
+            {item.name}
           </CusTypography>
         </Grid>
         {/* 价格列表 */}
         <Grid size={12}>
           <Grid container spacing={1}>
             {currentPrices.map((price, index) => (
-              <Grid size={12} key={`${item.Name}-price-${index}`}>
+              <Grid size={12} key={`${item.name}-price-${index}`}>
                 <Grid container spacing={1}>
                   <Grid size="auto">
-                    <PlatformIcon platform={price.Platform} />
+                    <PlatformIcon platform={price.platform} />
                   </Grid>
                   <Grid size="auto">
                     <CusTypography variant="h6" lineHeight={2}>
-                      {t(price.Platform)}
+                      {t(price.platform)}
                     </CusTypography>
                   </Grid>
                   <Grid size="auto">
                     <CusTypography variant="h6" lineHeight={2}>
-                      {addCurrencySign(price.Price)}
+                      {addCurrencySign(price.price)}
                     </CusTypography>
                   </Grid>
                   <Grid size="grow" paddingRight={2}>
                     <BuyButton
-                      href={currentPrices[0].PriceLink}
+                      href={currentPrices[0].price_link}
                       variant="contained"
                       color="primary"
                     >

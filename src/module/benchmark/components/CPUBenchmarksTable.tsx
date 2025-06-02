@@ -41,14 +41,14 @@ function CPUBenchmarksTable() {
   // 生成基础数据并缓存
   const baseData = useMemo(() => {
     return dataState.cpuList.map((item: CPUType) => ({
-      id: generateItemName(item.Brand, item.Name),
-      brand: item.Brand,
-      name: item.Name,
-      singleScore: item.SingleCoreScore,
-      multiScore: item.MultiCoreScore,
+      id: generateItemName(item.brand, item.name),
+      brand: item.brand,
+      name: item.name,
+      singleScore: item.single_core_score,
+      multiScore: item.multi_core_score,
       price: getLocalizedPriceNum(item),
       pricePerformance: calculatePricePerformance(
-        item.MultiCoreScore,
+        item.multi_core_score,
         getLocalizedPriceNum(item)
       ),
     }))

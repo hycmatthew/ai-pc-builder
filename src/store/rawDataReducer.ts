@@ -59,14 +59,14 @@ export const fetchData = createAsyncThunk(
   }
 );
 
-export const fetchCPUData = () => fetchData({ url: '/cpuData.json', type: 'cpu' });
-export const fetchGPUData = () => fetchData({ url: '/gpuData.json', type: 'gpu' });
-export const fetchMotherboardData = () => fetchData({ url: '/motherboardData.json', type: 'motherboard' });
-export const fetchRAMData = () => fetchData({ url: '/ramData.json', type: 'ram' });
-export const fetchPSUData = () => fetchData({ url: '/powerData.json', type: 'psu' });
-export const fetchCaseData = () => fetchData({ url: '/caseData.json', type: 'case' });
-export const fetchCoolerData = () => fetchData({ url: '/coolerData.json', type: 'cooler' });
-export const fetchSSDData = () => fetchData({ url: '/ssdData.json', type: 'ssd' });
+export const fetchCPUData = () => fetchData({ url: 'cpu_data.json', type: 'cpu' });
+export const fetchGPUData = () => fetchData({ url: 'gpu_data.json', type: 'gpu' });
+export const fetchMotherboardData = () => fetchData({ url: 'motherboard_data.json', type: 'motherboard' });
+export const fetchRAMData = () => fetchData({ url: 'ram_data.json', type: 'ram' });
+export const fetchPSUData = () => fetchData({ url: 'power_data.json', type: 'psu' });
+export const fetchCaseData = () => fetchData({ url: 'pc_case_data.json', type: 'case' });
+export const fetchCoolerData = () => fetchData({ url: 'cooler_data.json', type: 'cooler' });
+export const fetchSSDData = () => fetchData({ url: 'ssd_data.json', type: 'ssd' });
 // 依此类推，为每种硬件类型定义
 
 export const counterSlice = createSlice({

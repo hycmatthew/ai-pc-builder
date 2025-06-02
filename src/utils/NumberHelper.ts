@@ -53,12 +53,12 @@ export const calculateTotalNumber = (numberList: string[]): number =>
 // ==================== 核心工具函式 ====================
 export const getAllPriceByRegion = (prices: PriceType[] | null) => {
   const { region } = getCurrencyConfig()
-  return prices?.filter(p => p.Region === region) || []
+  return prices?.filter(p => p.region === region) || []
 }
 
 const getPriceByRegion = (prices: PriceType[] | null) => {
   const { region } = getCurrencyConfig()
-  return prices?.find(p => p.Region === region)?.Price?.trim() || ''
+  return prices?.find(p => p.region === region)?.price?.trim() || ''
 }
 
 // 調整貨幣符號添加方式
@@ -68,30 +68,30 @@ export const addCurrencySign = (value?: string | number): string => {
 }
 
 export const getCurrentPriceWithSign = (item: any): string =>
-  addCurrencySign(convertLocalizedPrice(item.Prices))
+  addCurrencySign(convertLocalizedPrice(item.prices))
 
 // 調整本地化價格轉換
 export const convertLocalizedPrice = (item: any): string => {
-  return handlePriceValue(getPriceByRegion(item.Prices))
+  return handlePriceValue(getPriceByRegion(item.prices))
 }
 
 // 調整獲取當前價格數值
-export const getLocalizedPriceNum = (item: { Prices: PriceType[] }): number => {
-  return toNumber(getPriceByRegion(item.Prices))
+export const getLocalizedPriceNum = (item: { prices: PriceType[] }): number => {
+  return toNumber(getPriceByRegion(item.prices))
 }
 
 // 調整總價計算邏輯
 export const getTotalPrice = (selectedItems: SelectedItemType) => {
 
   const numberList = [
-    getPriceByRegion(selectedItems.cpu?.Prices || []),
-    getPriceByRegion(selectedItems.gpu?.Prices || []),
-    getPriceByRegion(selectedItems.motherboard?.Prices || []),
-    getPriceByRegion(selectedItems.ram?.Prices || []),
-    getPriceByRegion(selectedItems.psu?.Prices || []),
-    getPriceByRegion(selectedItems.ssd?.Prices || []),
-    getPriceByRegion(selectedItems.cooler?.Prices || []),
-    getPriceByRegion(selectedItems.pcCase?.Prices || []),
+    getPriceByRegion(selectedItems.cpu?.prices || []),
+    getPriceByRegion(selectedItems.gpu?.prices || []),
+    getPriceByRegion(selectedItems.motherboard?.prices || []),
+    getPriceByRegion(selectedItems.ram?.prices || []),
+    getPriceByRegion(selectedItems.psu?.prices || []),
+    getPriceByRegion(selectedItems.ssd?.prices || []),
+    getPriceByRegion(selectedItems.cooler?.prices || []),
+    getPriceByRegion(selectedItems.pcCase?.prices || []),
   ]
 
   return calculateTotalNumber(compact(numberList))
@@ -116,12 +116,12 @@ const calculateAioPower: PowerCalculator<CoolerType> = (aio) => {
     280: 8,
     360: 10,
   }
-  return powerMap[aio.LiquidCoolerSize] ?? 5
+  return powerMap[aio.liquid_cooler_size] ?? 5
 }
 
 // RAM 功耗計算
 const calculateRamPower: PowerCalculator<RAMType> = (ram) => {
-  return ram?.Channel ? ram.Channel * 3 : 0
+  return ram?.channel ? ram.channel * 3 : 0
 }
 
 // 主機板功耗計算
@@ -129,13 +129,13 @@ const calculateMotherboardPower: PowerCalculator<MotherboardType> = (
   motherboard
 ) => {
   if (!motherboard) return 0
-  return /[ZX]/.test(motherboard.Chipset) ? 35 : 25
+  return /[ZX]/.test(motherboard.chipset) ? 35 : 25
 }
 
 export const getTotalPower = (selectedItems: SelectedItemType): number => {
   const powerComponents = [
-    selectedItems.cpu?.Power,
-    selectedItems.gpu?.Power,
+    selectedItems.cpu?.power,
+    selectedItems.gpu?.power,
     calculateAioPower(selectedItems.cooler),
     calculateRamPower(selectedItems.ram),
     calculateMotherboardPower(selectedItems.motherboard),

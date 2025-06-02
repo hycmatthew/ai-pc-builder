@@ -32,13 +32,13 @@ const ResultCard: React.FC<ResultCardProps> = ({
 
   if (!data) return null
 
-  const currentPrices = getAllPriceByRegion(data.Prices)
+  const currentPrices = getAllPriceByRegion(data.prices)
 
   return (
     <Card sx={{ mb: 2, borderRadius: 2, width: '100%' }} onClick={onClick}>
       <CardHeader
         title={t(config.title)}
-        subheader={`${t(data.Brand)} ${data.Name}`}
+        subheader={`${t(data.brand)} ${data.name}`}
         sx={{
           '& .MuiCardHeader-title': { fontSize: '1.25rem', fontWeight: 600 },
           '& .MuiCardHeader-subheader': { fontSize: '0.75rem' },
@@ -52,10 +52,10 @@ const ResultCard: React.FC<ResultCardProps> = ({
           objectFit: 'cover',
           backgroundColor: 'grey.100',
         }}
-        alt={data.Name}
+        alt={data.name}
         src={
-          data.Img ||
-          `https://placehold.co/600x400?text=${data.Brand}+${data.Name}`
+          data.img ||
+          `https://placehold.co/600x400?text=${data.brand}+${data.name}`
         }
       />
       <CardContent>
@@ -78,21 +78,21 @@ const ResultCard: React.FC<ResultCardProps> = ({
           <Grid size={12} key={`${data.Name}-price-${index}`}>
             <Grid container spacing={1}>
               <Grid size="auto">
-                <PlatformIcon platform={price.Platform} />
+                <PlatformIcon platform={price.platform} />
               </Grid>
               <Grid size="auto">
                 <CusTypography variant="h6" lineHeight={2}>
-                  {t(price.Platform)}
+                  {t(price.platform)}
                 </CusTypography>
               </Grid>
               <Grid size="auto">
                 <CusTypography variant="h6" lineHeight={2}>
-                  {addCurrencySign(price.Price)}
+                  {addCurrencySign(price.price)}
                 </CusTypography>
               </Grid>
               <Grid size="grow" paddingRight={1}>
                 <BuyButton
-                  href={currentPrices[0].PriceLink}
+                  href={currentPrices[0].price_link}
                   variant="contained"
                   color="primary"
                 >

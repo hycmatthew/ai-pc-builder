@@ -5,7 +5,8 @@ interface MappedRAMType {
   type: string
   speed: number
   channel: number
-  profile: string
+  profile_xmp: boolean
+  profile_expo: boolean
   score: number
   price: number
 }

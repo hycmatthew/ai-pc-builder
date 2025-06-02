@@ -37,17 +37,17 @@ const RAMSuggestion = ({ ramList, isLoading }: RAMSuggestionProps) => {
 
         // 型号过滤
         if (filterLogic.model) {
-          isMatch = item.Model === filterLogic.model
+          isMatch = item.model === filterLogic.model
         }
 
         // 品牌过滤
         if (filterLogic.brand && isMatch) {
-          isMatch = item.Brand === filterLogic.brand
+          isMatch = item.brand === filterLogic.brand
         }
 
         // 代际过滤
         if (filterLogic.generation && isMatch) {
-          isMatch = item.Type === filterLogic.generation
+          isMatch = item.type === filterLogic.generation
         }
 
         // 价格过滤
@@ -66,23 +66,23 @@ const RAMSuggestion = ({ ramList, isLoading }: RAMSuggestionProps) => {
   ): ComparisonObject[] => {
     return selectedItems.map((item) => {
       const specs = {
-        capacity: item.Capacity,
-        speed: item.Speed,
-        timing: item.Timing,
-        rgb: item.LED,
+        capacity: item.capacity,
+        speed: item.speed,
+        timing: item.timing,
+        rgb: item.led,
       }
 
       // 获取比较基准值
-      const maxCapacity = Math.max(...selectedItems.map((ram) => ram.Capacity))
-      const maxSpeed = Math.max(...selectedItems.map((ram) => ram.Speed))
+      const maxCapacity = Math.max(...selectedItems.map((ram) => ram.capacity))
+      const maxSpeed = Math.max(...selectedItems.map((ram) => ram.speed))
       const minTiming = Math.min(
-        ...selectedItems.map((ram) => parseTiming(ram.Timing))
+        ...selectedItems.map((ram) => parseTiming(ram.timing))
       )
 
       return {
-        img: item.Img,
+        img: item.img,
         name: generateRAMName(item),
-        model: item.Model,
+        model: item.model,
         items: [
           {
             label: 'capacity',
@@ -148,8 +148,8 @@ const RAMSuggestion = ({ ramList, isLoading }: RAMSuggestionProps) => {
       }
       getItemLabel={(item) => generateRAMName(item)}
       getPriceLabel={(item) => convertLocalizedPrice(item)}
-      getImgSrc={(item) => item.Img}
-      getItemIdentifier={(item) => item.Model}
+      getImgSrc={(item) => item.img}
+      getItemIdentifier={(item) => item.model}
     />
   )
 }

@@ -33,17 +33,17 @@ const SSDSuggestion = ({ ssdList, isLoading }: SSDSuggestionProps) => {
 
         // 型號過濾
         if (filterLogic.model) {
-          isMatch = item.Model === filterLogic.model
+          isMatch = item.model === filterLogic.model
         }
 
         // 品牌過濾
         if (filterLogic.brand && isMatch) {
-          isMatch = item.Brand === filterLogic.brand
+          isMatch = item.brand === filterLogic.brand
         }
 
         // 容量過濾
         if (filterLogic.capacity && isMatch) {
-          isMatch = item.Capacity === filterLogic.capacity
+          isMatch = item.capacity === filterLogic.capacity
         }
 
         // 價格過濾
@@ -62,22 +62,22 @@ const SSDSuggestion = ({ ssdList, isLoading }: SSDSuggestionProps) => {
   ): ComparisonObject[] => {
     return selectedItems.map((item) => {
       const specs = {
-        capacity: item.Capacity,
-        type: item.FlashType,
-        interface: item.Interface,
-        formFactor: item.FormFactor,
-        readSpeed: item.MaxRead,
-        writeSpeed: item.MaxWrite,
+        capacity: item.capacity,
+        type: item.flash_type,
+        interface: item.interface,
+        formFactor: item.form_factor,
+        readSpeed: item.max_read,
+        writeSpeed: item.max_write,
       }
 
       // 獲取比較基準值
-      const maxRead = Math.max(...selectedItems.map((ssd) => ssd.MaxRead))
-      const maxWrite = Math.max(...selectedItems.map((ssd) => ssd.MaxWrite))
+      const maxRead = Math.max(...selectedItems.map((ssd) => ssd.max_read))
+      const maxWrite = Math.max(...selectedItems.map((ssd) => ssd.max_write))
 
       return {
-        img: item.Img,
+        img: item.img,
         name: generateSSDName(item),
-        model: item.Model,
+        model: item.model,
         items: [
           {
             label: 'capacity',
@@ -156,8 +156,8 @@ const SSDSuggestion = ({ ssdList, isLoading }: SSDSuggestionProps) => {
       }
       getItemLabel={(item) => generateSSDName(item)}
       getPriceLabel={(item) => convertLocalizedPrice(item)}
-      getImgSrc={(item) => item.Img}
-      getItemIdentifier={(item) => item.Model}
+      getImgSrc={(item) => item.img}
+      getItemIdentifier={(item) => item.model}
     />
   )
 }

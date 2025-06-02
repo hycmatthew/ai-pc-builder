@@ -32,22 +32,22 @@ const GPUSuggestion = ({ gpuList, isLoading }: GPUSuggestionProps) => {
 
         // 型號過濾
         if (filterLogic.model) {
-          isMatch = item.Name === filterLogic.model
+          isMatch = item.name === filterLogic.model
         }
 
         // 品牌過濾
         if (filterLogic.brand && isMatch) {
-          isMatch = item.Brand === filterLogic.brand
+          isMatch = item.brand === filterLogic.brand
         }
 
         // 製造商過濾
         if (filterLogic.manufacturer && isMatch) {
-          isMatch = item.Manufacturer === filterLogic.manufacturer
+          isMatch = item.manufacturer === filterLogic.manufacturer
         }
 
         // GPU類型過濾
         if (filterLogic.gpu && isMatch) {
-          isMatch = item.Series === filterLogic.gpu
+          isMatch = item.series === filterLogic.gpu
         }
 
         // 價格過濾
@@ -66,29 +66,29 @@ const GPUSuggestion = ({ gpuList, isLoading }: GPUSuggestionProps) => {
   ): ComparisonObject[] => {
     return selectedItems.map((item) => {
       const specs = {
-        memorySize: item.MemorySize,
-        memoryType: item.MemoryType,
-        memoryBus: item.MemoryBus,
-        benchmark: item.Benchmark,
-        power: item.Power,
-        length: item.Length,
+        memorySize: item.memory_size,
+        memoryType: item.memory_type,
+        memoryBus: item.memory_bus,
+        benchmark: item.benchmark,
+        power: item.power,
+        length: item.length,
       }
 
       // 獲取比較基準值
-      const maxMemory = Math.max(...selectedItems.map((gpu) => gpu.MemorySize))
+      const maxMemory = Math.max(...selectedItems.map((gpu) => gpu.memory_size))
       const maxBus = Math.max(
-        ...selectedItems.map((gpu) => parseMemoryBus(gpu.MemoryBus))
+        ...selectedItems.map((gpu) => parseMemoryBus(gpu.memory_bus))
       )
       const maxBenchmark = Math.max(
-        ...selectedItems.map((gpu) => gpu.Benchmark)
+        ...selectedItems.map((gpu) => gpu.benchmark)
       )
-      const minPower = Math.min(...selectedItems.map((gpu) => gpu.Power))
-      const minLength = Math.min(...selectedItems.map((gpu) => gpu.Length))
+      const minPower = Math.min(...selectedItems.map((gpu) => gpu.power))
+      const minLength = Math.min(...selectedItems.map((gpu) => gpu.length))
 
       return {
-        img: item.Img,
-        name: generateItemName(item.Brand, item.Name),
-        model: item.Name,
+        img: item.img,
+        name: generateItemName(item.brand, item.name),
+        model: item.name,
         items: [
           {
             label: 'gpu-memory-size',
@@ -144,10 +144,10 @@ const GPUSuggestion = ({ gpuList, isLoading }: GPUSuggestionProps) => {
           </Grid>
         </>
       }
-      getItemLabel={(item) => generateItemName(item.Brand, item.Name)}
+      getItemLabel={(item) => generateItemName(item.brand, item.name)}
       getPriceLabel={(item) => convertLocalizedPrice(item)}
-      getImgSrc={(item) => item.Img}
-      getItemIdentifier={(item) => item.Name}
+      getImgSrc={(item) => item.img}
+      getItemIdentifier={(item) => item.name}
     />
   )
 }

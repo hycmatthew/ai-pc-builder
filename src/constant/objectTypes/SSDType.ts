@@ -1,22 +1,23 @@
 import PriceType from '../PriceType'
 
 interface SSDType {
-  Brand: string
-  Name: string
-  NameCN: string
-  ReleaseDate: string
-  Model: string
-  Capacity: number
-  Interface: string
-  FlashType: string
-  FormFactor: string
-  DRam: boolean
-  MaxRead: number
-  MaxWrite: number
-  Read4K: number
-  Write4K: number
-  Prices: PriceType[]
-  Img: string
+  id: string
+  brand: string
+  name: string
+  name_cn: string
+  release_date: string
+  model: string
+  capacity: number
+  interface: string
+  flash_type: string
+  form_factor: string
+  d_ram: boolean
+  max_read: number
+  max_write: number
+  read_4k: number
+  write_4k: number
+  prices: PriceType[]
+  img: string
 }
 
 export default SSDType

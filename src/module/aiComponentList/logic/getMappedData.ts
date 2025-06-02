@@ -43,19 +43,19 @@ export function getMappedCPUs(
       if (cpuList.length === 1) {
         return true
       }
-      const isSocketValid = mbSocket ? item.Socket == mbSocket : true
+      const isSocketValid = mbSocket ? item.socket == mbSocket : true
       return priceValidation(item, budget) && isSocketValid
     })
     .map((item) => {
       return {
-        name: item.Name,
-        brand: item.Brand,
-        socket: item.Socket,
-        gpu: item.GPU,
+        name: item.name,
+        brand: item.brand,
+        socket: item.socket,
+        gpu: item.gpu,
         score: ScoreAdjusters.cpu(item, type),
         integratedGraphicsScore:
-          item.IntegratedGraphicsScore * BuildConfig.GPUFactor.GPUScoreMultiply,
-        power: item.Power,
+          item.integrated_graphics_score * BuildConfig.GPUFactor.GPUScoreMultiply,
+        power: item.power,
         price: getLocalizedPriceNum(item),
       }
     })
@@ -74,19 +74,19 @@ export function getMappedGPUs(
         return true
       }
       const isMaxGPULengthValid = maxGPULength
-        ? item.Length < maxGPULength
+        ? item.length < maxGPULength
         : true
 
       return priceValidation(item, budget) && isMaxGPULengthValid
     })
     .map((item) => {
       return {
-        name: item.Name,
-        brand: item.Brand,
-        manufacturer: item.Manufacturer,
+        name: item.name,
+        brand: item.brand,
+        manufacturer: item.manufacturer,
         score: ScoreAdjusters.gpu(item, type),
-        power: item.Power,
-        length: item.Length,
+        power: item.power,
+        length: item.length,
         price: getLocalizedPriceNum(item),
       }
     })
@@ -109,15 +109,15 @@ export function getMappedMotherboards(
       // 兼容性過濾條件
       const compatibilityChecks = [
         // CPU插槽匹配
-        !cpuSocket || item.Socket === cpuSocket,
+        !cpuSocket || item.socket === cpuSocket,
         // 內存速度支持
-        !ramSpeed || item.RamSupport?.includes(ramSpeed),
+        !ramSpeed || item.ram_support?.includes(ramSpeed),
         // 內存插槽數量
-        !ramSlots || item.RamSlot >= ramSlots,
+        !ramSlots || item.ram_slot >= ramSlots,
         // 內存類型匹配
-        !ramType || item.RamType === ramType,
+        !ramType || item.ram_type === ramType,
         // 機箱兼容性
-        !caseCompatibility || caseCompatibility.includes(item.FormFactor),
+        !caseCompatibility || caseCompatibility.includes(item.form_factor),
       ]
 
       // 所有條件必須同時滿足
@@ -125,15 +125,15 @@ export function getMappedMotherboards(
     })
     .map((item) => {
       return {
-        name: item.Name,
-        brand: item.Brand,
-        socket: item.Socket,
-        chipset: item.Chipset,
-        ramSlot: item.RamSlot,
-        ramType: item.RamType,
-        ramSupport: item.RamSupport,
-        ramMax: item.RamMax,
-        formFactor: item.FormFactor,
+        name: item.name,
+        brand: item.brand,
+        socket: item.socket,
+        chipset: item.chipset,
+        ramSlot: item.ram_slot,
+        ramType: item.ram_type,
+        ramSupport: item.ram_support,
+        ramMax: item.ram_max,
+        formFactor: item.form_factor,
         price: getLocalizedPriceNum(item),
       }
     })
@@ -154,22 +154,27 @@ export function getMappedRAMs(
       // 兼容性過濾條件
       const compatibilityChecks = [
         // 主板記憶體類型匹配 (DDR4/DDR5)
-        !mbRamType || item.Type === mbRamType,
+        !mbRamType || item.type === mbRamType,
         // CPU 品牌兼容性檢查
-        !cpuBrand || item.Profile?.toLowerCase().includes(cpuBrand),
+        !cpuBrand || (
+          cpuBrand.toLowerCase() === "intel" ? item.profile_xmp :
+          cpuBrand.toLowerCase() === "amd" ? item.profile_expo :
+          true // 未知品牌CPU不檢查兼容性
+        )
       ]
 
       return priceValidation(item, budget) && compatibilityChecks.every(Boolean)
     })
     .map((item) => {
       return {
-        name: item.Name,
-        brand: item.Brand,
-        capacity: item.Capacity,
-        type: item.Type,
-        speed: item.Speed,
-        channel: item.Channel,
-        profile: item.Profile,
+        name: item.name,
+        brand: item.brand,
+        capacity: item.capacity,
+        type: item.type,
+        speed: item.speed,
+        channel: item.channel,
+        profile_expo: item.profile_expo,
+        profile_xmp: item.profile_xmp,
         score: ramPerformanceLogic(item),
         price: getLocalizedPriceNum(item),
       }
@@ -186,21 +191,21 @@ export function getMappedSSDs(
       if (ssdList.length === 1) {
         return true
       }
-      return priceValidation(item, budget) && item.Capacity == storage
+      return priceValidation(item, budget) && item.capacity == storage
     })
     .map((item) => {
       return {
-        name: item.Name,
-        brand: item.Brand,
-        capacity: item.Capacity,
-        formFactor: item.FormFactor,
-        flashType: item.FlashType,
-        interface: item.Interface,
-        dram: item.DRam,
-        maxRead: item.MaxRead,
-        maxWrite: item.MaxWrite,
-        read4K: item.Read4K,
-        write4K: item.Write4K,
+        name: item.name,
+        brand: item.brand,
+        capacity: item.capacity,
+        formFactor: item.form_factor,
+        flashType: item.flash_type,
+        interface: item.interface,
+        dram: item.d_ram,
+        maxRead: item.max_read,
+        maxWrite: item.max_write,
+        read4K: item.read_4k,
+        write4K: item.write_4k,
         score: ssdPerformanceLogic(item),
         price: getLocalizedPriceNum(item),
       }
@@ -220,14 +225,14 @@ export function getMappedPSUs(
     })
     .map((item) => {
       return {
-        brand: item.Brand,
-        name: item.Name,
-        wattage: item.Wattage,
-        size: item.Size,
-        standard: item.Standard,
-        modular: item.Modular,
-        efficiency: item.Efficiency,
-        length: item.Length,
+        brand: item.brand,
+        name: item.name,
+        wattage: item.wattage,
+        size: item.size,
+        standard: item.standard,
+        modular: item.modular,
+        efficiency: item.efficiency,
+        length: item.length,
         price: getLocalizedPriceNum(item),
       }
     })
@@ -247,24 +252,24 @@ export function getMappedCases(
       // 兼容性過濾條件
       const compatibilityChecks = [
         // 主板尺寸兼容性檢查
-        !mbFormFactor || item.Compatibility?.includes(mbFormFactor),
+        !mbFormFactor || item.compatibility?.includes(mbFormFactor),
         // 顯卡長度兼容性檢查
-        !gpuLength || item.MaxVGAlength >= gpuLength,
+        !gpuLength || item.max_vga_length >= gpuLength,
       ]
 
       return priceValidation(item, budget) && compatibilityChecks.every(Boolean)
     })
     .map((item) => {
       return {
-        id: item.Id,
-        brand: item.Brand,
-        name: item.Name,
-        caseSize: item.CaseSize,
-        powerSupply: item.PowerSupply,
-        compatibility: item.Compatibility,
-        maxVGAlength: item.MaxVGAlength,
-        radiatorSupport: item.RadiatorSupport,
-        maxCpuCoolorHeight: item.MaxCpuCoolorHeight,
+        id: item.id,
+        brand: item.brand,
+        name: item.name,
+        caseSize: item.case_size,
+        powerSupply: item.power_supply,
+        compatibility: item.compatibility,
+        maxVGAlength: item.max_vga_length,
+        radiatorSupport: item.radiator_support,
+        maxCpuCoolorHeight: item.max_cpu_cooler_height,
         price: getLocalizedPriceNum(item),
       }
     })
@@ -284,13 +289,13 @@ export function getMappedCoolers(
       // 兼容性過濾條件
       const compatibilityChecks = [
         // 空冷散熱器高度檢查
-        !item.IsLiquidCooler && maxCoolerHeight
-          ? maxCoolerHeight >= item.AirCoolerHeight
+        !item.is_liquid_cooler && maxCoolerHeight
+          ? maxCoolerHeight >= item.air_cooler_height
           : true,
 
         // 水冷排兼容性檢查
-        item.IsLiquidCooler && radiatorSupport
-          ? radiatorSupport >= item.LiquidCoolerSize
+        item.is_liquid_cooler && radiatorSupport
+          ? radiatorSupport >= item.liquid_cooler_size
           : true,
       ]
 
@@ -298,14 +303,14 @@ export function getMappedCoolers(
     })
     .map((item) => {
       return {
-        id: item.Id,
-        brand: item.Brand,
-        name: item.Name,
-        sockets: item.Sockets,
-        isLiquidCooler: item.IsLiquidCooler,
-        liquidCoolerSize: item.LiquidCoolerSize,
-        airCoolerHeight: item.AirCoolerHeight,
-        noiseLevel: item.NoiseLevel,
+        id: item.id,
+        brand: item.brand,
+        name: item.name,
+        sockets: item.sockets,
+        isLiquidCooler: item.is_liquid_cooler,
+        liquidCoolerSize: item.liquid_cooler_size,
+        airCoolerHeight: item.air_cooler_height,
+        noiseLevel: item.noise_level,
         price: getLocalizedPriceNum(item),
       }
     })
@@ -314,22 +319,22 @@ export function getMappedCoolers(
 // 專用條件檢查函數 ▼
 const Conditions = {
   isAffectedIntel14thGen: (cpu: CPUType) =>
-    /^(Core\s+)?i[79][-\s]*14(700|900)/i.test(cpu.Name.trim()),
+    /^(Core\s+)?i[79][-\s]*14(700|900)/i.test(cpu.name.trim()),
 
   isGamingBuildWithAMD3D: (cpu: CPUType, buildType: BuildType) =>
-    buildType === BuildType.Gaming && /3D/i.test(cpu.Name),
+    buildType === BuildType.Gaming && /3D/i.test(cpu.name),
 
-  isNvidiaGPU: (gpu: GPUType) => gpu.Brand === 'NVIDIA',
+  isNvidiaGPU: (gpu: GPUType) => gpu.brand === 'NVIDIA',
 
-  isRTX50Series: (gpu: GPUType) => /RTX\s*50/i.test(gpu.Name),
+  isRTX50Series: (gpu: GPUType) => /RTX\s*50/i.test(gpu.name),
 } as const
 
 // 分數調整器 ▼
 const ScoreAdjusters = {
   cpu: (item: CPUType, buildType: BuildType) => {
     let score =
-      item.SingleCoreScore * BuildConfig.CPUFactor.SingleCoreMultiply +
-      item.MultiCoreScore * BuildConfig.CPUFactor.MultiCoreMultiply
+      item.single_core_score * BuildConfig.CPUFactor.SingleCoreMultiply +
+      item.multi_core_score * BuildConfig.CPUFactor.MultiCoreMultiply
 
     if (Conditions.isAffectedIntel14thGen(item)) {
       // Intel 14代懲罰
@@ -345,7 +350,7 @@ const ScoreAdjusters = {
   },
 
   gpu: (item: GPUType, buildType: BuildType) => {
-    let score = item.Benchmark * BuildConfig.GPUFactor.GPUScoreMultiply
+    let score = item.benchmark * BuildConfig.GPUFactor.GPUScoreMultiply
 
     if (Conditions.isNvidiaGPU(item)) {
       // 基礎加成

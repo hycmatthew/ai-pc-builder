@@ -121,24 +121,24 @@ export const preFilterDataLogic = (
   // 2. 建立兼容性过滤器
   const filters: CompatibilityFilters = {
     // CPU相关
-    cpuBrand: selectedComponents.cpu?.Brand,
-    cpuSocket: selectedComponents.cpu?.Socket,
+    cpuBrand: selectedComponents.cpu?.brand,
+    cpuSocket: selectedComponents.cpu?.socket,
     // 主板相关
-    mbSocket: selectedComponents.motherboard?.Socket,
-    mbFormFactor: selectedComponents.motherboard?.FormFactor,
-    mbRamType: selectedComponents.motherboard?.RamType,
+    mbSocket: selectedComponents.motherboard?.socket,
+    mbFormFactor: selectedComponents.motherboard?.form_factor,
+    mbRamType: selectedComponents.motherboard?.ram_type,
     // 显卡相关
-    gpuLength: selectedComponents.gpu?.Length,
+    gpuLength: selectedComponents.gpu?.length,
     // 内存相关
-    ramSpeed: selectedComponents.ram?.Speed,
-    ramSlots: selectedComponents.ram?.Channel,
-    ramType: selectedComponents.ram?.Type,
+    ramSpeed: selectedComponents.ram?.speed,
+    ramSlots: selectedComponents.ram?.channel,
+    ramType: selectedComponents.ram?.type,
     // 机箱相关
-    caseCompatibility: selectedComponents.pcCase?.Compatibility,
-    maxGPULength: selectedComponents.pcCase?.MaxVGAlength,
-    maxCoolerHeight: selectedComponents.pcCase?.MaxCpuCoolorHeight,
-    radiatorSupport: selectedComponents.pcCase?.RadiatorSupport,
-    psuSize: selectedComponents.psu?.Size,
+    caseCompatibility: selectedComponents.pcCase?.compatibility,
+    maxGPULength: selectedComponents.pcCase?.max_vga_length,
+    maxCoolerHeight: selectedComponents.pcCase?.max_cpu_cooler_height,
+    radiatorSupport: selectedComponents.pcCase?.radiator_support,
+    psuSize: selectedComponents.psu?.size,
   }
 
   const selectedWeights = weights[type]

@@ -1,8 +1,8 @@
 type PriceType = {
-  Region: string
-  Platform: string
-  Price: string
-  PriceLink: string
+  region: string
+  platform: string
+  price: string
+  price_link: string
 }
 
 export default PriceType

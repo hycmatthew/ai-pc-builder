@@ -33,17 +33,17 @@ const CaseSuggestion = ({ caseList, isLoading }: CaseSuggestionProps) => {
 
         // 型号过滤
         if (filterLogic.model) {
-          isMatch = item.Name === filterLogic.model
+          isMatch = item.name === filterLogic.model
         }
 
         // 品牌过滤
         if (filterLogic.brand && isMatch) {
-          isMatch = item.Brand === filterLogic.brand
+          isMatch = item.brand === filterLogic.brand
         }
 
         // 机箱尺寸过滤
         if (filterLogic.size && isMatch) {
-          isMatch = item.CaseSize === filterLogic.size
+          isMatch = item.case_size === filterLogic.size
         }
 
         // 价格过滤
@@ -62,22 +62,22 @@ const CaseSuggestion = ({ caseList, isLoading }: CaseSuggestionProps) => {
   ): ComparisonObject[] => {
     return selectedItems.map((item) => {
       const specs = {
-        size: item.CaseSize,
-        color: item.Color || '-',
-        maxVGALength: item.MaxVGAlength,
-        compatibility: item.Compatibility || [],
+        size: item.case_size,
+        color: item.color || '-',
+        maxVGALength: item.max_vga_length,
+        compatibility: item.compatibility || [],
       }
 
       // 获取比较基准值
-      const maxVGALength = Math.max(...selectedItems.map((c) => c.MaxVGAlength))
+      const maxVGALength = Math.max(...selectedItems.map((c) => c.max_vga_length))
       const maxCompatibility = Math.max(
-        ...selectedItems.map((c) => c.Compatibility?.length || 0)
+        ...selectedItems.map((c) => c.compatibility?.length || 0)
       )
 
       return {
-        img: item.Img,
-        name: generateItemName(item.Brand, item.Name),
-        model: item.Name,
+        img: item.img,
+        name: generateItemName(item.brand, item.name),
+        model: item.name,
         items: [
           {
             label: 'case-size',
@@ -128,10 +128,10 @@ const CaseSuggestion = ({ caseList, isLoading }: CaseSuggestionProps) => {
           />
         </>
       }
-      getItemLabel={(item) => generateItemName(item.Brand, item.Name)}
+      getItemLabel={(item) => generateItemName(item.brand, item.name)}
       getPriceLabel={(item) => convertLocalizedPrice(item)}
-      getImgSrc={(item) => item.Img}
-      getItemIdentifier={(item) => item.Name}
+      getImgSrc={(item) => item.img}
+      getItemIdentifier={(item) => item.name}
     />
   )
 }

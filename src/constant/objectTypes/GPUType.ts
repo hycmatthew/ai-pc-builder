@@ -1,24 +1,23 @@
 import PriceType from "../PriceType"
 
 interface GPUType {
-  Id: string
-  Name: string
-  NameCN: string
-  Brand: string
-  Manufacturer: string
-  Series: string
-  Generation: string
-  MemorySize: number
-  MemoryType: string
-  MemoryBus: string
-  BoostClock: number
-  OcClock: number
-  Benchmark: number
-  Power: number
-  Length: number
-  Slot: string
-  Prices: PriceType[]
-  Img: string
+  id: string
+  name: string
+  name_cn: string
+  brand: string
+  manufacturer: string
+  series: string
+  generation: string
+  memory_size: number
+  memory_type: string
+  memory_bus: string
+  boost_clock: number
+  benchmark: number
+  power: number
+  length: number
+  slot: string
+  prices: PriceType[]
+  img: string
 }
 
 export default GPUType

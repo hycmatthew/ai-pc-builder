@@ -94,7 +94,7 @@ export const estimateDefaultPrice = (
     BuildConfig.CaseFactor.CaseSuggestion.mATX
   )
   const suggestedCases = caseList.filter((item) =>
-    caseSuggestion.some((id) => item.Id == id)
+    caseSuggestion.some((id) => item.id == id)
   )
   defaultPrices.pcCase =
     caseList.length == 1
@@ -105,7 +105,7 @@ export const estimateDefaultPrice = (
   // 估算电源价格
   const psuSuggestion = BuildConfig.PSUFactor.PSUSuggestion
   const suggestedPSU = psuList.filter((item) =>
-    psuSuggestion.some((id) => item.Id == id)
+    psuSuggestion.some((id) => item.id == id)
   )
   defaultPrices.psu =
     psuList.length == 1
@@ -116,7 +116,7 @@ export const estimateDefaultPrice = (
   // 估算散热器价格
   const coolerSuggestion = BuildConfig.CPUCoolerFactor.CPUCoolerSuggestion[200]
   const suggestedCooler = coolerList.filter((item) =>
-    coolerSuggestion.some((name) => item.Name == name)
+    coolerSuggestion.some((name) => item.name == name)
   )
   defaultPrices.cooler =
     coolerList.length == 1

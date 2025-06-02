@@ -1,22 +1,22 @@
 import PriceType from "../PriceType"
 
 interface CoolerType {
-  Id: string
-  Brand: string
-  Name: string
-  NameCN: string
-  ReleaseDate: string
-  Sockets: string[]
-  IsLiquidCooler: boolean
-  LiquidCoolerSize: number
-  AirCoolerHeight: number
-  NoiseLevel: string
-  FanSpeed: string
-  Airflow: string
-  Pressure: string
-  LED: string
-  Prices: PriceType[]
-  Img: string
+  id: string
+  brand: string
+  name: string
+  name_cn: string
+  release_date: string
+  sockets: string[]
+  is_liquid_cooler: boolean
+  liquid_cooler_size: number
+  air_cooler_height: number
+  noise_level: string
+  fan_speed: string
+  airflow: string
+  pressure: string
+  led: string
+  prices: PriceType[]
+  img: string
 }
 
 export default CoolerType

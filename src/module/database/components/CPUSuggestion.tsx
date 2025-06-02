@@ -32,12 +32,12 @@ const CPUSuggestion = ({ cpuList, isLoading }: CPUSuggestionProps) => {
 
         // 型号过滤
         if (filterLogic.model) {
-          isMatch = item.Name === filterLogic.model
+          isMatch = item.name === filterLogic.model
         }
 
         // 品牌过滤
         if (filterLogic.brand && isMatch) {
-          isMatch = item.Brand === filterLogic.brand
+          isMatch = item.brand === filterLogic.brand
         }
 
         // 价格过滤
@@ -56,28 +56,28 @@ const CPUSuggestion = ({ cpuList, isLoading }: CPUSuggestionProps) => {
   ): ComparisonObject[] => {
     return selectedItems.map((item) => {
       const specs = {
-        socket: item.Socket || '-',
-        cores: item.Cores,
-        graphics: item.GPU || '-',
-        singleScore: item.SingleCoreScore,
-        multiScore: item.MultiCoreScore,
-        power: item.Power,
+        socket: item.socket || '-',
+        cores: item.cores,
+        graphics: item.gpu || '-',
+        singleScore: item.single_core_score,
+        multiScore: item.multi_core_score,
+        power: item.power,
       }
 
       // 获取比较基准值
-      const maxCores = Math.max(...selectedItems.map((cpu) => cpu.Cores))
+      const maxCores = Math.max(...selectedItems.map((cpu) => cpu.cores))
       const maxSingle = Math.max(
-        ...selectedItems.map((cpu) => cpu.SingleCoreScore)
+        ...selectedItems.map((cpu) => cpu.single_core_score)
       )
       const maxMulti = Math.max(
-        ...selectedItems.map((cpu) => cpu.MultiCoreScore)
+        ...selectedItems.map((cpu) => cpu.multi_core_score)
       )
-      const minPower = Math.min(...selectedItems.map((cpu) => cpu.Power))
+      const minPower = Math.min(...selectedItems.map((cpu) => cpu.power))
 
       return {
-        img: item.Img,
-        name: generateItemName(item.Brand, item.Name),
-        model: item.Name,
+        img: item.img,
+        name: generateItemName(item.brand, item.name),
+        model: item.name,
         items: [
           {
             label: 'cpu-socket',
@@ -130,10 +130,10 @@ const CPUSuggestion = ({ cpuList, isLoading }: CPUSuggestionProps) => {
           value={filterLogic.model}
         />
       }
-      getItemLabel={(item) => generateItemName(item.Brand, item.Name)}
+      getItemLabel={(item) => generateItemName(item.brand, item.name)}
       getPriceLabel={(item) => convertLocalizedPrice(item)}
-      getImgSrc={(item) => item.Img}
-      getItemIdentifier={(item) => item.Name}
+      getImgSrc={(item) => item.img}
+      getItemIdentifier={(item) => item.name}
     />
   )
 }

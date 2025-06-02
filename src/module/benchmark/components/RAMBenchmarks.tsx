@@ -84,9 +84,9 @@ function RAMBenchmarksTable() {
       return {
         id: generateRAMName(item),
         index,
-        speed: item.Speed,
+        speed: item.speed,
         performance: ramPerformanceLogic(item),
-        cl: item.Latency,
+        cl: item.latency,
         price: normalizeNumberWithDP(convertLocalizedPrice(item)),
       }
     })

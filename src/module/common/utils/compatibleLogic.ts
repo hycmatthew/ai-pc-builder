@@ -57,7 +57,7 @@ export const psuIncompatible = (
   item: PSUType,
   selectedItems: SelectedItemType
 ) => {
-  return psuPowerNotEnough(item.Wattage, getTotalPower(selectedItems))
+  return psuPowerNotEnough(item.wattage, getTotalPower(selectedItems))
 }
 
 export const caseIncompatible = (

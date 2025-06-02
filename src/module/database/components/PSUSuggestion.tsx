@@ -32,17 +32,17 @@ const PSUSuggestion = ({ psuList, isLoading }: PSUSuggestionProps) => {
 
         // 型号过滤
         if (filterLogic.model) {
-          isMatch = item.Name === filterLogic.model
+          isMatch = item.name === filterLogic.model
         }
 
         // 品牌过滤
         if (filterLogic.brand && isMatch) {
-          isMatch = item.Brand === filterLogic.brand
+          isMatch = item.brand === filterLogic.brand
         }
 
         // 功率过滤
         if (filterLogic.power > 0 && isMatch) {
-          isMatch = item.Wattage >= filterLogic.power
+          isMatch = item.wattage >= filterLogic.power
         }
 
         // 价格过滤
@@ -61,24 +61,24 @@ const PSUSuggestion = ({ psuList, isLoading }: PSUSuggestionProps) => {
   ): ComparisonObject[] => {
     return selectedItems.map((item) => {
       const specs = {
-        type: item.Size,
-        wattage: item.Wattage,
-        efficiency: item.Efficiency,
-        modular: item.Modular,
-        length: item.Length,
+        type: item.size,
+        wattage: item.wattage,
+        efficiency: item.efficiency,
+        modular: item.modular,
+        length: item.length,
       }
 
       // 比较基准值
-      const maxWattage = Math.max(...selectedItems.map((psu) => psu.Wattage))
+      const maxWattage = Math.max(...selectedItems.map((psu) => psu.wattage))
       const maxEfficiency = Math.max(
-        ...selectedItems.map((psu) => efficiencyToNumber(psu.Efficiency))
+        ...selectedItems.map((psu) => efficiencyToNumber(psu.efficiency))
       )
-      const minLength = Math.min(...selectedItems.map((psu) => psu.Length))
+      const minLength = Math.min(...selectedItems.map((psu) => psu.length))
 
       return {
-        img: item.Img,
-        name: generateItemName(item.Brand, item.Name),
-        model: item.Name,
+        img: item.img,
+        name: generateItemName(item.brand, item.name),
+        model: item.name,
         items: [
           {
             label: 'psu-type',
@@ -129,10 +129,10 @@ const PSUSuggestion = ({ psuList, isLoading }: PSUSuggestionProps) => {
           </Grid>
         </>
       }
-      getItemLabel={(item) => generateItemName(item.Brand, item.Name)}
+      getItemLabel={(item) => generateItemName(item.brand, item.name)}
       getPriceLabel={(item) => convertLocalizedPrice(item)}
-      getImgSrc={(item) => item.Img}
-      getItemIdentifier={(item) => item.Name}
+      getImgSrc={(item) => item.img}
+      getItemIdentifier={(item) => item.name}
     />
   )
 }

@@ -14,16 +14,16 @@ export const motherboardOverclockSuggestion = (
   motherboard: MotherboardType | null
 ) => {
   if (cpu && motherboard) {
-    const cpuBrand = cpu?.Brand
+    const cpuBrand = cpu?.brand
     if (cpuBrand === CPUBrand.Intel) {
-      if (containStrUtil(cpu?.Name, 'K')) {
-        return !containStrUtil(motherboard?.Chipset, 'Z')
+      if (containStrUtil(cpu?.name, 'K')) {
+        return !containStrUtil(motherboard?.chipset, 'Z')
       }
     }
-    if (containStrUtil(cpu?.Name, 'X')) {
+    if (containStrUtil(cpu?.name, 'X')) {
       return !(
-        containStrUtil(motherboard?.Chipset, 'X') ||
-        containStrUtil(motherboard?.Chipset, 'B')
+        containStrUtil(motherboard?.chipset, 'X') ||
+        containStrUtil(motherboard?.chipset, 'B')
       )
     }
   }
@@ -35,38 +35,38 @@ export const motherboardChipsetSuggestion = (
   motherboard: MotherboardType | null
 ) => {
   if (cpu && motherboard) {
-    const cpuBrand = cpu?.Brand
+    const cpuBrand = cpu?.brand
     if (cpuBrand === CPUBrand.Intel) {
-      if (cpu?.Name.includes('i3')) {
-        return !motherboard?.Chipset.includes('H')
+      if (cpu?.name.includes('i3')) {
+        return !motherboard?.chipset.includes('H')
       }
-      if (cpu?.Name.includes('i5')) {
+      if (cpu?.name.includes('i5')) {
         return !(
-          motherboard?.Chipset.includes('H') ||
-          motherboard?.Chipset.includes('B')
+          motherboard?.chipset.includes('H') ||
+          motherboard?.chipset.includes('B')
         )
       }
-      if (cpu?.Name.includes('i7')) {
+      if (cpu?.name.includes('i7')) {
         return !(
-          motherboard?.Chipset.includes('B') ||
-          motherboard?.Chipset.includes('Z')
+          motherboard?.chipset.includes('B') ||
+          motherboard?.chipset.includes('Z')
         )
       }
-      if (cpu?.Name.includes('i9')) {
-        return !motherboard?.Chipset.includes('Z')
+      if (cpu?.name.includes('i9')) {
+        return !motherboard?.chipset.includes('Z')
       }
     } else {
-      if (cpu?.Name.includes('Ryzen 3')) {
-        return !motherboard?.Chipset.includes('A')
+      if (cpu?.name.includes('Ryzen 3')) {
+        return !motherboard?.chipset.includes('A')
       }
-      if (cpu?.Name.includes('Ryzen 5')) {
+      if (cpu?.name.includes('Ryzen 5')) {
         return !(
-          motherboard?.Chipset.includes('A') ||
-          motherboard?.Chipset.includes('B')
+          motherboard?.chipset.includes('A') ||
+          motherboard?.chipset.includes('B')
         )
       }
-      if (cpu?.Name.includes('Ryzen 7') || cpu?.Name.includes('Ryzen 9')) {
-        return !motherboard?.Chipset.includes('X')
+      if (cpu?.name.includes('Ryzen 7') || cpu?.name.includes('Ryzen 9')) {
+        return !motherboard?.chipset.includes('X')
       }
     }
   }
@@ -75,9 +75,18 @@ export const motherboardChipsetSuggestion = (
 
 // Motherboard CPU
 export const ramIncompatibleWithCPU = (ram: RAMType, cpu: CPUType | null) => {
-  return cpu && ram
-    ? !ram.Profile.toUpperCase().includes(cpu.Brand.toUpperCase())
-    : false
+  if (!cpu || !ram) {
+    return false
+  }
+
+  const cpuBrand = cpu.brand.toUpperCase()
+  if (cpuBrand === 'INTEL') {
+    return !ram.profile_xmp // 不兼容当不支持XMP时返回true
+  } else if (cpuBrand === 'AMD') {
+    return !ram.profile_expo // 不兼容当不支持EXPO时返回true
+  }
+  // 处理未知CPU品牌
+  return true
 }
 
 // Motherboard RAM
@@ -85,28 +94,40 @@ export const motherboardIncompatibleWithRamSpeed = (
   motherboard: MotherboardType | null,
   ram: RAMType | null
 ) => {
-  return ram && motherboard ? !motherboard.RamSupport.includes(ram.Speed) : false
+  return ram && motherboard
+    ? !motherboard.ram_support.includes(ram.speed)
+    : false
 }
 
 export const ramProfileIsNotMatchCPU = (
   ram: RAMType | null,
   cpu: CPUType | null
 ) => {
-  if (cpu && ram) {
-    return !ram?.Profile.toLowerCase().includes(cpu.Brand)
+  if (!cpu || !ram) {
+    return false
   }
-  return false
+  const cpuBrand = cpu.brand.toUpperCase()
+  if (cpuBrand === 'INTEL') {
+    return !ram.profile_xmp // 不兼容当不支持XMP时返回true
+  } else if (cpuBrand === 'AMD') {
+    return !ram.profile_expo // 不兼容当不支持EXPO时返回true
+  }
+  // 对于未知品牌CPU，返回不匹配
+  return true
 }
 
-export const gpuMatchcpuSuggestion = (gpu: GPUType | null, cpu: CPUType | null) => {
+export const gpuMatchcpuSuggestion = (
+  gpu: GPUType | null,
+  cpu: CPUType | null
+) => {
   if (cpu && gpu) {
-    return gpu.Benchmark > cpu.MultiCoreScore * 2
+    return gpu.benchmark > cpu.multi_core_score * 2
   }
   return false
 }
 
 export const ramSizeSuggestion = (ram: RAMType | null) => {
-  return ram ? ram.Capacity > 32 : false
+  return ram ? ram.capacity > 32 : false
 }
 
 export const aioSuggestion = (

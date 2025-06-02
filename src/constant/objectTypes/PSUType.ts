@@ -1,19 +1,19 @@
 import PriceType from "../PriceType"
 
 interface PSUType {
-  Id: string
-  Brand: string
-  Name: string
-  NameCN: string
-  ReleaseDate: string
-  Wattage: number
-  Size: string
-  Standard: string
-  Modular: string
-  Efficiency: string
-  Length: number
-  Prices: PriceType[]
-  Img: string
+  id: string
+  brand: string
+  name: string
+  name_cn: string
+  release_date: string
+  wattage: number
+  size: string
+  standard: string
+  modular: string
+  efficiency: string
+  length: number
+  prices: PriceType[]
+  img: string
 }
 
 export default PSUType

@@ -11,38 +11,38 @@ import {
 } from '../../../constant/objectTypes'
 
 export const searchCPUItem = (cpuList: CPUType[], name: string) => {
-  return cpuList.find((item: CPUType) => item.Name === name)
+  return cpuList.find((item: CPUType) => item.name === name)
 }
 
 export const searchGPUItem = (gpuList: GPUType[], name: string) => {
-  return gpuList.find((item: GPUType) =>  item.Name === name)
+  return gpuList.find((item: GPUType) =>  item.name === name)
 }
 
 export const searchMotherboardItem = (
   motherboardList: MotherboardType[],
   name: string
 ) => {
-  return motherboardList.find((item: MotherboardType) => item.Name === name)
+  return motherboardList.find((item: MotherboardType) => item.name === name)
 }
 
 export const searchRAMItem = (ramList: RAMType[], name: string) => {
-  return ramList.find((item: RAMType) => item.Name === name)
+  return ramList.find((item: RAMType) => item.name === name)
 }
 
 export const searchSSDItem = (ssdList: SSDType[], name: string) => {
-  return ssdList.find((item: SSDType) => item.Name === name)
+  return ssdList.find((item: SSDType) => item.name === name)
 }
 
 export const searchPSUItem = (psuList: PSUType[], name: string) => {
-  return psuList.find((item: PSUType) => item.Name === name)
+  return psuList.find((item: PSUType) => item.name === name)
 }
 
 export const searchCaseItem = (caseList: CaseType[], name: string) => {
-  return caseList.find((item: CaseType) => item.Name === name)
+  return caseList.find((item: CaseType) => item.name === name)
 }
 
 export const searchAIOItem = (coolerList: CoolerType[], name: string) => {
-  return coolerList.find((item: CoolerType) => item.Name === name)
+  return coolerList.find((item: CoolerType) => item.name === name)
 }
 
 export const searchAirCoolerItem = (
