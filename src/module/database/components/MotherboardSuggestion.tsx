@@ -69,7 +69,7 @@ const MotherboardSuggestion = ({
       return {
         img: item.img,
         name: generateItemName(item.brand, item.name),
-        model: item.name,
+        id: item.id,
         items: [
           {
             label: 'cpu-socket',
@@ -125,10 +125,6 @@ const MotherboardSuggestion = ({
           isLoading={isLoading}
         />
       }
-      getItemLabel={(item) => generateItemName(item.brand, item.name)}
-      getPriceLabel={(item) => convertLocalizedPrice(item)}
-      getImgSrc={(item) => item.img}
-      getItemIdentifier={(item) => item.name}
     />
   )
 }

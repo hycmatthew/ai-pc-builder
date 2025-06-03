@@ -2,7 +2,6 @@ import {
   Card,
   CardActions,
   CardHeader,
-  CardMedia,
   IconButton,
   Tooltip,
   Typography,
@@ -10,13 +9,12 @@ import {
 import { styled } from '@mui/material/styles'
 import AddRoundedIcon from '@mui/icons-material/AddRounded'
 import RemoveRoundedIcon from '@mui/icons-material/RemoveRounded'
-import { EMPTY_IMG_DATA } from '../../../constant/EmptyImage'
-import { priceLabelHandler } from '../../../utils/LabelHelper'
+import PlaceholdImage from '../../common/components/PlaceholdImage'
+import { AllType } from '../../../constant/objectTypes'
+import { getLocalizedPriceNum } from '../../../utils/NumberHelper'
 
 type ItemCardProps = {
-  itemLabel: string
-  priceLabel: string
-  imgSrc: string
+  item: AllType
   disable: boolean
   addComparsion: () => void
   removeComparsion: () => void
@@ -42,9 +40,7 @@ const PriceTypography = styled(Typography)({
 })
 
 const ItemCard = ({
-  itemLabel,
-  priceLabel,
-  imgSrc,
+  item,
   disable,
   addComparsion,
   removeComparsion,
@@ -59,14 +55,13 @@ const ItemCard = ({
           height: '100%',
         }}
       >
-        <CustomCardHeader titleTypographyProps={{ fontSize: '14px' }} title={itemLabel} />
-        <CardMedia
-          component="img"
-          image={imgSrc || EMPTY_IMG_DATA}
-          alt={itemLabel}
+        <CustomCardHeader titleTypographyProps={{ fontSize: '14px' }} title={item.name} />
+        <PlaceholdImage
+          data={item}
+          height={150}
         />
         <CustomCardActions sx={{ display: 'flex', justifyContent: 'space-between' }}>
-          <PriceTypography>{priceLabelHandler(priceLabel)}</PriceTypography>
+          <PriceTypography>{getLocalizedPriceNum(item)}</PriceTypography>
           {disable ? (
             <Tooltip title="Remove from Comparison">
               <AddButton color="warning" onClick={removeComparsion}>

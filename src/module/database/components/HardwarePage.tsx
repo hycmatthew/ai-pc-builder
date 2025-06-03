@@ -1,73 +1,58 @@
-import React, { useState, useMemo } from 'react';
-import { useTranslation } from 'react-i18next';
-import {
-  Grid2 as Grid,
-  Badge,
-  Button,
-  Box,
-  Pagination,
-} from '@mui/material';
-import CompareArrowsIcon from '@mui/icons-material/CompareArrows';
-import ItemCard from './ItemCard';
-import ComparisonModal from './ComparisonModal';
-import { ComparisonObject } from '../data/ComparisonObject';
+import React, { useState, useMemo } from 'react'
+import { useTranslation } from 'react-i18next'
+import { Grid2 as Grid, Badge, Button, Box, Pagination } from '@mui/material'
+import CompareArrowsIcon from '@mui/icons-material/CompareArrows'
+import ItemCard from './ItemCard'
+import ComparisonModal from './ComparisonModal'
+import { ComparisonObject } from '../data/ComparisonObject'
+import { AllType } from '../../../constant/objectTypes'
 
 interface HardwareSuggestionProps<T> {
-  filteredList: T[];
-  isLoading: boolean;
-  buildComparisonObjects: (selectedItems: T[]) => ComparisonObject[];
-  renderFilterForm: React.ReactNode;
-  getItemLabel: (item: T) => string;
-  getPriceLabel: (item: T) => string;
-  getImgSrc: (item: T) => string;
-  getItemIdentifier: (item: T) => string;
-  itemsPerPage?: number;
+  filteredList: T[]
+  isLoading: boolean
+  buildComparisonObjects: (selectedItems: T[]) => ComparisonObject[]
+  renderFilterForm: React.ReactNode
+  itemsPerPage?: number
 }
 
-const HardwareSuggestion = <T extends unknown>({
+const HardwareSuggestion = <T extends AllType>({
   filteredList,
   isLoading,
   buildComparisonObjects,
   renderFilterForm,
-  getItemLabel,
-  getPriceLabel,
-  getImgSrc,
-  getItemIdentifier,
   itemsPerPage = 20,
 }: HardwareSuggestionProps<T>) => {
-  const { t } = useTranslation();
-  const [selectedItems, setSelectedItems] = useState<T[]>([]);
-  const [openCompare, setOpenCompare] = useState(false);
-  const [page, setPage] = useState(1);
+  const { t } = useTranslation()
+  const [selectedItems, setSelectedItems] = useState<T[]>([])
+  const [openCompare, setOpenCompare] = useState(false)
+  const [page, setPage] = useState(1)
 
   const paginatedList = useMemo(() => {
-    const start = (page - 1) * itemsPerPage;
-    const end = start + itemsPerPage;
-    return filteredList.slice(start, end);
-  }, [filteredList, page, itemsPerPage]);
+    const start = (page - 1) * itemsPerPage
+    const end = start + itemsPerPage
+    return filteredList.slice(start, end)
+  }, [filteredList, page, itemsPerPage])
 
-  console.log('paginatedList', paginatedList);
+  console.log('paginatedList', paginatedList)
 
   const addComparison = (item: T) => {
     if (selectedItems.length < 4) {
-      setSelectedItems([...selectedItems, item]);
+      setSelectedItems([...selectedItems, item])
     }
-  };
+  }
 
   const removeComparison = (identifier: string) => {
     const updatedList = selectedItems.filter(
-      (element) => getItemIdentifier(element) !== identifier
-    );
-    setSelectedItems(updatedList);
-    if (updatedList.length === 0) setOpenCompare(false);
-  };
+      (element) => element.id !== identifier
+    )
+    setSelectedItems(updatedList)
+    if (updatedList.length === 0) setOpenCompare(false)
+  }
 
   return (
     <>
       <Grid container spacing={3}>
-        <Grid size={9}>
-          {renderFilterForm}
-        </Grid>
+        <Grid size={9}>{renderFilterForm}</Grid>
         <Grid size={3}>
           <Badge badgeContent={selectedItems.length} color="error">
             <Button
@@ -92,16 +77,14 @@ const HardwareSuggestion = <T extends unknown>({
 
       <Grid container spacing={2} sx={{ pt: 4 }}>
         {paginatedList.map((item) => (
-          <Grid size={3} key={getItemIdentifier(item)}>
+          <Grid size={3} key={item.id}>
             <ItemCard
-              itemLabel={getItemLabel(item)}
-              priceLabel={getPriceLabel(item)}
-              imgSrc={getImgSrc(item)}
+              item={item}
               disable={selectedItems.some(
-                (selected) => getItemIdentifier(selected) === getItemIdentifier(item)
+                (selected) => selected.id === item.id
               )}
               addComparsion={() => addComparison(item)}
-              removeComparsion={() => removeComparison(getItemIdentifier(item))}
+              removeComparsion={() => removeComparison(item.id)}
             />
           </Grid>
         ))}
@@ -118,7 +101,7 @@ const HardwareSuggestion = <T extends unknown>({
         />
       </Box>
     </>
-  );
-};
+  )
+}
 
-export default HardwareSuggestion;
+export default HardwareSuggestion

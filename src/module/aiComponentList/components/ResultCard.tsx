@@ -13,6 +13,7 @@ import { useTranslation } from 'react-i18next'
 import { addCurrencySign, getAllPriceByRegion } from '../../../utils/NumberHelper'
 import PlatformIcon from '../../common/components/PlatformIcon'
 import BuyButton from '../../common/components/BuyButton'
+import PlaceholdImage from '../../common/components/PlaceholdImage'
 
 interface ResultCardProps {
   type: ComponentType
@@ -44,20 +45,7 @@ const ResultCard: React.FC<ResultCardProps> = ({
           '& .MuiCardHeader-subheader': { fontSize: '0.75rem' },
         }}
       />
-      <Box
-        component="img"
-        sx={{
-          width: '100%',
-          height: 200,
-          objectFit: 'cover',
-          backgroundColor: 'grey.100',
-        }}
-        alt={data.name}
-        src={
-          data.img ||
-          `https://placehold.co/600x400?text=${data.brand}+${data.name}`
-        }
-      />
+      <PlaceholdImage data={data} height={180} />
       <CardContent>
         <Grid container spacing={2}>
           {config.properties.simple.map((prop: any) => (

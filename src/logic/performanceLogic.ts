@@ -24,9 +24,25 @@ export const gpuPerformanceLogic = (gpu: GPUType | null) => {
 }
 
 export const ssdPerformanceLogic = (ssd: SSDType | null) => {
-  const mainSSD = ssd
-  if (mainSSD) {
-    return (mainSSD.max_read + mainSSD.max_write) * 0.2
+  if (!ssd) return 0;
+  
+  // 1. 基础性能计算（连续读写和随机读写）
+  const seqPerf = (ssd.max_read + ssd.max_write) * 0.8; // 连续性能权重
+  const randPerf = ((ssd.read_4k + ssd.write_4k) * 1000) * 1.2; // 随机性能权重（转换为IOPS）
+  
+  // 2. 初始总分
+  let totalScore = seqPerf + randPerf;
+  
+  // 3. DRAM缓存加成（有DRAM提升15%）
+  if (ssd.d_ram) {
+    totalScore *= 1.15;
   }
-  return 0
-}
+  
+  // 4. 闪存类型调整
+  if (ssd.flash_type === "QLC") {
+    totalScore *= 0.85; // QLC扣减15%
+  }
+  
+  // 6. 转换为整数（千到万级别）
+  return Math.round(totalScore/30);
+};

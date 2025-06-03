@@ -47,18 +47,33 @@ export const normalizeNumberWithDP = (str: string | number) => {
   return res === '' ? '-' : res
 }
 
-export const calculateTotalNumber = (numberList: string[]): number =>
-  numberList.reduce((acc, curr) => acc + toNumber(curr), 0)
+export const calculateTotalNumber = (numberList: number[]): number =>
+  numberList.reduce((acc, curr) => acc + curr, 0)
 
 // ==================== 核心工具函式 ====================
 export const getAllPriceByRegion = (prices: PriceType[] | null) => {
   const { region } = getCurrencyConfig()
-  return prices?.filter(p => p.region === region) || []
+  return prices?.filter((p) => p.region === region) || []
 }
 
-const getPriceByRegion = (prices: PriceType[] | null) => {
+const getPriceByRegion = (prices: PriceType[] | null): number => {
   const { region } = getCurrencyConfig()
-  return prices?.find(p => p.region === region)?.price?.trim() || ''
+
+  if (!prices || prices.length === 0) return 0
+
+  // 使用 Lodash 的 toNumber 进行转换
+  const validPrices = prices
+    .filter((p) => p.region === region && p.price)
+    .map((p) => {
+      // 使用 toNumber 转换价格
+      const num = toNumber(p.price)
+      // 处理可能的 NaN 或无效值
+      return isNaN(num) ? 0 : num
+    })
+    .filter((price) => price > 0) // 确保价格是正数
+
+  if (validPrices.length === 0) return 0
+  return Math.min(...validPrices)
 }
 
 // 調整貨幣符號添加方式
@@ -77,12 +92,11 @@ export const convertLocalizedPrice = (item: any): string => {
 
 // 調整獲取當前價格數值
 export const getLocalizedPriceNum = (item: { prices: PriceType[] }): number => {
-  return toNumber(getPriceByRegion(item.prices))
+  return getPriceByRegion(item.prices)
 }
 
 // 調整總價計算邏輯
 export const getTotalPrice = (selectedItems: SelectedItemType) => {
-
   const numberList = [
     getPriceByRegion(selectedItems.cpu?.prices || []),
     getPriceByRegion(selectedItems.gpu?.prices || []),
@@ -93,8 +107,7 @@ export const getTotalPrice = (selectedItems: SelectedItemType) => {
     getPriceByRegion(selectedItems.cooler?.prices || []),
     getPriceByRegion(selectedItems.pcCase?.prices || []),
   ]
-
-  return calculateTotalNumber(compact(numberList))
+  return calculateTotalNumber(numberList)
 }
 
 // 保持其他函式簽名不變

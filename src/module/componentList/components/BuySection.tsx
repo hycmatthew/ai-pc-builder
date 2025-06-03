@@ -13,6 +13,7 @@ import BuyButton from '../../common/components/BuyButton'
 import { useState } from 'react'
 import ListCopyDialog from './ListCopyDialog'
 import Calculator from './Calculator'
+import PlaceholdImage from '../../common/components/PlaceholdImage'
 
 type BuySectioProps = {
   dataState: DataState
@@ -42,20 +43,12 @@ const HardwareSection = ({
     >
       {/* 标题行 */}
       <Grid size="auto">
-        <Box
-          component="img"
-          sx={{
-            width: 220,
-            height: SectionHeight,
-            objectFit: 'cover',
-            backgroundColor: 'grey.100',
-            borderRadius: '16px 0 0 16px',
-          }}
-          alt={item.name}
-          src={
-            item.img ||
-            `https://placehold.co/600x400?text=${item.brand}+${item.name}`
-          }
+        <PlaceholdImage
+          data={item}
+          width={220}
+          height={SectionHeight}
+          objectFit="cover"
+          borderRadius="16px 0 0 16px"
         />
       </Grid>
       <Grid size="grow">

@@ -77,7 +77,7 @@ const SSDSuggestion = ({ ssdList, isLoading }: SSDSuggestionProps) => {
       return {
         img: item.img,
         name: generateSSDName(item),
-        model: item.model,
+        id: item.id,
         items: [
           {
             label: 'capacity',
@@ -120,8 +120,7 @@ const SSDSuggestion = ({ ssdList, isLoading }: SSDSuggestionProps) => {
       isLoading={isLoading}
       buildComparisonObjects={buildComparisonObjects}
       renderFilterForm={
-        <>
-          <Grid size={9}>
+          <Grid>
             <SelectElement
               label={t('ssd')}
               options={generateSSDSelectElement(ssdList)}
@@ -131,33 +130,7 @@ const SSDSuggestion = ({ ssdList, isLoading }: SSDSuggestionProps) => {
               isLoading={isLoading}
             />
           </Grid>
-          <Grid size={6}>
-            <SelectFilter
-              label={t('brand')}
-              options={getSSDBrand(ssdList)}
-              selectChange={(brand) =>
-                setFilterLogic((prev) => ({ ...prev, brand }))
-              }
-            />
-          </Grid>
-          <Grid size={6}>
-            <SelectFilter
-              label={t('capacity')}
-              options={getSSDCapacity(ssdList)}
-              selectChange={(capacity) =>
-                setFilterLogic((prev) => ({
-                  ...prev,
-                  capacity: Number(capacity),
-                }))
-              }
-            />
-          </Grid>
-        </>
       }
-      getItemLabel={(item) => generateSSDName(item)}
-      getPriceLabel={(item) => convertLocalizedPrice(item)}
-      getImgSrc={(item) => item.img}
-      getItemIdentifier={(item) => item.model}
     />
   )
 }

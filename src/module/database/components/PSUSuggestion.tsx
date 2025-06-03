@@ -9,7 +9,6 @@ import { generatePSUSelectElement } from '../../common/utils/generateSelectEleme
 import { PSU_FILTER_INIT_DATA } from '../data/FilterInitData'
 import { generateItemName } from '../../../utils/LabelHelper'
 import {
-  convertLocalizedPrice,
   getLocalizedPriceNum,
 } from '../../../utils/NumberHelper'
 import { ComparisonObject } from '../data/ComparisonObject'
@@ -78,7 +77,7 @@ const PSUSuggestion = ({ psuList, isLoading }: PSUSuggestionProps) => {
       return {
         img: item.img,
         name: generateItemName(item.brand, item.name),
-        model: item.name,
+        id: item.id,
         items: [
           {
             label: 'psu-type',
@@ -116,23 +115,17 @@ const PSUSuggestion = ({ psuList, isLoading }: PSUSuggestionProps) => {
       isLoading={isLoading}
       buildComparisonObjects={buildComparisonObjects}
       renderFilterForm={
-        <>
-          <Grid size={9}>
-            <SelectElement
-              label={t('psu')}
-              options={generatePSUSelectElement(psuList)}
-              selectChange={(model) =>
-                setFilterLogic((prev) => ({ ...prev, model }))
-              }
-              isLoading={isLoading}
-            />
-          </Grid>
-        </>
+        <Grid>
+          <SelectElement
+            label={t('psu')}
+            options={generatePSUSelectElement(psuList)}
+            selectChange={(model) =>
+              setFilterLogic((prev) => ({ ...prev, model }))
+            }
+            isLoading={isLoading}
+          />
+        </Grid>
       }
-      getItemLabel={(item) => generateItemName(item.brand, item.name)}
-      getPriceLabel={(item) => convertLocalizedPrice(item)}
-      getImgSrc={(item) => item.img}
-      getItemIdentifier={(item) => item.name}
     />
   )
 }

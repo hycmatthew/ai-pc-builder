@@ -2,8 +2,6 @@ import { useMemo, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 
 import CaseType from '../../../constant/objectTypes/CaseType'
-import SelectFilter from '../../common/components/SelectFilter'
-
 import { CASE_FILTER_INIT_DATA } from '../data/FilterInitData'
 import { generateItemName } from '../../../utils/LabelHelper'
 import { ComparisonObject } from '../data/ComparisonObject'
@@ -11,8 +9,9 @@ import {
   convertLocalizedPrice,
   getLocalizedPriceNum,
 } from '../../../utils/NumberHelper'
-import { getCaseBrand, getCaseSize } from '../../../utils/GroupCategoryHelper'
 import HardwareSuggestion from './HardwarePage'
+import SelectElement from '../../common/components/SelectElement'
+import { generateCaseSelectElement } from '../../common/utils/generateSelectElements'
 
 type CaseSuggestionProps = {
   caseList: CaseType[]
@@ -22,8 +21,6 @@ type CaseSuggestionProps = {
 const CaseSuggestion = ({ caseList, isLoading }: CaseSuggestionProps) => {
   const { t } = useTranslation()
   const [filterLogic, setFilterLogic] = useState(CASE_FILTER_INIT_DATA)
-  const brandOptions = getCaseBrand(caseList)
-  const sizeOptions = getCaseSize(caseList)
 
   // Case 过滤逻辑
   const filteredList = useMemo(
@@ -69,7 +66,9 @@ const CaseSuggestion = ({ caseList, isLoading }: CaseSuggestionProps) => {
       }
 
       // 获取比较基准值
-      const maxVGALength = Math.max(...selectedItems.map((c) => c.max_vga_length))
+      const maxVGALength = Math.max(
+        ...selectedItems.map((c) => c.max_vga_length)
+      )
       const maxCompatibility = Math.max(
         ...selectedItems.map((c) => c.compatibility?.length || 0)
       )
@@ -77,7 +76,7 @@ const CaseSuggestion = ({ caseList, isLoading }: CaseSuggestionProps) => {
       return {
         img: item.img,
         name: generateItemName(item.brand, item.name),
-        model: item.name,
+        id: item.id,
         items: [
           {
             label: 'case-size',
@@ -111,27 +110,15 @@ const CaseSuggestion = ({ caseList, isLoading }: CaseSuggestionProps) => {
       isLoading={isLoading}
       buildComparisonObjects={buildComparisonObjects}
       renderFilterForm={
-        <>
-          <SelectFilter
-            label={t('brand')}
-            options={brandOptions}
-            selectChange={(brand) =>
-              setFilterLogic((prev) => ({ ...prev, brand }))
-            }
-          />
-          <SelectFilter
-            label={t('size')}
-            options={sizeOptions}
-            selectChange={(size) =>
-              setFilterLogic((prev) => ({ ...prev, size }))
-            }
-          />
-        </>
+        <SelectElement
+          label={t('case')}
+          options={generateCaseSelectElement(caseList)}
+          selectChange={(model) =>
+            setFilterLogic((prev) => ({ ...prev, model }))
+          }
+          isLoading={isLoading}
+        />
       }
-      getItemLabel={(item) => generateItemName(item.brand, item.name)}
-      getPriceLabel={(item) => convertLocalizedPrice(item)}
-      getImgSrc={(item) => item.img}
-      getItemIdentifier={(item) => item.name}
     />
   )
 }

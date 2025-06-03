@@ -82,7 +82,7 @@ const RAMSuggestion = ({ ramList, isLoading }: RAMSuggestionProps) => {
       return {
         img: item.img,
         name: generateRAMName(item),
-        model: item.model,
+        id: item.id,
         items: [
           {
             label: 'capacity',
@@ -115,41 +115,17 @@ const RAMSuggestion = ({ ramList, isLoading }: RAMSuggestionProps) => {
       isLoading={isLoading}
       buildComparisonObjects={buildComparisonObjects}
       renderFilterForm={
-        <>
-          <Grid size={9}>
-            <SelectElement
-              label={t('ram')}
-              options={generateRAMSelectElement(ramList)}
-              selectChange={(model) =>
-                setFilterLogic((prev) => ({ ...prev, model }))
-              }
-              isLoading={isLoading}
-            />
-          </Grid>
-          <Grid size={6}>
-            <SelectFilter
-              label={t('brand')}
-              options={getRAMBrand(ramList)}
-              selectChange={(brand) =>
-                setFilterLogic((prev) => ({ ...prev, brand }))
-              }
-            />
-          </Grid>
-          <Grid size={6}>
-            <SelectFilter
-              label={t('generations')}
-              options={getRAMGeneration(ramList)}
-              selectChange={(generation) =>
-                setFilterLogic((prev) => ({ ...prev, generation }))
-              }
-            />
-          </Grid>
-        </>
+        <Grid>
+          <SelectElement
+            label={t('ram')}
+            options={generateRAMSelectElement(ramList)}
+            selectChange={(model) =>
+              setFilterLogic((prev) => ({ ...prev, model }))
+            }
+            isLoading={isLoading}
+          />
+        </Grid>
       }
-      getItemLabel={(item) => generateRAMName(item)}
-      getPriceLabel={(item) => convertLocalizedPrice(item)}
-      getImgSrc={(item) => item.img}
-      getItemIdentifier={(item) => item.model}
     />
   )
 }

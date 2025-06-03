@@ -128,7 +128,7 @@ const ComparisonModal = ({
                 startIcon={<ClearIcon />}
                 color="error"
                 variant="outlined"
-                onClick={() => handleRemove(comparisonObject.model)}
+                onClick={() => handleRemove(comparisonObject.id)}
               >
                 {t('remove')}
               </Button>

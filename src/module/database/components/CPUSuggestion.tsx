@@ -77,7 +77,7 @@ const CPUSuggestion = ({ cpuList, isLoading }: CPUSuggestionProps) => {
       return {
         img: item.img,
         name: generateItemName(item.brand, item.name),
-        model: item.name,
+        id: item.id,
         items: [
           {
             label: 'cpu-socket',
@@ -130,10 +130,6 @@ const CPUSuggestion = ({ cpuList, isLoading }: CPUSuggestionProps) => {
           value={filterLogic.model}
         />
       }
-      getItemLabel={(item) => generateItemName(item.brand, item.name)}
-      getPriceLabel={(item) => convertLocalizedPrice(item)}
-      getImgSrc={(item) => item.img}
-      getItemIdentifier={(item) => item.name}
     />
   )
 }

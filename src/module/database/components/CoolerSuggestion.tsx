@@ -62,12 +62,14 @@ const CoolerSuggestion = ({ coolerList, isLoading }: CoolerSuggestionProps) => {
         isLiquid: item.is_liquid_cooler,
       }
 
-      const maxSize = Math.max(...selectedItems.map((c) => c.liquid_cooler_size))
+      const maxSize = Math.max(
+        ...selectedItems.map((c) => c.liquid_cooler_size)
+      )
 
       return {
         img: item.img,
         name: generateItemName(item.brand, item.name),
-        model: item.name,
+        id: item.id,
         items: [
           {
             label: 'fan-size',
@@ -105,35 +107,17 @@ const CoolerSuggestion = ({ coolerList, isLoading }: CoolerSuggestionProps) => {
       isLoading={isLoading}
       buildComparisonObjects={buildComparisonObjects}
       renderFilterForm={
-        <>
-          <Grid size={9}>
-            <SelectElement
-              label={t('aio')}
-              options={generateAIOSelectElement(coolerList)}
-              selectChange={(model) =>
-                setFilterLogic((prev) => ({ ...prev, model }))
-              }
-              isLoading={isLoading}
-            />
-          </Grid>
-          <Grid size={6}>
-            <SelectFilter
-              label={t('size')}
-              options={getAIOSize(coolerList)}
-              selectChange={(size) =>
-                setFilterLogic((prev) => ({
-                  ...prev,
-                  size: Number(size),
-                }))
-              }
-            />
-          </Grid>
-        </>
+        <Grid>
+          <SelectElement
+            label={t('aio')}
+            options={generateAIOSelectElement(coolerList)}
+            selectChange={(model) =>
+              setFilterLogic((prev) => ({ ...prev, model }))
+            }
+            isLoading={isLoading}
+          />
+        </Grid>
       }
-      getItemLabel={(item) => generateItemName(item.brand, item.name)}
-      getPriceLabel={(item) => convertLocalizedPrice(item)}
-      getImgSrc={(item) => item.img}
-      getItemIdentifier={(item) => item.name}
     />
   )
 }

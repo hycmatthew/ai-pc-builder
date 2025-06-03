@@ -1,4 +1,5 @@
 interface FanType {
+  id: string
   name: string
   brand: string
   model: string

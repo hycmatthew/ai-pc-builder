@@ -60,6 +60,7 @@ interface RangeSliderProps {
 }
 
 export const RangeSlider = ({
+  label = 'price',
   min = 0,
   max = 100,
   step = 1,
@@ -107,9 +108,9 @@ export const RangeSlider = ({
     }
 
   return (
-    <Box sx={{ width: '100%' }}>
+    <Box sx={{ width: '100%', paddingY: 1 }}>
       {/* 标签行 */}
-      <CusTypography variant="h6">{t('price')}</CusTypography>
+      <CusTypography variant="h6">{t(label)}</CusTypography>
 
       {/* 控制项容器 */}
       <Grid container spacing={2} alignItems="center" paddingTop={1}>

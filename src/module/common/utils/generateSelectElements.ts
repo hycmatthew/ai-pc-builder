@@ -32,6 +32,7 @@ export const generateCPUSelectElement = (
     const itemLabel = generateItemName(item.brand, item.name)
 
     return {
+      id: item.id,
       name: item.name,
       brand: item.brand,
       label: itemLabel,
@@ -51,6 +52,7 @@ export const generateGPUSelectElement = (
     const itemLabel = generateItemName(item.brand, item.name)
 
     return {
+      id: item.id,
       name: item.name,
       brand: item.brand,
       label: itemLabel,
@@ -70,6 +72,7 @@ export const generateMotherboardSelectElement = (
     const itemLabel = generateItemName(item.brand, item.name)
 
     return {
+      id: item.id,
       name: item.name,
       brand: item.brand,
       label: itemLabel,
@@ -91,6 +94,7 @@ export const generateRAMSelectElement = (
     const itemLabel = generateRAMName(item)
 
     return {
+      id: item.id,
       name: item.name,
       brand: item.brand,
       label: itemLabel,
@@ -110,6 +114,7 @@ export const generatePSUSelectElement = (
     const itemLabel = generateItemName(item.brand, item.name)
 
     return {
+      id: item.id,
       name: item.name,
       brand: item.brand,
       label: itemLabel,
@@ -128,6 +133,7 @@ export const generateCaseSelectElement = (
     const price = convertLocalizedPrice(item)
     const itemLabel = generateItemName(item.brand, item.name)
     return {
+      id: item.id,
       name: item.name,
       brand: item.brand,
       label: itemLabel,
@@ -146,6 +152,7 @@ export const generateAIOSelectElement = (
     const price = convertLocalizedPrice(item)
     const itemLabel = generateItemName(item.brand, item.name)
     return {
+      id: item.id,
       name: item.name,
       brand: item.brand,
       label: itemLabel,
@@ -165,6 +172,7 @@ export const generateSSDSelectElement = (
     const itemLabel = generateSSDName(item)
 
     return {
+      id: item.id,
       name: item.name,
       brand: item.brand,
       label: itemLabel,
@@ -184,6 +192,7 @@ export const generateAirCoolerSelectElement = (
     const itemLabel = generateItemName(item.brand, item.name)
 
     return {
+      id: item.id,
       name: item.model,
       brand: item.brand,
       label: itemLabel,

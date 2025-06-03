@@ -16,6 +16,14 @@ import SegmentedTabs from '../../common/components/SegmentedTabs'
 import CustomAutocomplete from '../../common/components/CustomAutocomplete'
 import { RangeSlider } from '../../common/components/RangeSlider'
 import { getLocalizedPriceNum } from '../../../utils/NumberHelper'
+import {
+  CPUType,
+  GPUType,
+  MotherboardType,
+  PSUType,
+  RAMType,
+  SSDType,
+} from '../../../constant/objectTypes'
 
 const Database = () => {
   const { t } = useTranslation()
@@ -48,7 +56,7 @@ const Database = () => {
     }
 
     const currentList = dataMap[selectedType] || []
-    const brands = [...new Set(currentList.map((item: any) => item.Brand))]
+    const brands = [...new Set(currentList.map((item: any) => item.brand))]
       .filter(Boolean)
       .sort()
 
@@ -189,10 +197,10 @@ const Database = () => {
       [ProductEnum.CPU]: [
         {
           type: 'select',
-          key: 'Socket',
+          key: 'socket',
           label: t('socket'),
-          getOptions: (list: any[]) =>
-            [...new Set(list.map((item) => item.Socket))]
+          getOptions: (list: CPUType[]) =>
+            [...new Set(list.map((item) => item.socket))]
               .filter(Boolean)
               .sort(),
         },
@@ -200,66 +208,104 @@ const Database = () => {
       [ProductEnum.GPU]: [
         {
           type: 'select',
-          key: 'Manufacturer',
+          key: 'manufacturer',
           label: t('manufacturer'),
-          getOptions: (list: any[]) =>
-            [...new Set(list.map((item) => item.Manufacturer))]
+          getOptions: (list: GPUType[]) =>
+            [...new Set(list.map((item) => item.manufacturer))]
               .filter(Boolean)
               .sort(),
         },
         {
           type: 'select',
-          key: 'Chipset',
+          key: 'chipset',
           label: t('chipset'),
-          getOptions: (list: any[]) =>
-            [...new Set(list.map((item) => item.Chipset))]
+          getOptions: (list: GPUType[]) =>
+            [...new Set(list.map((item) => item.chipset))]
               .filter(Boolean)
               .sort(),
         },
         {
           type: 'select',
-          key: 'MemorySize',
+          key: 'memory_size',
           label: t('memory-size'),
-          getOptions: (list: any[]) => {
+          getOptions: (list: GPUType[]) => {
             const sizes = [
-              ...new Set(list.map((item) => item.MemorySize)),
+              ...new Set(list.map((item) => item.memory_size)),
             ].filter(
               (size): size is number => typeof size === 'number' && !isNaN(size)
             )
-            console.log('sizes', new Set(list.map((item) => item.MemorySize)))
             return sizes.sort((a, b) => a - b)
           },
         },
       ],
       [ProductEnum.RAM]: [
         {
-          type: 'range',
-          key: 'Capacity',
-          label: t('capacity'),
-          getRange: (list: any[]) => ({
-            min: Math.min(...list.map((item) => item.Capacity || 0)),
-            max: Math.max(...list.map((item) => item.Capacity || 0)),
-          }),
+          type: 'select',
+          key: 'capacity',
+          label: t('memory-size'),
+          getOptions: (list: RAMType[]) => {
+            const sizes = [
+              ...new Set(list.map((item) => item.capacity)),
+            ].filter(
+              (size): size is number => typeof size === 'number' && !isNaN(size)
+            )
+            return sizes.sort((a, b) => a - b)
+          },
         },
       ],
       [ProductEnum.Motherboard]: [
         {
           type: 'select',
-          key: 'FormFactor',
+          key: 'form_factor',
           label: t('form-factor'),
-          getOptions: (list: any[]) =>
-            [...new Set(list.map((item) => item.FormFactor))]
+          getOptions: (list: MotherboardType[]) =>
+            [...new Set(list.map((item) => item.form_factor))]
               .filter(Boolean)
               .sort(),
         },
         {
           type: 'select',
-          key: 'Chipset',
+          key: 'chipset',
           label: t('chipset'),
-          getOptions: (list: any[]) =>
-            [...new Set(list.map((item) => item.Chipset))]
+          getOptions: (list: MotherboardType[]) =>
+            [...new Set(list.map((item) => item.chipset))]
               .filter(Boolean)
               .sort(),
+        },
+      ],
+      [ProductEnum.SSD]: [
+        {
+          type: 'select',
+          key: 'capacity',
+          label: t('capacity'),
+          getOptions: (list: SSDType[]) => {
+            const sizes = [
+              ...new Set(list.map((item) => item.capacity)),
+            ].filter(
+              (size): size is number => typeof size === 'number' && !isNaN(size)
+            )
+            return sizes.sort((a, b) => a - b)
+          },
+        },
+        {
+          type: 'select',
+          key: 'interface',
+          label: t('interface'),
+          getOptions: (list: SSDType[]) =>
+            [...new Set(list.map((item) => item.interface))]
+              .filter(Boolean)
+              .sort(),
+        },
+      ],
+      [ProductEnum.PSU]: [
+        {
+          type: 'range',
+          key: 'wattage',
+          label: t('wattage'),
+          getRange: (list: PSUType[]) => ({
+            min: Math.min(...list.map((item) => item.wattage || 0)),
+            max: Math.max(...list.map((item) => item.wattage || 0)),
+          }),
         },
       ],
       // 添加其他硬體類型配置...
@@ -338,7 +384,7 @@ const Database = () => {
   const filterList = (list: any[]) => {
     return list.filter((item) => {
       // 原有品牌和價格篩選
-      const brandMatch = !selectedBrand || item.Brand === selectedBrand
+      const brandMatch = !selectedBrand || item.brand === selectedBrand
       const price = getLocalizedPriceNum(item)
       const priceMatch = price >= selectedPrice[0] && price <= selectedPrice[1]
 
@@ -357,7 +403,6 @@ const Database = () => {
             return true
         }
       })
-
       return brandMatch && priceMatch && specificMatch
     })
   }

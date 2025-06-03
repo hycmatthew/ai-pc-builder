@@ -88,7 +88,7 @@ const GPUSuggestion = ({ gpuList, isLoading }: GPUSuggestionProps) => {
       return {
         img: item.img,
         name: generateItemName(item.brand, item.name),
-        model: item.name,
+        id: item.id,
         items: [
           {
             label: 'gpu-memory-size',
@@ -144,10 +144,6 @@ const GPUSuggestion = ({ gpuList, isLoading }: GPUSuggestionProps) => {
           </Grid>
         </>
       }
-      getItemLabel={(item) => generateItemName(item.brand, item.name)}
-      getPriceLabel={(item) => convertLocalizedPrice(item)}
-      getImgSrc={(item) => item.img}
-      getItemIdentifier={(item) => item.name}
     />
   )
 }

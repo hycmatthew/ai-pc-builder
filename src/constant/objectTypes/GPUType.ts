@@ -7,6 +7,7 @@ interface GPUType {
   brand: string
   manufacturer: string
   series: string
+  chipset: string
   generation: string
   memory_size: number
   memory_type: string

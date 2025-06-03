@@ -133,14 +133,13 @@ const SelectElement = ({
       )}
       /* eslint-disable react/jsx-props-no-spreading */
       renderOption={(props, option: any) => (
-        <Box component="li" {...props} key={props.key}>
+        <Box component="li" {...props} key={option.id}>
           <Stack
             sx={{ width: '100%' }}
             direction="row"
             alignItems="center"
             justifyContent="space-between"
             spacing={1}
-            // key={`${option.brand}-${option.name}`}
           >
             <OptionTypography>{option.label}</OptionTypography>
             <ValueTypography>{addCurrencySign(option.value)}</ValueTypography>
