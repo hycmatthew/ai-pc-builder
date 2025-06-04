@@ -5,10 +5,7 @@ import { Grid2 as Grid } from '@mui/material'
 import GPUType from '../../../constant/objectTypes/GPUType'
 import SelectElement from '../../common/components/SelectElement'
 import { generateGPUSelectElement } from '../../common/utils/generateSelectElements'
-import {
-  convertLocalizedPrice,
-  getLocalizedPriceNum,
-} from '../../../utils/NumberHelper'
+import { getLocalizedPriceNum } from '../../../utils/NumberHelper'
 
 import { GPU_FILTER_INIT_DATA } from '../data/FilterInitData'
 import { generateItemName } from '../../../utils/LabelHelper'

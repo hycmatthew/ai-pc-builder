@@ -4,14 +4,11 @@ import { Grid2 as Grid } from '@mui/material'
 import SSDType from '../../../constant/objectTypes/SSDType'
 import SelectElement from '../../common/components/SelectElement'
 import { generateSSDSelectElement } from '../../common/utils/generateSelectElements'
-import SelectFilter from '../../common/components/SelectFilter'
-import { getSSDBrand, getSSDCapacity } from '../../../utils/GroupCategoryHelper'
 
 import { SSD_FILTER_INIT_DATA } from '../data/FilterInitData'
 import { generateSSDName } from '../../../utils/LabelHelper'
 import { ComparisonObject } from '../data/ComparisonObject'
 import {
-  convertLocalizedPrice,
   getLocalizedPriceNum,
 } from '../../../utils/NumberHelper'
 import HardwareSuggestion from './HardwarePage'

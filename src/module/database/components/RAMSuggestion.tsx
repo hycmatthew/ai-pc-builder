@@ -5,19 +5,11 @@ import { Grid2 as Grid } from '@mui/material'
 import RAMType from '../../../constant/objectTypes/RAMType'
 import SelectElement from '../../common/components/SelectElement'
 import { generateRAMSelectElement } from '../../common/utils/generateSelectElements'
-import SelectFilter from '../../common/components/SelectFilter'
-import {
-  getRAMBrand,
-  getRAMGeneration,
-} from '../../../utils/GroupCategoryHelper'
 
 import { RAM_FILTER_INIT_DATA } from '../data/FilterInitData'
 import { generateRAMName } from '../../../utils/LabelHelper'
 import { ComparisonObject } from '../data/ComparisonObject'
-import {
-  convertLocalizedPrice,
-  getLocalizedPriceNum,
-} from '../../../utils/NumberHelper'
+import { getLocalizedPriceNum } from '../../../utils/NumberHelper'
 import HardwareSuggestion from './HardwarePage'
 
 type RAMSuggestionProps = {

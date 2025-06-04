@@ -5,16 +5,11 @@ import { Grid2 as Grid } from '@mui/material'
 import CoolerType from '../../../constant/objectTypes/CoolerType'
 import SelectElement from '../../common/components/SelectElement'
 import { generateAIOSelectElement } from '../../common/utils/generateSelectElements'
-import SelectFilter from '../../common/components/SelectFilter'
-import { getAIOSize } from '../../../utils/GroupCategoryHelper'
 
 import { AIO_FILTER_INIT_DATA } from '../data/FilterInitData'
 import { generateItemName } from '../../../utils/LabelHelper'
 import { ComparisonObject } from '../data/ComparisonObject'
-import {
-  convertLocalizedPrice,
-  getLocalizedPriceNum,
-} from '../../../utils/NumberHelper'
+import { getLocalizedPriceNum } from '../../../utils/NumberHelper'
 import HardwareSuggestion from './HardwarePage'
 
 type CoolerSuggestionProps = {

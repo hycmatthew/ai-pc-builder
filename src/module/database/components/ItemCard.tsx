@@ -11,7 +11,7 @@ import AddRoundedIcon from '@mui/icons-material/AddRounded'
 import RemoveRoundedIcon from '@mui/icons-material/RemoveRounded'
 import PlaceholdImage from '../../common/components/PlaceholdImage'
 import { AllType } from '../../../constant/objectTypes'
-import { getLocalizedPriceNum } from '../../../utils/NumberHelper'
+import { getCurrentPriceWithSign } from '../../../utils/NumberHelper'
 
 type ItemCardProps = {
   item: AllType
@@ -59,9 +59,10 @@ const ItemCard = ({
         <PlaceholdImage
           data={item}
           height={150}
+          placeholderType="height"
         />
         <CustomCardActions sx={{ display: 'flex', justifyContent: 'space-between' }}>
-          <PriceTypography>{getLocalizedPriceNum(item)}</PriceTypography>
+          <PriceTypography>{getCurrentPriceWithSign(item)}</PriceTypography>
           {disable ? (
             <Tooltip title="Remove from Comparison">
               <AddButton color="warning" onClick={removeComparsion}>

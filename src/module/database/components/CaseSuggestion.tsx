@@ -5,10 +5,7 @@ import CaseType from '../../../constant/objectTypes/CaseType'
 import { CASE_FILTER_INIT_DATA } from '../data/FilterInitData'
 import { generateItemName } from '../../../utils/LabelHelper'
 import { ComparisonObject } from '../data/ComparisonObject'
-import {
-  convertLocalizedPrice,
-  getLocalizedPriceNum,
-} from '../../../utils/NumberHelper'
+import { getLocalizedPriceNum } from '../../../utils/NumberHelper'
 import HardwareSuggestion from './HardwarePage'
 import SelectElement from '../../common/components/SelectElement'
 import { generateCaseSelectElement } from '../../common/utils/generateSelectElements'

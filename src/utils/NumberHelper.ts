@@ -1,6 +1,6 @@
-import { compact, sum, toNumber, isNaN } from 'lodash'
+import { sum, toNumber, isNaN } from 'lodash'
 import i18n from '../config/i18n'
-import { CoolerType, MotherboardType, RAMType } from '../constant/objectTypes'
+import { AllType, CoolerType, MotherboardType, RAMType } from '../constant/objectTypes'
 import { SelectedItemType } from '../store/rawDataReducer'
 import { LangEnum } from '../constant/supportedLang'
 import PriceType from '../constant/PriceType'
@@ -82,11 +82,11 @@ export const addCurrencySign = (value?: string | number): string => {
   return handlePriceValue(value) === '' ? ' - ' : `${sign}${value}`
 }
 
-export const getCurrentPriceWithSign = (item: any): string =>
-  addCurrencySign(convertLocalizedPrice(item.prices))
+export const getCurrentPriceWithSign = (item: AllType): string =>
+  addCurrencySign(convertLocalizedPrice(item))
 
 // 調整本地化價格轉換
-export const convertLocalizedPrice = (item: any): string => {
+export const convertLocalizedPrice = (item: { prices: PriceType[] }): string => {
   return handlePriceValue(getPriceByRegion(item.prices))
 }
 

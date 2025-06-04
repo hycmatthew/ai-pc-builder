@@ -8,6 +8,7 @@ interface PlatformIconProps {
   objectFit?: 'cover' | 'contain' | 'fill' | 'none' | 'scale-down'
   borderRadius?: string | number
   backgroundColor?: string
+  placeholderType?: 'width' | 'height'
   [key: string]: any // 允许其他属性
 }
 
@@ -18,8 +19,11 @@ const PlaceholdImage = ({
   objectFit = 'contain', // 默认contain
   borderRadius = 0,
   backgroundColor = '#fbfbfb', // 默认背景色
+  placeholderType = 'width', // 默认使用宽度作为占位符
   ...props
 }: PlatformIconProps) => {
+  const placeholderSize = backgroundColor === 'width' ? '600x400' : '500x600'
+
   return (
     <Box
       component="img"
@@ -29,13 +33,13 @@ const PlaceholdImage = ({
         objectFit: objectFit,
         backgroundColor: backgroundColor,
         borderRadius: borderRadius,
-        ...props.sx // 允许通过sx覆盖样式
+        ...props.sx, // 允许通过sx覆盖样式
       }}
       {...props}
       alt={`${t(data.brand)} ${data.name}`}
       src={
         data.img ||
-        `https://placehold.co/600x400?text=${data.brand}+${data.name}`
+        `https://placehold.co/${placeholderSize}?text=${data.brand}+${data.name}`
       }
     />
   )

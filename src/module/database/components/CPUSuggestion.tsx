@@ -6,10 +6,7 @@ import SelectElement from '../../common/components/SelectElement'
 import { generateCPUSelectElement } from '../../common/utils/generateSelectElements'
 
 import { CPU_FILTER_INIT_DATA } from '../data/FilterInitData'
-import {
-  convertLocalizedPrice,
-  getLocalizedPriceNum,
-} from '../../../utils/NumberHelper'
+import { getLocalizedPriceNum } from '../../../utils/NumberHelper'
 import { generateItemName } from '../../../utils/LabelHelper'
 import { ComparisonObject } from '../data/ComparisonObject'
 import ProductEnum from '../../../constant/ProductEnum'
