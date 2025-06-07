@@ -108,11 +108,7 @@ export const preFilterDataLogic = (
   }
 
   // 计算需要预留的默认组件预算
-  const usedBudget = estimateDefaultPrice(
-    caseList,
-    psuList,
-    coolerList
-  )
+  const usedBudget = estimateDefaultPrice(caseList, psuList, coolerList)
   let availableBudget = budget - usedBudget * 0.9
   console.log('availableBudget : ', availableBudget)
 
@@ -242,6 +238,19 @@ export const preFilterDataLogic = (
     totalPrice: calRes.price,
     totalScore: calRes.score,
   })
+
+  if (
+    bestConfig?.cpu ||
+    bestConfig?.gpu ||
+    bestConfig?.motherboard ||
+    bestConfig?.ram ||
+    !bestPsu ||
+    !bestCase ||
+    !bestCooler ||
+    !bestSSD
+  ) {
+    return null //组件缺失
+  }
 
   return {
     cpu: bestConfig?.cpu,

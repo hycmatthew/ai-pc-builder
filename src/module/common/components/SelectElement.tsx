@@ -30,29 +30,49 @@ const CustomAutocomplete = styled(Autocomplete)({
   '& .MuiInputBase-input': {},
   // 边框状态管理
   '& .MuiTextField-root .MuiFilledInput-root': {
-    borderColor: "#fbfbfb",
-    background: "#fbfbfb",
-    '&:hover fieldset': {
-      borderColor: "#4287f5",
+    borderColor: '#F7FAFC',
+    background: '#F7FAFC',
+    color: '#4A739C',
+    '&:hover': {
+      background: '#E8EDF5',
     },
-    '&.Mui-focused fieldset': {
-      borderColor: "#4287f5",
+    '&:hover fieldset': {
+      borderColor: '#4287f5',
+    },
+    '&.Mui-focused':{
+      background: '#fbfbfb',
     },
   },
   // 下拉选项
   '& .MuiAutocomplete-paper': {
-    backgroundColor: "#4287f5",
-  }
+    backgroundColor: '#4287f5',
+  },
 })
 
 const OptionTypography = styled(Typography)({
-  fontFamily: [ "Noto Sans SC", "Noto Sans TC", "Open Sans", "sans-serif", "system-ui", "Avenir", "Helvetica"],
+  fontFamily: [
+    'Noto Sans SC',
+    'Noto Sans TC',
+    'Open Sans',
+    'sans-serif',
+    'system-ui',
+    'Avenir',
+    'Helvetica',
+  ],
   fontSize: '14px',
   padding: '2px 0px',
 })
 
 const ValueTypography = styled(Typography)({
-  fontFamily: [ "Noto Sans SC", "Noto Sans TC", "Open Sans", "sans-serif", "system-ui", "Avenir", "Helvetica"],
+  fontFamily: [
+    'Noto Sans SC',
+    'Noto Sans TC',
+    'Open Sans',
+    'sans-serif',
+    'system-ui',
+    'Avenir',
+    'Helvetica',
+  ],
   fontSize: '12px',
   fontWeight: 'bold',
   fontStyle: 'italic',
@@ -104,12 +124,12 @@ const SelectElement = ({
     // 直接调用父组件回调
     if (selectChange) {
       console.log('value:', label)
-      selectChange(value?.name || "", label as ProductEnum, extraNum);
+      selectChange(value?.name || '', label as ProductEnum, extraNum)
     }
-  };
+  }
 
   // 根据传入的value查找当前选项
-  const selectedOption = options.find(option => option.name === value) || null;
+  const selectedOption = options.find((option) => option.name === value) || null
   const sortedOption = options.sort((a, b) => a.brand.localeCompare(b.brand))
 
   return (

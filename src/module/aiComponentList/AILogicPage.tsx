@@ -86,11 +86,7 @@ function AILogicPage() {
   ]
 
   const [activeStep, setActiveStep] = useState(0)
-
-  const handleNext = () => {
-    generateListLogic()
-    setActiveStep(2)
-  }
+  const [displaySysError, setDisplaySysError] = useState(false)
 
   const updateType = (event: React.SyntheticEvent, newValue: any) => {
     if (newValue !== null) {
@@ -129,6 +125,20 @@ function AILogicPage() {
   useEffect(() => {
     setResData(dataState.aiLogic.preSelectedItem)
   }, [dataState.aiLogic.preSelectedItem])
+
+  const handleNext = () => {
+    setDisplaySysError(false)
+    generateListLogic()
+    setActiveStep(2)
+  }
+
+  const clearDataLogic = () => {
+    console.log('clearDataLogic')
+    setDisplaySysError(false)
+    setActiveStep(1)
+    dispatch(sliceActions.clearPreSelectedData())
+    setFormData({ ...formData, budget: '' })
+  }
 
   const budgetTextfieldChanged = (
     event: React.ChangeEvent<HTMLInputElement>
@@ -209,15 +219,9 @@ function AILogicPage() {
         changeSelectItem(res.cooler.name, ProductEnum.Cooler, -1)
       }
       dispatch(sliceActions.updateScoreAndPrirce(res))
+    } else {
+      setDisplaySysError(true)
     }
-  }
-
-  const clearDataLogic = () => {
-    // Define the clearPreSelectedData function here
-    console.log('clearDataLogic')
-    setActiveStep(1)
-    dispatch(sliceActions.clearPreSelectedData())
-    setFormData({ ...formData, budget: '' })
   }
 
   // 配置映射
@@ -368,9 +372,10 @@ function AILogicPage() {
                   />
                 </AnimatedGrid>
                 <AnimatedGrid size={6}>
-                  <CompatibleSection
-                    selectedItems={dataState.aiLogic.preSelectedItem}
-                  />
+                   <CompatibleSection
+                      selectedItems={dataState.aiLogic.preSelectedItem}
+                      systemError={displaySysError ? 'system-error' : undefined}
+                    />
                 </AnimatedGrid>
               </>
             )}

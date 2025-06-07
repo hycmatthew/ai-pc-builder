@@ -31,6 +31,7 @@ import { psuWithATX3 } from '../../../logic/CompatibleLogic/successLogic'
 
 type CompatibleSectionProps = {
   selectedItems: SelectedItemType
+  systemError?: string // 新增可选系统错误参数
 }
 
 const CustomContainer = styled(Container)({
@@ -65,12 +66,24 @@ type SuggestionConfig = {
   interpolation?: Record<string, unknown>
 }
 
-const CompatibleSection = ({ selectedItems }: CompatibleSectionProps) => {
+const CompatibleSection = ({
+  selectedItems,
+  systemError,
+}: CompatibleSectionProps) => {
   const { t } = useTranslation()
   const { cpu, gpu, motherboard, ram, psu, pcCase, cooler } = selectedItems
 
   // 使用 useMemo 缓存计算结果
   const suggestions = useMemo(() => {
+    // 如果存在系统错误，优先返回系统错误信息
+    if (systemError) {
+      return [
+        {
+          value: systemError,
+          type: 'warning', // 强制使用警告类型
+        },
+      ]
+    }
     // 集中管理校验规则配置
     const validationRules: SuggestionConfig[] = [
       // 警告类规则
@@ -212,7 +225,7 @@ const CompatibleSection = ({ selectedItems }: CompatibleSectionProps) => {
         <Grid size={12}>
           {suggestions.map(renderMessage)}
 
-          {suggestions.length === 0 && (
+          {!systemError && suggestions.length === 0 && (
             <GreenStack direction="row" alignItems="flex-start" spacing={2}>
               <CheckCircleIcon fontSize="small" sx={{ mt: '3px' }} />
               <Typography variant="body2">{t('no-suggestion')}</Typography>

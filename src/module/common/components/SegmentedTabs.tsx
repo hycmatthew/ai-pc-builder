@@ -40,15 +40,15 @@ const IosSegmentedTab = styled(Tab)<TabProps>(() => ({
 
   '&:not(.Mui-selected)': {
     '&:hover': {
-      backgroundColor: '#f2f2f2',
+      backgroundColor: '#F7FAFC',
     },
   },
 
   '&.Mui-selected': {
     color: '#000',
-    backgroundColor: '#f2f2f2',
+    backgroundColor: '#F7FAFC',
     '&:hover': {
-      backgroundColor: '#fbfbfb',
+      backgroundColor: '#E8EDF5',
     },
   },
   '&:focus': {

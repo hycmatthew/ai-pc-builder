@@ -60,7 +60,7 @@ const CustomAutocomplete = styled(
       overflow: 'hidden',
       borderRadius,
       border: '0px',
-      backgroundColor: theme.palette.mode === 'dark' ? '#1A2027' : '#F3F6F9',
+      backgroundColor: '#F7FAFC',
       borderColor: 'transparent',
       transition: theme.transitions.create([
         'border-color',
@@ -70,8 +70,7 @@ const CustomAutocomplete = styled(
 
       ...(hoverEffect && {
         '&:hover': {
-          backgroundColor:
-            theme.palette.mode === 'dark' ? '#2D3843' : '#EBEEF3',
+          backgroundColor: '#E8EDF5',
         },
       }),
 
@@ -82,7 +81,7 @@ const CustomAutocomplete = styled(
       },
 
       '&.Mui-disabled': {
-        backgroundColor: theme.palette.mode === 'dark' ? '#1A2027' : '#F3F6F9',
+        backgroundColor: '#F7FAFC',
         borderColor: theme.palette.mode === 'dark' ? '#2D3843' : '#E0E3E7',
         opacity: 0.7,
       },

@@ -35,7 +35,7 @@ const DetailDialog = ({
     <CustomDialog
       open={open}
       onClose={onClose}
-      title={`${t(data.Brand)} ${data.Name}`}
+      title={`${t(data.brand)} ${data.name}`}
       size={size}
     >
       <Grid container spacing={3}>

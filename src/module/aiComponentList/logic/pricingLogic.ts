@@ -114,9 +114,9 @@ export const estimateDefaultPrice = (
         suggestedPSU.length
 
   // 估算散热器价格
-  const coolerSuggestion = BuildConfig.CPUCoolerFactor.CPUCoolerSuggestion[200]
+  const coolerSuggestion = BuildConfig.CPUCoolerFactor.AirCoolerSuggestion
   const suggestedCooler = coolerList.filter((item) =>
-    coolerSuggestion.some((name) => item.name == name)
+    coolerSuggestion.some((id) => item.id == id)
   )
   defaultPrices.cooler =
     coolerList.length == 1

@@ -14,17 +14,17 @@ import { addCurrencySign, getAllPriceByRegion } from '../../../utils/NumberHelpe
 import PlatformIcon from '../../common/components/PlatformIcon'
 import BuyButton from '../../common/components/BuyButton'
 import PlaceholdImage from '../../common/components/PlaceholdImage'
+import { AllType } from '../../../constant/objectTypes'
 
 interface ResultCardProps {
   type: ComponentType
   price: string
-  data?: any
+  data?: AllType
   onClick?: () => void
 }
 
 const ResultCard: React.FC<ResultCardProps> = ({
   type,
-  price,
   data,
   onClick,
 }) => {
@@ -54,7 +54,7 @@ const ResultCard: React.FC<ResultCardProps> = ({
                 {t(prop.label)}
               </CusTypography>
               <CusTypography variant="caption">
-                {prop.formatter ? prop.formatter(data) : data[prop.key] || '-'}
+                {prop.formatter ? prop.formatter(data) : data[prop.key as keyof AllType] || '-'}
               </CusTypography>
             </Grid>
           ))}
@@ -62,8 +62,8 @@ const ResultCard: React.FC<ResultCardProps> = ({
       </CardContent>
       <Divider />
       <Grid container spacing={1} padding={1}>
-        {currentPrices.map((price, index) => (
-          <Grid size={12} key={`${data.Name}-price-${index}`}>
+        {currentPrices.map((price) => (
+          <Grid size={12} key={`${data.id}-${price.platform}`}>
             <Grid container spacing={1}>
               <Grid size="auto">
                 <PlatformIcon platform={price.platform} />

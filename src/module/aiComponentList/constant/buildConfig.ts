@@ -34,10 +34,18 @@ const BuildConfig = {
     ],
   },
   CPUCoolerFactor: {
-    CPUCoolerSuggestion: {
-      400: ['Peerless Assassin 120 SE'],
-      200: ['Peerless Assassin 120 SE'],
-    },
+    AIOCoolerSuggestion: [
+      'thermalright-peerless-assassin-120-se',
+      'scythe-mugen-6',
+      'id-cooling-se-214-xt-argb',
+      'id-cooling-se-214-xt-argb-white',
+    ],
+    AirCoolerSuggestion: [
+      'thermalright-peerless-assassin-120-se',
+      'scythe-mugen-6',
+      'id-cooling-se-214-xt-argb',
+      'id-cooling-se-214-xt-argb-white',
+    ],
   },
   CaseFactor: {
     CaseSuggestion: {
@@ -52,7 +60,12 @@ const BuildConfig = {
         'lian-li-lancool-216x',
         'fractal-design-meshify-c',
       ],
-      mATX: ['aigo-jv13', 'sama-平头哥m2-air', 'montech-air-100-argb-white'],
+      mATX: [
+        'aigo-jv13',
+        'sama-平头哥m2-air',
+        'montech-air-100-argb',
+        'montech-air-100-argb-white',
+      ],
     },
   },
 }

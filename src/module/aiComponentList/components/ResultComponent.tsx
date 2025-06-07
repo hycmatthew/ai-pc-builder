@@ -77,7 +77,7 @@ function ResultComponent({
           >
             <ResultCard
               type={type}
-              price={getCurrentPriceWithSign(resultData[type])}
+              price={getCurrentPriceWithSign(resultData[type]!)}
               data={resultData[type]!} // 非空断言（因 isComplete 已验证）
               onClick={() => handleCardClick(type, resultData[type])}
             />

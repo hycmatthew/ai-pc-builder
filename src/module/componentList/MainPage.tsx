@@ -22,8 +22,21 @@ function MainPage() {
   })
 
   return (
-    <Box className="bg-container">
-      <Box className="blue-bg" paddingY={2}>
+    <Box className="bg-container blue-bg">
+      <Box component="div">
+        <Box
+          component="img"
+          sx={{
+            width: '100%',
+            height: '320px',
+            objectFit: 'cover',
+            backgroundPosition: 'center center',
+          }}
+          alt="The house from the offer."
+          src="src/assets/image/pc-background-1.jpg"
+        />
+      </Box>
+      <Box paddingY={2}>
         <Box className="main-container">
           <Box className="main-overlay-card">
             <Grid size={12} container spacing={0} columns={{ xs: 6, md: 12 }}>

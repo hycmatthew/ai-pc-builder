@@ -11,6 +11,8 @@ body {
 
   .main-page {
     flex: 1; /* 关键属性 - 占据剩余空间 */
+    display: flex;
+    flex-direction: column;
   }
 
   .main_container .header-link-grid a {
@@ -31,7 +33,7 @@ body {
   }
 
   footer {
-    background-color: #1F2937;
+    background-color: #1f2937;
     width: 100%;
     color: #fff;
 

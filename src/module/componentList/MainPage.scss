@@ -3,8 +3,9 @@
 .bg-container {
   background-color: #fff;
 
-  .blue-bg {
+  &.blue-bg {
     background-color: #f8f9fa;
+    flex: 1;
   }
 
   .main-container {

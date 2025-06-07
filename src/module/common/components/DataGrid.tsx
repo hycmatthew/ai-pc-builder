@@ -62,7 +62,9 @@ const GridContainer = styled('div')({
 
 const HeaderRow = styled('div')({
   display: 'flex',
-  background: '#f5f5f5',
+  background: '#F6F7F8',
+  // color: '#333',
+  fontSize: '15px',
   borderBottom: '1px solid #ddd',
   padding: '8px 0',
   flexShrink: 0,

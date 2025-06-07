@@ -1,4 +1,3 @@
-import { m } from 'framer-motion'
 import {
   CaseType,
   CoolerType,
@@ -54,7 +53,8 @@ export function getMappedCPUs(
         gpu: item.gpu,
         score: ScoreAdjusters.cpu(item, type),
         integratedGraphicsScore:
-          item.integrated_graphics_score * BuildConfig.GPUFactor.GPUScoreMultiply,
+          item.integrated_graphics_score *
+          BuildConfig.GPUFactor.GPUScoreMultiply,
         power: item.power,
         price: getLocalizedPriceNum(item),
       }
@@ -156,11 +156,12 @@ export function getMappedRAMs(
         // 主板記憶體類型匹配 (DDR4/DDR5)
         !mbRamType || item.type === mbRamType,
         // CPU 品牌兼容性檢查
-        !cpuBrand || (
-          cpuBrand.toLowerCase() === "intel" ? item.profile_xmp :
-          cpuBrand.toLowerCase() === "amd" ? item.profile_expo :
-          true // 未知品牌CPU不檢查兼容性
-        )
+        !cpuBrand ||
+          (cpuBrand.toLowerCase() === 'intel'
+            ? item.profile_xmp
+            : cpuBrand.toLowerCase() === 'amd'
+              ? item.profile_expo
+              : true), // 未知品牌CPU不檢查兼容性
       ]
 
       return priceValidation(item, budget) && compatibilityChecks.every(Boolean)

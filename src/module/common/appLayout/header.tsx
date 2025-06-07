@@ -14,21 +14,17 @@ const HeaderLayout = () => {
 
   return (
     <header>
-      <div className="header-container">
-        <div className="header-menu-container">
-          <div className="header-icon">
-            <h3>BuildYourPC.com</h3>
-          </div>
-          <div className="header-menu">
-            <div className="menu-list-container">
-              {pages.map((page) => (
-                <div key={page.label} className="menu-item">
-                  <Link to={page.link}>
-                    {page.label}
-                  </Link>
-                </div>
-              ))}
-            </div>
+      <div className="header-menu-container">
+        <div className="header-icon">
+          <h3>BuildYourPC.com</h3>
+        </div>
+        <div className="header-menu">
+          <div className="menu-list-container">
+            {pages.map((page) => (
+              <div key={page.label} className="menu-item">
+                <Link to={page.link}>{page.label}</Link>
+              </div>
+            ))}
           </div>
         </div>
       </div>
