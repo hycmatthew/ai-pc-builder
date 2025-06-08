@@ -10,7 +10,7 @@ import langOptions from '../../../constant/supportedLang'
 const LanguageButtons = () => {
   const { t, i18n } = useTranslation()
 
-  const changeLanguageHandler = (lang: string) => (event: React.MouseEvent<HTMLButtonElement>) => {
+  const changeLanguageHandler = (lang: string) => (_event: React.MouseEvent<HTMLButtonElement>) => {
     i18n.changeLanguage(lang)
   }
 

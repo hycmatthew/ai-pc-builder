@@ -1,11 +1,4 @@
-import {
-  Card,
-  CardContent,
-  CardActions,
-  Button,
-  Grid2 as Grid,
-  Box,
-} from '@mui/material'
+import { Grid2 as Grid, Box } from '@mui/material'
 import ProductEnum from '../../../constant/ProductEnum'
 import SelectElement from '../../common/components/SelectElement'
 import {
@@ -138,7 +131,7 @@ function SpecificComponent({
     {
       type: 'gpu',
       label: ProductEnum.GPU,
-      options: generateGPUSelectElement(gpuList, preSelectedItem),
+      options: generateGPUSelectElement(gpuList),
       value: preSelectedItem.gpu?.name || '',
       lockStatus: lockItem.gpu !== null,
     },
@@ -155,35 +148,35 @@ function SpecificComponent({
     {
       type: 'ram',
       label: ProductEnum.RAM,
-      options: generateRAMSelectElement(ramList, preSelectedItem),
+      options: generateRAMSelectElement(ramList),
       value: preSelectedItem.ram?.name || '',
       lockStatus: lockItem.ram !== null,
     },
     {
       type: 'ssd',
       label: ProductEnum.SSD,
-      options: generateSSDSelectElement(ssdList, preSelectedItem),
+      options: generateSSDSelectElement(ssdList),
       value: preSelectedItem.ssd?.name || '',
       lockStatus: lockItem.ssd !== null,
     },
     {
       type: 'psu',
       label: ProductEnum.PSU,
-      options: generatePSUSelectElement(psuList, preSelectedItem),
+      options: generatePSUSelectElement(psuList),
       value: preSelectedItem.psu?.name || '',
       lockStatus: lockItem.psu !== null,
     },
     {
       type: 'case',
       label: ProductEnum.ComputerCase,
-      options: generateCaseSelectElement(caseList, preSelectedItem),
+      options: generateCaseSelectElement(caseList),
       value: preSelectedItem.pcCase?.name || '',
       lockStatus: lockItem.pcCase !== null,
     },
     {
       type: 'cooler',
       label: ProductEnum.Cooler,
-      options: generateAIOSelectElement(coolerList, preSelectedItem),
+      options: generateAIOSelectElement(coolerList),
       value: preSelectedItem.cooler?.name || '',
       lockStatus: lockItem.cooler !== null,
     },

@@ -45,7 +45,7 @@ type ProductHandlers = {
 
 const steps = ['Select Usage', 'Configure Parts', 'Build Result']
 
-const AnimatedGrid = styled(Grid)(({ theme }) => ({
+const AnimatedGrid = styled(Grid)(() => ({
   animation: 'fadeInSlideUp 0.5s ease-out',
   overflow: 'hidden',
   '@keyframes fadeInSlideUp': {
@@ -107,7 +107,7 @@ function AILogicPage() {
     cooler: null,
   })
 
-  const updateType = (event: React.SyntheticEvent, newValue: any) => {
+  const updateType = (_event: React.SyntheticEvent, newValue: any) => {
     if (newValue !== null) {
       setSelectedType(newValue as BuildType)
       // 选择usage后自动允许进入下一步
@@ -118,7 +118,7 @@ function AILogicPage() {
   }
 
   const updateSelectedStorage = (
-    event: React.SyntheticEvent,
+    _event: React.SyntheticEvent,
     newValue: any
   ) => {
     setSelectedStorage(newValue)

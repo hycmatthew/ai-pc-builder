@@ -100,7 +100,7 @@ const CustomTextField = styled(TextField)(({ theme }) => ({
   },
 }))
 
-const GroupHeader = styled('div')(({ theme }) => ({
+const GroupHeader = styled('div')(() => ({
   position: 'sticky',
   padding: '8px 12px',
   color: '#222222',
@@ -120,7 +120,7 @@ const SelectElement = ({
   selectChange,
 }: SelectElementProps) => {
   const { t } = useTranslation()
-  const handleChange = (event: any, value: any) => {
+  const handleChange = (_event: any, value: any) => {
     // 直接调用父组件回调
     if (selectChange) {
       selectChange(value?.name || '', label as ProductEnum, extraNum)

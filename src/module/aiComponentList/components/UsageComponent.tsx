@@ -15,7 +15,7 @@ type UsageComponentProps = {
 
 function UsageComponent({ currectStep, updateStep }: UsageComponentProps) {
   const dispatch = useAppDispatch()
-  const [buildUsage, setBuildUsage] = useState(100)
+  const [buildUsage] = useState(100)
 
   const submitButtonOnClick = () => {
     dispatch(aiLogicSlice.actions.updateBuildUsage(buildUsage))

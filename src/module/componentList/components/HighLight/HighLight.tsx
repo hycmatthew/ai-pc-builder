@@ -1,4 +1,3 @@
-import { useTranslation } from 'react-i18next'
 import { Grid2 as Grid } from '@mui/material'
 import Card from '@mui/material/Card'
 import CardActions from '@mui/material/CardActions'
@@ -7,10 +6,7 @@ import CardMedia from '@mui/material/CardMedia'
 import Button from '@mui/material/Button'
 import Typography from '@mui/material/Typography'
 
-
 function HighLight() {
-  const { t } = useTranslation()
-
   return (
     <Grid container spacing={2}>
       <Grid size={12}>

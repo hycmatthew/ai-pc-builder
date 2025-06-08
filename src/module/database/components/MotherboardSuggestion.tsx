@@ -1,18 +1,13 @@
 import { useMemo, useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import { Grid2 as Grid } from '@mui/material'
 
 import MotherboardType from '../../../constant/objectTypes/MotherboardType'
 import SelectElement from '../../common/components/SelectElement'
 import { generateMotherboardSelectElement } from '../../common/utils/generateSelectElements'
-import SelectFilter from '../../common/components/SelectFilter'
-import { getMotherboardChipset } from '../../../utils/GroupCategoryHelper'
-
 import { MOTHERBOARD_FILTER_INIT_DATA } from '../data/FilterInitData'
 import { generateItemName } from '../../../utils/LabelHelper'
 import { ComparisonObject } from '../data/ComparisonObject'
 import {
-  convertLocalizedPrice,
   getLocalizedPriceNum,
 } from '../../../utils/NumberHelper'
 import HardwareSuggestion from './HardwarePage'

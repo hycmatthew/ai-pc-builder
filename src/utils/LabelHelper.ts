@@ -15,7 +15,7 @@ export const generateItemName = (brand: string, name: string) => {
 }
 
 export const generateSSDName = (item: SSDType) => {
-  const getSeries = item.brand || item.name
+  // const getSeries = item.brand || item.name
   return `${t(brandTranslationKey(item.brand))} ${item.name}`
 }
 

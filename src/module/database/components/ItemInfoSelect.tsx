@@ -1,4 +1,3 @@
-import React, { useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import {
   Box,
@@ -34,7 +33,7 @@ const ItemInfoSelect = ({
   // const [selectValue, setSelectValue] = useState('')
   const { t } = useTranslation()
 
-  const handleChange = (event: any, newValue: any) => {
+  const handleChange = (_event: any, newValue: any) => {
     if (selectChange && newValue) {
       selectChange(newValue.model, label)
     }
@@ -44,7 +43,7 @@ const ItemInfoSelect = ({
     return (
       <CustomAutocomplete
         id="outlined-disabled"
-        renderInput={(params) => (
+        renderInput={(_params) => (
           <CircularProgress
             size={24}
             sx={{

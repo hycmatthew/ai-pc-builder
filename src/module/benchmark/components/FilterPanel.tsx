@@ -51,7 +51,7 @@ export const FilterPanel = ({
                 {t(option)}
               </li>
             )}
-            onChange={(e, val) => onBrandFilterChange(val === null ? '' : val)}
+            onChange={(_e, val) => onBrandFilterChange(val === null ? '' : val)}
           />
         </Grid>
 

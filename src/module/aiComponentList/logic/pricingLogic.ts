@@ -9,7 +9,6 @@ import {
   CaseType,
   CoolerType,
   PSUType,
-  SSDType,
 } from '../../../constant/objectTypes'
 import { LangEnum } from '../../../constant/supportedLang'
 

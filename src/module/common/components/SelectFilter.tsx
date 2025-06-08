@@ -42,7 +42,7 @@ type SelectFiltertProps = SelectProps & {
 const SelectFilter = ({ label, options, selectChange }: SelectFiltertProps) => {
   const { t } = useTranslation()
 
-  const handleChange = (event: any, newValue: any) => {
+  const handleChange = (_event: any, newValue: any) => {
     if (selectChange) {
       selectChange(newValue.value)
     }

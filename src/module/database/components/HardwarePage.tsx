@@ -17,7 +17,6 @@ interface HardwareSuggestionProps<T> {
 
 const HardwareSuggestion = <T extends AllType>({
   filteredList,
-  isLoading,
   buildComparisonObjects,
   renderFilterForm,
   itemsPerPage = 20,

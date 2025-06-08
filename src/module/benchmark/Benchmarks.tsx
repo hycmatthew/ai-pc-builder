@@ -18,7 +18,7 @@ function Benchmarks() {
     { label: t('ram'), value: ProductEnum.RAM }
   ]
   
-  const handleChange = (event: React.SyntheticEvent, newValue: any) => {
+  const handleChange = (_event: React.SyntheticEvent, newValue: any) => {
     if (newValue !== null) {
       setSelectedType(newValue as ProductEnum)
     }

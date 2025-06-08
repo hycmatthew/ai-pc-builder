@@ -1,6 +1,4 @@
 import { useMemo, useState } from 'react'
-import { useTranslation } from 'react-i18next'
-
 import CPUType from '../../../constant/objectTypes/CPUType'
 import SelectElement from '../../common/components/SelectElement'
 import { generateCPUSelectElement } from '../../common/utils/generateSelectElements'
@@ -18,7 +16,6 @@ type CPUSuggestionProps = {
 }
 
 const CPUSuggestion = ({ cpuList, isLoading }: CPUSuggestionProps) => {
-  const { t } = useTranslation()
   const [filterLogic, setFilterLogic] = useState(CPU_FILTER_INIT_DATA)
 
   // CPU 过滤逻辑

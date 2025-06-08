@@ -33,7 +33,7 @@ function MainPage() {
             backgroundPosition: 'center center',
           }}
           alt="The house from the offer."
-          src="src/assets/image/pc-background-1.jpg"
+          src="/ai-pc-builder/src/assets/image/pc-background-1.jpg"
         />
       </Box>
       <Box paddingY={2}>

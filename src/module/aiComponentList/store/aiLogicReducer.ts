@@ -64,7 +64,7 @@ export const aiLogicSlice = createSlice({
   name: 'aiLogic',
   initialState,
   reducers: {
-    clearAllLogic: (state, action) => {
+    clearAllLogic: (state, _action) => {
       /* eslint-disable no-param-reassign */
       state.step = 0
     },

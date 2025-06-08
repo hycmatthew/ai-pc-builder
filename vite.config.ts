@@ -7,6 +7,7 @@ dotenv.config()
 
 // https://vitejs.dev/config/
 export default defineConfig({
+  base: "/ai-pc-builder/",
   plugins: [
     react(),
     svgr({

@@ -19,7 +19,7 @@ import { ColumnType } from '../../common/components/DataGrid'
 
 function RAMBenchmarksTable() {
   const { t } = useTranslation()
-  const [selectedField, setSelectedField] = useState('speed')
+  const [_selectedField, setSelectedField] = useState('speed')
 
   const dataState = useSelector((state: any) => {
     return state.rawData

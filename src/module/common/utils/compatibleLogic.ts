@@ -3,7 +3,6 @@ import {
   RAMType,
   PSUType,
   CaseType,
-  FanType,
   CPUType,
   GPUType,
 } from '../../../constant/objectTypes'
@@ -14,7 +13,6 @@ import {
   gpuIncompatibleWithCase,
   motherboardIncompatibleWithCase,
   aioIncompatibleWithCase,
-  airCoolerIncompatibleWithCase,
 } from '../../../logic/CompatibleLogic/incompatibleLogic'
 import { getTotalPower } from '../../../utils/NumberHelper'
 import { SelectedItemType } from '../../../store/rawDataReducer'
@@ -69,17 +67,6 @@ export const caseIncompatible = (
     item,
     selectedItems.motherboard
   )
-  const aioValid = aioIncompatibleWithCase(item, selectedItems.cooler)
+  const aioValid = aioIncompatibleWithCase(selectedItems.cooler, item)
   return gpuLengthValid || motherboardValid || aioValid
-}
-
-export const airCoolerIncompatible = (
-  item: FanType,
-  selectedItems: SelectedItemType
-) => {
-  const coolerHeightValid = airCoolerIncompatibleWithCase(
-    item,
-    selectedItems.pcCase
-  )
-  return coolerHeightValid
 }

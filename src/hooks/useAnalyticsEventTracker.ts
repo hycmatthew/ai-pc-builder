@@ -1,5 +1,4 @@
-import React from 'react'
-
+/*
 const useAnalyticsEventTracker = (pageName: string) => {
   const eventTracker = (action = 'Navigate action', label = 'Navigate label') => {
   }
@@ -7,3 +6,4 @@ const useAnalyticsEventTracker = (pageName: string) => {
 }
 
 export default useAnalyticsEventTracker
+*/

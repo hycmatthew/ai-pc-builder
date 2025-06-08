@@ -111,7 +111,7 @@ const Database = () => {
     setSelectedPrice([minPrice, maxPrice])
   }, [selectedType])
 
-  const updateType = (event: React.SyntheticEvent, newValue: any) => {
+  const updateType = (_event: React.SyntheticEvent, newValue: any) => {
     if (newValue !== null) {
       setSelectedType(newValue as ProductEnum)
     }

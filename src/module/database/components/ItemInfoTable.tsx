@@ -3,8 +3,7 @@ import {
   Card,
   CardActions,
   CardContent,
-  CardMedia,
-  Typography,
+  CardMedia
 } from '@mui/material'
 
 import { CPUType, MotherboardType } from '../../../constant/objectTypes'
@@ -28,7 +27,7 @@ function ItemInfoTable({ cpuType, motherboardType }: InfoTableProp) {
           />
           <CardContent>
             <CusTypography variant="h5">
-              Lizard
+              {motherboardType?.name}
             </CusTypography>
             <CusTypography variant="body2" color="text.secondary">
               Lizards are a widespread group of squamate reptiles, with over

@@ -4,7 +4,6 @@ import {
   CardContent,
   CardHeader,
   Grid2 as Grid,
-  Box,
   Divider,
 } from '@mui/material'
 import CusTypography from '../../common/components/CusTypography'

@@ -1,6 +1,6 @@
 import { useSelector } from 'react-redux'
 import { useTranslation } from 'react-i18next'
-import { Box, LinearProgress, Stack, Typography } from '@mui/material'
+import { Box, LinearProgress, Stack } from '@mui/material'
 import 'aos/dist/aos.css'
 import './BenchmarksTable.scss'
 
