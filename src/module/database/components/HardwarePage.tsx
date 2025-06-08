@@ -52,8 +52,8 @@ const HardwareSuggestion = <T extends AllType>({
   return (
     <>
       <Grid container spacing={3}>
-        <Grid size={9}>{renderFilterForm}</Grid>
-        <Grid size={3}>
+        <Grid size={{ xs: 12, md: 9 }}>{renderFilterForm}</Grid>
+        <Grid size={{ xs: 12, md: 3 }}>
           <Badge badgeContent={selectedItems.length} color="error">
             <Button
               startIcon={<CompareArrowsIcon />}
@@ -77,7 +77,7 @@ const HardwareSuggestion = <T extends AllType>({
 
       <Grid container spacing={2} sx={{ pt: 4 }}>
         {paginatedList.map((item) => (
-          <Grid size={3} key={item.id}>
+          <Grid size={{ xs: 6, md: 3 }} key={item.id}>
             <ItemCard
               item={item}
               disable={selectedItems.some(

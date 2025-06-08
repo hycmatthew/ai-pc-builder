@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useCallback, useState } from 'react'
 import { useSelector } from 'react-redux'
 import { useTranslation } from 'react-i18next'
 import { Box, Stack, Typography } from '@mui/material'
@@ -6,7 +6,10 @@ import 'aos/dist/aos.css'
 import './BenchmarksTable.scss'
 
 import { RAMType } from '../../../constant/objectTypes'
-import { convertLocalizedPrice, normalizeNumberWithDP } from '../../../utils/NumberHelper'
+import {
+  convertLocalizedPrice,
+  normalizeNumberWithDP,
+} from '../../../utils/NumberHelper'
 import { ramPerformanceLogic } from '../../../logic/performanceLogic'
 import { generateRAMName, priceLabelHandler } from '../../../utils/LabelHelper'
 import BarMotion from '../../../styles/animation/BarMotion'
@@ -22,23 +25,26 @@ function RAMBenchmarksTable() {
     return state.rawData
   })
 
-  const benchmarksBarWidth = (type: string, score: number, index: number) => {
-    const maxWidth = 400
-    const setLength = score / 7000
+  // 柱状图生成逻辑（使用 useCallback 优化）
+  const benchmarksBarWidth = useCallback((score: number) => {
+    console.log(score)
+    const maxWidth = 300
+    const maxScores = 16000
 
+    const setLength = score / maxScores
     return (
       <BarMotion>
         <Box
           sx={{
             width: setLength * maxWidth,
             backgroundColor: getGradientColor('#006bd6', '#ff0000', setLength),
-            borderRadius: 0,
-            height: 12,
+            height: 16,
+            borderRadius: 1,
           }}
         />
       </BarMotion>
     )
-  }
+  }, [])
 
   const columns: ColumnType[] = [
     {
@@ -64,7 +70,7 @@ function RAMBenchmarksTable() {
       renderCell: (params) => {
         return (
           <Stack direction="row" alignItems="center" spacing={2}>
-            {benchmarksBarWidth(params.field, params.value, params.row.index)}
+            {benchmarksBarWidth(params.value)}
             <Typography variant="subtitle2">{params.value}</Typography>
           </Stack>
         )
@@ -74,7 +80,7 @@ function RAMBenchmarksTable() {
       field: 'price',
       headerName: t('price'),
       width: 110,
-      renderCell: (params) => priceLabelHandler(params.value)
+      renderCell: (params) => priceLabelHandler(params.value),
     },
   ]
 
@@ -94,7 +100,11 @@ function RAMBenchmarksTable() {
   }
 
   const handleColumnHeaderClick = (fieldName: string) => {
-    if (fieldName === 'speed' || fieldName === 'cl' || fieldName === 'performance') {
+    if (
+      fieldName === 'speed' ||
+      fieldName === 'cl' ||
+      fieldName === 'performance'
+    ) {
       setSelectedField(fieldName)
     }
   }

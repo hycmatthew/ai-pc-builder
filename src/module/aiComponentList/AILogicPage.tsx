@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react'
 import { useSelector } from 'react-redux'
 import {
+  CircularProgress,
   FormLabel,
   Grid2 as Grid,
   Stack,
@@ -87,23 +88,7 @@ function AILogicPage() {
 
   const [activeStep, setActiveStep] = useState(0)
   const [displaySysError, setDisplaySysError] = useState(false)
-
-  const updateType = (event: React.SyntheticEvent, newValue: any) => {
-    if (newValue !== null) {
-      setSelectedType(newValue as BuildType)
-      // 选择usage后自动允许进入下一步
-      if (activeStep === 0) {
-        setActiveStep(1)
-      }
-    }
-  }
-
-  const updateSelectedStorage = (
-    event: React.SyntheticEvent,
-    newValue: any
-  ) => {
-    setSelectedStorage(newValue)
-  }
+  const [loading, setLoading] = useState(false)
 
   const [formData, setFormData] = useState({
     type: '',
@@ -122,14 +107,35 @@ function AILogicPage() {
     cooler: null,
   })
 
+  const updateType = (event: React.SyntheticEvent, newValue: any) => {
+    if (newValue !== null) {
+      setSelectedType(newValue as BuildType)
+      // 选择usage后自动允许进入下一步
+      if (activeStep === 0) {
+        setActiveStep(1)
+      }
+    }
+  }
+
+  const updateSelectedStorage = (
+    event: React.SyntheticEvent,
+    newValue: any
+  ) => {
+    setSelectedStorage(newValue)
+  }
+
   useEffect(() => {
     setResData(dataState.aiLogic.preSelectedItem)
   }, [dataState.aiLogic.preSelectedItem])
 
   const handleNext = () => {
+    setLoading(true)
     setDisplaySysError(false)
-    generateListLogic()
     setActiveStep(2)
+    setTimeout(() => {
+      // 使用setTimeout確保UI有時間更新
+      generateListLogic()
+    }, 0)
   }
 
   const clearDataLogic = () => {
@@ -193,6 +199,8 @@ function AILogicPage() {
       selectedStorage,
       selectedType
     )
+    console.log('generateListLogic', res)
+    setLoading(false)
     if (res !== null) {
       if (res.cpu) {
         changeSelectItem(res.cpu.name, ProductEnum.CPU, -1)
@@ -220,6 +228,7 @@ function AILogicPage() {
       }
       dispatch(sliceActions.updateScoreAndPrirce(res))
     } else {
+      console.log('setDisplaySysError')
       setDisplaySysError(true)
     }
   }
@@ -348,6 +357,7 @@ function AILogicPage() {
                       width={200}
                     />
                     <CustomButton
+                      loading={loading}
                       variant="contained"
                       onClick={handleNext}
                       disabled={disableButtonLogic()}
@@ -364,6 +374,25 @@ function AILogicPage() {
                     </CustomButton>
                   </Stack>
                 </AnimatedGrid>
+                {/* 在零件選擇區域添加加載遮罩 */}
+                {loading && (
+                  <div
+                    style={{
+                      position: 'absolute',
+                      top: 0,
+                      left: 0,
+                      right: 0,
+                      bottom: 0,
+                      backgroundColor: 'rgba(255, 255, 255, 0.7)',
+                      zIndex: 10,
+                      display: 'flex',
+                      justifyContent: 'center',
+                      alignItems: 'center',
+                    }}
+                  >
+                    <CircularProgress size={60} />
+                  </div>
+                )}
                 <AnimatedGrid size={6} paddingTop={2}>
                   <SpecificComponent
                     rawData={dataState.rawData}
@@ -372,10 +401,10 @@ function AILogicPage() {
                   />
                 </AnimatedGrid>
                 <AnimatedGrid size={6}>
-                   <CompatibleSection
-                      selectedItems={dataState.aiLogic.preSelectedItem}
-                      systemError={displaySysError ? 'system-error' : undefined}
-                    />
+                  <CompatibleSection
+                    selectedItems={dataState.aiLogic.preSelectedItem}
+                    systemError={displaySysError ? 'system-error' : undefined}
+                  />
                 </AnimatedGrid>
               </>
             )}

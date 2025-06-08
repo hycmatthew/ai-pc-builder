@@ -68,7 +68,7 @@ function ResultComponent({
           <CusTypography variant="h4">{totalScore}</CusTypography>
         </Grid>
       </Grid>
-      <Grid container spacing={2} columns={{ xs: 6, md: 12 }} paddingTop={3}>
+      <Grid container spacing={2} columns={{ xs: 3, sm: 6, md: 12 }} paddingTop={3}>
         {COMPONENT_TYPES.map((type) => (
           <Grid
             size={3}

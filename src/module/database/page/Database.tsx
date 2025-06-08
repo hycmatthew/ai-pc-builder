@@ -17,6 +17,7 @@ import CustomAutocomplete from '../../common/components/CustomAutocomplete'
 import { RangeSlider } from '../../common/components/RangeSlider'
 import { getLocalizedPriceNum } from '../../../utils/NumberHelper'
 import {
+  AllType,
   CPUType,
   GPUType,
   MotherboardType,
@@ -24,6 +25,7 @@ import {
   RAMType,
   SSDType,
 } from '../../../constant/objectTypes'
+import { brandTranslationKey } from '../../../utils/LabelHelper'
 
 const Database = () => {
   const { t } = useTranslation()
@@ -56,11 +58,14 @@ const Database = () => {
     }
 
     const currentList = dataMap[selectedType] || []
-    const brands = [...new Set(currentList.map((item: any) => item.brand))]
+    const brands = [...new Set(currentList.map((item: AllType) => item.brand))]
       .filter(Boolean)
       .sort()
 
-    return brands.map((brand) => ({ label: brand, value: brand }))
+    return brands.map((brand) => ({
+      label: brandTranslationKey(brand as string),
+      value: brand as string,
+    }))
   }, [selectedType, dataState])
 
   // 獲取當前硬件類型的價格範圍
@@ -410,10 +415,10 @@ const Database = () => {
   console.log(filterList)
 
   return (
-    <Grid container justifyContent="center">
-      <Grid container spacing={2} size={{ xs: 12, md: 8 }}>
-        <Grid size={{ xs: 6, md: 3 }}>
-          <Grid container direction="column" spacing={1}>
+    <Box className="main-container">
+      <Grid container spacing={2} size={{ xs: 12, md: 8 }} paddingX={{ xs: 0, lg: 12 }}>
+        <Grid size={{ xs: 12, sm: 6, md: 3 }}>
+          <Grid container direction="column" spacing={1} paddingTop={2}>
             <Grid size={12}>
               <SegmentedTabs
                 value={selectedType}
@@ -459,11 +464,11 @@ const Database = () => {
             </Grid>
           </Grid>
         </Grid>
-        <Grid size={{ xs: 6, md: 9 }} sx={{ paddingTop: '24px' }}>
+        <Grid size={{ xs: 12, sm: 6, md: 9 }} sx={{ paddingTop: '24px' }}>
           {createSelectLogic(selectedType)}
         </Grid>
       </Grid>
-    </Grid>
+    </Box>
   )
 }
 

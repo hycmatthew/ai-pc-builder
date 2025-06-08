@@ -226,24 +226,11 @@ export const preFilterDataLogic = (
     cooler: bestCooler,
   })
 
-  console.log({
-    cpu: bestConfig?.cpu,
-    gpu: bestConfig?.gpu,
-    motherboard: bestConfig?.motherboard,
-    ram: bestConfig?.ram,
-    ssd: bestSSD,
-    psu: bestPsu,
-    case: bestCase,
-    cooler: bestCooler,
-    totalPrice: calRes.price,
-    totalScore: calRes.score,
-  })
-
   if (
-    bestConfig?.cpu ||
-    bestConfig?.gpu ||
-    bestConfig?.motherboard ||
-    bestConfig?.ram ||
+    !bestConfig?.cpu ||
+    !bestConfig?.gpu ||
+    !bestConfig?.motherboard ||
+    !bestConfig?.ram ||
     !bestPsu ||
     !bestCase ||
     !bestCooler ||

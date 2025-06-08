@@ -120,7 +120,8 @@ function GPUBenchmarksTable() {
           sx={{
             width: setLength * maxWidth,
             backgroundColor: getGradientColor('#006bd6', '#ff0000', setLength),
-            height: 12,
+            height: 16,
+            borderRadius: 1,
           }}
         />
       </BarMotion>

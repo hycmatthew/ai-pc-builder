@@ -1,5 +1,6 @@
 import { useTranslation } from 'react-i18next'
-import { Box, Divider, Grid2 as Grid } from '@mui/material'
+import { Divider, Grid2 as Grid, useMediaQuery, useTheme } from '@mui/material'
+import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
 
 import { DataState, SelectedItemType } from '../../../store/rawDataReducer'
 import {
@@ -25,6 +26,8 @@ const HardwareSection = ({
   item: NonNullable<SelectedItemType[keyof SelectedItemType]>
 }) => {
   const { t } = useTranslation()
+  const theme = useTheme();
+  const isXs = useMediaQuery(theme.breakpoints.down('sm'));
   const SectionHeight = 128
 
   // 过滤当前区域的价格信息
@@ -42,10 +45,10 @@ const HardwareSection = ({
       spacing={2}
     >
       {/* 标题行 */}
-      <Grid size="auto">
+      <Grid size={4}>
         <PlaceholdImage
           data={item}
-          width={220}
+          width="100%"
           height={SectionHeight}
           objectFit="cover"
           borderRadius="16px 0 0 16px"
@@ -64,7 +67,7 @@ const HardwareSection = ({
         </Grid>
         {/* 价格列表 */}
         <Grid size={12}>
-          <Grid container spacing={1}>
+          <Grid container spacing={1} >
             {currentPrices.map((price, index) => (
               <Grid size={12} key={`${item.name}-price-${index}`}>
                 <Grid container spacing={1}>
@@ -87,7 +90,7 @@ const HardwareSection = ({
                       variant="contained"
                       color="primary"
                     >
-                      {t('buyNow')}
+                      {isXs ? <ShoppingCartIcon fontSize="small" /> : t('buyNow')}
                     </BuyButton>
                   </Grid>
                 </Grid>
@@ -138,7 +141,7 @@ const BuySection = ({ dataState }: BuySectioProps) => {
             </CustomButton>
           </Grid>
         </Grid>
-        <Grid container paddingTop={4} spacing={2}>
+        <Grid container paddingTop={4} spacing={2} columns={{ xs: 6, md: 12 }}>
           {hardwareEntries.map(([key, item]) => (
             <HardwareSection item={item!} key={key} />
           ))}

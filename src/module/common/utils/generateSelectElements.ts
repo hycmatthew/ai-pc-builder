@@ -182,7 +182,7 @@ export const generateSSDSelectElement = (
   })
   return tempMap
 }
-
+/*
 export const generateAirCoolerSelectElement = (
   list: FanType[],
   selectedItems?: SelectedItemType
@@ -204,3 +204,4 @@ export const generateAirCoolerSelectElement = (
   })
   return tempMap
 }
+*/

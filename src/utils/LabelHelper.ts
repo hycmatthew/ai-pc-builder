@@ -4,7 +4,7 @@ import { RAMType, SSDType } from '../constant/objectTypes'
 import { addCurrencySign } from './NumberHelper'
 
 export const brandTranslationKey = (brand: string) => {
-  const brandKey = brand.toLowerCase().replace('.', '').replace(' ', '-')
+  const brandKey = `brand-${brand.toLowerCase().replace(/[.\s]+/g, '-')}`
   // console.log(brandKey + '-' + t('brandKey'))
   return i18n.exists(brandKey) ? t(brandKey) : brand
 }
@@ -39,7 +39,7 @@ export const formatSSDCapacity = (capacity: number) => {
   // 处理特殊值
   if (capacity === 500) return '500GB'
   if (capacity === 1000) return '1TB'
-  
+
   // 通用处理逻辑
   if (capacity >= 1000 && capacity % 1000 === 0) {
     return `${capacity / 1000}TB`

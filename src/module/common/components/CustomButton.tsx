@@ -15,7 +15,6 @@ const StyledButton = styled(Button)(({ theme }) => ({
   }),
   borderRadius: '8px',
   boxShadow: 'none',
-  minWidth: '160px',
   maxWidth: '50%',
   // Contained variant 專用樣式
   backgroundColor: '#0077c0',
@@ -48,21 +47,20 @@ const CustomButton = ({
   const { t } = useTranslation()
 
   const variantStyles = {
-    contained: {
-    },
+    contained: {},
     outlined: {
       border: `1px solid #0077c0`,
-      color: "#0077c0",
+      color: '#0077c0',
       backgroundColor: '#fff',
-      "&:hover": {
+      '&:hover': {
         color: '#fff',
         backgroundColor: '#0077c0',
-      }
+      },
     },
     text: {
       textDecoration: 'underline',
-      padding: 0
-    }
+      padding: 0,
+    },
   }
 
   return (
@@ -70,8 +68,9 @@ const CustomButton = ({
       variant={resolvedVariant}
       {...props}
       sx={{
+        minWidth: { xs: 'auto', sm: '160px' },
         ...variantStyles[variant || 'contained'], // 动态样式
-        ...props.sx // 允许外部覆盖
+        ...props.sx, // 允许外部覆盖
       }}
     >
       {/* 優先顯示 children，其次處理翻譯 */}
