@@ -69,7 +69,7 @@ function AILogicPage() {
 
   const { t } = useTranslation()
   const dispatch = useAppDispatch()
-  const [selectedType, setSelectedType] = useState<BuildType>(BuildType.Balance)
+  const [selectedType, setSelectedType] = useState<BuildType>(BuildType.Unknown)
   const [selectedStorage, setSelectedStorage] = useState(1000)
 
   const tabs = [

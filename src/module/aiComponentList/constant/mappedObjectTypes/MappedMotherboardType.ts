@@ -8,6 +8,7 @@ interface MappedMotherboardType {
   ramSupport: number[]
   ramMax: number
   formFactor: string
+  score: number
   price: number
 }
 

@@ -42,6 +42,7 @@ const weights = {
   balance: { cpu: 0.5, gpu: 0.3, ram: 0.2 }, // 办公更依赖 CPU
   rendering: { cpu: 0.4, gpu: 0.4, ram: 0.2 }, // 渲染依赖 CPU 和 GPU
   ai: { cpu: 0.2, gpu: 0.7, ram: 0.1 },
+  unknown: { cpu: 0.5, gpu: 0.3, ram: 0.2 },
 }
 
 interface CompatibilityFilters {

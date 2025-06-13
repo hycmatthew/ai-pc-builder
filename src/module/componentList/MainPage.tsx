@@ -1,5 +1,5 @@
 import { useSelector } from 'react-redux'
-import { Box, Container, Grid2 as Grid, styled } from '@mui/material'
+import { Box, Grid2 as Grid } from '@mui/material'
 
 import ComponentMenu from './components/ComponentMenu'
 import PowerCalculator from './components/PowerCalculator'
@@ -9,12 +9,7 @@ import ScoreSection from './components/ScoreSection'
 import './MainPage.scss'
 import BuySection from './components/BuySection'
 import { t } from 'i18next'
-import { Link } from 'react-router-dom'
-
-const CustomContainer = styled(Container)({
-  backgroundColor: '#ffffff',
-  padding: '8px',
-})
+import HeroBanner from '../common/components/HeroBanner'
 
 function MainPage() {
   const dataState = useSelector((state: any) => {
@@ -23,19 +18,22 @@ function MainPage() {
 
   return (
     <Box className="bg-container blue-bg">
-      <Box component="div">
-        <Box
-          component="img"
-          sx={{
-            width: '100%',
-            height: '320px',
-            objectFit: 'cover',
-            backgroundPosition: 'center center',
-          }}
-          alt="The house from the offer."
-          src="/ai-pc-builder/src/assets/image/pc-background-1.jpg"
-        />
-      </Box>
+      <HeroBanner
+        imageUrl={`${import.meta.env.BASE_URL}image/pc-background-1.jpg`}
+        imageHeight={320}
+        titleText={<>{t('try-ai-build-header')}</>}
+        buttonText={t('try-ai-build-button')}
+        buttonLink="ai-build"
+        imageAlt="DIY PC Background"
+        contentSx={{
+          backgroundColor: 'rgba(10, 9, 9, 0.3)',
+          backdropFilter: 'blur(2px)',
+        }}
+        titleSx={{
+          fontSize: { xs: '1.5rem', md: '2rem' },
+          fontWeight: 700,
+        }}
+      />
       <Box paddingY={2}>
         <Box className="main-container">
           <Box className="main-overlay-card">
@@ -44,16 +42,6 @@ function MainPage() {
                 <ComponentMenu dataState={dataState} />
               </Grid>
               <Grid size={6}>
-                <CustomContainer>
-                  <Grid container spacing={2} marginBottom={2}>
-                    {t('try-ai-build-header')}
-                    <Grid size="auto">
-                      <Link to={`/${dataState.language}/ai-build`}>
-                        {t('try-ai-build-button')} ➜
-                      </Link>
-                    </Grid>
-                  </Grid>
-                </CustomContainer>
                 <ScoreSection selectedItems={dataState.selectedItems} />
                 <PowerCalculator selectedItems={dataState.selectedItems} />
                 <CompatibleSection selectedItems={dataState.selectedItems} />

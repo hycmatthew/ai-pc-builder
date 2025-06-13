@@ -3,4 +3,5 @@ export enum BuildType {
   Gaming = 'gaming',
   Rendering = 'rendering',
   AI = 'ai',
+  Unknown = 'unknown',
 }

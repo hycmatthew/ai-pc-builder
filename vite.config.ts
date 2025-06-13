@@ -7,7 +7,10 @@ dotenv.config()
 
 // https://vitejs.dev/config/
 export default defineConfig({
-  base: "/ai-pc-builder/",
+  base:
+    process.env.NODE_ENV === 'production'
+      ? '/ai-pc-builder/' // GitHub Pages路径
+      : '/',
   plugins: [
     react(),
     svgr({
@@ -15,7 +18,7 @@ export default defineConfig({
         icon: true, // 啟用縮放支持
         svgo: true, // 啟用 SVGO 優化
       },
-      include: "**/*.svg?react",
+      include: '**/*.svg?react',
     }),
   ],
   define: {
