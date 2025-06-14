@@ -1,6 +1,6 @@
 import React, { useState, useMemo } from 'react'
 import { useTranslation } from 'react-i18next'
-import { Grid2 as Grid, Badge, Button, Box, Pagination } from '@mui/material'
+import { Grid, Badge, Box, Pagination } from '@mui/material'
 import CompareArrowsIcon from '@mui/icons-material/CompareArrows'
 import ItemCard from './ItemCard'
 import ComparisonModal from './ComparisonModal'

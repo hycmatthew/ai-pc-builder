@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import { Box, Grid2 as Grid } from '@mui/material'
+import { Box, Grid } from '@mui/material'
 
 import { useSelector } from 'react-redux'
 import ProductEnum from '../../../constant/ProductEnum'

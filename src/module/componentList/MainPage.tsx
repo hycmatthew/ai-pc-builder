@@ -1,5 +1,5 @@
 import { useSelector } from 'react-redux'
-import { Box, Grid2 as Grid } from '@mui/material'
+import { Box, Grid } from '@mui/material'
 
 import ComponentMenu from './components/ComponentMenu'
 import PowerCalculator from './components/PowerCalculator'

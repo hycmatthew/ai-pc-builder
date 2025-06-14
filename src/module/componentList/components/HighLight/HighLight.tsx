@@ -1,4 +1,4 @@
-import { Grid2 as Grid } from '@mui/material'
+import { Grid } from '@mui/material'
 import Card from '@mui/material/Card'
 import CardActions from '@mui/material/CardActions'
 import CardContent from '@mui/material/CardContent'

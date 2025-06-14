@@ -1,7 +1,7 @@
 import { useTranslation } from 'react-i18next'
 import {
   Modal,
-  Grid2 as Grid,
+  Grid,
   CardMedia,
   CardContent,
   Typography,

@@ -3,7 +3,7 @@ import {
   Card,
   CardContent,
   CardHeader,
-  Grid2 as Grid,
+  Grid,
   Divider,
 } from '@mui/material'
 import CusTypography from '../../common/components/CusTypography'

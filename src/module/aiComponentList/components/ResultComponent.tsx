@@ -1,4 +1,4 @@
-import { Box, Grid2 as Grid } from '@mui/material'
+import { Box, Grid } from '@mui/material'
 import { SelectedItemType } from '../../../store/rawDataReducer'
 import ResultCard from './ResultCard'
 import {

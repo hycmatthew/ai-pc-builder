@@ -1,5 +1,8 @@
 import {
+  Alert,
   Box,
+  Slide,
+  SlideProps,
   Snackbar,
   SnackbarCloseReason,
   Switch,
@@ -62,11 +65,18 @@ function NotifyButton({ copyVal }: NotifyButtonProps) {
       </CustomIconButton>
       <Snackbar
         open={open}
-        autoHideDuration={1000}
+        autoHideDuration={2000}
         onClose={handleClose}
-        message="This Snackbar will be dismissed in 5 seconds."
-        action={action}
-      />
+      >
+        <Alert
+          onClose={handleClose}
+          severity="success"
+          variant="filled"
+          sx={{ width: '100%' }}
+        >
+          This is a success Alert inside a Snackbar!
+        </Alert>
+      </Snackbar>
     </>
   )
 }

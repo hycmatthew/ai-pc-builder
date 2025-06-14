@@ -1,6 +1,6 @@
 import { useMemo, useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import { Grid2 as Grid } from '@mui/material'
+import { Grid } from '@mui/material'
 
 import GPUType from '../../../constant/objectTypes/GPUType'
 import SelectElement from '../../common/components/SelectElement'

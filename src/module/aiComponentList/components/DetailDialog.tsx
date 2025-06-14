@@ -1,4 +1,4 @@
-import { Grid2 as Grid, Box, Chip, Avatar } from '@mui/material'
+import { Grid, Box, Chip, Avatar } from '@mui/material'
 import CusTypography from '../../common/components/CusTypography'
 import CustomDialog from '../../common/components/CustomDialog'
 import { componentConfig } from '../constant/componentConfig'

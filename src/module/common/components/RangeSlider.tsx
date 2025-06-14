@@ -1,4 +1,4 @@
-import { Slider, Box, styled, Grid2 as Grid } from '@mui/material'
+import { Slider, Box, styled, Grid } from '@mui/material'
 import { useState } from 'react'
 import CustomTextField from './CustomTextField'
 import CusTypography from './CusTypography'

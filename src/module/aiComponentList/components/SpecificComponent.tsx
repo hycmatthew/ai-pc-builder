@@ -1,4 +1,4 @@
-import { Grid2 as Grid, Box } from '@mui/material'
+import { Grid, Box } from '@mui/material'
 import ProductEnum from '../../../constant/ProductEnum'
 import SelectElement from '../../common/components/SelectElement'
 import {

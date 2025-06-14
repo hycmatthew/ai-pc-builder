@@ -1,7 +1,7 @@
 import { useTranslation } from 'react-i18next'
 import Container from '@mui/material/Container'
 import styled from '@emotion/styled'
-import { Grid2 as Grid } from '@mui/material'
+import { Grid } from '@mui/material'
 
 import { SelectedItemType } from '../../../store/rawDataReducer'
 import CusTypography from '../../common/components/CusTypography'

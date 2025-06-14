@@ -1,5 +1,5 @@
 import { useTranslation } from 'react-i18next'
-import { Divider, Grid2 as Grid, useMediaQuery, useTheme } from '@mui/material'
+import { Divider, Grid, useMediaQuery, useTheme } from '@mui/material'
 import ShoppingCartIcon from '@mui/icons-material/ShoppingCart'
 import ContentCopyIcon from '@mui/icons-material/ContentCopy'
 import DescriptionIcon from '@mui/icons-material/Description'

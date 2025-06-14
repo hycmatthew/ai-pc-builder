@@ -3,7 +3,7 @@ import { useSelector } from 'react-redux'
 import {
   CircularProgress,
   FormLabel,
-  Grid2 as Grid,
+  Grid,
   Stack,
   Step,
   StepLabel,

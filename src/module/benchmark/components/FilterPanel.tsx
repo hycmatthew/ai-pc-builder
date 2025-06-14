@@ -1,4 +1,4 @@
-import { Box, Grid2 as Grid, Paper } from '@mui/material'
+import { Box, Grid, Paper } from '@mui/material'
 import { RangeSlider } from '../../common/components/RangeSlider'
 import CustomTextField from '../../common/components/CustomTextField'
 import CustomAutocomplete from '../../common/components/CustomAutocomplete'

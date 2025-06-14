@@ -1,6 +1,6 @@
 import { useMemo, useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import { Grid2 as Grid } from '@mui/material'
+import { Grid } from '@mui/material'
 import SSDType from '../../../constant/objectTypes/SSDType'
 import SelectElement from '../../common/components/SelectElement'
 import { generateSSDSelectElement } from '../../common/utils/generateSelectElements'

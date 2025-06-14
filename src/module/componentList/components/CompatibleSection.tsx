@@ -6,7 +6,7 @@ import CancelRoundedIcon from '@mui/icons-material/CancelRounded'
 import WarningRoundedIcon from '@mui/icons-material/WarningRounded'
 import CheckCircleIcon from '@mui/icons-material/CheckCircle'
 import styled from '@emotion/styled'
-import { Grid2 as Grid } from '@mui/material'
+import { Grid } from '@mui/material'
 
 import { SelectedItemType } from '../../../store/rawDataReducer'
 import { getTotalPower } from '../../../utils/NumberHelper'
