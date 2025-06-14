@@ -1,7 +1,6 @@
 interface MappedCaseType {
   id: string
   brand: string
-  name: string
   caseSize: string
   powerSupply: boolean
   compatibility: string[]

@@ -56,7 +56,7 @@ export const getSelectItemListText = (
     const component = selectedItems[key]
     if (component) {
       lines.push(buildComponentLine(component, productEnum, displayPrice))
-      searchParams.append(paramName || productEnum.toLowerCase(), component.name)
+      searchParams.append(paramName || productEnum.toLowerCase(), component.id)
     }
   })
 

@@ -1,6 +1,6 @@
 interface MappedRAMType {
+  id: string
   brand: string
-  name: string
   capacity: number
   type: string
   speed: number

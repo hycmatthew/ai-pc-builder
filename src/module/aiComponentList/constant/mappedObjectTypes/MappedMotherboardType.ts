@@ -1,5 +1,5 @@
 interface MappedMotherboardType {
-  name: string
+  id: string
   brand: string
   socket: string
   chipset: string
@@ -8,7 +8,6 @@ interface MappedMotherboardType {
   ramSupport: number[]
   ramMax: number
   formFactor: string
-  score: number
   price: number
 }
 

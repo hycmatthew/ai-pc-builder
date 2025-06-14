@@ -1,5 +1,5 @@
 interface MappedCPUType {
-  name: string
+  id: string
   brand: string
   socket: string
   gpu: string

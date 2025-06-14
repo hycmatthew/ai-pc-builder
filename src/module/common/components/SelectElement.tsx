@@ -123,7 +123,7 @@ const SelectElement = ({
   const handleChange = (_event: any, value: any) => {
     // 直接调用父组件回调
     if (selectChange) {
-      selectChange(value?.name || '', label as ProductEnum, extraNum)
+      selectChange(value?.id || '', label as ProductEnum, extraNum)
     }
   }
 

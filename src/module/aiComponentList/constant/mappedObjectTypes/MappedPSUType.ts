@@ -1,6 +1,6 @@
 interface MappedPSUType {
+  id: string
   brand: string;
-  name: string;
   wattage: number;
   size: string;
   standard: string;

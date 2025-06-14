@@ -1,7 +1,6 @@
 interface MappedCoolerType {
   id: string
   brand: string
-  name: string
   sockets: string[]
   isLiquidCooler: boolean
   liquidCoolerSize: number

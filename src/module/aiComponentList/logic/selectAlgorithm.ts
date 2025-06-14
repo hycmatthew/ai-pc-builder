@@ -193,150 +193,203 @@ function calculateAdjustedRamScore(
   return ram.score
 }
 
-// 品牌评分映射表
-const BRAND_POWER_SCORE: Record<string, number> = {
-  ASUS: 1.0, // 一线品牌
-  MSI: 1.0, // 一线品牌
-  GIGABYTE: 0.9, // 准一线
-  ASROCK: 0.85, // 二线品牌
-  BIOSTAR: 0.8, // 三线品牌
-  COLORFUL: 0.8, // 三线品牌
-  // 默认评分
-  _default: 0.85,
-}
-
-// CPU等级划分标准 (基于型号名称)
-function getCpuClass(cpuName: string): number {
-  // 优先检测旗舰型号
-  if (cpuName.includes('i9-') || cpuName.includes('Ryzen 9')) return 5
-  if (cpuName.includes('i7-') || cpuName.includes('Ryzen 7')) return 4
-  if (cpuName.includes('i5-') || cpuName.includes('Ryzen 5')) return 3
-  if (cpuName.includes('i3-') || cpuName.includes('Ryzen 3')) return 2
-  return 1 // 入门级
-}
-
 // 芯片组等级映射（基于命名规则）
 const CHIPSET_POWER_RANK: Record<
   string,
-  { rank: number; powerSupport: number; class: number }
+  { rank: number; powerSupport: number; class: number; generation: number }
 > = {
-  // 特殊处理例外情况
-  H610: { rank: 0.7, powerSupport: 120, class: 1 },
-  H670: { rank: 0.9, powerSupport: 220, class: 3 },
-
-  // 其他芯片组使用规则生成
+  Z890: { rank: 1.0, powerSupport: 300, class: 4, generation: 800 },
+  Z790: { rank: 0.98, powerSupport: 280, class: 4, generation: 700 },
+  Z690: { rank: 0.95, powerSupport: 270, class: 4, generation: 600 },
+  H770: { rank: 0.85, powerSupport: 220, class: 3, generation: 700 },
+  B860: { rank: 0.82, powerSupport: 200, class: 3, generation: 800 },
+  B760: { rank: 0.8, powerSupport: 190, class: 3, generation: 700 },
+  H670: { rank: 0.78, powerSupport: 180, class: 3, generation: 600 },
+  B660: { rank: 0.75, powerSupport: 170, class: 3, generation: 600 },
+  H610: { rank: 0.65, powerSupport: 120, class: 2, generation: 600 },
+  X870: { rank: 1.0, powerSupport: 300, class: 4, generation: 800 },
+  X670: { rank: 0.95, powerSupport: 280, class: 4, generation: 600 },
+  B850: { rank: 0.85, powerSupport: 220, class: 3, generation: 800 },
+  B650: { rank: 0.8, powerSupport: 200, class: 3, generation: 600 },
+  B840: { rank: 0.75, powerSupport: 180, class: 2, generation: 800 },
+  A620: { rank: 0.65, powerSupport: 130, class: 2, generation: 600 },
 }
 
-// 芯片组命名规则解析
-interface ChipsetRule {
-  prefix: string
-  baseClass: number
-  rankModifier: number
-  powerBase: number
-  generationFactor: number // 代数加成系数
-}
-
+// 芯片組命名規則解析（保持不變）
 const CHIPSET_RULES = {
   intel: {
     Z: {
-      prefix: 'Z',
       baseClass: 4,
       rankModifier: 1.0,
       powerBase: 300,
-      generationFactor: 0.05,
-    } as ChipsetRule,
+      generationFactor: 0.02,
+    },
     H: {
-      prefix: 'H',
-      baseClass: 2,
-      rankModifier: 0.85,
+      baseClass: 3,
+      rankModifier: 0.8,
       powerBase: 180,
-      generationFactor: 0.04,
-    } as ChipsetRule, // 默认H系列为中端
+      generationFactor: 0.01,
+    },
     B: {
-      prefix: 'B',
-      baseClass: 2,
-      rankModifier: 0.85,
+      baseClass: 3,
+      rankModifier: 0.8,
       powerBase: 180,
-      generationFactor: 0.04,
-    } as ChipsetRule,
+      generationFactor: 0.01,
+    },
     W: {
-      prefix: 'W',
       baseClass: 5,
       rankModifier: 1.1,
       powerBase: 350,
-      generationFactor: 0.06,
-    } as ChipsetRule,
+      generationFactor: 0.03,
+    },
   },
   amd: {
     X: {
-      prefix: 'X',
       baseClass: 4,
       rankModifier: 1.0,
       powerBase: 300,
-      generationFactor: 0.05,
-    } as ChipsetRule,
+      generationFactor: 0.02,
+    },
     B: {
-      prefix: 'B',
-      baseClass: 2,
-      rankModifier: 0.85,
+      baseClass: 3,
+      rankModifier: 0.8,
       powerBase: 180,
-      generationFactor: 0.04,
-    } as ChipsetRule,
+      generationFactor: 0.01,
+    },
     A: {
-      prefix: 'A',
-      baseClass: 1,
+      baseClass: 2,
       rankModifier: 0.7,
-      powerBase: 120,
-      generationFactor: 0.03,
-    } as ChipsetRule,
+      powerBase: 130,
+      generationFactor: 0.005,
+    },
   },
 }
 
-// 获取芯片组数据（带智能规则）
-function getChipsetData(chipset: string) {
-  const upperChipset = chipset.toUpperCase()
-
-  // 1. 检查特殊处理项
-  if (CHIPSET_POWER_RANK[upperChipset]) {
-    return CHIPSET_POWER_RANK[upperChipset]
-  }
-
-  // 2. 解析芯片组名称
-  const match = upperChipset.match(/^([A-Z])(\d{2,3})$/)
-  if (!match) return { rank: 0.8, powerSupport: 150, class: 2 }
-
-  const prefix = match[1]
-  const numberPart = parseInt(match[2])
-  const generation = Math.floor(numberPart / 100) // 提取代数 (800,700,600等)
-  const series = numberPart % 100 // 提取系列 (80,70,60等)
-
-  // 3. 确定厂商规则集
-  const isIntel = generation >= 6 // Intel 通常600系列起
-  const rules = isIntel ? CHIPSET_RULES.intel : CHIPSET_RULES.amd
-  const rule =
-    prefix in rules
-      ? rules[prefix as keyof typeof rules]
-      : rules[Object.keys(rules)[0] as keyof typeof rules]
-
-  // 4. 计算等级和性能
-  const classValue = Math.min(5, rule.baseClass + Math.floor(series / 20))
-  const generationBonus = rule.generationFactor * generation
-
-  return {
-    rank: rule.rankModifier + generationBonus,
-    powerSupport: rule.powerBase + generation * 10,
-    class: classValue,
-  }
+// 品牌评分映射表（更新）
+const BRAND_POWER_SCORE: Record<string, number> = {
+  asus: 1.1, // 一线品牌
+  msi: 1.05, // 一线品牌
+  gigabyte: 1.0, // 准一线
+  asrock: 0.95, // 二线品牌 -5%
+  biostar: 0.9, // 三线品牌 -10%
+  colorful: 0.9, // 三线品牌 -10%
+  _default: 1.0,
 }
 
+// 尺寸惩罚系数（更新）
 const FORM_FACTOR_PENALTY: Record<string, number> = {
-  'Mini-ITX': 0.85, // 扣15%分
-  'Micro-ATX': 0.95, // 扣5%分
+  'MINI-ITX': 0.85, // 扣15%分
+  'MICRO-ATX': 0.95, // 扣5%分
   ATX: 1.0, // 不扣分
-  'E-ATX': 1.0, // 不扣分
+  'E-ATX': 0.95,
 }
 
-// 主板等级评分函数
+// 获取芯片组数据（带智能规则）
+function getChipsetData(chipset: string): {
+  rank: number
+  powerSupport: number
+  class: number
+  generation: number
+} {
+  const upperChipset = chipset.toUpperCase().trim()
+  let result: {
+    rank: number
+    powerSupport: number
+    class: number
+    generation: number
+  }
+
+  // 檢查是否在預定義映射中
+  if (CHIPSET_POWER_RANK[upperChipset]) {
+    result = CHIPSET_POWER_RANK[upperChipset]
+  } else {
+    // 解析芯片組名稱
+    const match = upperChipset.match(/^([A-Z])(\d{2,3})([A-Z]?)$/)
+    if (!match) {
+      // 無效格式，返回默認值
+      result = { rank: 0.8, powerSupport: 150, class: 3, generation: 0 }
+    } else {
+      const prefix = match[1]
+      const numberPart = parseInt(match[2])
+      const generation = Math.floor(numberPart / 100) * 100
+
+      // 確定製造商
+      const isIntel = generation >= 600 && generation < 900
+      const rules = isIntel ? CHIPSET_RULES.intel : CHIPSET_RULES.amd
+
+      // 查找規則
+      const ruleKey = Object.keys(rules).find((k) => k === prefix) as
+        | keyof typeof rules
+        | undefined
+      if (!ruleKey) {
+        // 未知前綴，返回默認值
+        result = { rank: 0.8, powerSupport: 150, class: 3, generation }
+      } else {
+        const rule = rules[ruleKey]
+        let finalRank =
+          rule.rankModifier + rule.generationFactor * (generation / 100)
+
+        // 特殊處理 H 系列
+        if (prefix === 'H' && numberPart < 650) {
+          finalRank -= 0.15
+        }
+
+        result = {
+          rank: finalRank,
+          powerSupport: rule.powerBase + generation / 10,
+          class: rule.baseClass,
+          generation,
+        }
+      }
+    }
+  }
+
+  return result
+}
+
+// CPU等级划分标准 (基于型号名称和TDP)
+function getCpuClass(cpu: MappedCPUType): number {
+  const name = cpu.id.toUpperCase()
+  // 定义CPU等级映射规则
+  const cpuClassRules = [
+    {
+      // 旗舰级 (i9/Ryzen 9/Core Ultra 9)
+      keywords: ['I9', 'RYZEN-9', 'ULTRA-9'],
+      minPower: 200,
+      class: 5,
+    },
+    {
+      // 高端级 (i7/Ryzen 7/Core Ultra 7)
+      keywords: ['I7', 'RYZEN-7', 'ULTRA-7'],
+      minPower: 150,
+      class: 4,
+    },
+    {
+      // 中端级 (i5/Ryzen 5/Core Ultra 5)
+      keywords: ['I5', 'RYZEN-5', 'ULTRA-5'],
+      minPower: 100,
+      class: 3,
+    },
+    {
+      // 入门级 (i3/Ryzen 3)
+      keywords: ['I3-', 'RYZEN 3'],
+      minPower: 0,
+      class: 2,
+    },
+  ]
+  // 按优先级检查规则
+  for (const rule of cpuClassRules) {
+    const hasKeyword = rule.keywords.some((keyword) => name.includes(keyword))
+    const hasPower = cpu.power > rule.minPower
+
+    if (hasKeyword || hasPower) {
+      return rule.class
+    }
+  }
+  return 1 // 默认低功耗/入门级
+}
+
+// 主板等级评分函数（优化版）
 const rateMotherboard = (
   mb: MappedMotherboardType,
   cpu: MappedCPUType,
@@ -344,19 +397,20 @@ const rateMotherboard = (
 ): number => {
   // 获取芯片组数据
   const chipsetData = getChipsetData(mb.chipset)
+  const cpuClass = getCpuClass(cpu)
 
-  // 1. 价格价值比 (性价比计算)
-  const priceValue = 1 - Math.min(1, mb.price / (budget * 0.2))
+  // 1. 价格价值比 (性价比计算) - 50% 权重
+  const maxMBPrice = budget * 0.3
+  const priceValue = 1 - Math.min(1, mb.price / maxMBPrice)
 
-  // 2. 品牌质量系数
-  const brandFactor = BRAND_POWER_SCORE[mb.brand.toUpperCase()] || 0.85
+  // 2. 品牌质量系数 - 15% 权重
+  const brand = mb.brand.toUpperCase().trim()
+  const brandFactor = BRAND_POWER_SCORE[brand] || BRAND_POWER_SCORE._default
 
-  // 3. CPU-主板等级匹配
-  const cpuClass = getCpuClass(cpu.name)
+  // 3. CPU-主板等级匹配 - 20% 权重
   let classMatch = 1.0
-
-  // 等级匹配规则
   const classDiff = cpuClass - chipsetData.class
+
   if (classDiff >= 2) {
     // 高端CPU配低端主板：严重惩罚
     classMatch = 0.4
@@ -366,11 +420,14 @@ const rateMotherboard = (
   } else if (classDiff <= -1) {
     // 主板比CPU高级：小奖励
     classMatch = 1.1
+  } else if (classDiff === 0) {
+    // 完美匹配
+    classMatch = 1.2
   }
 
-  // 4. 供电能力匹配（考虑芯片组和品牌）
+  // 4. 供电能力匹配（考虑芯片组和品牌） - 10% 权重
   let powerMatch = 1.0
-  const requiredPower = cpu.power * 1.1 // 10%余量
+  const requiredPower = cpu.power * 1.2 // 20%余量
   const effectivePower = chipsetData.powerSupport * brandFactor
 
   if (effectivePower < requiredPower * 0.8) {
@@ -381,39 +438,46 @@ const rateMotherboard = (
     powerMatch = 1.1 // 超额供电奖励
   }
 
-  // 5. 代数奖励（较新芯片组加分）
-  // const generationBonus = chipsetData.rank - chipsetData.rankModifier;
+  // 5. 代数奖励（较新芯片组加分） - 5% 权重
+  const generationBonus = Math.min(0.1, chipsetData.generation / 10000) // 每100代=0.01
 
-  // 9. 主板尺寸调整
-  const formFactorPenalty = FORM_FACTOR_PENALTY[mb.formFactor] || 1.0
+  // 6. 主板尺寸调整
+  const formFactor = mb.formFactor.toUpperCase().trim()
+  const formFactorPenalty = FORM_FACTOR_PENALTY[formFactor] || 1.0
 
-  // 5. 最终加权计算
-  return (
-    (priceValue * 0.5 +
-      brandFactor * 0.2 +
-      classMatch * 0.25 +
-      powerMatch * 0.15) *
-    formFactorPenalty
-  )
+  // 最终加权计算
+  const baseScore =
+    priceValue * 0.5 +
+    brandFactor * 0.15 +
+    classMatch * 0.2 +
+    powerMatch * 0.1 +
+    generationBonus * 0.05
+
+  return baseScore * formFactorPenalty
 }
 
-// 修改预处理函数
+// 优化预处理函数
 const preprocessMotherboards = (
   mbs: MappedMotherboardType[],
   cpu: MappedCPUType,
   budget: number
 ) => {
   // 基础兼容性过滤
-  let compatibleMBs = mbs.filter((mb) => mb.socket === cpu.socket)
+  let compatibleMBs = mbs.filter(
+    (mb) => mb.socket === cpu.socket && mb.price <= budget * 0.3 // 主板不超过总预算30%
+  )
 
   // 获取CPU等级
-  const cpuClass = getCpuClass(cpu.name)
+  const cpuClass = getCpuClass(cpu)
 
   // 高端CPU特殊处理（i9/Ryzen 9）
   if (cpuClass >= 5) {
     compatibleMBs = compatibleMBs.filter((mb) => {
       const chipsetData = getChipsetData(mb.chipset)
-      return chipsetData.class >= 4 // 必须高端芯片组
+      // 必须高端芯片组且供电充足
+      return (
+        chipsetData.class >= 4 && chipsetData.powerSupport >= cpu.power * 1.1
+      )
     })
   }
 
@@ -421,12 +485,12 @@ const preprocessMotherboards = (
   else if (cpuClass >= 4) {
     compatibleMBs = compatibleMBs.filter((mb) => {
       const chipsetData = getChipsetData(mb.chipset)
-      return chipsetData.class >= 3 // 禁止入门级芯片组
+      // 禁止入门级芯片组，供电要求放宽
+      return (
+        chipsetData.class >= 3 && chipsetData.powerSupport >= cpu.power * 0.9
+      )
     })
   }
-
-  // 价格上限过滤 (主板不超过总预算25%)
-  compatibleMBs = compatibleMBs.filter((mb) => mb.price <= budget * 0.25)
 
   return compatibleMBs
     .map((mb) => ({

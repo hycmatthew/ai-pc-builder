@@ -203,28 +203,30 @@ function AILogicPage() {
     setLoading(false)
     if (res !== null) {
       if (res.cpu) {
-        changeSelectItem(res.cpu.name, ProductEnum.CPU, -1)
+        changeSelectItem(res.cpu.id, ProductEnum.CPU, -1)
       }
       if (res.gpu) {
-        changeSelectItem(res.gpu.name, ProductEnum.GPU, -1)
+        changeSelectItem(res.gpu.id, ProductEnum.GPU, -1)
+      } else {
+        changeSelectItem('', ProductEnum.GPU, -1)
       }
       if (res.motherboard) {
-        changeSelectItem(res.motherboard.name, ProductEnum.Motherboard, -1)
+        changeSelectItem(res.motherboard.id, ProductEnum.Motherboard, -1)
       }
       if (res.ram) {
-        changeSelectItem(res.ram.name, ProductEnum.RAM, -1)
+        changeSelectItem(res.ram.id, ProductEnum.RAM, -1)
       }
       if (res.ssd) {
-        changeSelectItem(res.ssd.name, ProductEnum.SSD, -1)
+        changeSelectItem(res.ssd.id, ProductEnum.SSD, -1)
       }
       if (res.psu) {
-        changeSelectItem(res.psu.name, ProductEnum.PSU, -1)
+        changeSelectItem(res.psu.id, ProductEnum.PSU, -1)
       }
       if (res.case) {
-        changeSelectItem(res.case.name, ProductEnum.ComputerCase, -1)
+        changeSelectItem(res.case.id, ProductEnum.ComputerCase, -1)
       }
       if (res.cooler) {
-        changeSelectItem(res.cooler.name, ProductEnum.Cooler, -1)
+        changeSelectItem(res.cooler.id, ProductEnum.Cooler, -1)
       }
       dispatch(sliceActions.updateScoreAndPrirce(res))
     } else {

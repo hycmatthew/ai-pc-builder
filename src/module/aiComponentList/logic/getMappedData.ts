@@ -47,7 +47,7 @@ export function getMappedCPUs(
     })
     .map((item) => {
       return {
-        name: item.name,
+        id: item.id,
         brand: item.brand,
         socket: item.socket,
         gpu: item.gpu,
@@ -81,7 +81,7 @@ export function getMappedGPUs(
     })
     .map((item) => {
       return {
-        name: item.name,
+        id: item.id,
         brand: item.brand,
         manufacturer: item.manufacturer,
         score: ScoreAdjusters.gpu(item, type),
@@ -125,7 +125,7 @@ export function getMappedMotherboards(
     })
     .map((item) => {
       return {
-        name: item.name,
+        id: item.id,
         brand: item.brand,
         socket: item.socket,
         chipset: item.chipset,
@@ -168,7 +168,7 @@ export function getMappedRAMs(
     })
     .map((item) => {
       return {
-        name: item.name,
+        id: item.id,
         brand: item.brand,
         capacity: item.capacity,
         type: item.type,
@@ -196,7 +196,7 @@ export function getMappedSSDs(
     })
     .map((item) => {
       return {
-        name: item.name,
+        id: item.id,
         brand: item.brand,
         capacity: item.capacity,
         formFactor: item.form_factor,
@@ -226,8 +226,8 @@ export function getMappedPSUs(
     })
     .map((item) => {
       return {
+        id: item.id,
         brand: item.brand,
-        name: item.name,
         wattage: item.wattage,
         size: item.size,
         standard: item.standard,
@@ -264,7 +264,6 @@ export function getMappedCases(
       return {
         id: item.id,
         brand: item.brand,
-        name: item.name,
         caseSize: item.case_size,
         powerSupply: item.power_supply,
         compatibility: item.compatibility,
@@ -306,7 +305,6 @@ export function getMappedCoolers(
       return {
         id: item.id,
         brand: item.brand,
-        name: item.name,
         sockets: item.sockets,
         isLiquidCooler: item.is_liquid_cooler,
         liquidCoolerSize: item.liquid_cooler_size,
@@ -320,14 +318,14 @@ export function getMappedCoolers(
 // 專用條件檢查函數 ▼
 const Conditions = {
   isAffectedIntel14thGen: (cpu: CPUType) =>
-    /^(Core\s+)?i[79][-\s]*14(700|900)/i.test(cpu.name.trim()),
+    /^(Core\s+)?i[79][-\s]*14(700|900)/i.test(cpu.id.trim()),
 
   isGamingBuildWithAMD3D: (cpu: CPUType, buildType: BuildType) =>
-    buildType === BuildType.Gaming && /3D/i.test(cpu.name),
+    buildType === BuildType.Gaming && /3D/i.test(cpu.id),
 
   isNvidiaGPU: (gpu: GPUType) => gpu.brand === 'NVIDIA',
 
-  isRTX50Series: (gpu: GPUType) => /RTX\s*50/i.test(gpu.name),
+  isRTX50Series: (gpu: GPUType) => /RTX\s*50/i.test(gpu.id),
 } as const
 
 // 分數調整器 ▼

@@ -229,7 +229,6 @@ export const preFilterDataLogic = (
 
   if (
     !bestConfig?.cpu ||
-    !bestConfig?.gpu ||
     !bestConfig?.motherboard ||
     !bestConfig?.ram ||
     !bestPsu ||

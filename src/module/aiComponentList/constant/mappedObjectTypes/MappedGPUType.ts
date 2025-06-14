@@ -1,5 +1,5 @@
 interface MappedGPUType {
-  name: string;
+  id: string
   brand: string;
   manufacturer: string
   score: number;
