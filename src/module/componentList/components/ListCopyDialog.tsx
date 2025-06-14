@@ -1,11 +1,18 @@
-import { Box, IconButton, Switch, TextField } from '@mui/material'
+import {
+  Box,
+  Snackbar,
+  SnackbarCloseReason,
+  Switch,
+  TextField,
+} from '@mui/material'
 import ContentCopyIcon from '@mui/icons-material/ContentCopy'
-import { useNotifications } from '@toolpad/core/useNotifications'
 import { getSelectItemListText } from '../../../utils/PCPartUtil'
 import { useEffect, useState } from 'react'
 import { SelectedItemType } from '../../../store/rawDataReducer'
 import { useTranslation } from 'react-i18next'
 import CustomDialog from '../../common/components/CustomDialog'
+import CustomIconButton from '../../common/components/CustomIconButton'
+import CloseIcon from '@mui/icons-material/Close'
 
 type NotifyButtonProps = {
   copyVal: string
@@ -18,37 +25,49 @@ type ListCopyModalProps = {
 }
 
 function NotifyButton({ copyVal }: NotifyButtonProps) {
-  const notifications = useNotifications()
+  const [open, setOpen] = useState(false)
 
   const copyToClipboard = () => {
-    navigator.clipboard
-      .writeText(copyVal)
-      .then(() => {
-        notifications.show('You are now online', {
-          severity: 'success',
-          autoHideDuration: 3000,
-        })
-      })
-      .catch((err) => {
-        console.log(err.message)
-      })
+    setOpen(true)
   }
 
+  const handleClose = (
+    _event: React.SyntheticEvent | Event,
+    reason?: SnackbarCloseReason
+  ) => {
+    if (reason === 'clickaway') {
+      return
+    }
+
+    setOpen(false)
+  }
+
+  const action = (
+    <>
+      <CustomIconButton
+        size="small"
+        aria-label="close"
+        color="inherit"
+        onClick={handleClose}
+      >
+        <CloseIcon fontSize="small" />
+      </CustomIconButton>
+    </>
+  )
+
   return (
-    <IconButton
-      sx={{
-        background: '#edf7ed',
-        '&:focus': {
-          outline: 'none',
-          boxShadow: 'none',
-        },
-      }}
-      color="success"
-      aria-label="content copy"
-      onClick={copyToClipboard}
-    >
-      <ContentCopyIcon />
-    </IconButton>
+    <>
+      <CustomIconButton aria-label="content copy" onClick={copyToClipboard}>
+        <ContentCopyIcon />
+      </CustomIconButton>
+      <Snackbar
+        open={open}
+        autoHideDuration={1000}
+        onClose={handleClose}
+        message="This Snackbar will be dismissed in 5 seconds."
+        action={action}
+      />
+    </>
   )
 }
 

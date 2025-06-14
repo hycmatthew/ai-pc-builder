@@ -21,7 +21,7 @@ const StyledDialog = styled(Dialog, {
     '& .MuiDialogActions-root': {
       padding: theme.spacing(1),
     },
-    '& .MuiPaper-root': {
+    '& .MuiDialog-paper': {
       borderRadius: '8px',
       minWidth,
       minHeight,
@@ -93,8 +93,8 @@ const CustomDialog = ({
           color: theme.palette.grey[500],
           '&:focus': {
             outline: 'none',
-            boxShadow: 'none'
-          }
+            boxShadow: 'none',
+          },
         })}
       >
         <CloseIcon />

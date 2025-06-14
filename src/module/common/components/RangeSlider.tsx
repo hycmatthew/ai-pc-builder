@@ -14,7 +14,7 @@ const SliderBoxShadow =
   '0 0px 1px rgba(0,0,0,0.1),0 4px 8px rgba(0,0,0,0.13),0 0 0 1px rgba(0,0,0,0.02)'
 
 const CustomSlider = styled(Slider)(({ theme }) => ({
-  color: theme.palette.primary.main,
+  color: '#383D7E',
   height: 4,
   padding: '15px 0',
   '& .MuiSlider-thumb': {

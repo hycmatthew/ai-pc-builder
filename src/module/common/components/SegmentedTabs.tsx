@@ -17,6 +17,11 @@ type SegmentedTabsProps = TabsProps & {
 
 // 樣式組件
 const CustomTabs = styled(Tabs)({
+  minHeight: '32px',
+  width: 'fit-content',
+  padding: 8,
+  backgroundColor: '#F7FAFC',
+  borderRadius: '10px',
   '& .MuiTabs-indicator': {
     display: 'none',
   },
@@ -26,11 +31,11 @@ const CustomTabs = styled(Tabs)({
   },
 })
 
-const IosSegmentedTab = styled(Tab)<TabProps>(() => ({
+const CustomSegmentedTab = styled(Tab)<TabProps>(() => ({
   zIndex: 1,
   minHeight: '32px',
   minWidth: '120px',
-  borderRadius: '8px',
+  borderRadius: '10px',
   transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
   fontSize: '14px',
   fontWeight: 500,
@@ -40,15 +45,15 @@ const IosSegmentedTab = styled(Tab)<TabProps>(() => ({
 
   '&:not(.Mui-selected)': {
     '&:hover': {
-      backgroundColor: '#F7FAFC',
+      backgroundColor: '#E8EDF5',
     },
   },
 
   '&.Mui-selected': {
-    color: '#000',
-    backgroundColor: '#F7FAFC',
+    color: '#fff',
+    backgroundColor: '#0F1563',
     '&:hover': {
-      backgroundColor: '#E8EDF5',
+      backgroundColor: '#383D7E',
     },
   },
   '&:focus': {
@@ -75,7 +80,11 @@ const SegmentedTabs = ({
       {...props}
     >
       {tabs.map((tab) => (
-        <IosSegmentedTab key={tab.value} label={tab.label} value={tab.value} />
+        <CustomSegmentedTab
+          key={tab.value}
+          label={tab.label}
+          value={tab.value}
+        />
       ))}
     </CustomTabs>
   )

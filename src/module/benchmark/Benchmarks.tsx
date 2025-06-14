@@ -28,7 +28,7 @@ function Benchmarks() {
     <div className="bg-container">
       <div className="main-container">
         <Grid container spacing={0}>
-          <Grid size={12}>
+          <Grid>
           <SegmentedTabs
             value={selectedType}
             onChange={handleChange}

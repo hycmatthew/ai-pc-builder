@@ -425,6 +425,9 @@ const Database = () => {
                 onChange={updateType}
                 tabs={tabs}
                 orientation="vertical"
+                sx={{
+                  width: 'auto',
+                }}
               />
             </Grid>
             <Grid size={12}>

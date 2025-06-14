@@ -6,6 +6,7 @@ import ItemCard from './ItemCard'
 import ComparisonModal from './ComparisonModal'
 import { ComparisonObject } from '../data/ComparisonObject'
 import { AllType } from '../../../constant/objectTypes'
+import CustomButton from '../../common/components/CustomButton'
 
 interface HardwareSuggestionProps<T> {
   filteredList: T[]
@@ -54,7 +55,7 @@ const HardwareSuggestion = <T extends AllType>({
         <Grid size={{ xs: 12, md: 9 }}>{renderFilterForm}</Grid>
         <Grid size={{ xs: 12, md: 3 }}>
           <Badge badgeContent={selectedItems.length} color="error">
-            <Button
+            <CustomButton
               startIcon={<CompareArrowsIcon />}
               variant="contained"
               disabled={selectedItems.length === 0}
@@ -62,7 +63,7 @@ const HardwareSuggestion = <T extends AllType>({
               sx={{ height: 54 }}
             >
               {t('compare')}
-            </Button>
+            </CustomButton>
           </Badge>
         </Grid>
       </Grid>

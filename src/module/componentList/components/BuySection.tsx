@@ -1,6 +1,8 @@
 import { useTranslation } from 'react-i18next'
 import { Divider, Grid2 as Grid, useMediaQuery, useTheme } from '@mui/material'
-import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
+import ShoppingCartIcon from '@mui/icons-material/ShoppingCart'
+import ContentCopyIcon from '@mui/icons-material/ContentCopy'
+import DescriptionIcon from '@mui/icons-material/Description'
 
 import { DataState, SelectedItemType } from '../../../store/rawDataReducer'
 import {
@@ -15,6 +17,9 @@ import { useState } from 'react'
 import ListCopyDialog from './ListCopyDialog'
 import Calculator from './Calculator'
 import PlaceholdImage from '../../common/components/PlaceholdImage'
+import CustomTextField from '../../common/components/CustomTextField'
+import { generateBuildPath } from '../../../utils/PCPartUtil'
+import CustomIconButton from '../../common/components/CustomIconButton'
 
 type BuySectioProps = {
   dataState: DataState
@@ -26,8 +31,8 @@ const HardwareSection = ({
   item: NonNullable<SelectedItemType[keyof SelectedItemType]>
 }) => {
   const { t } = useTranslation()
-  const theme = useTheme();
-  const isXs = useMediaQuery(theme.breakpoints.down('sm'));
+  const theme = useTheme()
+  const isXs = useMediaQuery(theme.breakpoints.down('sm'))
   const SectionHeight = 128
 
   // 过滤当前区域的价格信息
@@ -67,7 +72,7 @@ const HardwareSection = ({
         </Grid>
         {/* 价格列表 */}
         <Grid size={12}>
-          <Grid container spacing={1} >
+          <Grid container spacing={1}>
             {currentPrices.map((price, index) => (
               <Grid size={12} key={`${item.name}-price-${index}`}>
                 <Grid container spacing={1}>
@@ -90,7 +95,11 @@ const HardwareSection = ({
                       variant="contained"
                       color="primary"
                     >
-                      {isXs ? <ShoppingCartIcon fontSize="small" /> : t('buyNow')}
+                      {isXs ? (
+                        <ShoppingCartIcon fontSize="small" />
+                      ) : (
+                        t('buyNow')
+                      )}
                     </BuyButton>
                   </Grid>
                 </Grid>
@@ -127,18 +136,38 @@ const BuySection = ({ dataState }: BuySectioProps) => {
       <>
         <Divider sx={{ paddingTop: '2rem' }} />
         <Grid container paddingTop={2} spacing={2}>
-          <Grid size="grow">
-            <Calculator selectedItems={dataState.selectedItems} />
-          </Grid>
-          <Grid size="auto">
-            <ListCopyDialog
-              selectedItems={dataState.selectedItems}
-              open={open}
-              onClose={handleClose}
-            />
-            <CustomButton onClick={handleOpen} fullWidth>
-              {t('open')}
-            </CustomButton>
+          <Grid container size={12} spacing={2}>
+            <Grid>
+              <Calculator selectedItems={dataState.selectedItems} />
+            </Grid>
+            <Grid size="grow">
+              <CustomTextField
+                width="100%"
+                label="Keyword"
+                value={generateBuildPath(dataState.selectedItems)}
+                disabled
+              />
+            </Grid>
+            <Grid size="auto">
+              <CustomIconButton onClick={handleOpen} size="large">
+                <ContentCopyIcon />
+              </CustomIconButton>
+            </Grid>
+            <Grid size="auto">
+              <ListCopyDialog
+                selectedItems={dataState.selectedItems}
+                open={open}
+                onClose={handleClose}
+              />
+              <CustomButton
+                onClick={handleOpen}
+                fullWidth
+                sx={{ height: '48px' }}
+              >
+                <DescriptionIcon sx={{ paddingRight: 1 }} />
+                {t('open')}
+              </CustomButton>
+            </Grid>
           </Grid>
         </Grid>
         <Grid container paddingTop={4} spacing={2} columns={{ xs: 6, md: 12 }}>

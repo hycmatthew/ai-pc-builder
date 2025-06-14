@@ -1,10 +1,7 @@
 import { t } from 'i18next'
 import { SelectedItemType } from '../store/rawDataReducer'
 import ProductEnum from '../constant/ProductEnum'
-import {
-  getCurrentPriceWithSign,
-  getTotalPriceStr,
-} from './NumberHelper'
+import { getCurrentPriceWithSign, getTotalPriceStr } from './NumberHelper'
 import i18n from '../config/i18n'
 import { LangEnum } from '../constant/supportedLang'
 
@@ -12,7 +9,7 @@ export const getCurrentSaleLink = (item: any) => {
   const linkMap: Record<LangEnum, string> = {
     [LangEnum.zhTW]: 'LinkHK',
     [LangEnum.zhCN]: 'LinkCN',
-    [LangEnum.en]: 'LinkUS'
+    [LangEnum.en]: 'LinkUS',
   }
   return item[linkMap[i18n.language as LangEnum]] || item.LinkUS
 }
@@ -23,7 +20,7 @@ type ProductComponent = keyof SelectedItemType
 const componentConfig: Array<{
   key: ProductComponent
   productEnum: ProductEnum
-  paramName?: string  // 用於特殊URL參數名稱
+  paramName?: string // 用於特殊URL參數名稱
 }> = [
   { key: 'cpu', productEnum: ProductEnum.CPU },
   { key: 'motherboard', productEnum: ProductEnum.Motherboard, paramName: 'mb' },
@@ -32,7 +29,7 @@ const componentConfig: Array<{
   { key: 'ssd', productEnum: ProductEnum.SSD },
   { key: 'psu', productEnum: ProductEnum.PSU },
   { key: 'pcCase', productEnum: ProductEnum.ComputerCase, paramName: 'pcCase' },
-  { key: 'cooler', productEnum: ProductEnum.Cooler }
+  { key: 'cooler', productEnum: ProductEnum.Cooler },
 ]
 
 const buildComponentLine = (
@@ -66,9 +63,24 @@ export const getSelectItemListText = (
 
   const baseUrl = `${window.location.href.split('?')[0]}?`
   const queryString = searchParams.toString()
-  
+
   return [
     lines.join(''),
-    ...(queryString ? [`\n\n${baseUrl}${queryString}`] : [])
+    ...(queryString ? [`\n\n${baseUrl}${queryString}`] : []),
   ].join('')
+}
+
+export const generateBuildPath = (selectedItems: SelectedItemType) => {
+  const searchParams = new URLSearchParams()
+
+  componentConfig.forEach(({ key, productEnum, paramName }) => {
+    const component = selectedItems[key]
+    if (component) {
+      searchParams.append(paramName || productEnum.toLowerCase(), component.id)
+    }
+  })
+
+  const baseUrl = `${window.location.href.split('?')[0]}?`
+  const queryString = searchParams.toString()
+  return queryString ? [`\n\n${baseUrl}${queryString}`] : []
 }
