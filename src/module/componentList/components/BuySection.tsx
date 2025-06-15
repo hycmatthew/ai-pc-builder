@@ -1,5 +1,11 @@
 import { useTranslation } from 'react-i18next'
-import { Divider, Grid, useMediaQuery, useTheme } from '@mui/material'
+import {
+  Divider,
+  Grid,
+  InputAdornment,
+  useMediaQuery,
+  useTheme,
+} from '@mui/material'
 import ShoppingCartIcon from '@mui/icons-material/ShoppingCart'
 import ContentCopyIcon from '@mui/icons-material/ContentCopy'
 import DescriptionIcon from '@mui/icons-material/Description'
@@ -20,6 +26,7 @@ import PlaceholdImage from '../../common/components/PlaceholdImage'
 import CustomTextField from '../../common/components/CustomTextField'
 import { generateBuildPath } from '../../../utils/PCPartUtil'
 import CustomIconButton from '../../common/components/CustomIconButton'
+import CustomSnackbar from '../../common/components/CustomSnackbar'
 
 type BuySectioProps = {
   dataState: DataState
@@ -115,12 +122,28 @@ const HardwareSection = ({
 const BuySection = ({ dataState }: BuySectioProps) => {
   const selectedItems = dataState.selectedItems
   const { t } = useTranslation()
-  const [open, setOpen] = useState(false)
-  const handleClose = () => setOpen(false)
+  const [dialogOpen, setDialogOpen] = useState(false)
+  const [snackbarOpen, setSnackbarOpen] = useState(false)
 
-  const handleOpen = () => {
-    setOpen(true)
+  const copyPathToClipboard = () => {
+    const copyVal = generateBuildPath(dataState.selectedItems)
+    navigator.clipboard
+      .writeText(copyVal)
+      .then(() => {
+        setSnackbarOpen(true)
+      })
+      .catch((err) => {
+        console.log(err.message)
+      })
   }
+
+  const handleSnackbarClose = () => setSnackbarOpen(false)
+
+  const handleDialogOpen = () => {
+    setDialogOpen(true)
+  }
+
+  const handleDialogClose = () => setDialogOpen(false)
 
   const hardwareEntries = (
     Object.entries(selectedItems) as unknown as [
@@ -137,30 +160,45 @@ const BuySection = ({ dataState }: BuySectioProps) => {
         <Divider sx={{ paddingTop: '2rem' }} />
         <Grid container paddingTop={2} spacing={2}>
           <Grid container size={12} spacing={2}>
-            <Grid>
+            <Grid size={{ xs: 12, md: 4 }}>
               <Calculator selectedItems={dataState.selectedItems} />
             </Grid>
-            <Grid size="grow">
+            <Grid size={{ xs: 12, md: 'grow' }}>
               <CustomTextField
                 width="100%"
                 label="Keyword"
                 value={generateBuildPath(dataState.selectedItems)}
-                disabled
+                slotProps={{
+                  input: {
+                    readOnly: true,
+                    endAdornment: (
+                      <InputAdornment position="end">
+                        <CustomIconButton
+                          sx={{ borderRadius: 2, backgroundColor: '#055c9d' }}
+                          onClick={copyPathToClipboard}
+                        >
+                          <ContentCopyIcon />
+                        </CustomIconButton>
+                      </InputAdornment>
+                    ),
+                  },
+                }}
+              />
+              <CustomSnackbar
+                open={snackbarOpen}
+                onClose={handleSnackbarClose}
+                message="Copy Path Success!"
+                severity="success"
               />
             </Grid>
-            <Grid size="auto">
-              <CustomIconButton onClick={handleOpen} size="large">
-                <ContentCopyIcon />
-              </CustomIconButton>
-            </Grid>
-            <Grid size="auto">
+            <Grid size={{ xs: 12, md: 'auto' }}>
               <ListCopyDialog
                 selectedItems={dataState.selectedItems}
-                open={open}
-                onClose={handleClose}
+                open={dialogOpen}
+                onClose={handleDialogClose}
               />
               <CustomButton
-                onClick={handleOpen}
+                onClick={handleDialogOpen}
                 fullWidth
                 sx={{ height: '48px' }}
               >

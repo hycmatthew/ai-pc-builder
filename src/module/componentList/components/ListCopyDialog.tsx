@@ -15,7 +15,7 @@ import { SelectedItemType } from '../../../store/rawDataReducer'
 import { useTranslation } from 'react-i18next'
 import CustomDialog from '../../common/components/CustomDialog'
 import CustomIconButton from '../../common/components/CustomIconButton'
-import CloseIcon from '@mui/icons-material/Close'
+import CustomSnackbar from '../../common/components/CustomSnackbar'
 
 type NotifyButtonProps = {
   copyVal: string
@@ -28,55 +28,32 @@ type ListCopyModalProps = {
 }
 
 function NotifyButton({ copyVal }: NotifyButtonProps) {
-  const [open, setOpen] = useState(false)
+  const [snackbarOpen, setSnackbarOpen] = useState(false)
 
   const copyToClipboard = () => {
-    setOpen(true)
+    navigator.clipboard
+      .writeText(copyVal)
+      .then(() => {
+        setSnackbarOpen(true)
+      })
+      .catch((err) => {
+        console.log(err.message)
+      })
   }
 
-  const handleClose = (
-    _event: React.SyntheticEvent | Event,
-    reason?: SnackbarCloseReason
-  ) => {
-    if (reason === 'clickaway') {
-      return
-    }
-
-    setOpen(false)
-  }
-
-  const action = (
-    <>
-      <CustomIconButton
-        size="small"
-        aria-label="close"
-        color="inherit"
-        onClick={handleClose}
-      >
-        <CloseIcon fontSize="small" />
-      </CustomIconButton>
-    </>
-  )
+  const handleClose = () => setSnackbarOpen(false)
 
   return (
     <>
       <CustomIconButton aria-label="content copy" onClick={copyToClipboard}>
         <ContentCopyIcon />
       </CustomIconButton>
-      <Snackbar
-        open={open}
-        autoHideDuration={2000}
+      <CustomSnackbar
+        open={snackbarOpen}
         onClose={handleClose}
-      >
-        <Alert
-          onClose={handleClose}
-          severity="success"
-          variant="filled"
-          sx={{ width: '100%' }}
-        >
-          This is a success Alert inside a Snackbar!
-        </Alert>
-      </Snackbar>
+        message="操作成功完成！"
+        severity="success"
+      />
     </>
   )
 }

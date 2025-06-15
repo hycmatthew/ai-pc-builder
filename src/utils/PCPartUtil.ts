@@ -82,5 +82,5 @@ export const generateBuildPath = (selectedItems: SelectedItemType) => {
 
   const baseUrl = `${window.location.href.split('?')[0]}?`
   const queryString = searchParams.toString()
-  return queryString ? [`\n\n${baseUrl}${queryString}`] : []
+  return queryString ? `\n\n${baseUrl}${queryString}` : ''
 }
