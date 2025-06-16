@@ -5,3 +5,94 @@ export enum BuildType {
   AI = 'ai',
   Unknown = 'unknown',
 }
+
+// 芯片组等级映射（基于命名规则）
+export const CHIPSET_POWER_RANK: Record<
+  string,
+  { rank: number; powerSupport: number; class: number; generation: number }
+> = {
+  Z890: { rank: 1.0, powerSupport: 300, class: 4, generation: 800 },
+  Z790: { rank: 0.98, powerSupport: 280, class: 4, generation: 700 },
+  Z690: { rank: 0.95, powerSupport: 270, class: 4, generation: 600 },
+  H770: { rank: 0.85, powerSupport: 220, class: 3, generation: 700 },
+  B860: { rank: 0.82, powerSupport: 200, class: 3, generation: 800 },
+  B760: { rank: 0.8, powerSupport: 190, class: 3, generation: 700 },
+  H670: { rank: 0.78, powerSupport: 180, class: 3, generation: 600 },
+  B660: { rank: 0.75, powerSupport: 170, class: 3, generation: 600 },
+  H610: { rank: 0.65, powerSupport: 120, class: 2, generation: 600 },
+  X870: { rank: 1.0, powerSupport: 300, class: 4, generation: 800 },
+  X670: { rank: 0.95, powerSupport: 280, class: 4, generation: 600 },
+  B850: { rank: 0.85, powerSupport: 220, class: 3, generation: 800 },
+  B650: { rank: 0.8, powerSupport: 200, class: 3, generation: 600 },
+  B840: { rank: 0.75, powerSupport: 180, class: 2, generation: 800 },
+  A620: { rank: 0.65, powerSupport: 130, class: 2, generation: 600 },
+}
+
+// 芯片組命名規則解析（保持不變）
+export const CHIPSET_RULES = {
+  intel: {
+    Z: {
+      baseClass: 4,
+      rankModifier: 1.0,
+      powerBase: 300,
+      generationFactor: 0.02,
+    },
+    H: {
+      baseClass: 3,
+      rankModifier: 0.8,
+      powerBase: 180,
+      generationFactor: 0.01,
+    },
+    B: {
+      baseClass: 3,
+      rankModifier: 0.8,
+      powerBase: 180,
+      generationFactor: 0.01,
+    },
+    W: {
+      baseClass: 5,
+      rankModifier: 1.1,
+      powerBase: 350,
+      generationFactor: 0.03,
+    },
+  },
+  amd: {
+    X: {
+      baseClass: 4,
+      rankModifier: 1.0,
+      powerBase: 300,
+      generationFactor: 0.02,
+    },
+    B: {
+      baseClass: 3,
+      rankModifier: 0.8,
+      powerBase: 180,
+      generationFactor: 0.01,
+    },
+    A: {
+      baseClass: 2,
+      rankModifier: 0.7,
+      powerBase: 130,
+      generationFactor: 0.005,
+    },
+  },
+}
+
+// 品牌评分映射表（更新）
+export const BRAND_POWER_SCORE: Record<string, number> = {
+  asus: 1.1, // 一线品牌
+  msi: 1.05, // 一线品牌
+  gigabyte: 1.0, // 准一线
+  asrock: 0.95, // 二线品牌 -5%
+  biostar: 0.9, // 三线品牌 -10%
+  colorful: 0.9, // 三线品牌 -10%
+  _default: 1.0,
+}
+
+// 尺寸惩罚系数（更新）
+export const FORM_FACTOR_PENALTY: Record<string, number> = {
+  'MINI-ITX': 0.85, // 扣15%分
+  'MICRO-ATX': 0.95, // 扣5%分
+  ATX: 1.0, // 不扣分
+  'E-ATX': 0.95,
+}

@@ -18,9 +18,8 @@ type ResultComponentProps = {
   totalScore: number
 }
 
-const COMPONENT_TYPES = [
+const BASE_COMPONENT_TYPES: ComponentType[] = [
   'cpu',
-  'gpu',
   'motherboard',
   'ram',
   'ssd',
@@ -28,8 +27,6 @@ const COMPONENT_TYPES = [
   'pcCase',
   'cooler',
 ] as const
-
-// type ComponentType = (typeof COMPONENT_TYPES)[number]
 
 function ResultComponent({
   resultData,
@@ -46,8 +43,15 @@ function ResultComponent({
     setSelectedData({ type, data })
   }
 
+  const displayComponents = useMemo(() => {
+    return resultData.gpu
+      ? ['gpu', ...BASE_COMPONENT_TYPES]
+      : [...BASE_COMPONENT_TYPES]
+  }, [resultData.gpu])
+
+  // 检查除GPU外的必需组件是否完整
   const isComplete = useMemo(
-    () => Object.values(resultData).every((value) => value !== null),
+    () => BASE_COMPONENT_TYPES.every((type) => resultData[type] !== null),
     [resultData]
   )
 
@@ -57,44 +61,54 @@ function ResultComponent({
   return (
     <Box sx={{ paddingTop: 5 }}>
       <Grid container spacing={2}>
-        <Grid size={3}>
+        <Grid size={{ xs: 6, sm: 3 }}>
           <CusTypography variant="h6">{t('price')}</CusTypography>
           <CusTypography variant="h4">
             {addCurrencySign(totalPrice.toFixed(2))}
           </CusTypography>
         </Grid>
-        <Grid size={3}>
+        <Grid size={{ xs: 6, sm: 3 }}>
           <CusTypography variant="h6">{t('score')}</CusTypography>
           <CusTypography variant="h4">{totalScore}</CusTypography>
         </Grid>
       </Grid>
-      <Grid container spacing={2} columns={{ xs: 3, sm: 6, md: 12 }} paddingTop={3}>
-        {COMPONENT_TYPES.map((type) => (
-          <Grid
-            size={3}
-            key={type}
-            sx={{ display: 'flex' }} // 确保卡片高度统一
-          >
+
+      <Grid
+        container
+        spacing={2}
+        columns={{ xs: 4, sm: 8, md: 12 }}
+        sx={{ pt: 3 }}
+      >
+        {displayComponents.map((type) => (
+          <Grid mb={1} size={{ xs: 12, sm: 4, md: 3 }} key={type}>
             <ResultCard
-              type={type}
-              price={getCurrentPriceWithSign(resultData[type]!)}
-              data={resultData[type]!} // 非空断言（因 isComplete 已验证）
-              onClick={() => handleCardClick(type, resultData[type])}
+              type={type as ComponentType}
+              price={getCurrentPriceWithSign(
+                resultData[type as ComponentType]!
+              )}
+              data={resultData[type as ComponentType]!} // 非空断言（因 isComplete 已验证）
+              onClick={() =>
+                handleCardClick(
+                  type as ComponentType,
+                  resultData[type as ComponentType]
+                )
+              }
             />
           </Grid>
         ))}
-        {selectedData && (
-          <DetailDialog
-            open={!!selectedData}
-            onClose={() => setSelectedData(null)}
-            type={selectedData.type}
-            data={selectedData.data}
-            price={getCurrentPriceWithSign(selectedData.data)}
-            link={getCurrentSaleLink(selectedData.data)}
-            size="large"
-          />
-        )}
       </Grid>
+
+      {selectedData && (
+        <DetailDialog
+          open={!!selectedData}
+          onClose={() => setSelectedData(null)}
+          type={selectedData.type}
+          data={selectedData.data}
+          price={getCurrentPriceWithSign(selectedData.data)}
+          link={getCurrentSaleLink(selectedData.data)}
+          size="large"
+        />
+      )}
     </Box>
   )
 }

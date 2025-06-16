@@ -5,11 +5,15 @@ import {
   CardHeader,
   Grid,
   Divider,
+  Box,
 } from '@mui/material'
 import CusTypography from '../../common/components/CusTypography'
 import { componentConfig, ComponentType } from '../constant/componentConfig'
 import { useTranslation } from 'react-i18next'
-import { addCurrencySign, getAllPriceByRegion } from '../../../utils/NumberHelper'
+import {
+  addCurrencySign,
+  getAllPriceByRegion,
+} from '../../../utils/NumberHelper'
 import PlatformIcon from '../../common/components/PlatformIcon'
 import BuyButton from '../../common/components/BuyButton'
 import PlaceholdImage from '../../common/components/PlaceholdImage'
@@ -22,11 +26,7 @@ interface ResultCardProps {
   onClick?: () => void
 }
 
-const ResultCard: React.FC<ResultCardProps> = ({
-  type,
-  data,
-  onClick,
-}) => {
+const ResultCard: React.FC<ResultCardProps> = ({ type, data, onClick }) => {
   const { t } = useTranslation()
   const config = componentConfig[type]
 
@@ -35,7 +35,17 @@ const ResultCard: React.FC<ResultCardProps> = ({
   const currentPrices = getAllPriceByRegion(data.prices)
 
   return (
-    <Card sx={{ mb: 2, borderRadius: 2, width: '100%' }} onClick={onClick}>
+    <Card
+      sx={{
+        mb: 2,
+        borderRadius: 2,
+        width: '100%',
+        height: '100%',
+        display: 'flex',
+        flexDirection: 'column',
+      }}
+      onClick={onClick}
+    >
       <CardHeader
         title={t(config.title)}
         subheader={`${t(data.brand)} ${data.name}`}
@@ -45,7 +55,7 @@ const ResultCard: React.FC<ResultCardProps> = ({
         }}
       />
       <PlaceholdImage data={data} height={180} />
-      <CardContent>
+      <CardContent sx={{ flex: 1, py: 1 }}>
         <Grid container spacing={2}>
           {config.properties.simple.map((prop: any) => (
             <Grid size={6} key={prop.key}>
@@ -53,43 +63,47 @@ const ResultCard: React.FC<ResultCardProps> = ({
                 {t(prop.label)}
               </CusTypography>
               <CusTypography variant="caption">
-                {prop.formatter ? prop.formatter(data) : data[prop.key as keyof AllType] || '-'}
+                {prop.formatter
+                  ? prop.formatter(data)
+                  : data[prop.key as keyof AllType] || '-'}
               </CusTypography>
             </Grid>
           ))}
         </Grid>
       </CardContent>
-      <Divider />
-      <Grid container spacing={1} padding={1}>
-        {currentPrices.map((price) => (
-          <Grid size={12} key={`${data.id}-${price.platform}`}>
-            <Grid container spacing={1}>
-              <Grid size="auto">
-                <PlatformIcon platform={price.platform} />
-              </Grid>
-              <Grid size="auto">
-                <CusTypography variant="h6" lineHeight={2}>
-                  {t(price.platform)}
-                </CusTypography>
-              </Grid>
-              <Grid size="auto">
-                <CusTypography variant="h6" lineHeight={2}>
-                  {addCurrencySign(price.price)}
-                </CusTypography>
-              </Grid>
-              <Grid size="grow" paddingRight={1}>
-                <BuyButton
-                  href={currentPrices[0].price_link}
-                  variant="contained"
-                  color="primary"
-                >
-                  {t('buyNow')}
-                </BuyButton>
+      <Box sx={{ mt: 'auto' }}>
+        <Divider />
+        <Grid container spacing={1} padding={1}>
+          {currentPrices.map((price) => (
+            <Grid size={12} key={`${data.id}-${price.platform}`}>
+              <Grid container spacing={1}>
+                <Grid size="auto">
+                  <PlatformIcon platform={price.platform} />
+                </Grid>
+                <Grid size="auto">
+                  <CusTypography variant="h6" lineHeight={2}>
+                    {t(price.platform)}
+                  </CusTypography>
+                </Grid>
+                <Grid size="auto">
+                  <CusTypography variant="h6" lineHeight={2}>
+                    {addCurrencySign(price.price)}
+                  </CusTypography>
+                </Grid>
+                <Grid size="grow" paddingRight={1}>
+                  <BuyButton
+                    href={currentPrices[0].price_link}
+                    variant="contained"
+                    color="primary"
+                  >
+                    {t('buyNow')}
+                  </BuyButton>
+                </Grid>
               </Grid>
             </Grid>
-          </Grid>
-        ))}
-      </Grid>
+          ))}
+        </Grid>
+      </Box>
     </Card>
   )
 }
