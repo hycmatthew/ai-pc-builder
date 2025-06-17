@@ -9,8 +9,8 @@ import {
   CHIPSET_RULES,
   BRAND_POWER_SCORE,
   FORM_FACTOR_PENALTY,
+  RAM_BRAND_FACTOR,
 } from '../constant/buildType'
-import { isNumber } from 'lodash'
 
 type BestConfiguration = {
   cpu: MappedCPUType
@@ -72,50 +72,46 @@ function calculatePerformanceScore(
   cpuScore: number,
   gpuScore: number,
   ramScore: number,
+  mbScore: number, // 新增主板评分
   weights: { cpu: number; gpu: number; ram: number },
-  // 新增参考值参数，用于标准化
   reference: {
     cpu: { q1: number; median: number; q3: number }
     gpu: { q1: number; median: number; q3: number }
     ram: { q1: number; median: number; q3: number }
   }
 ): number {
-  // 计算四分位距(IQR)
+  // 1. 计算四分位距(IQR)
   const cpuIQR = reference.cpu.q3 - reference.cpu.q1
   const gpuIQR = reference.gpu.q3 - reference.gpu.q1
   const ramIQR = reference.ram.q3 - reference.ram.q1
 
-  // 计算标准分数
+  // 2. 计算标准分数
   const zCpu = calculateZScore(cpuScore, reference.cpu.median, cpuIQR)
   const zGpu = calculateZScore(gpuScore, reference.gpu.median, gpuIQR)
   const zRam = calculateZScore(ramScore, reference.ram.median, ramIQR)
 
-  // 动态调整RAM权重（RAM性能超过CPU中位数的50%时降低影响）
-  const ramWeightMultiplier = Math.min(
-    1,
-    (reference.cpu.median * 0.5) / ramScore
-  )
-  const adjustedRamWeight = weights.ram * ramWeightMultiplier
+  // 3. CPU-GPU瓶颈计算（调和平均数）
+  const bottleneckScore = (2 * (zCpu * zGpu)) / (zCpu + zGpu + 1e-10)
 
-  const totalWeight = weights.cpu + weights.gpu + adjustedRamWeight
+  // 4. 主板评分标准化（0-1范围）
+  const normalizedMbScore = 1 / (1 + Math.exp(-mbScore * 0.1)) // 使用sigmoid压缩
 
-  // 使用加权几何平均
+  // 5. 权重分配（主板占5%）
+  const totalWeight = weights.cpu + weights.gpu + weights.ram
+  const mbWeight = totalWeight * 0.05 // 主板权重5%
+  const adjustedCpuGpuWeight = (weights.cpu + weights.gpu) * 0.95
+  const adjustedRamWeight = weights.ram * 0.95
+
+  // 6. 加权几何平均
   const weightedProduct =
-    Math.pow(zCpu + 1e-10, weights.cpu / totalWeight) *
-    Math.pow(zGpu + 1e-10, weights.gpu / totalWeight) *
-    Math.pow(zRam + 1e-10, adjustedRamWeight / totalWeight)
+    Math.pow(bottleneckScore + 1e-10, adjustedCpuGpuWeight) *
+    Math.pow(zRam + 1e-10, adjustedRamWeight) *
+    Math.pow(normalizedMbScore + 1e-10, mbWeight)
 
-  console.log(
-    'cpu: ' +
-      cpuScore +
-      ', gpu: ' +
-      gpuScore +
-      ', ram: ' +
-      ramScore +
-      ', logScore: ' +
-      weightedProduct
+  return Math.pow(
+    weightedProduct,
+    1 / (adjustedCpuGpuWeight + adjustedRamWeight + mbWeight)
   )
-  return weightedProduct
 }
 
 // 优化2: 添加缓存机制避免重复计算
@@ -159,7 +155,7 @@ export const findBestConfiguration = (
     // 获取兼容主板
     const compatibleMBs = motherboards
       .filter((mb) => mb.socket === cpu.socket)
-      .filter((mb) => mb.price <= budget * 0.3)
+      .filter((mb) => mb.price <= budget * 0.35)
 
     if (compatibleMBs.length === 0) continue
 
@@ -169,6 +165,8 @@ export const findBestConfiguration = (
       0,
       Math.min(5, Math.ceil(scoredMBs.length * 0.2))
     )
+    console.log(scoredMBs)
+    console.log(topMBs)
 
     for (const mb of topMBs) {
       // 提前终止条件
@@ -179,7 +177,7 @@ export const findBestConfiguration = (
         .filter((ram) => ram.channel <= mb.ramSlot)
         .map((ram) => ({
           ...ram,
-          score: calculateAdjustedRamScore(ram, mb.ramSupport),
+          score: calculateRamPerformance(ram, mb.ramSupport),
           valueRatio: ram.score / ram.price, // 添加性价比指标
         }))
         // 按性价比排序内存
@@ -198,6 +196,7 @@ export const findBestConfiguration = (
             effectiveCPUScore,
             cpu.integratedGraphicsScore,
             ram.score,
+            mb.score,
             weights,
             reference
           )
@@ -220,6 +219,7 @@ export const findBestConfiguration = (
               effectiveCPUScore,
               bestGPU.score,
               ram.score,
+              mb.score,
               weights,
               reference
             )
@@ -235,6 +235,102 @@ export const findBestConfiguration = (
   return bestConfig
 }
 
+// 优化7: 改进GPU查找算法
+function findBestGPU(
+  sortedGPUs: MappedGPUType[],
+  lookupTable: number[],
+  budget: number
+): MappedGPUType | undefined {
+  let low = 0
+  let high = sortedGPUs.length - 1
+  let bestIndex = -1
+
+  // 二分查找最大可承受价格
+  while (low <= high) {
+    const mid = (low + high) >> 1 // 更快的位运算
+    if (sortedGPUs[mid].price <= budget) {
+      bestIndex = mid
+      low = mid + 1
+    } else {
+      high = mid - 1
+    }
+  }
+
+  if (bestIndex === -1) return undefined
+
+  // 查找具有目标分数的第一个GPU
+  const targetScore = lookupTable[bestIndex]
+
+  // 反向线性扫描（针对小范围优化）
+  const startIndex = Math.max(0, bestIndex - 10)
+  for (let i = bestIndex; i >= startIndex; i--) {
+    if (sortedGPUs[i].score === targetScore) {
+      return sortedGPUs[i]
+    }
+  }
+
+  return sortedGPUs[bestIndex] // 安全回退
+}
+
+/************************* Helper Function *************************/
+// CPU等级划分标准 (基于型号名称和TDP)
+function getCpuClass(cpu: MappedCPUType): number {
+  const name = cpu.id.toUpperCase()
+  // 定义CPU等级映射规则
+  const cpuClassRules = [
+    {
+      // 旗舰级 (i9/Ryzen 9/Core Ultra 9)
+      keywords: ['I9', 'RYZEN-9', 'ULTRA-9'],
+      minPower: 200,
+      class: 5,
+    },
+    {
+      // 高端级 (i7/Ryzen 7/Core Ultra 7)
+      keywords: ['I7', 'RYZEN-7', 'ULTRA-7'],
+      minPower: 150,
+      class: 4,
+    },
+    {
+      // 中端级 (i5/Ryzen 5/Core Ultra 5)
+      keywords: ['I5', 'RYZEN-5', 'ULTRA-5'],
+      minPower: 100,
+      class: 3,
+    },
+    {
+      // 入门级 (i3/Ryzen 3)
+      keywords: ['I3', 'RYZEN 3'],
+      minPower: 60,
+      class: 2,
+    },
+  ]
+  // 按优先级检查规则
+  for (const rule of cpuClassRules) {
+    const hasKeyword = rule.keywords.some((keyword) => name.includes(keyword))
+    const hasPower = cpu.power > rule.minPower
+
+    if (hasKeyword || hasPower) {
+      return rule.class
+    }
+  }
+  return 1 // 默认低功耗/入门级
+}
+
+// GPU预处理（排序+创建查找表）
+function preprocessGPUs(gpus: MappedGPUType[]): [MappedGPUType[], number[]] {
+  // 按价格排序并创建最大值数组
+  const sorted = [...gpus].sort((a, b) => a.price - b.price)
+  const lookupTable: number[] = []
+  let maxScore = 0
+
+  sorted.forEach((gpu, index) => {
+    maxScore = Math.max(maxScore, gpu.score)
+    lookupTable[index] = maxScore
+  })
+
+  return [sorted, lookupTable]
+}
+
+/****************************** Motherboard Logic ******************************/
 // 优化3: 重构芯片组数据处理逻辑
 function getChipsetData(chipset: string) {
   const upperChipset = chipset.toUpperCase().trim()
@@ -359,60 +455,6 @@ const rateMotherboard = (
   return baseScore * brandFactor * classMatch * powerMatch * formFactorPenalty
 }
 
-// RAM评分函数
-function calculateAdjustedRamScore(
-  ram: MappedRAMType,
-  supportedSpeeds: number[]
-): number {
-  // 计算有效速度（不超过主板支持）
-  const maxSupported = Math.max(...supportedSpeeds)
-
-  if (isNumber(maxSupported) && maxSupported > 0) {
-    const effectiveSpeed = Math.min(ram.speed, maxSupported)
-    const speedDiff = ram.speed - effectiveSpeed
-    return ram.score - speedDiff
-  }
-  return ram.score
-}
-
-// 优化7: 改进GPU查找算法
-function findBestGPU(
-  sortedGPUs: MappedGPUType[],
-  lookupTable: number[],
-  budget: number
-): MappedGPUType | undefined {
-  let low = 0
-  let high = sortedGPUs.length - 1
-  let bestIndex = -1
-
-  // 二分查找最大可承受价格
-  while (low <= high) {
-    const mid = (low + high) >> 1 // 更快的位运算
-    if (sortedGPUs[mid].price <= budget) {
-      bestIndex = mid
-      low = mid + 1
-    } else {
-      high = mid - 1
-    }
-  }
-
-  if (bestIndex === -1) return undefined
-
-  // 查找具有目标分数的第一个GPU
-  const targetScore = lookupTable[bestIndex]
-
-  // 反向线性扫描（针对小范围优化）
-  const startIndex = Math.max(0, bestIndex - 10)
-  for (let i = bestIndex; i >= startIndex; i--) {
-    if (sortedGPUs[i].score === targetScore) {
-      return sortedGPUs[i]
-    }
-  }
-
-  return sortedGPUs[bestIndex] // 安全回退
-}
-
-/************************* Helper Function *************************/
 const preprocessMotherboards = (
   mbs: MappedMotherboardType[],
   cpu: MappedCPUType,
@@ -426,6 +468,7 @@ const preprocessMotherboards = (
     list.push(mb)
     chipsetMap.set(mb.chipset, list)
   }
+  console.log('芯片组分组:', chipsetMap)
 
   // 只处理每个芯片组的顶级主板
   const processedMBs: MappedMotherboardType[] = []
@@ -448,48 +491,7 @@ const preprocessMotherboards = (
     .sort((a, b) => b.score - a.score)
 }
 
-// CPU等级划分标准 (基于型号名称和TDP)
-function getCpuClass(cpu: MappedCPUType): number {
-  const name = cpu.id.toUpperCase()
-  // 定义CPU等级映射规则
-  const cpuClassRules = [
-    {
-      // 旗舰级 (i9/Ryzen 9/Core Ultra 9)
-      keywords: ['I9', 'RYZEN-9', 'ULTRA-9'],
-      minPower: 200,
-      class: 5,
-    },
-    {
-      // 高端级 (i7/Ryzen 7/Core Ultra 7)
-      keywords: ['I7', 'RYZEN-7', 'ULTRA-7'],
-      minPower: 150,
-      class: 4,
-    },
-    {
-      // 中端级 (i5/Ryzen 5/Core Ultra 5)
-      keywords: ['I5', 'RYZEN-5', 'ULTRA-5'],
-      minPower: 100,
-      class: 3,
-    },
-    {
-      // 入门级 (i3/Ryzen 3)
-      keywords: ['I3', 'RYZEN 3'],
-      minPower: 60,
-      class: 2,
-    },
-  ]
-  // 按优先级检查规则
-  for (const rule of cpuClassRules) {
-    const hasKeyword = rule.keywords.some((keyword) => name.includes(keyword))
-    const hasPower = cpu.power > rule.minPower
-
-    if (hasKeyword || hasPower) {
-      return rule.class
-    }
-  }
-  return 1 // 默认低功耗/入门级
-}
-
+/****************************** Ram Logic ******************************/
 function groupRamsByType(rams: MappedRAMType[]) {
   const map = new Map<string, MappedRAMType[]>()
   rams.forEach((ram) => {
@@ -499,17 +501,64 @@ function groupRamsByType(rams: MappedRAMType[]) {
   return map
 }
 
-// GPU预处理（排序+创建查找表）
-function preprocessGPUs(gpus: MappedGPUType[]): [MappedGPUType[], number[]] {
-  // 按价格排序并创建最大值数组
-  const sorted = [...gpus].sort((a, b) => a.price - b.price)
-  const lookupTable: number[] = []
-  let maxScore = 0
+// RAM评分函数
+function calculateRamPerformance(
+  ram: MappedRAMType,
+  supportedSpeeds: number[]
+): number {
+  // 1. 计算有效速度（不超过主板支持）
+  const maxSupported = Math.max(...supportedSpeeds)
+  const effectiveSpeed = Math.min(ram.speed, maxSupported)
 
-  sorted.forEach((gpu, index) => {
-    maxScore = Math.max(maxScore, gpu.score)
-    lookupTable[index] = maxScore
-  })
+  // 2. 容量权重：分段加权
+  const getCapacityWeight = (capacity: number) => {
+    if (capacity <= 8) return 0.5
+    if (capacity <= 16) return 0.8
+    if (capacity <= 32) return 1.1
+    if (capacity <= 64) return 1.15
+    return 0.8
+  }
 
-  return [sorted, lookupTable]
+  // 3. 通道数乘数
+  const getChannelMultiplier = (channel: number) => {
+    return channel >= 2 ? 1.2 : 1.0
+  }
+
+  // 4. 计算真实延迟（纳秒）
+  const realLatencyNs = (ram.latency / effectiveSpeed) * 2000
+
+  // 5. 延迟惩罚系数（非线性）
+  const getLatencyPenalty = (latencyNs: number) => {
+    if (latencyNs <= 10) return 0
+    if (latencyNs <= 15) return 80
+    if (latencyNs <= 20) return 150
+    return 220
+  }
+
+  // 6. 基础分计算
+  const baseScore = effectiveSpeed * getCapacityWeight(ram.capacity)
+
+  // 7. 应用通道数加成
+  const channelBoostedScore = baseScore * getChannelMultiplier(ram.channel)
+
+  // 8. 应用延迟惩罚
+  let finalScore =
+    channelBoostedScore - realLatencyNs * getLatencyPenalty(realLatencyNs)
+
+  // 9. DDR5加成 (15%性能提升)
+  if (ram.type.toUpperCase().includes('DDR5')) {
+    finalScore *= 1.1
+  }
+
+  // 10. 散热片加成 (5%性能提升)
+  if (ram.hasHeatsink) {
+    finalScore *= 1.1
+  }
+
+  // 11. 品牌加成
+  const brand = ram.brand.toUpperCase().trim()
+  const brandFactor = RAM_BRAND_FACTOR[brand] || RAM_BRAND_FACTOR._default
+  finalScore *= brandFactor
+
+  return Math.max(0, finalScore)
 }

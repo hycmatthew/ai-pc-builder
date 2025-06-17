@@ -3,7 +3,6 @@ export enum BuildType {
   Gaming = 'gaming',
   Rendering = 'rendering',
   AI = 'ai',
-  Unknown = 'unknown',
 }
 
 // 芯片组等级映射（基于命名规则）
@@ -95,4 +94,15 @@ export const FORM_FACTOR_PENALTY: Record<string, number> = {
   'MICRO-ATX': 0.95, // 扣5%分
   ATX: 1.0, // 不扣分
   'E-ATX': 0.95,
+}
+
+export const RAM_BRAND_FACTOR: Record<string, number> = {
+  CORSAIR: 1.1,
+  'G.SKILL': 1.1,
+  KINGSTON: 1.05,
+  CRUCIAL: 1.0,
+  PATRIOT: 1.0,
+  ADATA: 0.95,
+  TEAMGROUP: 1.0,
+  _default: 1.0,
 }

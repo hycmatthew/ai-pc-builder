@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { useSelector } from 'react-redux'
 import {
   CircularProgress,
@@ -63,39 +63,48 @@ const AnimatedGrid = styled(Grid)(() => ({
 }))
 
 function AILogicPage() {
-  const dataState = useSelector((state: any) => {
-    return state
-  })
+  const aiLogicData = useSelector((state: any) => state.aiLogic)
+  const rawData = useSelector((state: any) => state.rawData)
+  const preSelectedItem = useSelector(
+    (state: any) => state.aiLogic.preSelectedItem
+  )
 
   const { t } = useTranslation()
   const dispatch = useAppDispatch()
-  const [selectedType, setSelectedType] = useState<BuildType>(BuildType.Unknown)
+
+  // 优化2: 使用useMemo缓存静态数据
+  const tabs = useMemo(
+    () => [
+      { label: t(BuildType.Balance), value: BuildType.Balance },
+      { label: t(BuildType.Gaming), value: BuildType.Gaming },
+      { label: t(BuildType.Rendering), value: BuildType.Rendering },
+      { label: t(BuildType.AI), value: BuildType.AI },
+    ],
+    [t]
+  )
+
+  const storageTabs = useMemo(
+    () => [
+      { label: '500GB', value: 500 },
+      { label: '1TB', value: 1000 },
+      { label: '2TB', value: 2000 },
+      { label: '4TB', value: 4000 },
+    ],
+    []
+  )
+
+  const [selectedType, setSelectedType] = useState<BuildType | null>(null)
   const [selectedStorage, setSelectedStorage] = useState(1000)
-
-  const tabs = [
-    { label: t(BuildType.Balance), value: BuildType.Balance },
-    { label: t(BuildType.Gaming), value: BuildType.Gaming },
-    { label: t(BuildType.Rendering), value: BuildType.Rendering },
-    { label: t(BuildType.AI), value: BuildType.AI },
-  ]
-
-  const storageTabs = [
-    { label: '500GB', value: 500 },
-    { label: '1TB', value: 1000 },
-    { label: '2TB', value: 2000 },
-    { label: '4TB', value: 4000 },
-  ]
-
   const [activeStep, setActiveStep] = useState(0)
   const [displaySysError, setDisplaySysError] = useState(false)
   const [loading, setLoading] = useState(false)
-
   const [formData, setFormData] = useState({
     type: '',
     budget: '',
     size: 'ATX',
   })
 
+  // 优化4: 使用useMemo缓存resData
   const [resData, setResData] = useState({
     cpu: null,
     motherboard: null,
@@ -125,8 +134,8 @@ function AILogicPage() {
   }
 
   useEffect(() => {
-    setResData(dataState.aiLogic.preSelectedItem)
-  }, [dataState.aiLogic.preSelectedItem])
+    setResData(preSelectedItem)
+  }, [preSelectedItem])
 
   const handleNext = () => {
     setLoading(true)
@@ -169,36 +178,28 @@ function AILogicPage() {
   }
 
   const generateListLogic = () => {
-    const logicItems = dataState.aiLogic.lockItem
-
-    const cpus = logicItems.cpu ? [logicItems.cpu] : dataState.rawData.cpuList
-    const gpus = logicItems.gpu ? [logicItems.gpu] : dataState.rawData.gpuList
-    const motherboards = logicItems.motherboard
-      ? [logicItems.motherboard]
-      : dataState.rawData.motherboardList
-    const rams = logicItems.ram ? [logicItems.ram] : dataState.rawData.ramList
-    const ssds = logicItems.ssd ? [logicItems.ssd] : dataState.rawData.ssdList
-    const cases = logicItems.pcCase
-      ? [logicItems.pcCase]
-      : dataState.rawData.caseList
-    const psus = logicItems.psu ? [logicItems.psu] : dataState.rawData.psuList
-    const coolers = logicItems.cooler
-      ? [logicItems.cooler]
-      : dataState.rawData.coolerList
+    const logicItems = aiLogicData.lockItem
+    // 获取组件列表
+    const getComponentList = (
+      componentType: keyof typeof logicItems,
+      fallbackList: any[]
+    ) =>
+      logicItems[componentType] ? [logicItems[componentType]] : fallbackList
 
     const res = preFilterDataLogic(
-      cpus,
-      motherboards,
-      gpus,
-      rams,
-      ssds,
-      cases,
-      psus,
-      coolers,
+      getComponentList('cpu', rawData.cpuList),
+      getComponentList('motherboard', rawData.motherboardList),
+      getComponentList('gpu', rawData.gpuList),
+      getComponentList('ram', rawData.ramList),
+      getComponentList('ssd', rawData.ssdList),
+      getComponentList('case', rawData.caseList),
+      getComponentList('psu', rawData.psuList),
+      getComponentList('cooler', rawData.coolerList),
       Number(formData.budget),
       selectedStorage,
-      selectedType
+      selectedType as BuildType
     )
+
     console.log('generateListLogic', res)
     setLoading(false)
     if (res !== null) {
@@ -297,7 +298,7 @@ function AILogicPage() {
       return
     }
 
-    const productList = dataState.rawData[handler.listPath]
+    const productList = rawData[handler.listPath]
     const selectedItem = value ? handler.searchFn(productList, value) : null
 
     dispatch(handler.updateAction(selectedItem))
@@ -328,7 +329,7 @@ function AILogicPage() {
               <FormLabel>{t('Usage')}</FormLabel>
               <Stack padding={1}>
                 <SegmentedTabs
-                  value={selectedType}
+                  value={selectedType ?? null}
                   onChange={updateType}
                   tabs={tabs}
                 />
@@ -397,14 +398,14 @@ function AILogicPage() {
                 )}
                 <AnimatedGrid size={6} paddingTop={2}>
                   <SpecificComponent
-                    rawData={dataState.rawData}
-                    aiLogic={dataState.aiLogic}
+                    rawData={rawData}
+                    aiLogic={aiLogicData}
                     changeSelectItem={changeSelectItem}
                   />
                 </AnimatedGrid>
                 <AnimatedGrid size={6}>
                   <CompatibleSection
-                    selectedItems={dataState.aiLogic.preSelectedItem}
+                    selectedItems={aiLogicData.preSelectedItem}
                     systemError={displaySysError ? 'system-error' : undefined}
                   />
                 </AnimatedGrid>
@@ -416,8 +417,8 @@ function AILogicPage() {
               <AnimatedGrid size={12}>
                 <ResultComponent
                   resultData={resData}
-                  totalPrice={dataState.aiLogic.totalPrice}
-                  totalScore={dataState.aiLogic.totalScore}
+                  totalPrice={aiLogicData.totalPrice}
+                  totalScore={aiLogicData.totalScore}
                 />
               </AnimatedGrid>
             )}

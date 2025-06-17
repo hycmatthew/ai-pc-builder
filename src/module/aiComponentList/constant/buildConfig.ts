@@ -9,7 +9,7 @@ const BuildConfig = {
   },
   CPUFactor: {
     CPUBudgetFactor: [0.6, 0.6, 0.4, 0.3],
-    SingleCoreMultiply: 5,
+    SingleCoreMultiply: 2,
     MultiCoreMultiply: 1,
   },
   GPUFactor: {

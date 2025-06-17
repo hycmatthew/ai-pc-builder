@@ -68,29 +68,66 @@ export function getMappedGPUs(
   maxGPULength: number | undefined,
   type: BuildType
 ): MappedGPUType[] {
-  const mappedGPUs = gpuList
-    .filter((item) => {
-      if (gpuList.length === 1) {
-        return true
-      }
-      const isMaxGPULengthValid = maxGPULength
-        ? item.length < maxGPULength
-        : true
+  // 1. 初步過濾：滿足預算和尺寸限制
+  const filteredGPUs = gpuList.filter((item) => {
+    if (gpuList.length === 1) return true
 
-      return priceValidation(item, budget) && isMaxGPULengthValid
+    const withinBudget = priceValidation(item, budget)
+    const fitsCase = maxGPULength ? item.length < maxGPULength : true
+
+    return withinBudget && fitsCase
+  })
+
+  // 2. 計算性價比並按chipset分組
+  const chipsetMap = new Map<
+    string,
+    { gpu: GPUType; score: number; price: number; valueRatio: number }[]
+  >()
+
+  filteredGPUs.forEach((item) => {
+    const price = getLocalizedPriceNum(item)
+    // 避免除以0的錯誤
+    if (price <= 0) return
+
+    const score = ScoreAdjusters.gpu(item, type)
+    const valueRatio = score / price // 性價比 = 性能分數 / 價格
+
+    const chipsetGroup = chipsetMap.get(item.chipset) || []
+    chipsetGroup.push({
+      gpu: item,
+      score,
+      price,
+      valueRatio,
     })
-    .map((item) => {
-      return {
-        id: item.id,
-        brand: item.brand,
-        manufacturer: item.manufacturer,
-        score: ScoreAdjusters.gpu(item, type),
-        power: item.power,
-        length: item.length,
-        price: getLocalizedPriceNum(item),
-      }
+    chipsetMap.set(item.chipset, chipsetGroup)
+  })
+
+  // 3. 每組保留性價比最高的5個
+  const result: MappedGPUType[] = []
+
+  chipsetMap.forEach((group) => {
+    // 按性價比降序排序
+    group.sort((a, b) => b.valueRatio - a.valueRatio)
+
+    // 取前5名（或更少）
+    const topGPUs = group.slice(0, 5)
+
+    // 轉換為最終格式
+    topGPUs.forEach(({ gpu, score, price }) => {
+      result.push({
+        id: gpu.id,
+        brand: gpu.brand,
+        manufacturer: gpu.manufacturer,
+        chipset: gpu.chipset,
+        score,
+        power: gpu.power,
+        length: gpu.length,
+        price,
+      })
     })
-  return mappedGPUs
+  })
+
+  return result
 }
 
 export function getMappedMotherboards(
@@ -146,40 +183,86 @@ export function getMappedRAMs(
   cpuBrand: string | undefined,
   mbRamType: string | undefined
 ): MappedRAMType[] {
-  return ramList
-    .filter((item) => {
-      // 保留唯一選項
-      if (ramList.length === 1) return true
+  // 1. 初步过滤：满足预算和兼容性要求
+  const filteredRAMs = ramList.filter((item) => {
+    if (ramList.length === 1) return true
 
-      // 兼容性過濾條件
-      const compatibilityChecks = [
-        // 主板記憶體類型匹配 (DDR4/DDR5)
-        !mbRamType || item.type === mbRamType,
-        // CPU 品牌兼容性檢查
-        !cpuBrand ||
-          (cpuBrand.toLowerCase() === 'intel'
-            ? item.profile_xmp
-            : cpuBrand.toLowerCase() === 'amd'
-              ? item.profile_expo
-              : true), // 未知品牌CPU不檢查兼容性
-      ]
+    // 兼容性检查
+    const isCompatibleWithMB = !mbRamType || item.type === mbRamType
+    const isCompatibleWithCPU =
+      !cpuBrand ||
+      (cpuBrand.toLowerCase() === 'intel'
+        ? item.profile_xmp
+        : cpuBrand.toLowerCase() === 'amd'
+          ? item.profile_expo
+          : true)
 
-      return priceValidation(item, budget) && compatibilityChecks.every(Boolean)
+    return (
+      priceValidation(item, budget) && isCompatibleWithMB && isCompatibleWithCPU
+    )
+  })
+
+  // 2. 创建分组映射：capacity -> type (DDR4/DDR5) -> RAM列表
+  const capacityMap = new Map<number, Map<string, RAMType[]>>()
+
+  filteredRAMs.forEach((item) => {
+    const capacity = item.capacity
+    const ramType = item.type // 'DDR4' 或 'DDR5'
+
+    if (!capacityMap.has(capacity)) {
+      capacityMap.set(capacity, new Map<string, RAMType[]>())
+    }
+
+    const typeMap = capacityMap.get(capacity)!
+    if (!typeMap.has(ramType)) {
+      typeMap.set(ramType, [])
+    }
+
+    typeMap.get(ramType)!.push(item)
+  })
+
+  // 3. 处理每个分组，保留性价比前50%
+  const result: MappedRAMType[] = []
+
+  capacityMap.forEach((typeMap) => {
+    typeMap.forEach((rams) => {
+      // 计算性价比并排序
+      const ramsWithValue = rams.map((item) => {
+        const price = getLocalizedPriceNum(item)
+        const score = ramPerformanceLogic(item)
+        const valueRatio = price > 0 ? score / price : 0 // 避免除零错误
+
+        return { ...item, valueRatio, price, score }
+      })
+
+      // 按性价比降序排序
+      ramsWithValue.sort((a, b) => b.valueRatio - a.valueRatio)
+
+      // 计算需要保留的数量（前50%，至少1个）
+      const keepCount = Math.max(1, Math.ceil(ramsWithValue.length * 0.5))
+      const topRams = ramsWithValue.slice(0, keepCount)
+
+      // 转换为最终格式
+      topRams.forEach((item) => {
+        result.push({
+          id: item.id,
+          brand: item.brand,
+          capacity: item.capacity,
+          type: item.type,
+          speed: item.speed,
+          latency: item.latency,
+          channel: item.channel,
+          profile_xmp: item.profile_xmp,
+          profile_expo: item.profile_expo,
+          hasHeatsink: item.heat_spreader,
+          score: item.score,
+          price: item.price,
+        })
+      })
     })
-    .map((item) => {
-      return {
-        id: item.id,
-        brand: item.brand,
-        capacity: item.capacity,
-        type: item.type,
-        speed: item.speed,
-        channel: item.channel,
-        profile_expo: item.profile_expo,
-        profile_xmp: item.profile_xmp,
-        score: ramPerformanceLogic(item),
-        price: getLocalizedPriceNum(item),
-      }
-    })
+  })
+  console.log('Mapped RAMs:', result)
+  return result
 }
 
 export function getMappedSSDs(
@@ -341,8 +424,9 @@ const ScoreAdjusters = {
     }
 
     if (Conditions.isGamingBuildWithAMD3D(item, buildType)) {
+      console.log('AMD 3D V-Cache 加成:', item.id)
       // AMD 3D V-Cache 加成
-      score *= 1.08
+      score *= 1.15
     }
 
     return score

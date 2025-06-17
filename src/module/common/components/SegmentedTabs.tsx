@@ -6,11 +6,11 @@ type SegmentedTabValue = string | number
 
 type SegmentedTabOption = {
   label: ReactNode
-  value: SegmentedTabValue
+  value: SegmentedTabValue | null
 }
 
 type SegmentedTabsProps = TabsProps & {
-  value: SegmentedTabValue
+  value: SegmentedTabValue | null
   onChange: (event: React.SyntheticEvent, newValue: SegmentedTabValue) => void
   tabs: SegmentedTabOption[]
 }
@@ -74,10 +74,11 @@ const SegmentedTabs = ({
 }: SegmentedTabsProps) => {
   return (
     <CustomTabs
-      value={value}
+      value={value ?? false}
       onChange={onChange}
       aria-label="segmented tabs"
       {...props}
+      
     >
       {tabs.map((tab) => (
         <CustomSegmentedTab
