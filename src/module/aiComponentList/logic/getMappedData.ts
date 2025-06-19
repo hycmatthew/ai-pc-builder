@@ -25,6 +25,7 @@ import {
   MappedRAMType,
   MappedSSDType,
 } from '../constant/mappedObjectTypes'
+import { calculateMotherboardBaseScore } from './scoreLogic'
 
 const priceValidation = (item: any, budget: number): boolean => {
   const price = getLocalizedPriceNum(item)
@@ -139,42 +140,69 @@ export function getMappedMotherboards(
   ramType: string | undefined,
   caseCompatibility: string[] | undefined
 ): MappedMotherboardType[] {
+  // Step 1: 初始过滤（兼容性 + 价格）
   const mappedMotherboards = mbList
     .filter((item) => {
       if (mbList.length === 1) return true
 
-      // 兼容性過濾條件
       const compatibilityChecks = [
-        // CPU插槽匹配
         !cpuSocket || item.socket === cpuSocket,
-        // 內存速度支持
         !ramSpeed || item.ram_support?.includes(ramSpeed),
-        // 內存插槽數量
         !ramSlots || item.ram_slot >= ramSlots,
-        // 內存類型匹配
         !ramType || item.ram_type === ramType,
-        // 機箱兼容性
         !caseCompatibility || caseCompatibility.includes(item.form_factor),
       ]
 
-      // 所有條件必須同時滿足
       return priceValidation(item, budget) && compatibilityChecks.every(Boolean)
     })
-    .map((item) => {
-      return {
-        id: item.id,
-        brand: item.brand,
-        socket: item.socket,
-        chipset: item.chipset,
-        ramSlot: item.ram_slot,
-        ramType: item.ram_type,
-        ramSupport: item.ram_support,
-        ramMax: item.ram_max,
-        formFactor: item.form_factor,
-        price: getLocalizedPriceNum(item),
+    .map((item) => ({
+      id: item.id,
+      brand: item.brand,
+      name: item.name,
+      socket: item.socket,
+      chipset: item.chipset,
+      ramSlot: item.ram_slot,
+      ramType: item.ram_type,
+      ramSupport: item.ram_support,
+      ramMax: item.ram_max,
+      formFactor: item.form_factor,
+      score: calculateMotherboardBaseScore(item), // 计算主板性能分数
+      price: getLocalizedPriceNum(item),
+    }))
+
+  // Step 2: 按芯片组分組
+  const groupedByChipset = mappedMotherboards.reduce(
+    (acc, mb) => {
+      const key = mb.chipset
+      if (!acc[key]) acc[key] = []
+      acc[key].push(mb)
+      return acc
+    },
+    {} as Record<string, MappedMotherboardType[]>
+  )
+
+  // Step 3: 对每个芯片组进行性价比筛选
+  const result: MappedMotherboardType[] = []
+  for (const chipset in groupedByChipset) {
+    const group = groupedByChipset[chipset]
+
+    // 按价格升序排序
+    group.sort((a, b) => a.price - b.price)
+
+    // 保留性价比拐点主板
+    let currentMaxScore = -1 // 初始化为-1确保第一个主板被保留
+    const filteredGroup: MappedMotherboardType[] = []
+
+    for (const mb of group) {
+      if (mb.score > currentMaxScore) {
+        filteredGroup.push(mb)
+        currentMaxScore = mb.score
       }
-    })
-  return mappedMotherboards
+    }
+    result.push(...filteredGroup)
+  }
+
+  return result
 }
 
 export function getMappedRAMs(
@@ -187,7 +215,6 @@ export function getMappedRAMs(
   const filteredRAMs = ramList.filter((item) => {
     if (ramList.length === 1) return true
 
-    // 兼容性检查
     const isCompatibleWithMB = !mbRamType || item.type === mbRamType
     const isCompatibleWithCPU =
       !cpuBrand ||
@@ -202,67 +229,74 @@ export function getMappedRAMs(
     )
   })
 
-  // 2. 创建分组映射：capacity -> type (DDR4/DDR5) -> RAM列表
-  const capacityMap = new Map<number, Map<string, RAMType[]>>()
+  // 2. 按EXPO支持分组
+  const expoRAMs = filteredRAMs.filter((ram) => ram.profile_expo)
+  const nonExpoRAMs = filteredRAMs.filter((ram) => !ram.profile_expo)
 
-  filteredRAMs.forEach((item) => {
-    const capacity = item.capacity
-    const ramType = item.type // 'DDR4' 或 'DDR5'
+  // 3. 处理函数：对每个分组应用价格-性能过滤逻辑
+  const processGroup = (rams: RAMType[]) => {
+    // 按容量和类型建立分组
+    const groupMap = new Map<string, RAMType[]>()
 
-    if (!capacityMap.has(capacity)) {
-      capacityMap.set(capacity, new Map<string, RAMType[]>())
-    }
+    rams.forEach((ram) => {
+      const key = `${ram.capacity}_${ram.type}`
+      if (!groupMap.has(key)) groupMap.set(key, [])
+      groupMap.get(key)!.push(ram)
+    })
 
-    const typeMap = capacityMap.get(capacity)!
-    if (!typeMap.has(ramType)) {
-      typeMap.set(ramType, [])
-    }
+    const result: MappedRAMType[] = []
 
-    typeMap.get(ramType)!.push(item)
-  })
+    // 处理每个分组
+    groupMap.forEach((group) => {
+      // 计算性能分数并添加价格
+      const ramsWithScore = group.map((ram) => ({
+        ...ram,
+        score: ramPerformanceLogic(ram),
+        price: getLocalizedPriceNum(ram),
+      }))
 
-  // 3. 处理每个分组，保留性价比前50%
-  const result: MappedRAMType[] = []
+      // 按价格升序排序
+      ramsWithScore.sort((a, b) => a.price - b.price)
 
-  capacityMap.forEach((typeMap) => {
-    typeMap.forEach((rams) => {
-      // 计算性价比并排序
-      const ramsWithValue = rams.map((item) => {
-        const price = getLocalizedPriceNum(item)
-        const score = ramPerformanceLogic(item)
-        const valueRatio = price > 0 ? score / price : 0 // 避免除零错误
+      const filteredGroup: typeof ramsWithScore = []
+      let currentMaxScore = -1
 
-        return { ...item, valueRatio, price, score }
-      })
-
-      // 按性价比降序排序
-      ramsWithValue.sort((a, b) => b.valueRatio - a.valueRatio)
-
-      // 计算需要保留的数量（前50%，至少1个）
-      const keepCount = Math.max(1, Math.ceil(ramsWithValue.length * 0.5))
-      const topRams = ramsWithValue.slice(0, keepCount)
+      // 应用"价格提升时性能必须提升"逻辑
+      for (const ram of ramsWithScore) {
+        if (ram.score > currentMaxScore) {
+          filteredGroup.push(ram)
+          currentMaxScore = ram.score
+        }
+      }
 
       // 转换为最终格式
-      topRams.forEach((item) => {
+      filteredGroup.forEach((ram) => {
         result.push({
-          id: item.id,
-          brand: item.brand,
-          capacity: item.capacity,
-          type: item.type,
-          speed: item.speed,
-          latency: item.latency,
-          channel: item.channel,
-          profile_xmp: item.profile_xmp,
-          profile_expo: item.profile_expo,
-          hasHeatsink: item.heat_spreader,
-          score: item.score,
-          price: item.price,
+          id: ram.id,
+          brand: ram.brand,
+          capacity: ram.capacity,
+          type: ram.type,
+          speed: ram.speed,
+          latency: ram.latency,
+          channel: ram.channel,
+          profile_xmp: ram.profile_xmp,
+          profile_expo: ram.profile_expo,
+          hasHeatsink: ram.heat_spreader,
+          score: ram.score,
+          price: ram.price,
         })
       })
     })
-  })
-  console.log('Mapped RAMs:', result)
-  return result
+
+    return result
+  }
+
+  // 4. 分别处理EXPO组和非EXPO组
+  const expoResult = processGroup(expoRAMs)
+  const nonExpoResult = processGroup(nonExpoRAMs)
+
+  // 5. 合并结果并返回
+  return [...expoResult, ...nonExpoResult]
 }
 
 export function getMappedSSDs(

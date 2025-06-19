@@ -182,7 +182,7 @@ export const preFilterDataLogic = (
     filters.radiatorSupport,
     availableBudget
   )
-
+  console.log('mappedRAMs : ', mappedRAMs)
   /** Start the config logic */
   let bestSSD = null
   let bestPsu = null

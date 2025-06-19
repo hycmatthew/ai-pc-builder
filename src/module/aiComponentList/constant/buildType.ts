@@ -106,3 +106,37 @@ export const RAM_BRAND_FACTOR: Record<string, number> = {
   TEAMGROUP: 1.0,
   _default: 1.0,
 }
+
+export const MOTHERBOARD_SERIES_FACTOR: Record<string, number> = {
+  // ASUS 系列
+  'ROG MAXIMUS': 1.25, // 旗舰系列
+  'ROG STRIX': 1.2, // 高端游戏系列
+  'ROG CROSSHAIR': 1.2,
+  'TUF GAMING': 1.15, // 耐用游戏系列
+  PRIME: 1.1, // 主流系列
+  PROART: 1.2, // 创作者系列
+
+  // MSI 系列
+  MEG: 1.25, // 旗舰系列
+  PRESTIGE: 1.2, // 高端创作者系列
+  MPG: 1.2, // 性能游戏系列
+  MAG: 1.15, // 游戏系列
+  PRO: 1.1, // 商用系列
+
+  // Gigabyte 系列
+  'AORUS XTREME': 1.25,
+  'AORUS MASTER': 1.2,
+  'AORUS ELITE': 1.15,
+  AERO: 1.2, // 创作者系列
+  GAMING: 1.15,
+  UD: 1.1, // 超耐用系列
+
+  // ASRock 系列
+  AQUA: 1.25, // 旗舰水冷系列
+  TAICHI: 1.2, // 高端系列
+  'PHANTOM GAMING': 1.15,
+  'STEEL LEGEND': 1.1,
+
+  // 默认系数
+  _default: 1.0,
+}

@@ -165,8 +165,8 @@ export const findBestConfiguration = (
       0,
       Math.min(5, Math.ceil(scoredMBs.length * 0.2))
     )
-    console.log(scoredMBs)
-    console.log(topMBs)
+    //console.log(scoredMBs)
+    //console.log(topMBs)
 
     for (const mb of topMBs) {
       // 提前终止条件
