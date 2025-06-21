@@ -2,7 +2,7 @@ import { Tabs, Tab, TabsProps, TabProps, styled } from '@mui/material'
 import { ReactNode } from 'react'
 
 // 類型定義
-type SegmentedTabValue = string | number
+type SegmentedTabValue = string | number | boolean
 
 type SegmentedTabOption = {
   label: ReactNode
@@ -80,9 +80,9 @@ const SegmentedTabs = ({
       {...props}
       
     >
-      {tabs.map((tab) => (
+      {tabs.map((tab, idx) => (
         <CustomSegmentedTab
-          key={tab.value}
+          key={tab.value !== null && tab.value !== false ? String(tab.value) : `tab-${idx}`}
           label={tab.label}
           value={tab.value}
         />

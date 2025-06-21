@@ -1,4 +1,7 @@
-import { motion, Variants } from 'framer-motion'
+import React, { useEffect } from 'react'
+
+import { motion, useAnimation, Variants } from 'framer-motion'
+import { useInView } from 'react-intersection-observer'
 
 const cardVariants: Variants = {
   offscreen: {
@@ -7,7 +10,7 @@ const cardVariants: Variants = {
   },
   onscreen: {
     scaleX: 1,
-    x: '0%',
+    x: '1%',
     transition: {
       type: 'spring',
       bounce: 0.3,
@@ -17,20 +20,31 @@ const cardVariants: Variants = {
 }
 
 type BarMotionProp = {
-  children: JSX.Element
+  children: React.ReactNode
 }
 
 function BarMotion({ children }: BarMotionProp) {
+  const controls = useAnimation()
+  const [ref, inView] = useInView({
+    triggerOnce: true,
+    threshold: 0.01, // 更低的觸發閾值
+    rootMargin: '0px 0px -50px 0px', // 預加載區域
+  })
+
+  useEffect(() => {
+    if (inView) {
+      controls.start('onscreen')
+    }
+  }, [controls, inView])
+
   return (
     <motion.div
-      className="card-container"
+      ref={ref}
       initial="offscreen"
-      whileInView="onscreen"
-      viewport={{ once: true, amount: 0.8 }}
+      animate={controls}
+      variants={cardVariants}
     >
-      <motion.div className="card" variants={cardVariants}>
-        {children}
-      </motion.div>
+      {children}
     </motion.div>
   )
 }

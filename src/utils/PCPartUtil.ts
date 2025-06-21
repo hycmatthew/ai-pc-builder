@@ -61,13 +61,7 @@ export const getSelectItemListText = (
     lines.push(`${t('price')}: ${getTotalPriceStr(selectedItems)}`)
   }
 
-  const baseUrl = `${window.location.href.split('?')[0]}?`
-  const queryString = searchParams.toString()
-
-  return [
-    lines.join(''),
-    ...(queryString ? [`\n\n${baseUrl}${queryString}`] : []),
-  ].join('')
+  return [lines.join('')].join('')
 }
 
 export const generateBuildPath = (selectedItems: SelectedItemType) => {

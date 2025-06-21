@@ -1,13 +1,4 @@
-import {
-  Alert,
-  Box,
-  Slide,
-  SlideProps,
-  Snackbar,
-  SnackbarCloseReason,
-  Switch,
-  TextField,
-} from '@mui/material'
+import { Box, InputAdornment, TextField } from '@mui/material'
 import ContentCopyIcon from '@mui/icons-material/ContentCopy'
 import { getSelectItemListText } from '../../../utils/PCPartUtil'
 import { useEffect, useState } from 'react'
@@ -16,6 +7,7 @@ import { useTranslation } from 'react-i18next'
 import CustomDialog from '../../common/components/CustomDialog'
 import CustomIconButton from '../../common/components/CustomIconButton'
 import CustomSnackbar from '../../common/components/CustomSnackbar'
+import SegmentedTabs from '../../common/components/SegmentedTabs'
 
 type NotifyButtonProps = {
   copyVal: string
@@ -45,8 +37,29 @@ function NotifyButton({ copyVal }: NotifyButtonProps) {
 
   return (
     <>
-      <CustomIconButton aria-label="content copy" onClick={copyToClipboard}>
-        <ContentCopyIcon />
+      <CustomIconButton
+        sx={{
+          height: '50px',
+          padding: '0 8px',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          borderRadius: 0, // 移除圓角
+          backgroundColor: 'transparent',
+          '&:hover': {
+            backgroundColor: 'transparent',
+          },
+        }}
+        aria-label="content copy"
+        onClick={copyToClipboard}
+      >
+        <ContentCopyIcon
+          sx={{
+            '&:hover': {
+              color: '#0F1563',
+            },
+          }}
+        />
       </CustomIconButton>
       <CustomSnackbar
         open={snackbarOpen}
@@ -66,6 +79,11 @@ const ListCopyDialog = ({
   const { t } = useTranslation()
   const [displayPrice, setDisplayPrice] = useState(true)
   const [copyValue, setCopyValue] = useState('')
+
+  const tabs = [
+    { label: t('display-price'), value: true },
+    { label: t('no-display-price'), value: false },
+  ]
 
   useEffect(() => {
     if (open) {
@@ -94,12 +112,12 @@ const ListCopyDialog = ({
           paddingBottom={1}
         >
           <Box>
-            <Switch
-              checked={displayPrice}
+            <SegmentedTabs
+              value={displayPrice}
               onChange={handleDisplayPriceChange}
-              defaultChecked
+              tabs={tabs}
+              centered
             />
-            {t('display-price')}
           </Box>
           <NotifyButton copyVal={copyValue} />
         </Box>
@@ -114,6 +132,16 @@ const ListCopyDialog = ({
           defaultValue={getSelectItemListText(selectedItems, displayPrice)}
           onChange={handleTextFieldValueChange}
           variant="filled"
+          slotProps={{
+            input: {
+              readOnly: true,
+              endAdornment: (
+                <InputAdornment position="end">
+                  <NotifyButton copyVal={copyValue} />
+                </InputAdornment>
+              ),
+            },
+          }}
         />
       </Box>
     </CustomDialog>
