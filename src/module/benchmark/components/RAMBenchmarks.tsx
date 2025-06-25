@@ -27,7 +27,6 @@ function RAMBenchmarksTable() {
 
   // 柱状图生成逻辑（使用 useCallback 优化）
   const benchmarksBarWidth = useCallback((score: number) => {
-    console.log(score)
     const maxWidth = 300
     const maxScores = 16000
 
@@ -51,7 +50,7 @@ function RAMBenchmarksTable() {
       field: 'id',
       headerName: t('name'),
       sortable: false,
-      width: 370,
+      width: 380,
     },
     {
       field: 'speed',
@@ -61,12 +60,12 @@ function RAMBenchmarksTable() {
     {
       field: 'cl',
       headerName: t('ram-latency'),
-      width: 150,
+      width: 100,
     },
     {
       field: 'performance',
       headerName: t('overall-performance'),
-      width: 300,
+      width: 400,
       renderCell: (params) => {
         return (
           <Stack direction="row" alignItems="center" spacing={2}>
@@ -79,7 +78,7 @@ function RAMBenchmarksTable() {
     {
       field: 'price',
       headerName: t('price'),
-      width: 110,
+      width: 100,
       renderCell: (params) => priceLabelHandler(params.value),
     },
   ]

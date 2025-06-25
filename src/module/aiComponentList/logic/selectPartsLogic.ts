@@ -37,14 +37,6 @@ import {
 } from '../constant/mappedObjectTypes'
 import { BuildType } from '../constant/buildType'
 
-const weights = {
-  gaming: { cpu: 0.3, gpu: 0.6, ram: 0.1 }, // 游戏更依赖 GPU
-  balance: { cpu: 0.5, gpu: 0.3, ram: 0.2 }, // 办公更依赖 CPU
-  rendering: { cpu: 0.4, gpu: 0.4, ram: 0.2 }, // 渲染依赖 CPU 和 GPU
-  ai: { cpu: 0.2, gpu: 0.7, ram: 0.1 },
-  unknown: { cpu: 0.5, gpu: 0.3, ram: 0.2 },
-}
-
 interface CompatibilityFilters {
   // CPU相关
   cpuBrand?: string // CPU品牌（Intel, AMD）
@@ -138,7 +130,6 @@ export const preFilterDataLogic = (
     psuSize: selectedComponents.psu?.size,
   }
 
-  const selectedWeights = weights[type]
   const cpuBudget =
     budget * getPricingFactor(budget, BuildConfig.CPUFactor.CPUBudgetFactor)
   const gpuBudget =
@@ -197,7 +188,7 @@ export const preFilterDataLogic = (
     mappedMotherboards,
     mappedRAMs,
     availableBudget,
-    selectedWeights
+    type
   )
 
   if (bestConfig) {

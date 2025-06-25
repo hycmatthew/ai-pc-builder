@@ -107,9 +107,9 @@ function GPUBenchmarksTable() {
 
   // 柱状图生成逻辑（使用 useCallback 优化）
   const benchmarksBarWidth = useCallback((type: string, score: number) => {
-    const maxWidth = 400
+    const maxWidth = 300
     const maxScores = {
-      timespyScore: 45000,
+      timespyScore: 50000,
       fireStrikeScore: 50000,
     }
 
@@ -142,7 +142,7 @@ function GPUBenchmarksTable() {
       {
         field: selectedField,
         headerName: t('benchmark'),
-        width: selectedField === 'timespyScore' ? 450 : 400,
+        width: selectedField === 'timespyScore' ? 450 : 450,
         renderCell: (params) => (
           <Stack direction="row" alignItems="center" spacing={2}>
             {benchmarksBarWidth(selectedField, params.value)}
@@ -153,7 +153,7 @@ function GPUBenchmarksTable() {
       {
         field: 'pricePerformance',
         headerName: t('price-performance'),
-        width: 120,
+        width: 180,
         renderCell: (params) => (
           <CusTypography variant="h6">
             {normalizeNumberWithDP(params.value)}
@@ -163,7 +163,7 @@ function GPUBenchmarksTable() {
       {
         field: 'price',
         headerName: t('price'),
-        width: 160,
+        width: 100,
         renderCell: (params) => (
           <CusTypography variant="h6">
             {addCurrencySign(params.value)}

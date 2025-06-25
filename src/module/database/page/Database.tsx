@@ -231,7 +231,7 @@ const Database = () => {
         },
         {
           type: 'select',
-          key: 'memory_size',
+          key: 'memory-size',
           label: t('memory-size'),
           getOptions: (list: GPUType[]) => {
             const sizes = [
@@ -241,6 +241,15 @@ const Database = () => {
             )
             return sizes.sort((a, b) => a - b)
           },
+        },
+        {
+          type: 'select',
+          key: 'memory-bus',
+          label: t('memory-bus'),
+          getOptions: (list: GPUType[]) =>
+            [...new Set(list.map((item) => item.memory_bus))]
+              .filter(Boolean)
+              .sort(),
         },
       ],
       [ProductEnum.RAM]: [
@@ -276,6 +285,22 @@ const Database = () => {
             [...new Set(list.map((item) => item.chipset))]
               .filter(Boolean)
               .sort(),
+        },
+        {
+          type: 'select',
+          key: 'memory_type',
+          label: t('memory-type'),
+          getOptions: (list: MotherboardType[]) =>
+            [...new Set(list.map((item) => item.ram_type))]
+              .filter(Boolean)
+              .sort(),
+        },
+        {
+          type: 'select',
+          key: 'wireless',
+          label: t('wireless'),
+          getOptions: (list: MotherboardType[]) =>
+            [...new Set(list.map((item) => item.wireless))]
         },
       ],
       [ProductEnum.SSD]: [
@@ -416,7 +441,12 @@ const Database = () => {
 
   return (
     <Box className="main-container">
-      <Grid container spacing={2} size={{ xs: 12, md: 8 }} paddingX={{ xs: 0, lg: 12 }}>
+      <Grid
+        container
+        spacing={2}
+        size={{ xs: 12, md: 8 }}
+        paddingX={{ xs: 0, lg: 12 }}
+      >
         <Grid size={{ xs: 12, sm: 6, md: 3 }}>
           <Grid container direction="column" spacing={1} paddingTop={2}>
             <Grid size={12}>

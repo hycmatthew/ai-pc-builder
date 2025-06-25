@@ -1,6 +1,7 @@
 import { MotherboardType } from '../../../constant/objectTypes'
 import {
   BRAND_POWER_SCORE,
+  BuildType,
   CHIPSET_POWER_RANK,
   CHIPSET_RULES,
   FORM_FACTOR_PENALTY,

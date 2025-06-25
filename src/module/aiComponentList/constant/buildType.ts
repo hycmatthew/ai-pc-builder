@@ -5,6 +5,14 @@ export enum BuildType {
   AI = 'ai',
 }
 
+export const BUILD_WEIGHTS = {
+  balance: { cpu: 0.55, gpu: 0.25, ram: 0.2 }, // 办公更依赖 CPU
+  gaming: { cpu: 0.3, gpu: 0.55, ram: 0.15 }, // 游戏更依赖 GPU
+  rendering: { cpu: 0.4, gpu: 0.4, ram: 0.2 }, // 渲染依赖 CPU 和 GPU
+  ai: { cpu: 0.2, gpu: 0.7, ram: 0.1 },
+  unknown: { cpu: 0.5, gpu: 0.3, ram: 0.2 },
+}
+
 // 芯片组等级映射（基于命名规则）
 export const CHIPSET_POWER_RANK: Record<
   string,
@@ -139,4 +147,39 @@ export const MOTHERBOARD_SERIES_FACTOR: Record<string, number> = {
 
   // 默认系数
   _default: 1.0,
+}
+
+/****************************** Ram Score Logic ******************************/
+export const RAM_CAPACITY_WEIGHTS: Record<
+  BuildType,
+  (capacity: number) => number
+> = {
+  gaming: (capacity) => {
+    if (capacity <= 8) return 0.3
+    if (capacity <= 16) return 0.5
+    if (capacity <= 32) return 1.2
+    // if (capacity <= 64) return 1.1
+    return 1.1
+  },
+  balance: (capacity) => {
+    if (capacity <= 8) return 0.3
+    if (capacity <= 16) return 0.5
+    if (capacity <= 32) return 1.15
+    if (capacity <= 64) return 1.15
+    return 1.1
+  },
+  rendering: (capacity) => {
+    if (capacity <= 16) return 0.3
+    if (capacity <= 32) return 0.9
+    if (capacity <= 64) return 1.2
+    if (capacity <= 128) return 1.2
+    return 1.2
+  },
+  ai: (capacity) => {
+    if (capacity <= 16) return 0.5
+    if (capacity <= 32) return 1.1
+    if (capacity <= 64) return 1.2
+    if (capacity <= 128) return 1.2
+    return 1.2
+  },
 }
