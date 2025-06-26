@@ -437,8 +437,6 @@ const Database = () => {
     })
   }
 
-  console.log(filterList)
-
   return (
     <Box className="main-container">
       <Grid

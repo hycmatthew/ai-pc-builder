@@ -46,7 +46,7 @@ export const selectBestSSD = (
   // 3. 計算總分
   const scoredSSDs = ssds.map((ssd) => {
     // 推薦列表加分
-    const recommendedScore = suggestedSSDs.includes(ssd.name)
+    const recommendedScore = suggestedSSDs.includes(ssd.id)
       ? weights.recommended
       : 0
 

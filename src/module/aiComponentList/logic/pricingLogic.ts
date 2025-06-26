@@ -1,15 +1,9 @@
 import { forOwn, toNumber } from 'lodash'
 import i18n from '../../../config/i18n'
-import {
-  getLocalizedPriceNum,
-} from '../../../utils/NumberHelper'
+import { getLocalizedPriceNum } from '../../../utils/NumberHelper'
 import { SelectedItemType } from '../../../store/rawDataReducer'
 import BuildConfig from '../constant/buildConfig'
-import {
-  CaseType,
-  CoolerType,
-  PSUType,
-} from '../../../constant/objectTypes'
+import { CaseType, CoolerType, PSUType } from '../../../constant/objectTypes'
 import { LangEnum } from '../../../constant/supportedLang'
 
 export const convertCurrency = (price: number) => {
@@ -21,42 +15,6 @@ export const convertCurrency = (price: number) => {
     default:
       return price * BuildConfig.USPricingFactor
   }
-}
-
-export const getPricingFactor = (budget: number, factorList: number[]) => {
-  const tempList = BuildConfig.PriceList
-  const updatedBudget = convertCurrency(budget)
-  let factor: number = factorList[0]
-
-  factorList.forEach((element, index) => {
-    if (updatedBudget < tempList[index]) {
-      factor = element
-    }
-  })
-  return factor
-}
-
-export const getBudgetPriceList = () => {
-  const tempList = BuildConfig.PriceList
-  switch (i18n.language) {
-    case LangEnum.zhTW:
-      return tempList
-    case LangEnum.zhCN:
-      return tempList.map((item) => {
-        return item / convertCurrency(1)
-      })
-    default:
-      return tempList.map((item) => {
-        return item / convertCurrency(1)
-      })
-  }
-}
-
-export const getBudgetByPricingFactor = (
-  budget: number,
-  factorList: number[]
-) => {
-  return budget * getPricingFactor(budget, factorList)
 }
 
 export const isEnoughBudget = (
@@ -109,8 +67,10 @@ export const estimateDefaultPrice = (
   defaultPrices.psu =
     psuList.length == 1
       ? getLocalizedPriceNum(psuList[0])
-      : suggestedPSU.reduce((sum, item) => sum + getLocalizedPriceNum(item), 0) /
-        suggestedPSU.length
+      : suggestedPSU.reduce(
+          (sum, item) => sum + getLocalizedPriceNum(item),
+          0
+        ) / suggestedPSU.length
 
   // 估算散热器价格
   const coolerSuggestion = BuildConfig.CPUCoolerFactor.AirCoolerSuggestion
@@ -128,7 +88,7 @@ export const estimateDefaultPrice = (
   }
 
   // Calculate the total
-  console.log("defaultPrices: ", defaultPrices)
+  console.log('defaultPrices: ', defaultPrices)
 
   return sumPrices(defaultPrices)
 }

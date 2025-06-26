@@ -127,7 +127,6 @@ function DataGrid<T extends { id: string | number }>({
 
   // 處理表頭點擊
   const handleHeaderClick = (field: keyof T) => {
-    console.log(field)
     onColumnHeaderClick?.(field)
   }
 

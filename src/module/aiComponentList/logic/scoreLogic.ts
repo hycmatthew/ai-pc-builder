@@ -1,4 +1,5 @@
 import { MotherboardType } from '../../../constant/objectTypes'
+import BuildConfig from '../constant/buildConfig'
 import {
   BRAND_POWER_SCORE,
   BuildType,
@@ -139,4 +140,26 @@ function getMotherboardSeriesFactor(modelName: string): number {
   }
 
   return MOTHERBOARD_SERIES_FACTOR._default
+}
+
+/****************************** Get Budget Factor ******************************/
+export const calculateBudgetFactor = (
+  budget: number,
+  minFactor: number = 1.0,
+  maxFactor: number = 1.5
+): number => {
+  const minBudget = BuildConfig.BudgetLogic.MinBudgetStart
+  const maxBudget = BuildConfig.BudgetLogic.MaxBudgetStart
+  // 处理预算低于下限的情况
+  if (budget <= minBudget) return minFactor
+
+  // 处理预算高于上限的情况
+  if (budget >= maxBudget) return maxFactor
+
+  // 线性插值计算
+  const budgetRange = maxBudget - minBudget
+  const factorRange = maxFactor - minFactor
+  const progress = (budget - minBudget) / budgetRange
+
+  return minFactor + progress * factorRange
 }

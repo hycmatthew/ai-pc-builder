@@ -154,7 +154,6 @@ export const getTotalPower = (selectedItems: SelectedItemType): number => {
     calculateMotherboardPower(selectedItems.motherboard),
   ]
 
-  console.log(`getTotalPower : ${sum(powerComponents)}`)
   return sum(powerComponents) || 0
 }
 

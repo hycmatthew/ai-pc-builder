@@ -1,32 +1,42 @@
 const BuildConfig = {
-  PriceList: [3000, 8000, 15000, 100000],
-  MinPrice: 2500,
-  HKPricingFactor: 1,
-  CNPricingFactor: 1.1,
-  USPricingFactor: 8,
-  regularLogic: {
+  MinBuildPriceNum: 500,
+  HKPricingFactor: 7.8,
+  CNPricingFactor: 7.1,
+  USPricingFactor: 1,
+  RegularLogic: {
     formFactor: 'ATX',
+  },
+  BudgetLogic: {
+    MinBudgetStart: 1000,
+    MaxBudgetStart: 3500,
   },
   CPUFactor: {
     CPUBudgetFactor: [0.6, 0.6, 0.4, 0.3],
+    CPUBudgetMinFactor: 0.6,
+    CPUBudgetMaxFactor: 0.3,
     SingleCoreMultiply: 2,
     MultiCoreMultiply: 1,
   },
   GPUFactor: {
     GPUBudgetFactor: [0.5, 0.7, 0.6, 0.5],
+    GPUBudgetMinFactor: 0.6,
+    GPUBudgetMaxFactor: 0.6,
     GPUScoreMultiply: 4,
   },
   RAMFactor: {
     RAMBudgetFactor: [0.3, 0.3, 0.25, 0.2],
+    RAMBudgetMinFactor: 0.3,
+    RAMBudgetMaxFactor: 0.2,
   },
   SSDFactor: {
     SSDBudgetFactor: [0.3, 0.3, 0.25, 0.2],
-    SSDPriceFactor: [0.01, 0.01, 0.008, 0.007, 0.005],
+    SSDBudgetMinFactor: 0.3,
+    SSDBudgetMaxFactor: 0.2,
     SSDSuggestion: ['WD BLACK SN770 1TB', 'Samsung 990 EVO 1TB', 'T500 1TB'],
     DefaultCapacity: 1000,
   },
   PSUFactor: {
-    PSUBudgetFactor: [0.01, 0.01, 0.008, 0.007, 0.005],
+    PSUBudgetFactor: 0.18,
     PSUSuggestion: [
       'seasonic-focus-gx-750-v4',
       'thermaltake-toughpower-gf-a3-750w',
@@ -69,5 +79,5 @@ const BuildConfig = {
     },
   },
 }
-0
+
 export default BuildConfig

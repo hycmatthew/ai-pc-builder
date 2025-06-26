@@ -9,12 +9,12 @@ import {
   SSDType,
 } from '../../../constant/objectTypes'
 import BuildConfig from '../constant/buildConfig'
-import { estimateDefaultPrice, getPricingFactor } from './pricingLogic'
+import { estimateDefaultPrice } from './pricingLogic'
 import { findBestConfiguration } from './selectAlgorithm'
 import { selectBestCase } from './selectCase'
 import { selectBestCooler } from './selectCooler'
 import { selectBestPSU } from './selectPSULogic'
-import { selectBestSSD } from './selectSSD'
+import { selectBestSSD } from './selectSSDLogic'
 import {
   getMappedCases,
   getMappedCoolers,
@@ -36,6 +36,7 @@ import {
   MappedCoolerType,
 } from '../constant/mappedObjectTypes'
 import { BuildType } from '../constant/buildType'
+import { calculateBudgetFactor } from './scoreLogic'
 
 interface CompatibilityFilters {
   // CPU相关
@@ -131,11 +132,26 @@ export const preFilterDataLogic = (
   }
 
   const cpuBudget =
-    budget * getPricingFactor(budget, BuildConfig.CPUFactor.CPUBudgetFactor)
+    budget *
+    calculateBudgetFactor(
+      budget,
+      BuildConfig.CPUFactor.CPUBudgetMinFactor,
+      BuildConfig.CPUFactor.CPUBudgetMaxFactor
+    )
   const gpuBudget =
-    budget * getPricingFactor(budget, BuildConfig.GPUFactor.GPUBudgetFactor)
+    budget *
+    calculateBudgetFactor(
+      budget,
+      BuildConfig.GPUFactor.GPUBudgetMinFactor,
+      BuildConfig.GPUFactor.GPUBudgetMaxFactor
+    )
   const ssdBudget =
-    budget * getPricingFactor(budget, BuildConfig.SSDFactor.SSDBudgetFactor)
+    budget *
+    calculateBudgetFactor(
+      budget,
+      BuildConfig.SSDFactor.SSDBudgetMinFactor,
+      BuildConfig.SSDFactor.SSDBudgetMaxFactor
+    )
 
   const mappedCPUs = getMappedCPUs(cpuList, cpuBudget, filters.mbSocket, type)
   const mappedGPUs = getMappedGPUs(
@@ -195,7 +211,13 @@ export const preFilterDataLogic = (
     const totalPower =
       bestConfig.cpu.power + (bestConfig.gpu ? bestConfig.gpu.power : 0) + 80
     const isNvidiaGPU = bestConfig.gpu?.manufacturer === 'NVIDIA'
-    bestPsu = selectBestPSU(mappedPSUs, totalPower, 200, isNvidiaGPU)
+    bestPsu = selectBestPSU(
+      mappedPSUs,
+      bestConfig.totalPrice,
+      totalPower,
+      200,
+      isNvidiaGPU
+    )
     bestCase = selectBestCase(
       bestConfig.motherboard,
       bestConfig.gpu,

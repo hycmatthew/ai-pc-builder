@@ -33,8 +33,6 @@ const HardwareSuggestion = <T extends AllType>({
     return filteredList.slice(start, end)
   }, [filteredList, page, itemsPerPage])
 
-  console.log('paginatedList', paginatedList)
-
   const addComparison = (item: T) => {
     if (selectedItems.length < 4) {
       setSelectedItems([...selectedItems, item])
