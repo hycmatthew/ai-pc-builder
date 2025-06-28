@@ -16,6 +16,7 @@ const BuildConfig = {
     CPUBudgetMaxFactor: 0.3,
     SingleCoreMultiply: 2,
     MultiCoreMultiply: 1,
+    OldSockets: ['AM4', 'LGA1700'],
   },
   GPUFactor: {
     GPUBudgetFactor: [0.5, 0.7, 0.6, 0.5],

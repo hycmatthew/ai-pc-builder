@@ -13,8 +13,8 @@ import { estimateDefaultPrice } from './pricingLogic'
 import { findBestConfiguration } from './selectAlgorithm'
 import { selectBestCase } from './selectCase'
 import { selectBestCooler } from './selectCooler'
-import { selectBestPSU } from './selectPSULogic'
-import { selectBestSSD } from './selectSSDLogic'
+import { selectBestPSU } from './selectPSU'
+import { selectBestSSD } from './selectSSD'
 import {
   getMappedCases,
   getMappedCoolers,
@@ -101,9 +101,12 @@ export const preFilterDataLogic = (
     cooler: coolerList.length === 1 ? coolerList[0] : undefined,
   }
 
+  const budgetFactor = calculateBudgetFactor(budget, 0.8, 1.05)
+
   // 计算需要预留的默认组件预算
-  const usedBudget = estimateDefaultPrice(caseList, psuList, coolerList)
-  let availableBudget = budget - usedBudget * 0.9
+  const usedBudget =
+    estimateDefaultPrice(caseList, psuList, coolerList) * budgetFactor
+  let availableBudget = budget - usedBudget
   console.log('availableBudget : ', availableBudget)
 
   if (availableBudget < 0) return null
@@ -170,18 +173,18 @@ export const preFilterDataLogic = (
     filters.mbRamType
   )
   const mappedSSDs = getMappedSSDs(ssdList, ssdBudget, storage)
-  const mappedPSUs = getMappedPSUs(psuList, availableBudget)
+  const mappedPSUs = getMappedPSUs(psuList, usedBudget)
   const mappedCases = getMappedCases(
     caseList,
     filters.mbFormFactor,
     filters.gpuLength,
-    availableBudget
+    usedBudget
   )
   const mappedCoolers = getMappedCoolers(
     coolerList,
     filters.maxCoolerHeight,
     filters.radiatorSupport,
-    availableBudget
+    usedBudget
   )
   console.log('mappedRAMs : ', mappedRAMs)
   /** Start the config logic */

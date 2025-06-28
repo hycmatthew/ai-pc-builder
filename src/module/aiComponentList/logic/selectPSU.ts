@@ -81,11 +81,11 @@ export const selectBestPSU = (
     // 1. 功率超出奖励 (log缩放防止过高)
     const wattageExcess = Math.max(0, psu.wattage - requiredWattage)
     const wattageBonus = Math.sqrt(Math.log1p(wattageExcess) * 0.3)
-
+    /*
     console.log('wattageExcess:', wattageExcess)
     console.log(Math.log1p(wattageExcess))
     console.log(wattageBonus)
-
+*/
     // 2. 模块化加分
     const modularBonus = psu.modular.toLowerCase() === 'full' ? 1.2 : 1
 
@@ -103,16 +103,6 @@ export const selectBestPSU = (
     // 计算总加分项（根据预算因子放大）
     const extraScore =
       wattageBonus * modularBonus * brandBonus * atx3Bonus * budgetFactor
-
-    console.log(
-      psu.id,
-      ' : ',
-      psu.baseScore,
-      ' - ',
-      psu.baseScore * extraScore,
-      ' - budgetFactor:',
-      budgetFactor
-    )
 
     return {
       ...psu,
