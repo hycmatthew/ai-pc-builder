@@ -145,13 +145,7 @@ export const preFilterDataLogic = (
       BuildConfig.GPUFactor.GPUBudgetMinFactor,
       BuildConfig.GPUFactor.GPUBudgetMaxFactor
     )
-  const ssdBudget =
-    budget *
-    calculateBudgetFactor(
-      budget,
-      BuildConfig.SSDFactor.SSDBudgetMinFactor,
-      BuildConfig.SSDFactor.SSDBudgetMaxFactor
-    )
+  const ssdBudget = budget * BuildConfig.SSDFactor.SSDBudgetFactor
 
   const mappedCPUs = getMappedCPUs(cpuList, cpuBudget, filters.mbSocket, type)
   const mappedGPUs = getMappedGPUs(
@@ -195,7 +189,11 @@ export const preFilterDataLogic = (
   let bestPsu = null
   let bestCase = null
   let bestCooler = null
-  bestSSD = selectBestSSD(mappedSSDs, BuildConfig.SSDFactor.SSDSuggestion)
+  bestSSD = selectBestSSD(
+    mappedSSDs,
+    BuildConfig.SSDFactor.SSDSuggestion,
+    budget
+  )
   availableBudget -= bestSSD ? bestSSD.price : 0
 
   const bestConfig = findBestConfiguration(
@@ -225,7 +223,12 @@ export const preFilterDataLogic = (
       mappedCases
     )
     if (bestCase) {
-      bestCooler = selectBestCooler(bestConfig.cpu, bestCase, mappedCoolers)
+      bestCooler = selectBestCooler(
+        bestConfig.cpu,
+        bestCase,
+        mappedCoolers,
+        bestConfig.totalPrice
+      )
     }
   }
 

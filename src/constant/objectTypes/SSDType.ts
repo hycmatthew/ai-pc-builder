@@ -6,6 +6,7 @@ interface SSDType {
   name: string
   name_cn: string
   release_date: string
+  series: string
   model: string
   capacity: number
   interface: string

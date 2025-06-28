@@ -29,10 +29,8 @@ const BuildConfig = {
     RAMBudgetMaxFactor: 0.2,
   },
   SSDFactor: {
-    SSDBudgetFactor: [0.3, 0.3, 0.25, 0.2],
-    SSDBudgetMinFactor: 0.3,
-    SSDBudgetMaxFactor: 0.2,
-    SSDSuggestion: ['WD BLACK SN770 1TB', 'Samsung 990 EVO 1TB', 'T500 1TB'],
+    SSDBudgetFactor: 0.25,
+    SSDSuggestion: ['SN770', 'T500'],
     DefaultCapacity: 1000,
   },
   PSUFactor: {
@@ -43,18 +41,32 @@ const BuildConfig = {
       'lian-li-edge-gold-850w',
     ],
   },
-  CPUCoolerFactor: {
-    AIOCoolerSuggestion: [
+  CoolerFactor: {
+    CoolerBudgetFactor: 0.15,
+    TDPThreshold: 170,
+    IdealPriceFactors: {
+      cpuRatio: 0.15, // CPU價格的15%
+      budgetRatio: 0.03, // 總預算的3%
+    },
+    NormalCoolerSuggestion: [
+      'idcooling-se-214-xt-argb',
+      'arctic-freezer-36',
       'thermalright-peerless-assassin-120-se',
       'scythe-mugen-6',
-      'id-cooling-se-214-xt-argb',
-      'id-cooling-se-214-xt-argb-white',
+      'thermalright-frozen-prism-360-black-argb',
     ],
-    AirCoolerSuggestion: [
+    HighendCoolerSuggestion: [
       'thermalright-peerless-assassin-120-se',
-      'scythe-mugen-6',
-      'id-cooling-se-214-xt-argb',
-      'id-cooling-se-214-xt-argb-white',
+      'noctua-nh-d15',
+      'bequiet-dark-rock-5',
+      'noctua-nh-d15-g2',
+      'thermalright-frozen-prism-360-black-argb',
+      'coolermaster-masterliquid-360-core-ii',
+      'arctic-liquid-freezer-iii-pro-360',
+    ],
+    MATXCoolerSuggestion: [
+      'lianli-galahad-ii-lcd-280',
+      'coolermaster-masterliquid-240-atmos',
     ],
   },
   CaseFactor: {

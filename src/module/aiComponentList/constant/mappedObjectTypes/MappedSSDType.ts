@@ -1,6 +1,7 @@
 interface MappedSSDType {
   id: string
   brand: string
+  series: string
   capacity: number
   formFactor: string
   flashType: string

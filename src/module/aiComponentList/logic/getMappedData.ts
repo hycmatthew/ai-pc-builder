@@ -315,6 +315,7 @@ export function getMappedSSDs(
       return {
         id: item.id,
         brand: item.brand,
+        series: item.series,
         capacity: item.capacity,
         formFactor: item.form_factor,
         flashType: item.flash_type,
@@ -398,10 +399,25 @@ export function getMappedCoolers(
   radiatorSupport: number | undefined,
   budget: number
 ): MappedCoolerType[] {
+  const idLists = [
+    ...BuildConfig.CoolerFactor.NormalCoolerSuggestion,
+    ...BuildConfig.CoolerFactor.HighendCoolerSuggestion,
+  ]
+
+  if (radiatorSupport !== undefined && radiatorSupport < 360) {
+    idLists.push(...BuildConfig.CoolerFactor.MATXCoolerSuggestion)
+  }
+
+  const combinedIds = [...new Set(idLists.flat())]
+
   return coolerList
     .filter((item) => {
       // 保留唯一選項
       if (coolerList.length === 1) return true
+
+      if (!combinedIds.includes(item.id)) {
+        return false
+      }
 
       // 兼容性過濾條件
       const compatibilityChecks = [
