@@ -30,8 +30,8 @@ const PSUSuggestion = ({ psuList, isLoading }: PSUSuggestionProps) => {
         let isMatch = true
 
         // 型号过滤
-        if (filterLogic.model) {
-          isMatch = item.name === filterLogic.model
+        if (filterLogic.id) {
+          isMatch = item.id === filterLogic.id
         }
 
         // 品牌过滤
@@ -119,10 +119,11 @@ const PSUSuggestion = ({ psuList, isLoading }: PSUSuggestionProps) => {
           <SelectElement
             label={t('psu')}
             options={generatePSUSelectElement(psuList)}
-            selectChange={(model) =>
-              setFilterLogic((prev) => ({ ...prev, model }))
+            selectChange={(id) =>
+              setFilterLogic((prev) => ({ ...prev, id }))
             }
             isLoading={isLoading}
+            value={filterLogic.id}
           />
         </Grid>
       }

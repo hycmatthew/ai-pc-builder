@@ -128,7 +128,7 @@ const SelectElement = ({
   }
 
   // 根据传入的value查找当前选项
-  const selectedOption = options.find((option) => option.name === value) || null
+  const selectedOption = options.find((option) => option.id === value) || null
   const sortedOption = options.sort((a, b) => a.brand.localeCompare(b.brand))
 
   return (
@@ -141,7 +141,7 @@ const SelectElement = ({
       groupBy={(option: any) => option.brand}
       onChange={handleChange}
       isOptionEqualToValue={(option: any, value: any) =>
-        option.model === value.model
+        option.id === value.id
       }
       getOptionDisabled={(option: any) => option.disabled === true}
       renderGroup={(params) => (

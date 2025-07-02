@@ -7,6 +7,10 @@ import {
   FORM_FACTOR_PENALTY,
   MOTHERBOARD_SERIES_FACTOR,
 } from '../constant/buildType'
+import {
+  MappedCPUType,
+  MappedMotherboardType,
+} from '../constant/mappedObjectTypes'
 
 const chipsetDataCache = new Map<
   string,
@@ -139,6 +143,62 @@ function getMotherboardSeriesFactor(modelName: string): number {
   }
 
   return MOTHERBOARD_SERIES_FACTOR._default
+}
+
+/****************************** Get CPU Factor ******************************/
+
+export const calculateChipsetMultiplier = (
+  cpu: MappedCPUType,
+  mb: MappedMotherboardType
+): number => {
+  // 从主板芯片组名称获取芯片组数据（不区分大小写）
+  const chipsetKey = Object.keys(CHIPSET_POWER_RANK).find(
+    (key) => key.toLowerCase() === mb.chipset.toLowerCase()
+  )
+
+  // 获取芯片组数据，如果找不到则使用默认值
+  const chipsetData = chipsetKey
+    ? CHIPSET_POWER_RANK[chipsetKey]
+    : { rank: 0.7, powerSupport: 100, class: 2, generation: 0 }
+
+  // 识别CPU等级
+  const getCpuTier = () => {
+    if (cpu.id.includes('i9') || cpu.id.includes('ryzen-9')) return 4
+    if (cpu.id.includes('i7') || cpu.id.includes('ryzen-7')) return 3
+    if (cpu.id.includes('i5') || cpu.id.includes('ryzen-5')) return 2
+    if (cpu.id.includes('i3') || cpu.id.includes('ryzen-3')) return 1
+    return 2 // 默认中端
+  }
+
+  const cpuTier = getCpuTier()
+  const tierDifference = cpuTier - chipsetData.class
+
+  // 1. 计算等级匹配系数
+  let tierFactor = 1.0
+  if (tierDifference > 0) {
+    // 主板芯片组等级低于CPU需求
+    tierFactor = 1.0 - tierDifference * 0.1 // 每低一级损失10%性能
+    if (tierFactor < 0.7) tierFactor = 0.7 // 最低保留70%性能
+  }
+
+  // 2. 计算供电能力系数
+  let powerFactor = 1.0
+  if (cpu.power > chipsetData.powerSupport) {
+    // 当CPU TDP超过主板供电能力时
+    const powerDeficitRatio = (cpu.power - chipsetData.powerSupport) / cpu.power
+    powerFactor = 1.0 - powerDeficitRatio * 0.15 // 最多损失15%性能
+
+    // 如果供电严重不足，额外惩罚
+    if (cpu.power > chipsetData.powerSupport * 1.5) {
+      powerFactor *= 0.75 // 额外25%性能损失
+    }
+  }
+
+  // 3. 计算芯片组基础系数
+  //const baseChipsetFactor = chipsetData.rank + 0.4
+
+  // 综合所有因素
+  return 1 * tierFactor * powerFactor
 }
 
 /****************************** Get Budget Factor ******************************/

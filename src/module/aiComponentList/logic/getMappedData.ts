@@ -103,15 +103,15 @@ export function getMappedGPUs(
     chipsetMap.set(item.chipset, chipsetGroup)
   })
 
-  // 3. 每組保留性價比最高的5個
+  // 3. 每組保留性價比最高的6個
   const result: MappedGPUType[] = []
 
   chipsetMap.forEach((group) => {
     // 按性價比降序排序
     group.sort((a, b) => b.valueRatio - a.valueRatio)
 
-    // 取前5名（或更少）
-    const topGPUs = group.slice(0, 5)
+    // 取前6名（或更少）
+    const topGPUs = group.slice(0, 6)
 
     // 轉換為最終格式
     topGPUs.forEach(({ gpu, score, price }) => {
@@ -492,9 +492,22 @@ const ScoreAdjusters = {
   gpu: (item: GPUType, buildType: BuildType) => {
     let score = item.benchmark * BuildConfig.GPUFactor.GPUScoreMultiply
 
+    const baseVRAM = 12 // 基准显存大小
+    const vram = item.memory_size
+
+    if (vram < baseVRAM) {
+      // 低于12GB：每少1GB扣分5%
+      const penalty = (baseVRAM - vram) * 0.05
+      score *= 1 - penalty
+    } else if (vram > baseVRAM && vram <= 16) {
+      // 12-16GB：每多1GB加分3%
+      const bonus = (vram - baseVRAM) * 0.03
+      score *= 1 + Math.min(bonus, 0.12)
+    }
+
     if (Conditions.isNvidiaGPU(item)) {
       // 基礎加成
-      let multiplier = 1.05
+      let multiplier = 1.1
 
       // 專業應用加成
       if (buildType === BuildType.AI) {
@@ -503,7 +516,7 @@ const ScoreAdjusters = {
 
       // RTX 50系列額外加成
       if (Conditions.isRTX50Series(item)) {
-        multiplier = 1.1
+        multiplier = 1.2
       }
 
       score *= multiplier

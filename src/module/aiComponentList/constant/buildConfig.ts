@@ -7,7 +7,7 @@ const BuildConfig = {
     formFactor: 'ATX',
   },
   BudgetLogic: {
-    MinBudgetStart: 1000,
+    MinBudgetStart: 800,
     MaxBudgetStart: 3500,
   },
   CPUFactor: {
@@ -47,7 +47,7 @@ const BuildConfig = {
     TDPThreshold: 170,
     IdealPriceFactors: {
       cpuRatio: 0.15, // CPU價格的15%
-      budgetRatio: 0.03, // 總預算的3%
+      budgetRatio: 0.02, // 總預算的3%
     },
     NormalCoolerSuggestion: [
       'idcooling-se-214-xt-argb',

@@ -27,8 +27,8 @@ const CoolerSuggestion = ({ coolerList, isLoading }: CoolerSuggestionProps) => {
       coolerList.filter((item) => {
         let isMatch = true
 
-        if (filterLogic.model) {
-          isMatch = item.name === filterLogic.model
+        if (filterLogic.id) {
+          isMatch = item.id === filterLogic.id
         }
         if (filterLogic.brand && isMatch) {
           isMatch = item.brand === filterLogic.brand
@@ -106,10 +106,11 @@ const CoolerSuggestion = ({ coolerList, isLoading }: CoolerSuggestionProps) => {
           <SelectElement
             label={t('aio')}
             options={generateAIOSelectElement(coolerList)}
-            selectChange={(model) =>
-              setFilterLogic((prev) => ({ ...prev, model }))
+            selectChange={(id) =>
+              setFilterLogic((prev) => ({ ...prev, id }))
             }
             isLoading={isLoading}
+            value={filterLogic.id}
           />
         </Grid>
       }

@@ -26,8 +26,8 @@ const CaseSuggestion = ({ caseList, isLoading }: CaseSuggestionProps) => {
         let isMatch = true
 
         // 型号过滤
-        if (filterLogic.model) {
-          isMatch = item.name === filterLogic.model
+        if (filterLogic.id) {
+          isMatch = item.id === filterLogic.id
         }
 
         // 品牌过滤
@@ -110,10 +110,9 @@ const CaseSuggestion = ({ caseList, isLoading }: CaseSuggestionProps) => {
         <SelectElement
           label={t('case')}
           options={generateCaseSelectElement(caseList)}
-          selectChange={(model) =>
-            setFilterLogic((prev) => ({ ...prev, model }))
-          }
+          selectChange={(id) => setFilterLogic((prev) => ({ ...prev, id }))}
           isLoading={isLoading}
+          value={filterLogic.id}
         />
       }
     />

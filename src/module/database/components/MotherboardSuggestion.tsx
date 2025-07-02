@@ -7,9 +7,7 @@ import { generateMotherboardSelectElement } from '../../common/utils/generateSel
 import { MOTHERBOARD_FILTER_INIT_DATA } from '../data/FilterInitData'
 import { generateItemName } from '../../../utils/LabelHelper'
 import { ComparisonObject } from '../data/ComparisonObject'
-import {
-  getLocalizedPriceNum,
-} from '../../../utils/NumberHelper'
+import { getLocalizedPriceNum } from '../../../utils/NumberHelper'
 import HardwareSuggestion from './HardwarePage'
 
 type MotherboardSuggestionProps = {
@@ -30,8 +28,8 @@ const MotherboardSuggestion = ({
       motherboardList.filter((item) => {
         let isMatch = true
 
-        if (filterLogic.model) {
-          isMatch = item.name === filterLogic.model
+        if (filterLogic.id) {
+          isMatch = item.id === filterLogic.id
         }
         if (filterLogic.brand && isMatch) {
           isMatch = item.brand === filterLogic.brand
@@ -114,9 +112,7 @@ const MotherboardSuggestion = ({
         <SelectElement
           label={t('motherboard')}
           options={generateMotherboardSelectElement(motherboardList)}
-          selectChange={(model) =>
-            setFilterLogic((prev) => ({ ...prev, model }))
-          }
+          selectChange={(id) => setFilterLogic((prev) => ({ ...prev, id }))}
           isLoading={isLoading}
         />
       }

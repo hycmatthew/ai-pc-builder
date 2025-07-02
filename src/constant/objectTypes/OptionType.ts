@@ -1,4 +1,5 @@
 interface OptionType {
+  id: string
   name: string
   brand: string
   label: string

@@ -6,10 +6,10 @@ export enum BuildType {
 }
 
 export const BUILD_WEIGHTS = {
-  balance: { cpu: 0.55, gpu: 0.25, ram: 0.2 }, // 办公更依赖 CPU
-  gaming: { cpu: 0.3, gpu: 0.55, ram: 0.15 }, // 游戏更依赖 GPU
-  rendering: { cpu: 0.4, gpu: 0.4, ram: 0.2 }, // 渲染依赖 CPU 和 GPU
-  ai: { cpu: 0.2, gpu: 0.7, ram: 0.1 },
+  balance: { cpu: 0.55, gpu: 0.25, ram: 0.25 }, // 办公更依赖 CPU
+  gaming: { cpu: 0.3, gpu: 0.55, ram: 0.2 }, // 游戏更依赖 GPU
+  rendering: { cpu: 0.35, gpu: 0.4, ram: 0.3 }, // 渲染依赖 CPU 和 GPU
+  ai: { cpu: 0.2, gpu: 0.7, ram: 0.15 },
   unknown: { cpu: 0.5, gpu: 0.3, ram: 0.2 },
 }
 
@@ -23,9 +23,9 @@ export const CHIPSET_POWER_RANK: Record<
   Z690: { rank: 0.95, powerSupport: 270, class: 4, generation: 600 },
   H770: { rank: 0.85, powerSupport: 220, class: 3, generation: 700 },
   B860: { rank: 0.82, powerSupport: 200, class: 3, generation: 800 },
-  B760: { rank: 0.8, powerSupport: 190, class: 3, generation: 700 },
-  H670: { rank: 0.78, powerSupport: 180, class: 3, generation: 600 },
-  B660: { rank: 0.75, powerSupport: 170, class: 3, generation: 600 },
+  B760: { rank: 0.8, powerSupport: 200, class: 3, generation: 700 },
+  H670: { rank: 0.78, powerSupport: 190, class: 3, generation: 600 },
+  B660: { rank: 0.75, powerSupport: 190, class: 3, generation: 600 },
   H610: { rank: 0.65, powerSupport: 120, class: 2, generation: 600 },
   X870: { rank: 1.0, powerSupport: 300, class: 4, generation: 800 },
   X670: { rank: 0.95, powerSupport: 280, class: 4, generation: 600 },
@@ -104,17 +104,6 @@ export const FORM_FACTOR_PENALTY: Record<string, number> = {
   'E-ATX': 0.95,
 }
 
-export const RAM_BRAND_FACTOR: Record<string, number> = {
-  CORSAIR: 1.1,
-  'G.SKILL': 1.1,
-  KINGSTON: 1.05,
-  CRUCIAL: 1.0,
-  PATRIOT: 1.0,
-  ADATA: 0.95,
-  TEAMGROUP: 1.0,
-  _default: 1.0,
-}
-
 export const MOTHERBOARD_SERIES_FACTOR: Record<string, number> = {
   // ASUS 系列
   'ROG MAXIMUS': 1.25, // 旗舰系列
@@ -150,36 +139,25 @@ export const MOTHERBOARD_SERIES_FACTOR: Record<string, number> = {
 }
 
 /****************************** Ram Score Logic ******************************/
-export const RAM_CAPACITY_WEIGHTS: Record<
-  BuildType,
-  (capacity: number) => number
-> = {
-  gaming: (capacity) => {
-    if (capacity <= 8) return 0.3
-    if (capacity <= 16) return 0.5
-    if (capacity <= 32) return 1.2
-    // if (capacity <= 64) return 1.1
-    return 1.1
-  },
-  balance: (capacity) => {
-    if (capacity <= 8) return 0.3
-    if (capacity <= 16) return 0.5
-    if (capacity <= 32) return 1.15
-    if (capacity <= 64) return 1.15
-    return 1.1
-  },
-  rendering: (capacity) => {
-    if (capacity <= 16) return 0.3
-    if (capacity <= 32) return 0.9
-    if (capacity <= 64) return 1.2
-    if (capacity <= 128) return 1.2
-    return 1.2
-  },
-  ai: (capacity) => {
-    if (capacity <= 16) return 0.5
-    if (capacity <= 32) return 1.1
-    if (capacity <= 64) return 1.2
-    if (capacity <= 128) return 1.2
-    return 1.2
-  },
+export const RAM_BRAND_FACTOR: Record<string, number> = {
+  CORSAIR: 1.1,
+  'G.SKILL': 1.1,
+  KINGSTON: 1.05,
+  ADATA: 0.95,
+  _default: 1.0,
+}
+
+export const RAM_OPTIMAL_CAPACITY: Record<BuildType, number> = {
+  gaming: 32,
+  balance: 32,
+  rendering: 64,
+  ai: 64,
+}
+
+// 定义不同用途的速度权重
+export const RAM_SPEED_WEIGHTS: Record<BuildType, number> = {
+  gaming: 0.8,
+  balance: 0.6,
+  rendering: 0.75,
+  ai: 0.6,
 }

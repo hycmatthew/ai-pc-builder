@@ -11,8 +11,8 @@ import {
 } from './FilterType'
 
 export const CPU_FILTER_INIT_DATA: CPUFilterType = {
+  id: '',
   brand: '',
-  model: '',
   price: 0,
 }
 
@@ -20,13 +20,13 @@ export const GPU_FILTER_INIT_DATA: GPUFilterType = {
   brand: '',
   manufacturer: '',
   gpu: '',
-  model: '',
+  id: '',
   price: 0,
 }
 
 export const MOTHERBOARD_FILTER_INIT_DATA: MotherboardFilterType = {
   brand: '',
-  model: '',
+  id: '',
   price: 0,
   size: '',
   chipset: '',
@@ -34,7 +34,7 @@ export const MOTHERBOARD_FILTER_INIT_DATA: MotherboardFilterType = {
 
 export const RAM_FILTER_INIT_DATA: RAMFilterType = {
   brand: '',
-  model: '',
+  id: '',
   generation: '',
   price: 0,
   size: '',
@@ -42,14 +42,14 @@ export const RAM_FILTER_INIT_DATA: RAMFilterType = {
 
 export const SSD_FILTER_INIT_DATA: SSDFilterType = {
   brand: '',
-  model: '',
+  id: '',
   price: 0,
   capacity: 0,
 }
 
 export const PSU_FILTER_INIT_DATA: PSUFilterType = {
   brand: '',
-  model: '',
+  id: '',
   power: 0,
   efficiency: '',
   price: 0,
@@ -58,20 +58,20 @@ export const PSU_FILTER_INIT_DATA: PSUFilterType = {
 
 export const CASE_FILTER_INIT_DATA: CaseFilterType = {
   brand: '',
-  model: '',
+  id: '',
   price: 0,
   size: '',
 }
 
 export const AIO_FILTER_INIT_DATA: AIOFilterType = {
   brand: '',
-  model: '',
+  id: '',
   price: 0,
   size: 0,
 }
 
 export const AIR_COOLER_FILTER_INIT_DATA: AirCoolerFilterType = {
   brand: '',
-  model: '',
+  id: '',
   price: 0,
 }

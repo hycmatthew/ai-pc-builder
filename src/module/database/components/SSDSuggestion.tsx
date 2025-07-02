@@ -29,8 +29,8 @@ const SSDSuggestion = ({ ssdList, isLoading }: SSDSuggestionProps) => {
         let isMatch = true
 
         // 型號過濾
-        if (filterLogic.model) {
-          isMatch = item.model === filterLogic.model
+        if (filterLogic.id) {
+          isMatch = item.id === filterLogic.id
         }
 
         // 品牌過濾
@@ -121,10 +121,11 @@ const SSDSuggestion = ({ ssdList, isLoading }: SSDSuggestionProps) => {
             <SelectElement
               label={t('ssd')}
               options={generateSSDSelectElement(ssdList)}
-              selectChange={(model) =>
-                setFilterLogic((prev) => ({ ...prev, model }))
+              selectChange={(id) =>
+                setFilterLogic((prev) => ({ ...prev, id }))
               }
               isLoading={isLoading}
+              value={filterLogic.id}
             />
           </Grid>
       }

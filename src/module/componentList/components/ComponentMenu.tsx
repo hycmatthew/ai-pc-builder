@@ -144,7 +144,7 @@ const ComponentMenu = ({ dataState }: ComponentMenuProps) => {
       <Grid container spacing={1}>
         <Grid size={12}>
           <SelectElement
-            value={selectedItems.cpu?.name || ''}
+            value={selectedItems.cpu?.id || ''}
             label={ProductEnum.CPU}
             options={generateCPUSelectElement(cpuList, selectedItems)}
             selectChange={changeSelectItem}
@@ -152,7 +152,7 @@ const ComponentMenu = ({ dataState }: ComponentMenuProps) => {
         </Grid>
         <Grid size={12}>
           <SelectElement
-            value={selectedItems.gpu?.name || ''}
+            value={selectedItems.gpu?.id || ''}
             label={ProductEnum.GPU}
             options={generateGPUSelectElement(gpuList)}
             selectChange={changeSelectItem}
@@ -160,7 +160,7 @@ const ComponentMenu = ({ dataState }: ComponentMenuProps) => {
         </Grid>
         <Grid size={12}>
           <SelectElement
-            value={selectedItems.motherboard?.name || ''}
+            value={selectedItems.motherboard?.id || ''}
             label={ProductEnum.Motherboard}
             options={generateMotherboardSelectElement(
               motherboardList,
@@ -171,7 +171,7 @@ const ComponentMenu = ({ dataState }: ComponentMenuProps) => {
         </Grid>
         <Grid size={12}>
           <SelectElement
-            value={selectedItems.ram?.name || ''}
+            value={selectedItems.ram?.id || ''}
             label={ProductEnum.RAM}
             options={generateRAMSelectElement(ramList)}
             selectChange={changeSelectItem}
@@ -179,7 +179,7 @@ const ComponentMenu = ({ dataState }: ComponentMenuProps) => {
         </Grid>
         <Grid size={12}>
           <SelectElement
-            value={selectedItems.ssd?.name || ''}
+            value={selectedItems.ssd?.id || ''}
             label={ProductEnum.SSD}
             extraNum={0}
             options={generateSSDSelectElement(ssdList)}
@@ -193,7 +193,7 @@ const ComponentMenu = ({ dataState }: ComponentMenuProps) => {
         </Grid>
         <Grid size={12}>
           <SelectElement
-            value={selectedItems.psu?.name || ''}
+            value={selectedItems.psu?.id || ''}
             label={ProductEnum.PSU}
             options={generatePSUSelectElement(psuList)}
             selectChange={changeSelectItem}
@@ -201,7 +201,7 @@ const ComponentMenu = ({ dataState }: ComponentMenuProps) => {
         </Grid>
         <Grid size={12}>
           <SelectElement
-            value={selectedItems.pcCase?.name || ''}
+            value={selectedItems.pcCase?.id || ''}
             label={ProductEnum.ComputerCase}
             options={generateCaseSelectElement(caseList)}
             selectChange={changeSelectItem}
@@ -209,7 +209,7 @@ const ComponentMenu = ({ dataState }: ComponentMenuProps) => {
         </Grid>
         <Grid size={12}>
           <SelectElement
-            value={selectedItems.cooler?.name || ''}
+            value={selectedItems.cooler?.id || ''}
             label={ProductEnum.Cooler}
             options={generateCoolerSelectElement(coolerList)}
             selectChange={changeSelectItem}

@@ -28,8 +28,8 @@ const GPUSuggestion = ({ gpuList, isLoading }: GPUSuggestionProps) => {
         let isMatch = true
 
         // 型號過濾
-        if (filterLogic.model) {
-          isMatch = item.name === filterLogic.model
+        if (filterLogic.id) {
+          isMatch = item.id === filterLogic.id
         }
 
         // 品牌過濾
@@ -133,10 +133,11 @@ const GPUSuggestion = ({ gpuList, isLoading }: GPUSuggestionProps) => {
             <SelectElement
               label={t('graphic-card')}
               options={generateGPUSelectElement(gpuList)}
-              selectChange={(model) =>
-                setFilterLogic((prev) => ({ ...prev, model }))
+              selectChange={(id) =>
+                setFilterLogic((prev) => ({ ...prev, id }))
               }
               isLoading={isLoading}
+              value={filterLogic.id}
             />
           </Grid>
         </>

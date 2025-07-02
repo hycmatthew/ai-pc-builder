@@ -28,8 +28,8 @@ const RAMSuggestion = ({ ramList, isLoading }: RAMSuggestionProps) => {
         let isMatch = true
 
         // 型号过滤
-        if (filterLogic.model) {
-          isMatch = item.model === filterLogic.model
+        if (filterLogic.id) {
+          isMatch = item.id === filterLogic.id
         }
 
         // 品牌过滤
@@ -111,9 +111,8 @@ const RAMSuggestion = ({ ramList, isLoading }: RAMSuggestionProps) => {
           <SelectElement
             label={t('ram')}
             options={generateRAMSelectElement(ramList)}
-            selectChange={(model) =>
-              setFilterLogic((prev) => ({ ...prev, model }))
-            }
+            selectChange={(id) => setFilterLogic((prev) => ({ ...prev, id }))}
+            value={filterLogic.id}
             isLoading={isLoading}
           />
         </Grid>

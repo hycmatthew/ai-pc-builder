@@ -66,6 +66,7 @@ export const selectBestSSD = (
     const priceRatio = Math.max(0.1, (ssdBudget - ssd.price) / ssdBudget)
     const priceScore = Math.sqrt(priceRatio) * dynamicWeights.price
     const recommendedBonus = suggestedSSDs.includes(ssd.series) ? 1.15 : 1
+    const dramBonus = ssd.dram ? 1.15 : 1
 
     // 性能得分
     const perfScore =
@@ -74,7 +75,8 @@ export const selectBestSSD = (
         (ssd.read4K / maxRead4K) * 0.3 +
         (ssd.write4K / maxWrite4K) * 0.2) *
       dynamicWeights.performance *
-      recommendedBonus
+      recommendedBonus *
+      dramBonus
 
     return {
       ...ssd,
@@ -90,7 +92,7 @@ export const selectBestSSD = (
       dynamicWeights.brand
 
     // QLC惩罚
-    const qlcPenalty = ssd.flashType === 'QLC' ? 0.75 : 1
+    const qlcPenalty = ssd.flashType === 'QLC' ? 0.7 : 1
 
     // 额外总分
     const extraScore = brandBonus * qlcPenalty

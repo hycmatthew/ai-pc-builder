@@ -25,8 +25,8 @@ const CPUSuggestion = ({ cpuList, isLoading }: CPUSuggestionProps) => {
         let isMatch = true
 
         // 型号过滤
-        if (filterLogic.model) {
-          isMatch = item.name === filterLogic.model
+        if (filterLogic.id) {
+          isMatch = item.id === filterLogic.id
         }
 
         // 品牌过滤
@@ -117,11 +117,9 @@ const CPUSuggestion = ({ cpuList, isLoading }: CPUSuggestionProps) => {
         <SelectElement
           label={ProductEnum.CPU}
           options={generateCPUSelectElement(cpuList)}
-          selectChange={(model) =>
-            setFilterLogic((prev) => ({ ...prev, model }))
-          }
+          selectChange={(id) => setFilterLogic((prev) => ({ ...prev, id }))}
           isLoading={isLoading}
-          value={filterLogic.model}
+          value={filterLogic.id}
         />
       }
     />

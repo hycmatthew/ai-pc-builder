@@ -101,7 +101,7 @@ export const preFilterDataLogic = (
     cooler: coolerList.length === 1 ? coolerList[0] : undefined,
   }
 
-  const budgetFactor = calculateBudgetFactor(budget, 0.8, 1.05)
+  const budgetFactor = calculateBudgetFactor(budget, 0.7, 1.15)
 
   // 计算需要预留的默认组件预算
   const usedBudget =
