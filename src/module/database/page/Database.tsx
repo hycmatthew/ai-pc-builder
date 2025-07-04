@@ -18,6 +18,8 @@ import { RangeSlider } from '../../common/components/RangeSlider'
 import { getLocalizedPriceNum } from '../../../utils/NumberHelper'
 import {
   AllType,
+  CaseType,
+  CoolerType,
   CPUType,
   GPUType,
   MotherboardType,
@@ -299,8 +301,9 @@ const Database = () => {
           type: 'select',
           key: 'wireless',
           label: t('wireless'),
-          getOptions: (list: MotherboardType[]) =>
-            [...new Set(list.map((item) => item.wireless))]
+          getOptions: (list: MotherboardType[]) => [
+            ...new Set(list.map((item) => item.wireless)),
+          ],
         },
       ],
       [ProductEnum.SSD]: [
@@ -329,6 +332,22 @@ const Database = () => {
       ],
       [ProductEnum.PSU]: [
         {
+          type: 'select',
+          key: 'efficiency',
+          label: t('efficiency'),
+          getOptions: (list: PSUType[]) =>
+            [...new Set(list.map((item) => item.efficiency))]
+              .filter(Boolean)
+              .sort(),
+        },
+        {
+          type: 'select',
+          key: 'size',
+          label: t('size'),
+          getOptions: (list: PSUType[]) =>
+            [...new Set(list.map((item) => item.size))].filter(Boolean).sort(),
+        },
+        {
           type: 'range',
           key: 'wattage',
           label: t('wattage'),
@@ -336,6 +355,35 @@ const Database = () => {
             min: Math.min(...list.map((item) => item.wattage || 0)),
             max: Math.max(...list.map((item) => item.wattage || 0)),
           }),
+        },
+      ],
+      [ProductEnum.ComputerCase]: [
+        {
+          type: 'select',
+          key: 'case_size',
+          label: t('case_size'),
+          getOptions: (list: CaseType[]) =>
+            [...new Set(list.map((item) => item.case_size))]
+              .filter(Boolean)
+              .sort(),
+        },
+      ],
+      [ProductEnum.Cooler]: [
+        {
+          type: 'select',
+          key: 'is_liquid_cooler',
+          label: t('is_liquid_cooler'),
+          getOptions: (list: CoolerType[]) =>
+            [...new Set(list.map((item) => item.is_liquid_cooler))].sort(),
+        },
+        {
+          type: 'select',
+          key: 'liquid_cooler_size',
+          label: t('liquid_cooler_size'),
+          getOptions: (list: CoolerType[]) =>
+            [...new Set(list.map((item) => item.liquid_cooler_size))]
+              .filter(Boolean)
+              .sort(),
         },
       ],
       // 添加其他硬體類型配置...
@@ -438,7 +486,7 @@ const Database = () => {
   }
 
   return (
-    <Box className="main-container">
+    <Box className="main-container" sx={{ width: '90%' }}>
       <Grid
         container
         spacing={2}
