@@ -256,17 +256,18 @@ function selectBestCandidate(
 
   // 4. 优先考虑满足预算要求的配置
   if (highBudgetCandidates.length > 0) {
-    return findBestValueConfig(highBudgetCandidates, maxValueRatio)
+    return findBestValueConfig(highBudgetCandidates, maxValueRatio, budget)
   }
 
   // 5. 如果没有满足预算要求的，考虑所有配置
-  return findBestValueConfig(candidates, maxValueRatio)
+  return findBestValueConfig(candidates, maxValueRatio, budget)
 }
 
 // 改进的价值评估函数：考虑性能增量的性价比
 function findBestValueConfig(
   candidates: BestConfiguration[],
-  maxValueRatio: number
+  maxValueRatio: number,
+  budget: number
 ): BestConfiguration {
   // 按价格升序排序
   candidates.sort((a, b) => a.totalPrice - b.totalPrice)
@@ -291,8 +292,9 @@ function findBestValueConfig(
       // 计算增量性价比与最高性价比的比例
       const incrementalRatio = incrementalValue / maxValueRatio
 
-      // 如果增量性价比达到最高性价比的80%，则选择更好的配置
-      if (incrementalRatio >= 0.8) {
+      // 如果增量性价比达到最高性价比的75%，则选择更好的配置
+      const budgetFactor = calculateBudgetFactor(budget, 0.75, 0.3)
+      if (incrementalRatio >= budgetFactor) {
         bestConfig = current
         // bestValue = current.performanceScore / current.totalPrice
       }
@@ -394,23 +396,23 @@ function calculateCapacityScore(
   }
 
   // 超过最佳容量：收益急剧下降
-  const baseScore = 1.75
+  const baseScore = 2
   const excessRatio = (capacity - optimalCapacity) / optimalCapacity
 
   // 根据不同用途应用不同的下降曲线
   switch (usage) {
     case 'gaming':
       // 游戏用途超过最佳容量几乎无收益
-      return baseScore + Math.log1p(excessRatio) * 0.1
+      return baseScore + Math.log1p(excessRatio) * 0.2
     case 'balance':
       // 平衡用途适度收益
-      return baseScore + Math.log1p(excessRatio) * 0.2
+      return baseScore + Math.log1p(excessRatio) * 0.4
     case 'rendering':
     case 'ai':
       // 渲染/AI用途有较好收益
-      return baseScore + Math.sqrt(excessRatio) * 0.5
+      return baseScore + Math.sqrt(excessRatio) * 0.8
     default:
-      return baseScore + Math.log1p(excessRatio) * 0.15
+      return baseScore + Math.log1p(excessRatio) * 0.3
   }
 }
 

@@ -32,6 +32,7 @@ const CustomCardActions = styled(CardActions)({
 
 const AddButton = styled(IconButton)({
   marginLeft: 'auto',
+  outline: 'none !important',
 })
 
 const PriceTypography = styled(Typography)({
@@ -54,6 +55,9 @@ const ItemCard = ({
         flexDirection: 'column',
         padding: '5px',
         height: '100%',
+        boxShadow: 'none',
+        borderRadius: '8px',
+        backgroundColor: '#f7fafc',
       }}
     >
       <CustomCardHeader

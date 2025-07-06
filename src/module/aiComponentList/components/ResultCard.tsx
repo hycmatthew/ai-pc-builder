@@ -92,7 +92,7 @@ const ResultCard: React.FC<ResultCardProps> = ({ type, data, onClick }) => {
                 </Grid>
                 <Grid size="grow" paddingRight={1}>
                   <BuyButton
-                    href={currentPrices[0].price_link}
+                    href={price.price_link}
                     variant="contained"
                     color="primary"
                   >

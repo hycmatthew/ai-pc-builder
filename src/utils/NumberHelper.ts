@@ -1,6 +1,11 @@
 import { sum, toNumber, isNaN } from 'lodash'
 import i18n from '../config/i18n'
-import { AllType, CoolerType, MotherboardType, RAMType } from '../constant/objectTypes'
+import {
+  AllType,
+  CoolerType,
+  MotherboardType,
+  RAMType,
+} from '../constant/objectTypes'
 import { SelectedItemType } from '../store/rawDataReducer'
 import { LangEnum } from '../constant/supportedLang'
 import PriceType from '../constant/PriceType'
@@ -53,7 +58,9 @@ export const calculateTotalNumber = (numberList: number[]): number =>
 // ==================== 核心工具函式 ====================
 export const getAllPriceByRegion = (prices: PriceType[] | null) => {
   const { region } = getCurrencyConfig()
-  return prices?.filter((p) => p.region === region) || []
+  return (
+    prices?.filter((p) => p.region === region && toNumber(p.price) > 0) || []
+  )
 }
 
 const getPriceByRegion = (prices: PriceType[] | null): number => {
@@ -86,7 +93,9 @@ export const getCurrentPriceWithSign = (item: AllType): string =>
   addCurrencySign(convertLocalizedPrice(item))
 
 // 調整本地化價格轉換
-export const convertLocalizedPrice = (item: { prices: PriceType[] }): string => {
+export const convertLocalizedPrice = (item: {
+  prices: PriceType[]
+}): string => {
   return handlePriceValue(getPriceByRegion(item.prices))
 }
 

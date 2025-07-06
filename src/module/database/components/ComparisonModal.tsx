@@ -1,6 +1,5 @@
 import { useTranslation } from 'react-i18next'
 import {
-  Modal,
   Grid,
   CardMedia,
   CardContent,
@@ -11,6 +10,8 @@ import {
 import ClearIcon from '@mui/icons-material/Clear'
 import { ComparisonObject, ComparisonSubItem } from '../data/ComparisonObject'
 import { EMPTY_IMG_DATA } from '../../../constant/EmptyImage'
+import CustomDialog from '../../common/components/CustomDialog'
+import { useMemo } from 'react'
 
 type ComparisonModalProp = {
   comparisonObjects: ComparisonObject[]
@@ -19,28 +20,13 @@ type ComparisonModalProp = {
   handleRemove: (name: string) => void
 }
 
-type ComparisonTypographyProps = {
-  item: ComparisonSubItem
-}
-
 const style = {
-  position: 'absolute' as 'absolute',
-  top: '50%',
-  left: '50%',
-  transform: 'translate(-50%, -50%)',
-  bgcolor: 'background.paper',
-  boxShadow: 24,
   textAlign: 'center',
-  borderRadius: 2,
-  p: 3,
-  width: '80%',
-  maxWidth: '800px',
 }
 
 const boxStyle = {
-  height: '60px',
-  borderTop: 1,
-  borderColor: '#d9d9d9',
+  backgroundColor: '#f7fafc',
+  borderRadius: '8px',
 }
 
 const nameTypographyStyle = {
@@ -49,33 +35,28 @@ const nameTypographyStyle = {
   paddingTop: '4px',
 }
 
-const topTypographyStyle = {
-  display: 'inline-block',
-  fontSize: '9px',
-  color: '#808080',
-  verticalAlign: 'top',
-  paddingTop: '4px',
-}
-
 const mainTypographyStyle = {
   fontSize: '15px',
 }
 
-function ComparisonTypography({ item }: ComparisonTypographyProps) {
-  const { t } = useTranslation()
-  const { label, value, isHighlight } = item
+type ComparisonTypographyProps = {
+  item: ComparisonSubItem | undefined
+}
+
+const ComparisonValue = ({ item }: ComparisonTypographyProps) => {
+  if (!item) return <Typography>-</Typography>
+
+  const { value, isHighlight } = item
+
   return (
-    <Grid key={item.label} size={{ xs: 12 }}>
-      <Box sx={boxStyle}>
-        <Typography sx={topTypographyStyle}>{t(label)}</Typography>
-        <Typography
-          sx={mainTypographyStyle}
-          color={isHighlight ? '#00b359' : '#000'}
-        >
-          {value}
-        </Typography>
-      </Box>
-    </Grid>
+    <Box>
+      <Typography
+        sx={mainTypographyStyle}
+        color={isHighlight ? '#00b359' : '#000'}
+      >
+        {value}
+      </Typography>
+    </Box>
   )
 }
 
@@ -86,56 +67,77 @@ const ComparisonModal = ({
   handleRemove,
 }: ComparisonModalProp) => {
   const { t } = useTranslation()
+
+  // 获取所有参数的唯一标签（作为表头）
+  const allParameterLabels = useMemo(() => {
+    const labels = new Set<string>()
+    comparisonObjects.forEach((obj) => {
+      obj.items.forEach((item) => labels.add(item.label))
+    })
+    return Array.from(labels)
+  }, [comparisonObjects])
+
   return (
-    <Modal
-      aria-labelledby="transition-modal-title"
-      aria-describedby="transition-modal-description"
+    <CustomDialog
       open={isOpen}
       onClose={handleClose}
-      closeAfterTransition
-      BackdropProps={{
-        timeout: 500,
-      }}
+      title={t('pc-part-list')}
+      size="large"
+      sx={style}
     >
-      <Box sx={style}>
-        <Grid container justifyContent="center" spacing={3}>
+      <Grid container spacing={2} direction="column">
+        {/* 硬件展示行 */}
+        <Grid container spacing={3} justifyContent="center">
           {comparisonObjects.map((comparisonObject) => (
-            <Grid key={comparisonObject.name} size={{ xs: 3 }}>
+            <Grid key={comparisonObject.id} size={3}>
               <CardMedia
                 component="img"
                 image={comparisonObject.img || EMPTY_IMG_DATA}
                 alt={comparisonObject.name}
+                sx={{ maxHeight: 120, objectFit: 'contain' }}
               />
-              <Box sx={{ height: '60px' }} justifyContent="center">
+              <Box sx={{ display: 'flex', alignItems: 'center' }}>
                 <Typography sx={nameTypographyStyle}>
                   {comparisonObject.name}
                 </Typography>
               </Box>
-              <CardContent>
-                <Grid
-                  container
-                  direction="row"
-                  spacing={2}
-                  alignItems="stretch"
-                >
-                  {comparisonObject.items.map((item) => (
-                    <ComparisonTypography item={item} />
-                  ))}
-                </Grid>
-              </CardContent>
               <Button
                 startIcon={<ClearIcon />}
                 color="error"
                 variant="outlined"
                 onClick={() => handleRemove(comparisonObject.id)}
+                fullWidth
+                sx={{ mb: 2 }}
               >
                 {t('remove')}
               </Button>
             </Grid>
           ))}
         </Grid>
-      </Box>
-    </Modal>
+
+        {/* 参数对比区域 */}
+        {allParameterLabels.map((label) => (
+          <Box style={boxStyle}>
+            <Grid container key={label} spacing={2}>
+              {/* 参数名称表头 */}
+              <Grid size={12}>
+                <Typography>{t(label)}</Typography>
+              </Grid>
+
+              {/* 硬件参数值 */}
+              {comparisonObjects.map((obj) => {
+                const item = obj.items.find((i) => i.label === label)
+                return (
+                  <Grid size={3} key={`${obj.id}-${label}`}>
+                    <ComparisonValue item={item} />
+                  </Grid>
+                )
+              })}
+            </Grid>
+          </Box>
+        ))}
+      </Grid>
+    </CustomDialog>
   )
 }
 
