@@ -74,7 +74,7 @@ const GPUSuggestion = ({ gpuList, isLoading }: GPUSuggestionProps) => {
       // 獲取比較基準值
       const maxMemory = Math.max(...selectedItems.map((gpu) => gpu.memory_size))
       const maxBus = Math.max(
-        ...selectedItems.map((gpu) => parseMemoryBus(gpu.memory_bus))
+        ...selectedItems.map((gpu) => gpu.memory_bus)
       )
       const maxBenchmark = Math.max(
         ...selectedItems.map((gpu) => gpu.benchmark)
@@ -99,8 +99,8 @@ const GPUSuggestion = ({ gpuList, isLoading }: GPUSuggestionProps) => {
           },
           {
             label: 'gpu-memory-interface',
-            value: specs.memoryBus,
-            isHighlight: parseMemoryBus(specs.memoryBus) === maxBus,
+            value: `${specs.memoryBus}`,
+            isHighlight: specs.memoryBus === maxBus,
           },
           {
             label: 'benchmark',
@@ -144,12 +144,6 @@ const GPUSuggestion = ({ gpuList, isLoading }: GPUSuggestionProps) => {
       }
     />
   )
-}
-
-// 輔助函數
-const parseMemoryBus = (bus: string) => {
-  const match = bus.match(/\d+/)
-  return match ? parseInt(match[0], 10) : 0
 }
 
 export default GPUSuggestion

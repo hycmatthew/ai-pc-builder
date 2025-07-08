@@ -59,7 +59,7 @@ const CustomAutocomplete = styled(
       fontFamily: 'inherit',
       overflow: 'hidden',
       borderRadius,
-      border: '0px',
+      border: '2px solid',
       backgroundColor: '#F7FAFC',
       borderColor: 'transparent',
       transition: theme.transitions.create([
@@ -75,9 +75,8 @@ const CustomAutocomplete = styled(
       }),
 
       '&.Mui-focused': {
-        backgroundColor: theme.palette.mode === 'dark' ? '#2D3843' : '#FFFFFF',
-        boxShadow: `${alpha(glowColor, 0.25)} 0 0 0 2px`,
-        borderColor: glowColor,
+        backgroundColor: '#FFFFFF',
+        borderColor: '#CEDDF2',
       },
 
       '&.Mui-disabled': {

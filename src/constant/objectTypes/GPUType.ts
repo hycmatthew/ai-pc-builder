@@ -1,4 +1,4 @@
-import PriceType from "../PriceType"
+import PriceType from '../PriceType'
 
 interface GPUType {
   id: string
@@ -11,7 +11,7 @@ interface GPUType {
   generation: string
   memory_size: number
   memory_type: string
-  memory_bus: string
+  memory_bus: number
   boost_clock: number
   benchmark: number
   power: number

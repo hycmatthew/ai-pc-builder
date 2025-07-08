@@ -453,6 +453,9 @@ const Conditions = {
   isAffectedIntel14thGen: (cpu: CPUType) =>
     /^(Core\s+)?i[79][-\s]*14(700|900)/i.test(cpu.id.trim()),
 
+  isGamingBuildWithAMD: (cpu: CPUType, buildType: BuildType) =>
+    buildType === BuildType.Gaming && cpu.brand === 'amd',
+
   isGamingBuildWithAMD3D: (cpu: CPUType, buildType: BuildType) =>
     buildType === BuildType.Gaming && /3D/i.test(cpu.id),
 
@@ -476,10 +479,16 @@ const ScoreAdjusters = {
       score *= 0.9
     }
 
+    if (Conditions.isGamingBuildWithAMD(item, buildType)) {
+      console.log('AMD 3D V-Cache 加成:', item.id)
+      // AMD CPU 補償
+      score *= 1.1
+    }
+
     if (Conditions.isGamingBuildWithAMD3D(item, buildType)) {
       console.log('AMD 3D V-Cache 加成:', item.id)
       // AMD 3D V-Cache 加成
-      score *= 1.15
+      score *= 1.2
     }
 
     if (Conditions.isOldSocket(item)) {

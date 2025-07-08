@@ -53,10 +53,10 @@ const ItemCard = ({
         display: 'flex',
         justifyContent: 'space-between',
         flexDirection: 'column',
-        padding: '5px',
         height: '100%',
         boxShadow: 'none',
         borderRadius: '8px',
+        padding: '0px 8px',
         backgroundColor: '#f7fafc',
       }}
     >
@@ -66,7 +66,7 @@ const ItemCard = ({
       />
       <PlaceholdImage data={item} height={150} placeholderType="height" />
       <CustomCardActions
-        sx={{ display: 'flex', justifyContent: 'space-between' }}
+        sx={{ display: 'flex', justifyContent: 'space-between', padding: '4px 8px' }}
       >
         <PriceTypography>{getCurrentPriceWithSign(item)}</PriceTypography>
         {disable ? (

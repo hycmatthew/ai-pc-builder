@@ -42,6 +42,7 @@ const CustomSegmentedTab = styled(Tab)<TabProps>(() => ({
   textTransform: 'none',
   color: '#3c3c43',
   border: 'none',
+  maxWidth: '100%',
 
   '&:not(.Mui-selected)': {
     '&:hover': {
@@ -78,11 +79,14 @@ const SegmentedTabs = ({
       onChange={onChange}
       aria-label="segmented tabs"
       {...props}
-      
     >
       {tabs.map((tab, idx) => (
         <CustomSegmentedTab
-          key={tab.value !== null && tab.value !== false ? String(tab.value) : `tab-${idx}`}
+          key={
+            tab.value !== null && tab.value !== false
+              ? String(tab.value)
+              : `tab-${idx}`
+          }
           label={tab.label}
           value={tab.value}
         />

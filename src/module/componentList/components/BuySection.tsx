@@ -170,6 +170,7 @@ const BuySection = ({ dataState }: BuySectioProps) => {
                 value={generateBuildPath(dataState.selectedItems)}
                 slotProps={{
                   input: {
+                    disableUnderline: true,
                     readOnly: true,
                     endAdornment: (
                       <InputAdornment position="end">
@@ -199,8 +200,7 @@ const BuySection = ({ dataState }: BuySectioProps) => {
               />
               <CustomButton
                 onClick={handleDialogOpen}
-                fullWidth
-                sx={{ height: '48px' }}
+                sx={{ height: '58px' }}
               >
                 <DescriptionIcon sx={{ paddingRight: 1 }} />
                 {t('open')}

@@ -15,9 +15,9 @@ function Benchmarks() {
   const tabs = [
     { label: t('cpu'), value: ProductEnum.CPU },
     { label: t('graphic-card'), value: ProductEnum.GPU },
-    { label: t('ram'), value: ProductEnum.RAM }
+    { label: t('ram'), value: ProductEnum.RAM },
   ]
-  
+
   const handleChange = (_event: React.SyntheticEvent, newValue: any) => {
     if (newValue !== null) {
       setSelectedType(newValue as ProductEnum)
@@ -28,13 +28,13 @@ function Benchmarks() {
     <div className="bg-container">
       <div className="main-container">
         <Grid container spacing={0}>
-          <Grid>
-          <SegmentedTabs
-            value={selectedType}
-            onChange={handleChange}
-            tabs={tabs}
-            centered
-          />
+          <Grid paddingBottom={1}>
+            <SegmentedTabs
+              value={selectedType}
+              onChange={handleChange}
+              tabs={tabs}
+              centered
+            />
           </Grid>
           <Grid size={12}>
             {selectedType === ProductEnum.CPU && <CPUBenchmarksTable />}

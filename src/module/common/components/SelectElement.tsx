@@ -9,7 +9,7 @@ import {
   Typography,
 } from '@mui/material'
 import Autocomplete from '@mui/material/Autocomplete'
-import { styled } from '@mui/material/styles'
+import { alpha, styled } from '@mui/material/styles'
 import { addCurrencySign } from '../../../utils/NumberHelper'
 import { brandTranslationKey } from '../../../utils/LabelHelper'
 import { OptionType } from '../../../constant/objectTypes'
@@ -30,7 +30,7 @@ const CustomAutocomplete = styled(Autocomplete)({
   '& .MuiInputBase-input': {},
   // 边框状态管理
   '& .MuiTextField-root .MuiFilledInput-root': {
-    borderColor: '#F7FAFC',
+    border: 'transparent 2px solid',
     background: '#F7FAFC',
     color: '#4A739C',
     '&:hover': {
@@ -39,8 +39,9 @@ const CustomAutocomplete = styled(Autocomplete)({
     '&:hover fieldset': {
       borderColor: '#4287f5',
     },
-    '&.Mui-focused':{
-      background: '#fbfbfb',
+    '&.Mui-focused': {
+      backgroundColor: '#FFFFFF',
+      borderColor: '#CEDDF2',
     },
   },
   // 下拉选项
@@ -140,9 +141,7 @@ const SelectElement = ({
       options={sortedOption}
       groupBy={(option: any) => option.brand}
       onChange={handleChange}
-      isOptionEqualToValue={(option: any, value: any) =>
-        option.id === value.id
-      }
+      isOptionEqualToValue={(option: any, value: any) => option.id === value.id}
       getOptionDisabled={(option: any) => option.disabled === true}
       renderGroup={(params) => (
         <li key={params.key}>

@@ -13,9 +13,10 @@ const StyledButton = styled(Button)(({ theme }) => ({
   transition: theme.transitions.create(['all'], {
     duration: theme.transitions.duration.short,
   }),
+  width: '100%',
+  height: '43px',
   borderRadius: '10px',
   boxShadow: 'none',
-  maxWidth: '50%',
   // Contained variant 專用樣式
   backgroundColor: '#0F1563',
   '&:hover': {
@@ -69,6 +70,7 @@ const CustomButton = ({
       {...props}
       sx={{
         minWidth: { xs: 'auto', sm: '160px' },
+        maxWidth: { xs: '100%', sm: '360px' },
         ...variantStyles[variant || 'contained'], // 动态样式
         ...props.sx, // 允许外部覆盖
       }}

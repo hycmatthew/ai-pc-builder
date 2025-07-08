@@ -3,8 +3,15 @@ const BuildConfig = {
   HKPricingFactor: 7.8,
   CNPricingFactor: 7.1,
   USPricingFactor: 1,
+  LogicCandidatesNum: 10,
   RegularLogic: {
     formFactor: 'ATX',
+  },
+  Benchmark_Scores: {
+    HighEndCpu: 50000, // 顶级CPU参考分
+    HighEndGpu: 50000, // 顶级GPU参考分
+    MidRangeCpu: 36000, // 中端CPU参考分
+    MidRangeGpu: 20000, // 同价位中端GPU参考分
   },
   BudgetLogic: {
     MinBudgetStart: 800,
@@ -14,7 +21,7 @@ const BuildConfig = {
     CPUBudgetFactor: [0.6, 0.6, 0.4, 0.3],
     CPUBudgetMinFactor: 0.6,
     CPUBudgetMaxFactor: 0.3,
-    SingleCoreMultiply: 2,
+    SingleCoreMultiply: 3,
     MultiCoreMultiply: 1,
     OldSockets: ['AM4', 'LGA1700'],
   },

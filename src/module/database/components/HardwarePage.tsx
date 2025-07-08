@@ -52,13 +52,18 @@ const HardwareSuggestion = <T extends AllType>({
       <Grid container spacing={3}>
         <Grid size={{ xs: 12, md: 9 }}>{renderFilterForm}</Grid>
         <Grid size={{ xs: 12, md: 3 }}>
-          <Badge badgeContent={selectedItems.length} color="error">
+          <Badge
+            sx={{ width: '100%' }}
+            badgeContent={selectedItems.length}
+            color="error"
+          >
             <CustomButton
               startIcon={<CompareArrowsIcon />}
               variant="contained"
               disabled={selectedItems.length === 0}
               onClick={() => setOpenCompare(true)}
-              sx={{ height: 54 }}
+              sx={{ height: 58 }}
+              fullWidth
             >
               {t('compare')}
             </CustomButton>

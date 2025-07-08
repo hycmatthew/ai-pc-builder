@@ -1,5 +1,5 @@
 import { Slider, Box, styled, Grid } from '@mui/material'
-import { useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import CustomTextField from './CustomTextField'
 import CusTypography from './CusTypography'
 import { useTranslation } from 'react-i18next'
@@ -69,7 +69,41 @@ export const RangeSlider = ({
   onChange,
 }: RangeSliderProps) => {
   const { t } = useTranslation()
-  const [value, setValue] = useState<number[]>(defaultValue)
+  // 使用 ref 存储最新的 min/max 值
+  const minRef = useRef(min)
+  const maxRef = useRef(max)
+
+  useEffect(() => {
+    minRef.current = min
+    maxRef.current = max
+  })
+
+  // 初始化状态时钳制默认值
+  const [value, setValue] = useState<number[]>(() => [
+    Math.min(Math.max(defaultValue[0], min), max),
+    Math.min(Math.max(defaultValue[1], min), max),
+  ])
+
+  // 监听 min/max 变化，更新值范围
+  useEffect(() => {
+    const adjustedValue = [
+      Math.min(Math.max(value[0], min), max),
+      Math.min(Math.max(value[1], min), max),
+    ]
+
+    if (adjustedValue[0] !== value[0] || adjustedValue[1] !== value[1]) {
+      setValue(adjustedValue)
+    }
+  }, [min, max])
+
+  // 监听 defaultValue 变化（如外部重置）
+  useEffect(() => {
+    const newValue = [
+      Math.min(Math.max(defaultValue[0], minRef.current), maxRef.current),
+      Math.min(Math.max(defaultValue[1], minRef.current), maxRef.current),
+    ]
+    setValue(newValue)
+  }, [defaultValue])
 
   // 计算布局显示条件
   const showMobileLayout =

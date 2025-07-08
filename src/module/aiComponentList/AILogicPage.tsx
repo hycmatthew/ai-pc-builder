@@ -327,55 +327,51 @@ function AILogicPage() {
             {/* Step 1 - Usage Selection */}
             <AnimatedGrid size={12}>
               <FormLabel>{t('Usage')}</FormLabel>
-              <Stack padding={1}>
-                <SegmentedTabs
-                  value={selectedType ?? null}
-                  onChange={updateType}
-                  tabs={tabs}
-                />
-              </Stack>
+              <SegmentedTabs
+                value={selectedType ?? null}
+                onChange={updateType}
+                tabs={tabs}
+              />
             </AnimatedGrid>
             {/* Step 2 - Budget & Parts Selection */}
             {activeStep > 0 && (
               <>
                 <AnimatedGrid size={12}>
                   <FormLabel>{t('Storage')}</FormLabel>
-                  <Stack padding={1}>
-                    <SegmentedTabs
-                      value={selectedStorage}
-                      onChange={updateSelectedStorage}
-                      tabs={storageTabs}
-                    />
-                  </Stack>
+                  <SegmentedTabs
+                    value={selectedStorage}
+                    onChange={updateSelectedStorage}
+                    tabs={storageTabs}
+                  />
                 </AnimatedGrid>
                 <AnimatedGrid size={12}>
                   <FormLabel>{t('Budget')}</FormLabel>
                 </AnimatedGrid>
                 <AnimatedGrid size={12}>
-                  <Stack spacing={2} padding={1} direction="row">
-                    <CustomTextField
-                      type="number"
-                      value={formData.budget}
-                      onChange={budgetTextfieldChanged}
-                      width={200}
-                    />
-                    <CustomButton
-                      loading={loading}
-                      variant="contained"
-                      onClick={handleNext}
-                      disabled={disableButtonLogic()}
-                      sx={{ height: '40px' }}
-                    >
-                      {t('confirm')}
-                    </CustomButton>
-                    <CustomButton
-                      variant="outlined"
-                      onClick={clearDataLogic}
-                      sx={{ height: '40px' }}
-                    >
-                      {t('clear')}
-                    </CustomButton>
-                  </Stack>
+                  <Grid container spacing={1} columns={{ xs: 6, md: 12 }}>
+                    <Grid size={{ xs: 4, md: 4, lg: 3 }}>
+                      <CustomTextField
+                        type="number"
+                        value={formData.budget}
+                        onChange={budgetTextfieldChanged}
+                      />
+                    </Grid>
+                    <Grid size={{ xs: 3, md: 'auto' }}>
+                      <CustomButton
+                        loading={loading}
+                        variant="contained"
+                        onClick={handleNext}
+                        disabled={disableButtonLogic()}
+                      >
+                        {t('confirm')}
+                      </CustomButton>
+                    </Grid>
+                    <Grid size={{ xs: 3, md: 'auto' }}>
+                      <CustomButton variant="outlined" onClick={clearDataLogic}>
+                        {t('clear')}
+                      </CustomButton>
+                    </Grid>
+                  </Grid>
                 </AnimatedGrid>
                 {/* 在零件選擇區域添加加載遮罩 */}
                 {loading && (

@@ -6,12 +6,20 @@ export enum BuildType {
 }
 
 export const BUILD_WEIGHTS = {
-  balance: { cpu: 0.55, gpu: 0.25, ram: 0.25 }, // 办公更依赖 CPU
-  gaming: { cpu: 0.3, gpu: 0.55, ram: 0.2 }, // 游戏更依赖 GPU
-  rendering: { cpu: 0.35, gpu: 0.4, ram: 0.3 }, // 渲染依赖 CPU 和 GPU
-  ai: { cpu: 0.2, gpu: 0.7, ram: 0.15 },
-  unknown: { cpu: 0.5, gpu: 0.3, ram: 0.2 },
+  balance: { cpu: 0.55, gpu: 0.45 }, // 办公更依赖 CPU
+  gaming: { cpu: 0.35, gpu: 0.65 }, // 游戏更依赖 GPU
+  rendering: { cpu: 0.4, gpu: 0.6 }, // 渲染依赖 CPU 和 GPU
+  ai: { cpu: 0.2, gpu: 0.8 },
+  unknown: { cpu: 0.5, gpu: 0.5 },
 }
+
+// 瓶颈容忍阈值配置（按用途）
+export const BOTTLENECK_TOLERANCE: Record<BuildType, {cpu: number, gpu: number}> = {
+  balance: { cpu: 0.6, gpu: 0.7 }, 
+  gaming: { cpu: 0.4, gpu: 0.8 },   // GPU容忍度更高
+  rendering: { cpu: 0.5, gpu: 0.75 },
+  ai: { cpu: 0.3, gpu: 0.85 },      // AI对GPU容忍度最高
+};
 
 // 芯片组等级映射（基于命名规则）
 export const CHIPSET_POWER_RANK: Record<
@@ -156,8 +164,8 @@ export const RAM_OPTIMAL_CAPACITY: Record<BuildType, number> = {
 
 // 定义不同用途的速度权重
 export const RAM_SPEED_WEIGHTS: Record<BuildType, number> = {
-  gaming: 0.8,
-  balance: 0.6,
-  rendering: 0.75,
-  ai: 0.6,
+  gaming: 0.75,
+  balance: 0.3,
+  rendering: 0.6,
+  ai: 0.5,
 }

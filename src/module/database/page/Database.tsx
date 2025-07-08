@@ -94,6 +94,7 @@ const Database = () => {
 
     const min = Math.min(...prices)
     const max = Math.max(...prices)
+    console.log('minPrice:', min, 'maxPrice:', max)
     return { minPrice: min, maxPrice: max }
   }, [selectedType, dataState])
 
@@ -492,6 +493,7 @@ const Database = () => {
         spacing={2}
         size={{ xs: 12, md: 8 }}
         paddingX={{ xs: 0, lg: 12 }}
+        width={{ xs: '100%' }}
       >
         <Grid size={{ xs: 12, sm: 6, md: 3 }}>
           <Grid container direction="column" spacing={1} paddingTop={2}>
