@@ -3,19 +3,20 @@ const BuildConfig = {
   HKPricingFactor: 7.8,
   CNPricingFactor: 7.1,
   USPricingFactor: 1,
-  LogicCandidatesNum: 10,
+  LogicCandidatesNum: 50,
   RegularLogic: {
     formFactor: 'ATX',
   },
   Benchmark_Scores: {
-    HighEndCpu: 50000, // 顶级CPU参考分
-    HighEndGpu: 50000, // 顶级GPU参考分
-    MidRangeCpu: 36000, // 中端CPU参考分
-    MidRangeGpu: 20000, // 同价位中端GPU参考分
+    HighEndCpu: 48000, // 顶级CPU参考分 ultra 9
+    HighEndGpu: 140000, // 顶级GPU参考分 5070 TI
+    MidRangeCpu: 17000, // 中端CPU参考分 i5
+    MidRangeGpu: 20000, // 同价位中端GPU参考分 4060 TI
   },
   BudgetLogic: {
     MinBudgetStart: 800,
     MaxBudgetStart: 3500,
+    EntryBudget: 1100,
   },
   CPUFactor: {
     CPUBudgetFactor: [0.6, 0.6, 0.4, 0.3],
@@ -43,6 +44,7 @@ const BuildConfig = {
   },
   PSUFactor: {
     PSUBudgetFactor: 0.18,
+    PSUWattBudgetFactor: 0.125,
     PSUSuggestion: [
       'seasonic-focus-gx-750-v4',
       'thermaltake-toughpower-gf-a3-750w',
@@ -53,10 +55,12 @@ const BuildConfig = {
     CoolerBudgetFactor: 0.15,
     TDPThreshold: 170,
     IdealPriceFactors: {
-      cpuRatio: 0.15, // CPU價格的15%
-      budgetRatio: 0.02, // 總預算的3%
+      cpuRatio: 0.1, // CPU價格的15%
+      lowBudgetRatio: 0.01, // 總預算的1%
+      highBudgetRatio: 0.025, // 高預算的2%
     },
     NormalCoolerSuggestion: [
+      'thermalright-assassin-x120-refined-se',
       'idcooling-se-214-xt-argb',
       'arctic-freezer-36',
       'thermalright-peerless-assassin-120-se',

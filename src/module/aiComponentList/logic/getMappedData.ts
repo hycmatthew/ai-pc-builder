@@ -480,15 +480,13 @@ const ScoreAdjusters = {
     }
 
     if (Conditions.isGamingBuildWithAMD(item, buildType)) {
-      console.log('AMD 3D V-Cache 加成:', item.id)
       // AMD CPU 補償
-      score *= 1.1
+      score *= 1.15
     }
 
     if (Conditions.isGamingBuildWithAMD3D(item, buildType)) {
-      console.log('AMD 3D V-Cache 加成:', item.id)
       // AMD 3D V-Cache 加成
-      score *= 1.2
+      score *= 1.25
     }
 
     if (Conditions.isOldSocket(item)) {
@@ -516,11 +514,11 @@ const ScoreAdjusters = {
 
     if (Conditions.isNvidiaGPU(item)) {
       // 基礎加成
-      let multiplier = 1.1
+      let multiplier = 1.15
 
       // 專業應用加成
       if (buildType === BuildType.AI) {
-        multiplier = 1.5
+        multiplier = 1.75
       }
 
       // RTX 50系列額外加成

@@ -12,7 +12,7 @@ import {
   RAM_OPTIMAL_CAPACITY,
   RAM_SPEED_WEIGHTS,
 } from '../constant/buildType'
-import { calculateBudgetFactor, calculateChipsetMultiplier } from './scoreLogic'
+import { calculateBudgetFactor, calculateEffectiveCPUScore } from './scoreLogic'
 import { getMapValue } from '../../../utils/StringUtil'
 import BuildConfig from '../constant/buildConfig'
 
@@ -32,49 +32,55 @@ function calculatePerformanceScore(
   ramScore: number,
   mbScore: number,
   buildType: BuildType,
-  budgetFactor: number
+  mbBudgetFactor: number
 ): number {
-  const benchmarkScores = BuildConfig.Benchmark_Scores
+  const { MidRangeCpu, HighEndCpu, MidRangeGpu, HighEndGpu } =
+    BuildConfig.Benchmark_Scores
+
   const weights = BUILD_WEIGHTS[buildType]
-  const mbWeight = 0.02 * budgetFactor
+  const mbWeight = mbBudgetFactor
 
-  // 1. 分数标准化（考虑价格性能比）
-  const normalizedCpu =
-    (cpuScore / benchmarkScores.MidRangeCpu) * benchmarkScores.MidRangeGpu
-  const normalizedGpu = gpuScore // GPU保持原样
+  // 1. 保持原逻辑的标准化（用于最终分数计算）
+  const normalizedCpu = cpuScore
+  const normalizedGpu = gpuScore
 
-  // 2. 价格感知的瓶颈检测
-  const cpuThreshold =
-    benchmarkScores.MidRangeCpu * BOTTLENECK_TOLERANCE[buildType].cpu
-  const gpuThreshold =
-    benchmarkScores.MidRangeGpu * BOTTLENECK_TOLERANCE[buildType].gpu
+  // 2. 计算相对性能位置（0-1范围）
+  const cpuRelative = Math.max(
+    0,
+    (cpuScore - MidRangeCpu) / (HighEndCpu - MidRangeCpu)
+  )
+  const gpuRelative = Math.max(
+    0,
+    (gpuScore - MidRangeGpu) / (HighEndGpu - MidRangeGpu)
+  )
 
-  let bottleneckPenalty = 1
+  // 3. 获取当前构建类型的瓶颈配置
+  const {
+    idealGpuCpuRatio, // 理想GPU/CPU相对性能差值
+    imbalanceSensitivity,
+  } = BOTTLENECK_TOLERANCE[buildType]
 
-  // CPU瓶颈检测（当CPU低于阈值时惩罚）
-  if (cpuScore < cpuThreshold) {
-    const deficit = (cpuThreshold - cpuScore) / cpuThreshold
-    bottleneckPenalty *= 1 - Math.pow(deficit, 1.5)
-  }
+  // 4. 计算性能偏差
+  const actualRatio = gpuRelative - cpuRelative
+  const deviation = Math.abs(actualRatio - idealGpuCpuRatio)
 
-  // GPU瓶颈检测（当GPU低于阈值时惩罚）
-  if (gpuScore < gpuThreshold) {
-    const deficit = (gpuThreshold - gpuScore) / gpuThreshold
-    bottleneckPenalty *= 1 - Math.pow(deficit, 1.5)
-  }
+  // 5. 计算指数惩罚（使用二次方曲线）
+  // 当deviation=0时惩罚为0，deviation=1时惩罚接近最大值
+  const penaltyFactor = Math.min(
+    0.05,
+    imbalanceSensitivity * Math.pow(deviation, 2)
+  )
 
-  // 3. 加权计算（使用标准化分数）
-  const weightedCpu = normalizedCpu * weights.cpu
-  const weightedGpu = normalizedGpu * weights.gpu
-  const totalCpuGpu = weightedCpu + weightedGpu
+  // 6. 计算基础性能分数（保持原逻辑）
+  let baseScore = normalizedCpu * weights.cpu + normalizedGpu * weights.gpu
 
-  // 4. 应用瓶颈惩罚
-  const bottleneckAdjusted = totalCpuGpu * bottleneckPenalty
+  // 7. 应用瓶颈惩罚
+  baseScore *= 1 - penaltyFactor
 
-  // 5. 主板分数计算
-  const mbComponent = mbScore * totalCpuGpu * mbWeight
+  // 8. 主板分数计算（保持原逻辑）
+  const mbComponent = 0
 
-  return Math.max(0, bottleneckAdjusted + ramScore + mbComponent)
+  return Math.max(0, baseScore + ramScore + mbComponent)
 }
 
 export const findBestConfiguration = (
@@ -90,40 +96,45 @@ export const findBestConfiguration = (
   const ramsByType = groupRamsByType(rams)
   const [sortedGPUs, gpuLookupTable] = preprocessGPUs(gpus)
 
-  const budgetFactor = calculateBudgetFactor(budget, 1.5, 3)
+  const mbBudgetFactor = calculateBudgetFactor(budget, 0.01, 0.025)
   console.log('getMappedMotherboards:', motherboards)
 
   // 按性能/价格比排序CPU
   const sortedCPUs = [...cpus].sort(
     (a, b) => b.score / b.price - a.score / a.price
   )
+  // console.log('sortedCPUs:', sortedCPUs)
+  // console.log('sortedGPUs:', sortedGPUs)
 
   // 遍历所有可能的CPU
   for (const cpu of sortedCPUs) {
     // 获取兼容主板
     const compatibleMBs = motherboards.filter((mb) => mb.socket === cpu.socket)
+    console.log('compatibleMBs:', compatibleMBs)
     for (const mb of compatibleMBs) {
       // 提前终止条件
       if (cpu.price + mb.price > budget * 0.7) continue
-
+      // mbFactor计算CPU实际性能
+      const effectiveCPUScore = calculateEffectiveCPUScore(cpu, mb)
       // 获取兼容内存
       const compatibleRams = (ramsByType.get(mb.ramType) || [])
         .filter((ram) => ram.channel <= mb.ramSlot)
         .map((ram) => {
           // 计算性能分时同时获取原始性能分和价格
-          const rawScore = calculateRamPerformance(
+          const updatedScore = calculateRamPerformance(
             buildType,
             budget,
             ram,
-            mb.ramSupport
+            mb.ramSupport,
+            cpu.brand
           )
 
           // 新增：计算性价比 (性能分/价格)
-          const valueRatio = ram.price > 0 ? rawScore / ram.price : 0 // 防御除零错误
+          const valueRatio = ram.price > 0 ? updatedScore / ram.price : 0 // 防御除零错误
 
           return {
             ...ram,
-            rawScore, // 保留原始性能分
+            updatedScore: updatedScore, // 保留原始性能分
             valueRatio, // 新增性价比指标
           }
         })
@@ -135,19 +146,16 @@ export const findBestConfiguration = (
         const baseCost = cpu.price + mb.price + ram.price
         if (baseCost > budget) continue
 
-        // 计算CPU实际性能
-        const effectiveCPUScore =
-          cpu.score * calculateChipsetMultiplier(cpu, mb)
         // 情况1: 使用核显
         if (cpu.integratedGraphicsScore > 0) {
           const totalPrice = baseCost
           const performanceScore = calculatePerformanceScore(
             effectiveCPUScore,
             cpu.integratedGraphicsScore,
-            ram.rawScore,
+            ram.updatedScore,
             mb.score,
             buildType,
-            budgetFactor
+            mbBudgetFactor
           )
           addToCandidates(bestCandidates, {
             cpu,
@@ -172,10 +180,10 @@ export const findBestConfiguration = (
             const performanceScore = calculatePerformanceScore(
               effectiveCPUScore,
               bestGPU.score,
-              ram.rawScore,
+              ram.updatedScore,
               mb.score,
               buildType,
-              budgetFactor
+              mbBudgetFactor
             )
             addToCandidates(bestCandidates, {
               cpu,
@@ -270,9 +278,9 @@ function selectBestCandidate(
   budget: number
 ): BestConfiguration | null {
   if (candidates.length === 0) return null
-
   // 1. 计算所有配置的最高性价比作为基准
   let maxValueRatio = 0
+  console.log('candidates:', candidates)
   candidates.forEach((c) => {
     const valueRatio = c.performanceScore / c.totalPrice
     if (valueRatio > maxValueRatio) maxValueRatio = valueRatio
@@ -300,8 +308,6 @@ function findBestValueConfig(
 ): BestConfiguration {
   // 按价格升序排序
   candidates.sort((a, b) => a.totalPrice - b.totalPrice)
-  console.log(candidates)
-  console.log('maxValueRatio: ', maxValueRatio)
 
   let bestConfig = candidates[0]
   // let bestValue = bestConfig.performanceScore / bestConfig.totalPrice
@@ -324,7 +330,7 @@ function findBestValueConfig(
       const incrementalRatio = incrementalValue / maxValueRatio
 
       // 如果增量性价比达到最高性价比的80%，则选择更好的配置
-      const budgetFactor = calculateBudgetFactor(budget, 0.8, 0.4)
+      const budgetFactor = calculateBudgetFactor(budget, 0.8, 0.3)
       if (incrementalRatio >= budgetFactor) {
         console.log(
           'bestConfig: ',
@@ -372,12 +378,15 @@ function calculateRamPerformance(
   usage: BuildType,
   budget: number,
   ram: MappedRAMType,
-  supportedSpeeds: number[]
+  supportedSpeeds: number[],
+  cpuBrand: string
 ): number {
-  const budgetFactor = calculateBudgetFactor(budget, 1, 3)
+  const budgetFactor = calculateBudgetFactor(budget, 0.7, 1.5)
+  const isAmd = cpuBrand.toLowerCase().includes('amd')
   // 1. 计算有效速度（不超过主板支持）
   const maxSupported = Math.max(...supportedSpeeds)
-  const effectiveSpeed = Math.min(ram.speed, maxSupported)
+  const cpuMaxSpeed = isAmd ? 6000 : ram.speed
+  const effectiveSpeed = Math.min(cpuMaxSpeed, maxSupported)
 
   // 2. 获取当前用途的最佳容量和速度阈值
   const optimalCapacity = RAM_OPTIMAL_CAPACITY[usage]
@@ -412,8 +421,9 @@ function calculateRamPerformance(
 
   // 9. 技术加成
   let techFactor = 1.0
-  if (ram.type.toUpperCase().includes('DDR5')) techFactor *= 1.3
+  if (ram.type.toUpperCase().includes('DDR5')) techFactor *= 1.25
   if (ram.hasHeatsink) techFactor *= 1.05
+  if ((isAmd && ram.profile_expo) || ram.profile_xmp) techFactor *= 1.05
 
   // 10. 品牌加成
   const brand = ram.brand.toUpperCase().trim()
@@ -444,12 +454,11 @@ function calculateCapacityScore(
     case 'gaming':
       // 游戏用途超过最佳容量几乎无收益
       return baseScore + Math.log1p(excessRatio) * 0.1
+    case 'ai':
     case 'balance':
-      // 平衡用途适度收益
+      // 平衡/AI用途适度收益
       return baseScore + Math.log1p(excessRatio) * 0.3
     case 'rendering':
-    case 'ai':
-      // 渲染/AI用途有较好收益
       return baseScore + Math.sqrt(excessRatio) * 0.7
     default:
       return baseScore + Math.log1p(excessRatio) * 0.2

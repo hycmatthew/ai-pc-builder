@@ -51,7 +51,8 @@ export function calculateMotherboardBaseScore(mb: MotherboardType): number {
   const formFactorPenalty = FORM_FACTOR_PENALTY[formFactor] || 1.0
 
   // 静态分数 = 基础分数 * 品牌系列系数 * 品牌质量系数 * 尺寸惩罚
-  return baseScore * seriesFactor * brandFactor * formFactorPenalty
+  const score = baseScore * seriesFactor * brandFactor * formFactorPenalty
+  return Math.sqrt(score)
 }
 
 // 优化3: 重构芯片组数据处理逻辑
@@ -147,7 +148,7 @@ function getMotherboardSeriesFactor(modelName: string): number {
 
 /****************************** Get CPU Factor ******************************/
 
-export const calculateChipsetMultiplier = (
+export const calculateEffectiveCPUScore = (
   cpu: MappedCPUType,
   mb: MappedMotherboardType
 ): number => {
@@ -198,7 +199,9 @@ export const calculateChipsetMultiplier = (
   //const baseChipsetFactor = chipsetData.rank + 0.4
 
   // 综合所有因素
-  return 1 * tierFactor * powerFactor
+  // console.log("cpu:", cpu.id, "tier:", cpuTier, "mb:", mb.id)
+  // console.log(1 * tierFactor * powerFactor)
+  return cpu.score * tierFactor * powerFactor
 }
 
 /****************************** Get Budget Factor ******************************/

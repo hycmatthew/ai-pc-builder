@@ -86,7 +86,7 @@ export const preFilterDataLogic = (
   psuList: PSUType[],
   coolerList: CoolerType[],
   budget: number,
-  storage: number,
+  capacity: number,
   type: BuildType
 ) => {
   // 1. 识别用户已选组件并计算已用预算
@@ -101,13 +101,11 @@ export const preFilterDataLogic = (
     cooler: coolerList.length === 1 ? coolerList[0] : undefined,
   }
 
-  const budgetFactor = calculateBudgetFactor(budget, 0.7, 1.15)
+  // const budgetFactor = calculateBudgetFactor(budget, 0.55, 1.15)
 
   // 计算需要预留的默认组件预算
-  const usedBudget =
-    estimateDefaultPrice(caseList, psuList, coolerList) * budgetFactor
+  const usedBudget = estimateDefaultPrice(caseList, budget)
   let availableBudget = budget - usedBudget
-  console.log('availableBudget : ', availableBudget)
 
   if (availableBudget < 0) return null
 
@@ -172,7 +170,7 @@ export const preFilterDataLogic = (
     filters.cpuBrand,
     filters.mbRamType
   )
-  const mappedSSDs = getMappedSSDs(ssdList, ssdBudget, storage)
+  const mappedSSDs = getMappedSSDs(ssdList, ssdBudget, capacity)
   const mappedPSUs = getMappedPSUs(psuList, usedBudget)
   const mappedCases = getMappedCases(
     caseList,
@@ -186,19 +184,20 @@ export const preFilterDataLogic = (
     filters.radiatorSupport,
     usedBudget
   )
-  console.log('mappedRAMs : ', mappedRAMs)
+
   /** Start the config logic */
   let bestSSD = null
   let bestPsu = null
   let bestCase = null
   let bestCooler = null
+
   bestSSD = selectBestSSD(
     mappedSSDs,
     BuildConfig.SSDFactor.SSDSuggestion,
     budget
   )
   availableBudget -= bestSSD ? bestSSD.price : 0
-
+  console.log(availableBudget)
   const bestConfig = findBestConfiguration(
     mappedCPUs,
     mappedGPUs,
@@ -280,7 +279,7 @@ interface CalculationResult {
 type HardwareComponents = {
   cpu?: MappedCPUType
   gpu?: MappedGPUType | null
-  motherboard?: MappedMotherboardType // 假设这些类型都有 price 属性
+  motherboard?: MappedMotherboardType
   ram?: MappedRAMType
   ssd?: MappedSSDType | null
   pcCase?: MappedCaseType | null

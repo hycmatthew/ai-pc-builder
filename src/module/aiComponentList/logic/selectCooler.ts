@@ -1,4 +1,5 @@
 import BuildConfig from '../constant/buildConfig'
+import { COOLER_BRAND_SCORES } from '../constant/buildType'
 import {
   MappedCPUType,
   MappedCaseType,
@@ -6,13 +7,20 @@ import {
 } from '../constant/mappedObjectTypes'
 import { calculateBudgetFactor } from './scoreLogic'
 
-const COOLER_BRAND_SCORES: Record<string, number> = {
-  Noctua: 1.2,
-  'be quiet!': 1.15,
-  Corsair: 1.1,
-  Deepcool: 1.05,
-  'Cooler Master': 1.05,
-  _default: 1.0,
+export const calculateIdealCoolerPrice = (
+  cpuPrice: number,
+  budget: number
+): number => {
+  const budgetRatio = calculateBudgetFactor(
+    budget,
+    BuildConfig.CoolerFactor.IdealPriceFactors.lowBudgetRatio,
+    BuildConfig.CoolerFactor.IdealPriceFactors.highBudgetRatio
+  )
+  const idealPrice =
+    cpuPrice * BuildConfig.CoolerFactor.IdealPriceFactors.cpuRatio +
+    budget * budgetRatio
+
+  return idealPrice
 }
 
 export const selectBestCooler = (
@@ -25,18 +33,13 @@ export const selectBestCooler = (
   const cpuPrice = selectedCPU.price
 
   // 1. 計算理想價格
-  const idealPrice =
-    cpuPrice * BuildConfig.CoolerFactor.IdealPriceFactors.cpuRatio +
-    budget * BuildConfig.CoolerFactor.IdealPriceFactors.budgetRatio
+  const idealPrice = calculateIdealCoolerPrice(cpuPrice, budget)
 
-  // 1. 根據CPU的TDP選擇推薦散熱器級別
+  // 2. 根據CPU的TDP選擇推薦散熱器級別
   const recommendedCoolerIds =
     cpuTDP > BuildConfig.CoolerFactor.TDPThreshold
       ? BuildConfig.CoolerFactor.HighendCoolerSuggestion
       : BuildConfig.CoolerFactor.NormalCoolerSuggestion
-
-  // 2. 預算因子（範圍1.0-1.5）
-  const budgetFactor = calculateBudgetFactor(budget, 1.0, 1.5)
 
   // 3. TDP因子（TDP越高，散熱器權重越高）
   const tdpFactor = 1 + (cpuTDP / 200) * 0.5 // 每100W TDP增加25%權重
@@ -49,6 +52,7 @@ export const selectBestCooler = (
   if (compatibleCoolers.length === 0) return null
 
   // 5. 評分系統
+  const budgetFactor = calculateBudgetFactor(budget, 1.0, 1.5)
   const scoredCoolers = compatibleCoolers.map((cooler) => {
     // 核心改進：價格分數基於與理想價格的接近程度
     const priceDifference = Math.abs(cooler.price - idealPrice)
@@ -81,20 +85,13 @@ export const selectBestCooler = (
 
     // 計算總分
     const totalScore =
-      priceScore *
-      recommendationBonus *
-      brandBonus *
-      budgetFactor *
-      tdpFactor *
-      typeBonus
+      priceScore * recommendationBonus * brandBonus * tdpFactor * typeBonus
 
     return {
       ...cooler,
       totalScore,
     }
   })
-
-  console.log(scoredCoolers)
 
   // 6. 按總分排序（優先推薦散熱器）
   scoredCoolers.sort((a, b) => {

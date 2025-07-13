@@ -6,19 +6,36 @@ export enum BuildType {
 }
 
 export const BUILD_WEIGHTS = {
-  balance: { cpu: 0.55, gpu: 0.45 }, // 办公更依赖 CPU
+  balance: { cpu: 0.6, gpu: 0.4 }, // 办公更依赖 CPU
   gaming: { cpu: 0.35, gpu: 0.65 }, // 游戏更依赖 GPU
   rendering: { cpu: 0.4, gpu: 0.6 }, // 渲染依赖 CPU 和 GPU
   ai: { cpu: 0.2, gpu: 0.8 },
   unknown: { cpu: 0.5, gpu: 0.5 },
 }
 
-// 瓶颈容忍阈值配置（按用途）
-export const BOTTLENECK_TOLERANCE: Record<BuildType, {cpu: number, gpu: number}> = {
-  balance: { cpu: 0.6, gpu: 0.7 }, 
-  gaming: { cpu: 0.4, gpu: 0.8 },   // GPU容忍度更高
-  rendering: { cpu: 0.5, gpu: 0.75 },
-  ai: { cpu: 0.3, gpu: 0.85 },      // AI对GPU容忍度最高
+export const BOTTLENECK_TOLERANCE: Record<
+  BuildType, 
+  { 
+    idealGpuCpuRatio: number;  // 理想GPU相对CPU的性能差值
+    imbalanceSensitivity: number; // 不平衡敏感度(0-0.3)
+  }
+> = {
+  balance: {
+    idealGpuCpuRatio: 0,       // GPU和CPU性能相当
+    imbalanceSensitivity: 0.15 // 中等敏感度
+  },
+  gaming: {
+    idealGpuCpuRatio: 0.4,     // GPU应比CPU强40%
+    imbalanceSensitivity: 0.2  // 较高敏感度
+  },
+  rendering: {
+    idealGpuCpuRatio: 0.3,     // GPU应比CPU强30%
+    imbalanceSensitivity: 0.18 // 中高敏感度
+  },
+  ai: {
+    idealGpuCpuRatio: 0.8,     // GPU应比CPU强80%
+    imbalanceSensitivity: 0.1  // 低敏感度
+  }
 };
 
 // 芯片组等级映射（基于命名规则）
@@ -164,8 +181,18 @@ export const RAM_OPTIMAL_CAPACITY: Record<BuildType, number> = {
 
 // 定义不同用途的速度权重
 export const RAM_SPEED_WEIGHTS: Record<BuildType, number> = {
-  gaming: 0.75,
-  balance: 0.3,
-  rendering: 0.6,
-  ai: 0.5,
+  gaming: 0.65,
+  balance: 0.25,
+  rendering: 0.55,
+  ai: 0.45,
+}
+
+/****************************** Cooler Score Logic ******************************/
+export const COOLER_BRAND_SCORES: Record<string, number> = {
+  Noctua: 1.2,
+  'be quiet!': 1.15,
+  Corsair: 1.1,
+  Deepcool: 1.05,
+  'Cooler Master': 1.05,
+  _default: 1.0,
 }
