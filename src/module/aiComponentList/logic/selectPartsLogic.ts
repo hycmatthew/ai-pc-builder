@@ -35,8 +35,8 @@ import {
   MappedPSUType,
   MappedCoolerType,
 } from '../constant/mappedObjectTypes'
-import { BuildType } from '../constant/buildType'
 import { calculateBudgetFactor } from './scoreLogic'
+import { BuildUsage, getUsageConfig } from '../constant/usageConfig'
 
 interface CompatibilityFilters {
   // CPU相关
@@ -87,7 +87,7 @@ export const preFilterDataLogic = (
   coolerList: CoolerType[],
   budget: number,
   capacity: number,
-  type: BuildType
+  usage: BuildUsage
 ) => {
   // 1. 识别用户已选组件并计算已用预算
   const selectedComponents = {
@@ -104,6 +104,7 @@ export const preFilterDataLogic = (
   // const budgetFactor = calculateBudgetFactor(budget, 0.55, 1.15)
 
   // 计算需要预留的默认组件预算
+  const usageConfig = getUsageConfig(usage)
   const usedBudget = estimateDefaultPrice(caseList, budget)
   let availableBudget = budget - usedBudget
 
@@ -148,12 +149,12 @@ export const preFilterDataLogic = (
     )
   const ssdBudget = budget * BuildConfig.SSDFactor.SSDBudgetFactor
 
-  const mappedCPUs = getMappedCPUs(cpuList, cpuBudget, filters.mbSocket, type)
+  const mappedCPUs = getMappedCPUs(cpuList, cpuBudget, filters.mbSocket, usageConfig)
   const mappedGPUs = getMappedGPUs(
     gpuList,
     gpuBudget,
     filters.maxGPULength,
-    type
+    usageConfig
   )
   const mappedMotherboards = getMappedMotherboards(
     mbList,
@@ -204,7 +205,7 @@ export const preFilterDataLogic = (
     mappedMotherboards,
     mappedRAMs,
     availableBudget,
-    type
+    usage
   )
 
   if (bestConfig) {

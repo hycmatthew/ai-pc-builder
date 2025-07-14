@@ -182,7 +182,7 @@ const CompatibleSection = ({
       }
       return acc
     }, [])
-  }, [selectedItems, t])
+  }, [selectedItems, t, systemError])
 
   // 统一渲染消息组件
   const renderMessage = (item: SuggestionType) => {

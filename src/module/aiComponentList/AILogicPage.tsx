@@ -4,7 +4,6 @@ import {
   CircularProgress,
   FormLabel,
   Grid,
-  Stack,
   Step,
   StepLabel,
   Stepper,
@@ -32,7 +31,7 @@ import { useTranslation } from 'react-i18next'
 import SegmentedTabs from '../common/components/SegmentedTabs'
 import CustomTextField from '../common/components/CustomTextField'
 import CustomButton from '../common/components/CustomButton'
-import { BuildType } from './constant/buildType'
+import { BuildUsage } from './constant/usageConfig'
 
 type ProductHandlers = {
   [key in ProductEnum]: {
@@ -75,10 +74,10 @@ function AILogicPage() {
   // 优化2: 使用useMemo缓存静态数据
   const tabs = useMemo(
     () => [
-      { label: t(BuildType.Balance), value: BuildType.Balance },
-      { label: t(BuildType.Gaming), value: BuildType.Gaming },
-      { label: t(BuildType.Rendering), value: BuildType.Rendering },
-      { label: t(BuildType.AI), value: BuildType.AI },
+      { label: t(BuildUsage.Balance), value: BuildUsage.Balance },
+      { label: t(BuildUsage.Gaming), value: BuildUsage.Gaming },
+      { label: t(BuildUsage.Rendering), value: BuildUsage.Rendering },
+      { label: t(BuildUsage.AI), value: BuildUsage.AI },
     ],
     [t]
   )
@@ -93,7 +92,7 @@ function AILogicPage() {
     []
   )
 
-  const [selectedType, setSelectedType] = useState<BuildType | null>(null)
+  const [selectedType, setSelectedType] = useState<BuildUsage | null>(null)
   const [selectedStorage, setSelectedStorage] = useState(1000)
   const [activeStep, setActiveStep] = useState(0)
   const [displaySysError, setDisplaySysError] = useState(false)
@@ -118,7 +117,7 @@ function AILogicPage() {
 
   const updateType = (_event: React.SyntheticEvent, newValue: any) => {
     if (newValue !== null) {
-      setSelectedType(newValue as BuildType)
+      setSelectedType(newValue as BuildUsage)
       // 选择usage后自动允许进入下一步
       if (activeStep === 0) {
         setActiveStep(1)
@@ -197,7 +196,7 @@ function AILogicPage() {
       getComponentList('cooler', rawData.coolerList),
       Number(formData.budget),
       selectedStorage,
-      selectedType as BuildType
+      selectedType as BuildUsage
     )
 
     console.log('generateListLogic', res)

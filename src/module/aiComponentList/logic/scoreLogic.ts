@@ -6,7 +6,7 @@ import {
   CHIPSET_RULES,
   FORM_FACTOR_PENALTY,
   MOTHERBOARD_SERIES_FACTOR,
-} from '../constant/buildType'
+} from '../constant/buildFactor'
 import {
   MappedCPUType,
   MappedMotherboardType,

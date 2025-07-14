@@ -4,17 +4,11 @@ import {
   MappedMotherboardType,
   MappedRAMType,
 } from '../constant/mappedObjectTypes'
-import {
-  BOTTLENECK_TOLERANCE,
-  BUILD_WEIGHTS,
-  BuildType,
-  RAM_BRAND_FACTOR,
-  RAM_OPTIMAL_CAPACITY,
-  RAM_SPEED_WEIGHTS,
-} from '../constant/buildType'
 import { calculateBudgetFactor, calculateEffectiveCPUScore } from './scoreLogic'
 import { getMapValue } from '../../../utils/StringUtil'
 import BuildConfig from '../constant/buildConfig'
+import { BuildUsage, getUsageConfig } from '../constant/usageConfig'
+import { RAM_BRAND_FACTOR } from '../constant/buildFactor'
 
 type BestConfiguration = {
   cpu: MappedCPUType
@@ -31,13 +25,14 @@ function calculatePerformanceScore(
   gpuScore: number,
   ramScore: number,
   mbScore: number,
-  buildType: BuildType,
+  buildType: BuildUsage,
   mbBudgetFactor: number
 ): number {
   const { MidRangeCpu, HighEndCpu, MidRangeGpu, HighEndGpu } =
     BuildConfig.Benchmark_Scores
 
-  const weights = BUILD_WEIGHTS[buildType]
+  const usageConfig = getUsageConfig(buildType)
+  const weights = usageConfig.weights
   const mbWeight = mbBudgetFactor
 
   // 1. 保持原逻辑的标准化（用于最终分数计算）
@@ -58,7 +53,7 @@ function calculatePerformanceScore(
   const {
     idealGpuCpuRatio, // 理想GPU/CPU相对性能差值
     imbalanceSensitivity,
-  } = BOTTLENECK_TOLERANCE[buildType]
+  } = usageConfig.bottleneckTolerance
 
   // 4. 计算性能偏差
   const actualRatio = gpuRelative - cpuRelative
@@ -89,7 +84,7 @@ export const findBestConfiguration = (
   motherboards: MappedMotherboardType[],
   rams: MappedRAMType[],
   budget: number,
-  buildType: BuildType
+  buildType: BuildUsage
 ) => {
   const bestCandidates: BestConfiguration[] = []
   // 预处理数据结构
@@ -341,12 +336,13 @@ function groupRamsByType(rams: MappedRAMType[]) {
 
 // RAM评分函数
 function calculateRamPerformance(
-  usage: BuildType,
+  usage: BuildUsage,
   budget: number,
   ram: MappedRAMType,
   supportedSpeeds: number[],
   cpuBrand: string
 ): number {
+  const usageConfig = getUsageConfig(usage)
   const budgetFactor = calculateBudgetFactor(budget, 0.6, 1.2)
   const isAmd = cpuBrand.toLowerCase().includes('amd')
   // 1. 计算有效速度（不超过主板支持）
@@ -355,7 +351,7 @@ function calculateRamPerformance(
   const effectiveSpeed = Math.min(cpuMaxSpeed, maxSupported)
 
   // 2. 获取当前用途的最佳容量和速度阈值
-  const optimalCapacity = RAM_OPTIMAL_CAPACITY[usage]
+  const optimalCapacity = usageConfig.ramOptimalCapacity
   const speedThreshold = 6000
   const latencyThreshold = 30
 
@@ -370,7 +366,7 @@ function calculateRamPerformance(
   const speedScore = calculateSpeedScore(
     effectiveSpeed,
     speedThreshold,
-    RAM_SPEED_WEIGHTS[usage]
+    usageConfig.ramSpeedWeight
   )
 
   // 5. 计算延迟惩罚（线性计算）
@@ -402,7 +398,7 @@ function calculateRamPerformance(
 
 // 平滑容量分数计算
 function calculateCapacityScore(
-  usage: BuildType,
+  usage: BuildUsage,
   capacity: number,
   optimalCapacity: number
 ): number {

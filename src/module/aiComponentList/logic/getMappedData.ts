@@ -14,7 +14,7 @@ import {
 } from '../../../logic/performanceLogic'
 import { getLocalizedPriceNum } from '../../../utils/NumberHelper'
 import BuildConfig from '../constant/buildConfig'
-import { BuildType } from '../constant/buildType'
+import { BuildUsage, UsageConfig } from '../constant/usageConfig'
 import {
   MappedCaseType,
   MappedCoolerType,
@@ -36,7 +36,7 @@ export function getMappedCPUs(
   cpuList: CPUType[],
   budget: number,
   mbSocket: string | undefined,
-  type: BuildType
+  usageConfig: UsageConfig
 ): MappedCPUType[] {
   const mappedCPUs: MappedCPUType[] = cpuList
     .filter((item) => {
@@ -52,7 +52,7 @@ export function getMappedCPUs(
         brand: item.brand,
         socket: item.socket,
         gpu: item.gpu,
-        score: ScoreAdjusters.cpu(item, type),
+        score: ScoreAdjusters.cpu(item, usageConfig),
         integratedGraphicsScore:
           item.integrated_graphics_score *
           BuildConfig.GPUFactor.GPUScoreMultiply,
@@ -67,7 +67,7 @@ export function getMappedGPUs(
   gpuList: GPUType[],
   budget: number,
   maxGPULength: number | undefined,
-  type: BuildType
+  usageConfig: UsageConfig
 ): MappedGPUType[] {
   // 1. 初步過濾：滿足預算和尺寸限制
   const filteredGPUs = gpuList.filter((item) => {
@@ -90,7 +90,7 @@ export function getMappedGPUs(
     // 避免除以0的錯誤
     if (price <= 0) return
 
-    const score = ScoreAdjusters.gpu(item, type)
+    const score = ScoreAdjusters.gpu(item, usageConfig)
     const valueRatio = score / price // 性價比 = 性能分數 / 價格
 
     const chipsetGroup = chipsetMap.get(item.chipset) || []
@@ -453,11 +453,11 @@ const Conditions = {
   isAffectedIntel14thGen: (cpu: CPUType) =>
     /^(Core\s+)?i[79][-\s]*14(700|900)/i.test(cpu.id.trim()),
 
-  isGamingBuildWithAMD: (cpu: CPUType, buildType: BuildType) =>
-    buildType === BuildType.Gaming && cpu.brand === 'amd',
+  isGamingBuildWithAMD: (cpu: CPUType, usageConfig: UsageConfig) =>
+    usageConfig.type === BuildUsage.Gaming && cpu.brand === 'amd',
 
-  isGamingBuildWithAMD3D: (cpu: CPUType, buildType: BuildType) =>
-    buildType === BuildType.Gaming && /3D/i.test(cpu.id),
+  isGamingBuildWithAMD3D: (cpu: CPUType, usageConfig: UsageConfig) =>
+    usageConfig.type === BuildUsage.Gaming && /3D/i.test(cpu.id),
 
   isOldSocket: (cpu: CPUType) =>
     BuildConfig.CPUFactor.OldSockets.includes(cpu.socket),
@@ -469,7 +469,7 @@ const Conditions = {
 
 // 分數調整器 ▼
 const ScoreAdjusters = {
-  cpu: (item: CPUType, buildType: BuildType) => {
+  cpu: (item: CPUType, usageConfig: UsageConfig) => {
     let score =
       item.single_core_score * BuildConfig.CPUFactor.SingleCoreMultiply +
       item.multi_core_score * BuildConfig.CPUFactor.MultiCoreMultiply
@@ -479,12 +479,12 @@ const ScoreAdjusters = {
       score *= 0.9
     }
 
-    if (Conditions.isGamingBuildWithAMD(item, buildType)) {
+    if (Conditions.isGamingBuildWithAMD(item, usageConfig)) {
       // AMD CPU 補償
       score *= 1.15
     }
 
-    if (Conditions.isGamingBuildWithAMD3D(item, buildType)) {
+    if (Conditions.isGamingBuildWithAMD3D(item, usageConfig)) {
       // AMD 3D V-Cache 加成
       score *= 1.3
     }
@@ -496,7 +496,7 @@ const ScoreAdjusters = {
     return score
   },
 
-  gpu: (item: GPUType, buildType: BuildType) => {
+  gpu: (item: GPUType, usageConfig: UsageConfig) => {
     let score = item.benchmark * BuildConfig.GPUFactor.GPUScoreMultiply
 
     const baseVRAM = 12 // 基准显存大小
@@ -517,7 +517,7 @@ const ScoreAdjusters = {
       let multiplier = 1.15
 
       // 專業應用加成
-      if (buildType === BuildType.AI) {
+      if (usageConfig.type === BuildUsage.AI) {
         multiplier = 1.75
       }
 

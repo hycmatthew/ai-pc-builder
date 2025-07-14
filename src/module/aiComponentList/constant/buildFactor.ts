@@ -1,44 +1,5 @@
-export enum BuildType {
-  Balance = 'balance',
-  Gaming = 'gaming',
-  Rendering = 'rendering',
-  AI = 'ai',
-}
 
-export const BUILD_WEIGHTS = {
-  balance: { cpu: 0.6, gpu: 0.4 }, // 办公更依赖 CPU
-  gaming: { cpu: 0.35, gpu: 0.65 }, // 游戏更依赖 GPU
-  rendering: { cpu: 0.5, gpu: 0.5 }, // 渲染依赖 CPU 和 GPU
-  ai: { cpu: 0.2, gpu: 0.8 },
-  unknown: { cpu: 0.5, gpu: 0.5 },
-}
-
-export const BOTTLENECK_TOLERANCE: Record<
-  BuildType,
-  {
-    idealGpuCpuRatio: number // 理想GPU相对CPU的性能差值
-    imbalanceSensitivity: number // 不平衡敏感度(0-0.3)
-  }
-> = {
-  balance: {
-    idealGpuCpuRatio: 0, // GPU和CPU性能相当
-    imbalanceSensitivity: 0.15, // 中等敏感度
-  },
-  gaming: {
-    idealGpuCpuRatio: 0.4, // GPU应比CPU强40%
-    imbalanceSensitivity: 0.2, // 较高敏感度
-  },
-  rendering: {
-    idealGpuCpuRatio: 0.3, // GPU应比CPU强30%
-    imbalanceSensitivity: 0.18, // 中高敏感度
-  },
-  ai: {
-    idealGpuCpuRatio: 0.8, // GPU应比CPU强80%
-    imbalanceSensitivity: 0.1, // 低敏感度
-  },
-}
-
-// 芯片组等级映射（基于命名规则）
+/****************************** Motherboard Score Logic ******************************/
 export const CHIPSET_POWER_RANK: Record<
   string,
   { rank: number; powerSupport: number; class: number; generation: number }
@@ -170,21 +131,6 @@ export const RAM_BRAND_FACTOR: Record<string, number> = {
   KINGSTON: 1.05,
   ADATA: 0.95,
   _default: 1.0,
-}
-
-export const RAM_OPTIMAL_CAPACITY: Record<BuildType, number> = {
-  gaming: 32,
-  balance: 32,
-  rendering: 64,
-  ai: 64,
-}
-
-// 定义不同用途的速度权重
-export const RAM_SPEED_WEIGHTS: Record<BuildType, number> = {
-  gaming: 0.6,
-  balance: 0.25,
-  rendering: 0.5,
-  ai: 0.4,
 }
 
 /****************************** Cooler Score Logic ******************************/

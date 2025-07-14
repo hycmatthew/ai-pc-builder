@@ -1,5 +1,5 @@
 import BuildConfig from '../constant/buildConfig'
-import { COOLER_BRAND_SCORES } from '../constant/buildType'
+import { COOLER_BRAND_SCORES } from '../constant/buildFactor'
 import {
   MappedCPUType,
   MappedCaseType,

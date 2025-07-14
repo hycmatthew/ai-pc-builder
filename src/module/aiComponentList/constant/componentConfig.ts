@@ -231,5 +231,3 @@ export const componentConfig = {
     },
   },
 } satisfies Record<string, ComponentConfig>
-
-export type DisplayType = keyof (typeof componentConfig)['cpu']['properties']
