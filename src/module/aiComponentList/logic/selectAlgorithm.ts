@@ -78,7 +78,7 @@ function calculatePerformanceScore(
   baseScore *= 1 - penaltyFactor
 
   // 8. 主板分数计算（保持原逻辑）
-  const mbComponent = 0
+  const mbComponent = mbScore * baseScore * mbWeight
 
   return Math.max(0, baseScore + ramScore + mbComponent)
 }
@@ -97,7 +97,6 @@ export const findBestConfiguration = (
   const [sortedGPUs, gpuLookupTable] = preprocessGPUs(gpus)
 
   const mbBudgetFactor = calculateBudgetFactor(budget, 0.01, 0.025)
-  console.log('getMappedMotherboards:', motherboards)
 
   // 按性能/价格比排序CPU
   const sortedCPUs = [...cpus].sort(
@@ -110,7 +109,7 @@ export const findBestConfiguration = (
   for (const cpu of sortedCPUs) {
     // 获取兼容主板
     const compatibleMBs = motherboards.filter((mb) => mb.socket === cpu.socket)
-    console.log('compatibleMBs:', compatibleMBs)
+    // console.log('compatibleMBs:', compatibleMBs)
     for (const mb of compatibleMBs) {
       // 提前终止条件
       if (cpu.price + mb.price > budget * 0.7) continue
@@ -144,61 +143,56 @@ export const findBestConfiguration = (
 
       for (const ram of compatibleRams) {
         const baseCost = cpu.price + mb.price + ram.price
-        if (baseCost > budget) continue
+        // ========== 核心修改：在addToCandidates中筛选 ==========
+        const addCandidate = (gpu: MappedGPUType | null) => {
+          const gpuPrice = gpu ? gpu.price : 0
+          const gpuScore = gpu ? gpu.score : cpu.integratedGraphicsScore
+          const totalPrice = baseCost + gpuPrice
 
-        // 情况1: 使用核显
-        if (cpu.integratedGraphicsScore > 0) {
-          const totalPrice = baseCost
+          // 跳过超预算配置
+          if (totalPrice > budget) return
+
           const performanceScore = calculatePerformanceScore(
             effectiveCPUScore,
-            cpu.integratedGraphicsScore,
+            gpuScore,
             ram.updatedScore,
             mb.score,
             buildType,
             mbBudgetFactor
           )
-          addToCandidates(bestCandidates, {
+
+          // 创建候选配置
+          const candidate: BestConfiguration = {
             cpu,
             motherboard: mb,
             ram,
-            gpu: null,
+            gpu,
             totalPrice,
             performanceScore,
-          })
+          }
+
+          // 在添加前进行性价比筛选
+          addToCandidates(bestCandidates, candidate, budget)
+        }
+
+        // 情况1: 使用核显
+        if (cpu.integratedGraphicsScore > 0) {
+          addCandidate(null)
         }
 
         // 情况2: 使用独立显卡
-        const remainingBudget = budget - baseCost
-        if (remainingBudget >= 0) {
-          const bestGPU = findBestGPU(
-            sortedGPUs,
-            gpuLookupTable,
-            remainingBudget
-          )
-          if (bestGPU) {
-            const totalPrice = baseCost + bestGPU.price
-            const performanceScore = calculatePerformanceScore(
-              effectiveCPUScore,
-              bestGPU.score,
-              ram.updatedScore,
-              mb.score,
-              buildType,
-              mbBudgetFactor
-            )
-            addToCandidates(bestCandidates, {
-              cpu,
-              motherboard: mb,
-              ram,
-              gpu: bestGPU,
-              totalPrice,
-              performanceScore,
-            })
-          }
+        const bestGPU = findBestGPU(
+          sortedGPUs,
+          gpuLookupTable,
+          budget - baseCost
+        )
+        if (bestGPU) {
+          addCandidate(bestGPU)
         }
       }
     }
   }
-  return selectBestCandidate(bestCandidates, budget)
+  return selectBestCandidate(bestCandidates)
 }
 
 // 优化7: 改进GPU查找算法
@@ -242,110 +236,82 @@ function findBestGPU(
 // 添加配置到候选列表
 function addToCandidates(
   bestCandidates: BestConfiguration[],
-  config: BestConfiguration
+  candidate: BestConfiguration,
+  budget: number
 ) {
   const maxCandidateNum = BuildConfig.LogicCandidatesNum
-  // 如果候选列表未满或新配置优于最差候选
-  if (
-    bestCandidates.length < maxCandidateNum ||
-    config.performanceScore >
-      bestCandidates[bestCandidates.length - 1].performanceScore
-  ) {
-    // 插入新配置并保持排序（按性能降序）
-    let inserted = false
-    for (let i = 0; i < bestCandidates.length; i++) {
-      if (config.performanceScore > bestCandidates[i].performanceScore) {
-        bestCandidates.splice(i, 0, config)
-        inserted = true
-        break
+  // 计算性能增量性价比阈值
+  const minIncrementalRatio = calculateBudgetFactor(budget, 0.8, 0.2)
+
+  // 检查候选列表是否为空
+  if (bestCandidates.length === 0) {
+    bestCandidates.push(candidate)
+    return
+  }
+
+  // 查找最接近的价格点进行比较
+  let closestCandidate: BestConfiguration | null = null
+  let minPriceDiff = Infinity
+
+  for (const c of bestCandidates) {
+    const priceDiff = Math.abs(c.totalPrice - candidate.totalPrice)
+    if (priceDiff < minPriceDiff) {
+      minPriceDiff = priceDiff
+      closestCandidate = c
+    }
+  }
+
+  // 计算性能增量性价比
+  if (closestCandidate) {
+    const priceDiff = candidate.totalPrice - closestCandidate.totalPrice
+    const scoreDiff =
+      candidate.performanceScore - closestCandidate.performanceScore
+
+    // 只有当价格和性能都有提升时才计算
+    if (priceDiff > 0 && scoreDiff > 0) {
+      const incrementalValue = scoreDiff / priceDiff
+      const baseValue =
+        closestCandidate.performanceScore / closestCandidate.totalPrice
+      const incrementalRatio = baseValue > 0 ? incrementalValue / baseValue : 0
+
+      // 增量性价比不达阈值则跳过
+      if (incrementalRatio < minIncrementalRatio) {
+        return
       }
     }
+  }
 
-    // 如果未插入则添加到末尾
-    if (!inserted && bestCandidates.length < maxCandidateNum) {
-      bestCandidates.push(config)
+  // 添加配置到候选列表（保持性能降序）
+  let inserted = false
+  for (let i = 0; i < bestCandidates.length; i++) {
+    if (candidate.performanceScore > bestCandidates[i].performanceScore) {
+      bestCandidates.splice(i, 0, candidate)
+      inserted = true
+      break
     }
+  }
 
-    // 保持最多10个候选
-    if (bestCandidates.length > maxCandidateNum) {
-      bestCandidates.pop()
-    }
+  // 添加到末尾（如果未插入且列表未满）
+  if (!inserted && bestCandidates.length < maxCandidateNum) {
+    bestCandidates.push(candidate)
+  }
+
+  // 保持最大候选数量
+  if (bestCandidates.length > maxCandidateNum) {
+    bestCandidates.pop()
   }
 }
 
+// ========== 简化后的最终选择函数 ==========
 function selectBestCandidate(
-  candidates: BestConfiguration[],
-  budget: number
+  candidates: BestConfiguration[]
 ): BestConfiguration | null {
   if (candidates.length === 0) return null
-  // 1. 计算所有配置的最高性价比作为基准
-  let maxValueRatio = 0
-  console.log('candidates:', candidates)
-  candidates.forEach((c) => {
-    const valueRatio = c.performanceScore / c.totalPrice
-    if (valueRatio > maxValueRatio) maxValueRatio = valueRatio
-  })
-
-  // 2. 筛选满足预算要求的配置（85%以上）
-  const highBudgetCandidates = candidates.filter(
-    (c) => c.totalPrice >= budget * 0.85
+  console.log(candidates)
+  // 直接选择最高性能的配置（因为候选列表已过滤）
+  return candidates.reduce((best, current) =>
+    current.performanceScore > best.performanceScore ? current : best
   )
-
-  // 3. 优先考虑满足预算要求的配置
-  if (highBudgetCandidates.length > 0) {
-    return findBestValueConfig(highBudgetCandidates, maxValueRatio, budget)
-  }
-
-  // 4. 如果没有满足预算要求的，考虑所有配置
-  return findBestValueConfig(candidates, maxValueRatio, budget)
-}
-
-// 改进的价值评估函数：考虑性能增量的性价比
-function findBestValueConfig(
-  candidates: BestConfiguration[],
-  maxValueRatio: number,
-  budget: number
-): BestConfiguration {
-  // 按价格升序排序
-  candidates.sort((a, b) => a.totalPrice - b.totalPrice)
-
-  let bestConfig = candidates[0]
-  // let bestValue = bestConfig.performanceScore / bestConfig.totalPrice
-
-  // 从最便宜的配置开始，逐步比较更贵的配置
-  for (let i = 1; i < candidates.length; i++) {
-    const current = candidates[i]
-    const previous = bestConfig
-
-    // 计算额外花费带来的性能提升
-    const priceDiff = current.totalPrice - previous.totalPrice
-    const scoreDiff = current.performanceScore - previous.performanceScore
-
-    // 只有当性能确实提升时才考虑
-    if (scoreDiff > 0 && priceDiff > 0) {
-      // 计算增量性价比（每元带来的性能提升）
-      const incrementalValue = scoreDiff / priceDiff
-
-      // 计算增量性价比与最高性价比的比例
-      const incrementalRatio = incrementalValue / maxValueRatio
-
-      // 如果增量性价比达到最高性价比的80%，则选择更好的配置
-      const budgetFactor = calculateBudgetFactor(budget, 0.8, 0.3)
-      if (incrementalRatio >= budgetFactor) {
-        console.log(
-          'bestConfig: ',
-          bestConfig,
-          ' - incrementalRatio:',
-          incrementalRatio
-        )
-        console.log('new bestConfig: ', current)
-        bestConfig = current
-        // bestValue = current.performanceScore / current.totalPrice
-      }
-    }
-  }
-
-  return bestConfig
 }
 
 // GPU预处理（排序+创建查找表）
@@ -381,7 +347,7 @@ function calculateRamPerformance(
   supportedSpeeds: number[],
   cpuBrand: string
 ): number {
-  const budgetFactor = calculateBudgetFactor(budget, 0.7, 1.5)
+  const budgetFactor = calculateBudgetFactor(budget, 0.6, 1.2)
   const isAmd = cpuBrand.toLowerCase().includes('amd')
   // 1. 计算有效速度（不超过主板支持）
   const maxSupported = Math.max(...supportedSpeeds)
@@ -421,7 +387,7 @@ function calculateRamPerformance(
 
   // 9. 技术加成
   let techFactor = 1.0
-  if (ram.type.toUpperCase().includes('DDR5')) techFactor *= 1.25
+  if (ram.type.toUpperCase().includes('DDR5')) techFactor *= 1.15
   if (ram.hasHeatsink) techFactor *= 1.05
   if ((isAmd && ram.profile_expo) || ram.profile_xmp) techFactor *= 1.05
 
@@ -457,9 +423,9 @@ function calculateCapacityScore(
     case 'ai':
     case 'balance':
       // 平衡/AI用途适度收益
-      return baseScore + Math.log1p(excessRatio) * 0.3
+      return baseScore + Math.log1p(excessRatio) * 0.25
     case 'rendering':
-      return baseScore + Math.sqrt(excessRatio) * 0.7
+      return baseScore + Math.sqrt(excessRatio) * 0.4
     default:
       return baseScore + Math.log1p(excessRatio) * 0.2
   }

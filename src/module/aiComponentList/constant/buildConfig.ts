@@ -3,15 +3,15 @@ const BuildConfig = {
   HKPricingFactor: 7.8,
   CNPricingFactor: 7.1,
   USPricingFactor: 1,
-  LogicCandidatesNum: 50,
+  LogicCandidatesNum: 15,
   RegularLogic: {
     formFactor: 'ATX',
   },
   Benchmark_Scores: {
     HighEndCpu: 48000, // 顶级CPU参考分 ultra 9
-    HighEndGpu: 140000, // 顶级GPU参考分 5070 TI
+    HighEndGpu: 78000, // 顶级GPU参考分 5080
     MidRangeCpu: 17000, // 中端CPU参考分 i5
-    MidRangeGpu: 20000, // 同价位中端GPU参考分 4060 TI
+    MidRangeGpu: 18000, // 同价位中端GPU参考分 5050
   },
   BudgetLogic: {
     MinBudgetStart: 800,
@@ -30,7 +30,8 @@ const BuildConfig = {
     GPUBudgetFactor: [0.5, 0.7, 0.6, 0.5],
     GPUBudgetMinFactor: 0.6,
     GPUBudgetMaxFactor: 0.6,
-    GPUScoreMultiply: 4,
+    GPUScoreMultiply: 2,
+    LengthScoreMultiply: 0.01, // 每毫米长度增加的分数
   },
   RAMFactor: {
     RAMBudgetFactor: [0.3, 0.3, 0.25, 0.2],

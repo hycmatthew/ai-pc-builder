@@ -266,7 +266,7 @@ export const preFilterDataLogic = (
     psu: bestPsu,
     case: bestCase,
     cooler: bestCooler,
-    totalPrice: calRes.price,
+    totalPrice: bestConfig.totalPrice,
     totalScore: calRes.score,
   }
 }

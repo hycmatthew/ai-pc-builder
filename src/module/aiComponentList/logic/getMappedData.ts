@@ -486,7 +486,7 @@ const ScoreAdjusters = {
 
     if (Conditions.isGamingBuildWithAMD3D(item, buildType)) {
       // AMD 3D V-Cache 加成
-      score *= 1.25
+      score *= 1.3
     }
 
     if (Conditions.isOldSocket(item)) {
@@ -523,12 +523,12 @@ const ScoreAdjusters = {
 
       // RTX 50系列額外加成
       if (Conditions.isRTX50Series(item)) {
-        multiplier = 1.2
+        multiplier *= 1.2
       }
 
       score *= multiplier
     }
-
+    score += item.length * BuildConfig.GPUFactor.LengthScoreMultiply
     return score
   },
 } as const
