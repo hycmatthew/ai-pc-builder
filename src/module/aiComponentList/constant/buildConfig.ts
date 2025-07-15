@@ -44,7 +44,7 @@ const BuildConfig = {
     DefaultCapacity: 1000,
   },
   PSUFactor: {
-    PSUBudgetFactor: 0.18,
+    PSUBudgetFactor: 0.25,
     PSUWattBudgetFactor: 0.125,
     PSUSuggestion: [
       'seasonic-focus-gx-750-v4',

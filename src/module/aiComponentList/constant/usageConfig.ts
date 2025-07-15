@@ -13,6 +13,7 @@ export type UsageConfig = {
     imbalanceSensitivity: number
   }
   ramOptimalCapacity: number
+  ramCapacityMultiplier: number
   ramSpeedWeight: number
   cpuBrandMultiplier: {
     intel: number
@@ -27,13 +28,14 @@ export type UsageConfig = {
 export const BUILD_CONFIGS: Record<BuildUsage, UsageConfig> = {
   [BuildUsage.Balance]: {
     type: BuildUsage.Balance,
-    weights: { cpu: 0.6, gpu: 0.4 },
+    weights: { cpu: 0.65, gpu: 0.35 },
     bottleneckTolerance: {
       idealGpuCpuRatio: 0,
       imbalanceSensitivity: 0.15,
     },
     ramOptimalCapacity: 32,
-    ramSpeedWeight: 0.25,
+    ramCapacityMultiplier: 0.25,
+    ramSpeedWeight: 0.4,
     cpuBrandMultiplier: {
       intel: 1.0,
       amd: 0.95,
@@ -51,6 +53,7 @@ export const BUILD_CONFIGS: Record<BuildUsage, UsageConfig> = {
       imbalanceSensitivity: 0.2,
     },
     ramOptimalCapacity: 32,
+    ramCapacityMultiplier: 0.1,
     ramSpeedWeight: 0.6,
     cpuBrandMultiplier: {
       intel: 1.0,
@@ -69,6 +72,7 @@ export const BUILD_CONFIGS: Record<BuildUsage, UsageConfig> = {
       imbalanceSensitivity: 0.18,
     },
     ramOptimalCapacity: 64,
+    ramCapacityMultiplier: 0.2,
     ramSpeedWeight: 0.5,
     cpuBrandMultiplier: {
       intel: 1.0,
@@ -86,7 +90,8 @@ export const BUILD_CONFIGS: Record<BuildUsage, UsageConfig> = {
       idealGpuCpuRatio: 0.8,
       imbalanceSensitivity: 0.1,
     },
-    ramOptimalCapacity: 64,
+    ramOptimalCapacity: 32,
+    ramCapacityMultiplier: 0.25,
     ramSpeedWeight: 0.4,
     cpuBrandMultiplier: {
       intel: 1.0,

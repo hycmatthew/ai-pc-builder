@@ -22,13 +22,13 @@ const SSD_BASE_WEIGHTS = {
 const SSD_BRAND_BONUS: Record<string, number> = {
   samsung: 1,
   crucial: 0.9,
-  westerndigital: 0.9,
-  zhitai: 0.9,
-  kingston: 0.8,
-  solidigm: 0.7,
+  westerndigital: 0.95,
+  zhitai: 0.95,
+  kingston: 0.85,
+  solidigm: 0.8,
   corsair: 0.7,
   lexar: 0.6,
-  _default: 0.5,
+  _default: 0.6,
 }
 
 export const selectBestSSD = (
@@ -43,8 +43,8 @@ export const selectBestSSD = (
   // 2. 计算预算影响因子
   const budgetFactor = calculateBudgetFactor(
     budget,
-    0.8, // 低预算时倾向性价比
-    1.2 // 高预算时倾向性能
+    0.75, // 低预算时倾向性价比
+    1.25 // 高预算时倾向性能
   )
 
   // 3. 动态调整权重（预算越高，性能权重越大）
@@ -103,7 +103,7 @@ export const selectBestSSD = (
       extraScore,
     }
   })
-
+  console.log('SSD Scoring:', fullyScored)
   // 7. 排序并返回最佳SSD
   return fullyScored.sort((a, b) => b.totalScore - a.totalScore)[0]
 }

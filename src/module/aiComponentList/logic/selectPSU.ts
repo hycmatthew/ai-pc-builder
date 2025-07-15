@@ -56,7 +56,7 @@ export const selectBestPSU = (
       psu.length <= maxLength &&
       psu.price < psuBudget
   )
-
+  
   if (validPSUs.length === 0) return null
 
   // 计算预算充足系数 (1000-4000美元范围映射到1.0-1.5)

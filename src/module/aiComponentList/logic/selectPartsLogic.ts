@@ -205,17 +205,18 @@ export const preFilterDataLogic = (
     mappedMotherboards,
     mappedRAMs,
     availableBudget,
-    usage
+    usageConfig
   )
 
   if (bestConfig) {
     const totalPower =
       bestConfig.cpu.power + (bestConfig.gpu ? bestConfig.gpu.power : 0) + 80
     const isNvidiaGPU = bestConfig.gpu?.manufacturer === 'NVIDIA'
+    const updatedPower = Math.max(250, totalPower)
     bestPsu = selectBestPSU(
       mappedPSUs,
       bestConfig.totalPrice,
-      totalPower,
+      updatedPower,
       200,
       isNvidiaGPU
     )
@@ -289,6 +290,7 @@ type HardwareComponents = {
 }
 
 function calculateTotal(components: HardwareComponents): CalculationResult {
+  console.log('Calculating total for components:', components)
   // 计算总价格
   const totalPrice = Object.values(components)
     .filter(Boolean)

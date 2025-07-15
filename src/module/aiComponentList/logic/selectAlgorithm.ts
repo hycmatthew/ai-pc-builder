@@ -7,7 +7,7 @@ import {
 import { calculateBudgetFactor, calculateEffectiveCPUScore } from './scoreLogic'
 import { getMapValue } from '../../../utils/StringUtil'
 import BuildConfig from '../constant/buildConfig'
-import { BuildUsage, getUsageConfig } from '../constant/usageConfig'
+import { UsageConfig } from '../constant/usageConfig'
 import { RAM_BRAND_FACTOR } from '../constant/buildFactor'
 
 type BestConfiguration = {
@@ -25,13 +25,12 @@ function calculatePerformanceScore(
   gpuScore: number,
   ramScore: number,
   mbScore: number,
-  buildType: BuildUsage,
+  usageConfig: UsageConfig,
   mbBudgetFactor: number
 ): number {
   const { MidRangeCpu, HighEndCpu, MidRangeGpu, HighEndGpu } =
     BuildConfig.Benchmark_Scores
 
-  const usageConfig = getUsageConfig(buildType)
   const weights = usageConfig.weights
   const mbWeight = mbBudgetFactor
 
@@ -84,7 +83,7 @@ export const findBestConfiguration = (
   motherboards: MappedMotherboardType[],
   rams: MappedRAMType[],
   budget: number,
-  buildType: BuildUsage
+  usageConfig: UsageConfig
 ) => {
   const bestCandidates: BestConfiguration[] = []
   // 预处理数据结构
@@ -116,7 +115,7 @@ export const findBestConfiguration = (
         .map((ram) => {
           // 计算性能分时同时获取原始性能分和价格
           const updatedScore = calculateRamPerformance(
-            buildType,
+            usageConfig,
             budget,
             ram,
             mb.ramSupport,
@@ -152,7 +151,7 @@ export const findBestConfiguration = (
             gpuScore,
             ram.updatedScore,
             mb.score,
-            buildType,
+            usageConfig,
             mbBudgetFactor
           )
 
@@ -187,7 +186,7 @@ export const findBestConfiguration = (
       }
     }
   }
-  return selectBestCandidate(bestCandidates)
+  return selectBestCandidate(bestCandidates, budget)
 }
 
 // 优化7: 改进GPU查找算法
@@ -299,14 +298,63 @@ function addToCandidates(
 
 // ========== 简化后的最终选择函数 ==========
 function selectBestCandidate(
-  candidates: BestConfiguration[]
+  candidates: BestConfiguration[],
+  budget: number
 ): BestConfiguration | null {
   if (candidates.length === 0) return null
+  console.log(budget)
   console.log(candidates)
-  // 直接选择最高性能的配置（因为候选列表已过滤）
-  return candidates.reduce((best, current) =>
-    current.performanceScore > best.performanceScore ? current : best
+  // 1. 计算预算使用率要求（动态调整）
+  const minBudgetUsage = calculateBudgetFactor(budget, 0.5, 0.85)
+
+  // 2. 筛选满足预算使用率的候选配置
+  const budgetSatisfied = candidates.filter(
+    (c) => c.totalPrice >= budget * minBudgetUsage
   )
+
+  // 3. 优先考虑满足预算使用率的配置
+  const evaluationPool =
+    budgetSatisfied.length > 0 ? budgetSatisfied : candidates
+
+  // 4. 按价格升序排序，便于增量比较
+  evaluationPool.sort((a, b) => a.totalPrice - b.totalPrice)
+
+  // 5. 动态计算增量性价比阈值
+  const baseThreshold = calculateBudgetFactor(budget, 0.8, 0.2)
+  let bestConfig = evaluationPool[0]
+
+  // 6. 从低价到高价逐步比较增量性价比
+  for (let i = 1; i < evaluationPool.length; i++) {
+    const current = evaluationPool[i]
+    const priceDiff = current.totalPrice - bestConfig.totalPrice
+
+    // 7. 计算增量性价比
+    if (priceDiff > 0) {
+      const scoreDiff = current.performanceScore - bestConfig.performanceScore
+
+      // 只有性能提升时才考虑
+      if (scoreDiff > 0) {
+        // 计算增量性价比比率
+        const baseValueRatio =
+          bestConfig.performanceScore / bestConfig.totalPrice
+        const incrementalRatio = scoreDiff / priceDiff / baseValueRatio
+
+        // 8. 根据预算调整增量要求
+        const adjustedThreshold =
+          budgetSatisfied.length > 0
+            ? baseThreshold // 满足预算使用率时使用基础阈值
+            : baseThreshold * 1.2 // 不满足时提高20%要求
+
+        // 9. 如果增量性价比达标，则更新最佳配置
+        if (incrementalRatio >= adjustedThreshold) {
+          bestConfig = current
+        }
+      }
+    }
+  }
+  console.log('Best Configuration:', bestConfig)
+  // 10. 返回最终最佳配置
+  return bestConfig
 }
 
 // GPU预处理（排序+创建查找表）
@@ -336,13 +384,12 @@ function groupRamsByType(rams: MappedRAMType[]) {
 
 // RAM评分函数
 function calculateRamPerformance(
-  usage: BuildUsage,
+  usageConfig: UsageConfig,
   budget: number,
   ram: MappedRAMType,
   supportedSpeeds: number[],
   cpuBrand: string
 ): number {
-  const usageConfig = getUsageConfig(usage)
   const budgetFactor = calculateBudgetFactor(budget, 0.6, 1.2)
   const isAmd = cpuBrand.toLowerCase().includes('amd')
   // 1. 计算有效速度（不超过主板支持）
@@ -357,7 +404,7 @@ function calculateRamPerformance(
 
   // 3. 计算容量分数（平滑函数）
   const capacityScore = calculateCapacityScore(
-    usage,
+    usageConfig,
     ram.capacity,
     optimalCapacity
   )
@@ -398,7 +445,7 @@ function calculateRamPerformance(
 
 // 平滑容量分数计算
 function calculateCapacityScore(
-  usage: BuildUsage,
+  usageConfig: UsageConfig,
   capacity: number,
   optimalCapacity: number
 ): number {
@@ -412,19 +459,7 @@ function calculateCapacityScore(
   const excessRatio = (capacity - optimalCapacity) / optimalCapacity
 
   // 根据不同用途应用不同的下降曲线
-  switch (usage) {
-    case 'gaming':
-      // 游戏用途超过最佳容量几乎无收益
-      return baseScore + Math.log1p(excessRatio) * 0.1
-    case 'ai':
-    case 'balance':
-      // 平衡/AI用途适度收益
-      return baseScore + Math.log1p(excessRatio) * 0.25
-    case 'rendering':
-      return baseScore + Math.sqrt(excessRatio) * 0.4
-    default:
-      return baseScore + Math.log1p(excessRatio) * 0.2
-  }
+  return baseScore + Math.log1p(excessRatio) * usageConfig.ramCapacityMultiplier
 }
 
 // 速度分数计算
