@@ -65,7 +65,7 @@ const MotherboardSuggestion = ({
         id: item.id,
         items: [
           {
-            label: 'cpu-socket',
+            label: 'socket',
             value: specs.socket,
             isHighlight: false,
           },

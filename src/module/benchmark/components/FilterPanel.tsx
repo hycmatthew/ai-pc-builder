@@ -45,7 +45,7 @@ export const FilterPanel = ({
           <CustomAutocomplete
             value={t(brandFilter)}
             options={brands}
-            label="Brand"
+            label={t('brand')}
             renderOption={(props, option) => (
               <li {...props} style={{ padding: '8px 16px' }}>
                 {t(option)}
@@ -58,7 +58,7 @@ export const FilterPanel = ({
         {/* 名称过滤 */}
         <Grid size={3}>
           <CustomTextField
-            label="Keyword"
+            label={t('keywords')}
             value={nameFilter}
             onChange={(e) => onNameFilterChange(e.target.value)}
           />

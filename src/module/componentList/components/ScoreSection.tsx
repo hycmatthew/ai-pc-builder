@@ -40,7 +40,7 @@ const ScoreSection = ({ selectedItems }: ScoreSectionProps) => {
         <Grid size={6}>
           <Box display="flex">
             <CusTypography variant="h6">{t('cpu-score')}</CusTypography>
-            <CustomTooltip title="4132132" />
+            <CustomTooltip title={t('notice-cpu-benchmark')} />
           </Box>
           <CusTypography variant="h4">
             {cpuPerformanceLogic(selectedItems.cpu)}
@@ -49,14 +49,17 @@ const ScoreSection = ({ selectedItems }: ScoreSectionProps) => {
         <Grid size={6}>
           <Box display="flex">
             <CusTypography variant="h6">{t('gpu-score')}</CusTypography>
-            <CustomTooltip title="4132132" />
+            <CustomTooltip title={t('notice-gpu-benchmark')} />
           </Box>
           <CusTypography variant="h4">
             {gpuPerformanceLogic(selectedItems.gpu)}
           </CusTypography>
         </Grid>
         <Grid size={6}>
-          <CusTypography variant="h6">{t('ram-score')}</CusTypography>
+          <Box display="flex">
+            <CusTypography variant="h6">{t('ram-score')}</CusTypography>
+            <CustomTooltip title={t('notice-ram-benchmark')} />
+          </Box>
           <CusTypography variant="h4">
             {ramPerformanceLogic(selectedItems.ram)}
           </CusTypography>

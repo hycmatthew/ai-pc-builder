@@ -87,7 +87,7 @@ const CoolerSuggestion = ({ coolerList, isLoading }: CoolerSuggestionProps) => {
             isHighlight: false,
           },
           {
-            label: 'is-liquid',
+            label: 'is-liquid-cooler',
             value: specs.isLiquid ? t('yes') : t('no'),
             isHighlight: false,
           },

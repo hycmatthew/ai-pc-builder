@@ -235,7 +235,7 @@ const Database = () => {
         {
           type: 'select',
           key: 'memory-size',
-          label: t('memory-size'),
+          label: t('gpu-memory-size'),
           getOptions: (list: GPUType[]) => {
             const sizes = [
               ...new Set(list.map((item) => item.memory_size)),
@@ -248,7 +248,7 @@ const Database = () => {
         {
           type: 'select',
           key: 'memory-bus',
-          label: t('memory-bus'),
+          label: t('gpu-memory-interface'),
           getOptions: (list: GPUType[]) =>
             [...new Set(list.map((item) => item.memory_bus))]
               .filter(Boolean)
@@ -259,7 +259,7 @@ const Database = () => {
         {
           type: 'select',
           key: 'capacity',
-          label: t('memory-size'),
+          label: t('ram-capacity'),
           getOptions: (list: RAMType[]) => {
             const sizes = [
               ...new Set(list.map((item) => item.capacity)),
@@ -362,7 +362,7 @@ const Database = () => {
         {
           type: 'select',
           key: 'case_size',
-          label: t('case_size'),
+          label: t('case-size'),
           getOptions: (list: CaseType[]) =>
             [...new Set(list.map((item) => item.case_size))]
               .filter(Boolean)
@@ -373,14 +373,14 @@ const Database = () => {
         {
           type: 'select',
           key: 'is_liquid_cooler',
-          label: t('is_liquid_cooler'),
+          label: t('is-liquid-cooler'),
           getOptions: (list: CoolerType[]) =>
             [...new Set(list.map((item) => item.is_liquid_cooler))].sort(),
         },
         {
           type: 'select',
           key: 'liquid_cooler_size',
-          label: t('liquid_cooler_size'),
+          label: t('liquid-cooler-size'),
           getOptions: (list: CoolerType[]) =>
             [...new Set(list.map((item) => item.liquid_cooler_size))]
               .filter(Boolean)

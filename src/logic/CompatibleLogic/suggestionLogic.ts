@@ -119,7 +119,7 @@ export const gpuMatchcpuSuggestion = (
   cpu: CPUType | null
 ) => {
   if (cpu && gpu) {
-    return gpu.benchmark > cpu.multi_core_score * 2
+    return gpu.benchmark > cpu.multi_core_score
   }
   return false
 }

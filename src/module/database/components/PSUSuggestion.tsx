@@ -80,7 +80,7 @@ const PSUSuggestion = ({ psuList, isLoading }: PSUSuggestionProps) => {
         id: item.id,
         items: [
           {
-            label: 'psu-type',
+            label: 'psu-size',
             value: specs.type,
             isHighlight: false,
           },

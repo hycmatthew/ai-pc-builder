@@ -160,15 +160,17 @@ const CompatibleSection = ({
         messageKey: 'suggestion-gpu-cpu-not-match',
         type: 'suggestion',
       },
+      /*
       {
         condition: ramSizeSuggestion(ram),
         messageKey: 'suggestion-ram-capacity',
         type: 'suggestion',
       },
+      */
       // Success规则
       {
         condition: psuWithATX3(psu),
-        messageKey: 'success-ram-capacity',
+        messageKey: 'success-psu-atx3',
         type: 'success',
       },
     ]

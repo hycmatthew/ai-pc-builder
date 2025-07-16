@@ -42,7 +42,7 @@ type ProductHandlers = {
   }
 }
 
-const steps = ['Select Usage', 'Configure Parts', 'Build Result']
+const steps = ['select-usage', 'build-requirements', 'build-result']
 
 const AnimatedGrid = styled(Grid)(() => ({
   animation: 'fadeInSlideUp 0.5s ease-out',
@@ -362,7 +362,7 @@ function AILogicPage() {
                         onClick={handleNext}
                         disabled={disableButtonLogic()}
                       >
-                        {t('confirm')}
+                        {t('generate')}
                       </CustomButton>
                     </Grid>
                     <Grid size={{ xs: 3, md: 'auto' }}>
@@ -401,7 +401,9 @@ function AILogicPage() {
                 <AnimatedGrid size={6}>
                   <CompatibleSection
                     selectedItems={aiLogicData.preSelectedItem}
-                    systemError={displaySysError ? 'system-error' : undefined}
+                    systemError={
+                      displaySysError ? 'ai-system-error' : undefined
+                    }
                   />
                 </AnimatedGrid>
               </>
