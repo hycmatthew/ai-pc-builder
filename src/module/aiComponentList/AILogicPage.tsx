@@ -230,7 +230,6 @@ function AILogicPage() {
       }
       dispatch(sliceActions.updateScoreAndPrirce(res))
     } else {
-      console.log('setDisplaySysError')
       setDisplaySysError(true)
     }
   }
@@ -307,6 +306,18 @@ function AILogicPage() {
     } else {
       dispatch(handler.lockAction(null))
     }
+  }
+
+  const unlockItem = (type: ProductEnum) => {
+    console.log('unlock item', type)
+
+    const handler = PRODUCT_HANDLERS[type]
+    if (!handler) {
+      console.error(`Invalid product type: ${type}`)
+      return
+    }
+
+    dispatch(handler.lockAction(null))
   }
 
   return (
@@ -396,6 +407,7 @@ function AILogicPage() {
                     rawData={rawData}
                     aiLogic={aiLogicData}
                     changeSelectItem={changeSelectItem}
+                    unlockItem={unlockItem}
                   />
                 </AnimatedGrid>
                 <AnimatedGrid size={6}>

@@ -1,4 +1,4 @@
-import { Grid, Box } from '@mui/material'
+import { Grid, Box, IconButton } from '@mui/material'
 import ProductEnum from '../../../constant/ProductEnum'
 import SelectElement from '../../common/components/SelectElement'
 import {
@@ -13,19 +13,22 @@ import {
 } from '../../common/utils/generateSelectElements'
 import { BuildLogicState } from '../store/aiLogicReducer'
 import { DataState } from '../../../store/rawDataReducer'
-import LockIcon from '@mui/icons-material/Lock'
+import LockOutlineIcon from '@mui/icons-material/LockOutline'
+import LockOpenIcon from '@mui/icons-material/LockOpen'
 import { AnimatePresence, motion } from 'framer-motion'
+import { useState } from 'react'
 
 type SpecificComponentProps = {
   rawData: DataState
   aiLogic: BuildLogicState
   changeSelectItem: (value: string, type: ProductEnum, num?: number) => void
+  unlockItem: (type: ProductEnum) => void
 }
 
 // 動畫配置
 const containerVariants = {
   unlocked: { width: '100%' },
-  locked: { width: 'calc(100% - 48px)' },
+  locked: { width: 'calc(100% - 32px)' },
 }
 
 const lockIconVariants = {
@@ -40,12 +43,14 @@ const ProductSelectGrid = ({
   value,
   lockStatus,
   onChange,
+  onUnlock,
 }: {
   label: string
   options: any[]
   value: string
   lockStatus: boolean
   onChange: (value: string, type: ProductEnum, num?: number) => void
+  onUnlock: () => void
 }) => (
   <Grid size={12}>
     <Box
@@ -69,43 +74,84 @@ const ProductSelectGrid = ({
           transition: 'none',
         }}
       />
-      <AnimatedLockIcon visible={lockStatus} />
+      <AnimatedLockIcon visible={lockStatus} onUnlock={onUnlock} />
     </Box>
   </Grid>
 )
 
-const AnimatedLockIcon = ({ visible }: { visible: boolean }) => (
-  <AnimatePresence>
-    {visible && (
-      <motion.div
-        key="lock-icon"
-        initial="initial"
-        animate="animate"
-        exit="exit"
-        variants={lockIconVariants}
-        style={{
-          display: 'flex',
-          alignItems: 'center',
-        }}
-      >
-        <LockIcon
-          sx={{
-            margin: 'auto',
-            paddingLeft: '12px',
-            position: 'absolute',
-            color: 'primary.main',
-            fontSize: '1.2rem',
+const AnimatedLockIcon = ({
+  visible,
+  onUnlock,
+}: {
+  visible: boolean
+  onUnlock: () => void
+}) => {
+  const [hovered, setHovered] = useState(false)
+
+  return (
+    <AnimatePresence>
+      {visible && (
+        <motion.div
+          key="lock-button"
+          initial="initial"
+          animate="animate"
+          exit="exit"
+          variants={lockIconVariants}
+          style={{
+            zIndex: 1,
+            paddingLeft: 16,
           }}
-        />
-      </motion.div>
-    )}
-  </AnimatePresence>
-)
+        >
+          <IconButton
+            onClick={onUnlock}
+            onMouseEnter={() => setHovered(true)}
+            onMouseLeave={() => setHovered(false)}
+            sx={{
+              padding: '8px',
+              color: 'primary.main',
+              backgroundColor: hovered
+                ? 'rgba(25, 118, 210, 0.08)'
+                : 'transparent', // 悬停背景色变化
+              transition: 'background-color 0.3s ease', // 背景色过渡效果
+              borderRadius: '50%', // 圆形背景
+              cursor: 'pointer', // 指针样式
+              '&:hover': {
+                backgroundColor: 'rgba(25, 118, 210, 0.12)', // 悬停时更深的背景色
+              },
+            }}
+          >
+            <motion.div
+              key={hovered ? 'unlock' : 'lock'}
+              initial={{ opacity: 0, rotateY: 90 }}
+              animate={{ opacity: 1, rotateY: 0 }}
+              exit={{ opacity: 0, rotateY: -90 }}
+              transition={{ duration: 0.2 }}
+              style={{
+                display: 'flex',
+                justifyContent: 'center',
+                alignItems: 'center',
+                width: '100%',
+                height: '100%',
+              }}
+            >
+              {hovered ? (
+                <LockOpenIcon sx={{ fontSize: '1.5rem' }} />
+              ) : (
+                <LockOutlineIcon sx={{ fontSize: '1.5rem' }} />
+              )}
+            </motion.div>
+          </IconButton>
+        </motion.div>
+      )}
+    </AnimatePresence>
+  )
+}
 
 function SpecificComponent({
   rawData,
   aiLogic,
   changeSelectItem,
+  unlockItem,
 }: SpecificComponentProps) {
   const {
     cpuList,
@@ -122,21 +168,21 @@ function SpecificComponent({
 
   const productConfigs = [
     {
-      type: 'cpu',
+      type: ProductEnum.CPU,
       label: ProductEnum.CPU,
       options: generateCPUSelectElement(cpuList, preSelectedItem),
       value: preSelectedItem.cpu?.id || '',
       lockStatus: lockItem.cpu !== null,
     },
     {
-      type: 'gpu',
+      type: ProductEnum.GPU,
       label: ProductEnum.GPU,
       options: generateGPUSelectElement(gpuList),
       value: preSelectedItem.gpu?.id || '',
       lockStatus: lockItem.gpu !== null,
     },
     {
-      type: 'motherboard',
+      type: ProductEnum.Motherboard,
       label: ProductEnum.Motherboard,
       options: generateMotherboardSelectElement(
         motherboardList,
@@ -146,35 +192,35 @@ function SpecificComponent({
       lockStatus: lockItem.motherboard !== null,
     },
     {
-      type: 'ram',
+      type: ProductEnum.RAM,
       label: ProductEnum.RAM,
       options: generateRAMSelectElement(ramList),
       value: preSelectedItem.ram?.id || '',
       lockStatus: lockItem.ram !== null,
     },
     {
-      type: 'ssd',
+      type: ProductEnum.SSD,
       label: ProductEnum.SSD,
       options: generateSSDSelectElement(ssdList),
       value: preSelectedItem.ssd?.id || '',
       lockStatus: lockItem.ssd !== null,
     },
     {
-      type: 'psu',
+      type: ProductEnum.PSU,
       label: ProductEnum.PSU,
       options: generatePSUSelectElement(psuList),
       value: preSelectedItem.psu?.id || '',
       lockStatus: lockItem.psu !== null,
     },
     {
-      type: 'case',
+      type: ProductEnum.ComputerCase,
       label: ProductEnum.ComputerCase,
       options: generateCaseSelectElement(caseList),
       value: preSelectedItem.pcCase?.id || '',
       lockStatus: lockItem.pcCase !== null,
     },
     {
-      type: 'cooler',
+      type: ProductEnum.Cooler,
       label: ProductEnum.Cooler,
       options: generateAIOSelectElement(coolerList),
       value: preSelectedItem.cooler?.id || '',
@@ -192,6 +238,7 @@ function SpecificComponent({
           value={config.value}
           lockStatus={config.lockStatus}
           onChange={changeSelectItem}
+          onUnlock={() => unlockItem(config.type)} // 这里可以替换为实际的解锁逻辑
         />
       ))}
     </Grid>

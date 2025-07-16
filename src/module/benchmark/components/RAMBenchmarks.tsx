@@ -131,17 +131,17 @@ function RAMBenchmarksTable() {
     {
       field: 'speed',
       headerName: t('ram-frequency'),
-      width: 100,
+      width: 120,
     },
     {
       field: 'latency',
       headerName: t('ram-latency'),
-      width: 100,
+      width: 180,
     },
     {
       field: 'performance',
       headerName: t('overall-performance'),
-      width: 400,
+      width: 360,
       renderCell: (params) => {
         return (
           <Stack direction="row" alignItems="center" spacing={2}>
