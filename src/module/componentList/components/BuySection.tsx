@@ -159,7 +159,7 @@ const BuySection = ({ dataState }: BuySectioProps) => {
       <>
         <Divider sx={{ paddingTop: '2rem' }} />
         <Grid container paddingTop={2} spacing={2}>
-          <Grid container size={12} spacing={2}>
+          <Grid container size={12} spacing={2} sx={{ placeItems: 'center' }}>
             <Grid size={{ xs: 12, md: 4 }}>
               <Calculator selectedItems={dataState.selectedItems} />
             </Grid>
@@ -198,7 +198,7 @@ const BuySection = ({ dataState }: BuySectioProps) => {
                 open={dialogOpen}
                 onClose={handleDialogClose}
               />
-              <CustomButton onClick={handleDialogOpen} sx={{ height: '58px' }}>
+              <CustomButton onClick={handleDialogOpen}>
                 <DescriptionIcon sx={{ paddingRight: 1 }} />
                 {t('open')}
               </CustomButton>

@@ -8,7 +8,7 @@ import './BenchmarksTable.scss'
 import { RAMType } from '../../../constant/objectTypes'
 import { convertLocalizedPrice } from '../../../utils/NumberHelper'
 import { ramPerformanceLogic } from '../../../logic/performanceLogic'
-import { generateRAMName, priceLabelHandler } from '../../../utils/LabelHelper'
+import { brandTranslationKey, generateRAMName, priceLabelHandler } from '../../../utils/LabelHelper'
 import BarMotion from '../../../styles/animation/BarMotion'
 import BenchmarksDataGrid from './BenchmarksDataGrid'
 import { getGradientColor } from '../../../utils/ColorHelper'
@@ -54,7 +54,7 @@ function RAMBenchmarksTable() {
   // 获取唯一品牌列表
   const uniqueBrands = useMemo(() => {
     return Array.from(
-      new Set(baseData.map((item: RamBaseDataItemType) => item.brand))
+      new Set(baseData.map((item: RamBaseDataItemType) => brandTranslationKey(item.brand)))
     ) as string[]
   }, [baseData])
 

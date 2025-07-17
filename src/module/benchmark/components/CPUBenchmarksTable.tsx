@@ -9,7 +9,7 @@ import {
   calculatePricePerformance,
   getLocalizedPriceNum,
 } from '../../../utils/NumberHelper'
-import { generateItemName } from '../../../utils/LabelHelper'
+import { brandTranslationKey, generateItemName } from '../../../utils/LabelHelper'
 import BarMotion from '../../../styles/animation/BarMotion'
 import BenchmarksDataGrid from './BenchmarksDataGrid'
 import { getGradientColor } from '../../../utils/ColorHelper'
@@ -57,7 +57,7 @@ function CPUBenchmarksTable() {
    // 获取唯一品牌列表
     const uniqueBrands = useMemo(() => {
       const brands: string = baseData.map(
-        (item: BaseDataItemType) => item.brand
+        (item: BaseDataItemType) => brandTranslationKey(item.brand)
       )
       return Array.from(new Set(brands))
     }, [baseData])

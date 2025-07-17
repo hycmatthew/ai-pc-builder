@@ -28,7 +28,7 @@ type SpecificComponentProps = {
 // 動畫配置
 const containerVariants = {
   unlocked: { width: '100%' },
-  locked: { width: 'calc(100% - 32px)' },
+  locked: { width: 'calc(100% - 12px)' },
 }
 
 const lockIconVariants = {
@@ -62,7 +62,6 @@ const ProductSelectGrid = ({
       layout
       animate={lockStatus ? 'locked' : 'unlocked'}
       variants={containerVariants}
-      transition={{ duration: 0.3, ease: 'easeInOut' }}
     >
       <SelectElement
         label={label}
@@ -97,9 +96,10 @@ const AnimatedLockIcon = ({
           animate="animate"
           exit="exit"
           variants={lockIconVariants}
+          transition={{ duration: 0.15 }}
           style={{
             zIndex: 1,
-            paddingLeft: 16,
+            paddingLeft: 8,
           }}
         >
           <IconButton
@@ -112,7 +112,7 @@ const AnimatedLockIcon = ({
               backgroundColor: hovered
                 ? 'rgba(25, 118, 210, 0.08)'
                 : 'transparent', // 悬停背景色变化
-              transition: 'background-color 0.3s ease', // 背景色过渡效果
+              transition: 'background-color 0s ease', // 背景色过渡效果
               borderRadius: '50%', // 圆形背景
               cursor: 'pointer', // 指针样式
               '&:hover': {
@@ -125,7 +125,7 @@ const AnimatedLockIcon = ({
               initial={{ opacity: 0, rotateY: 90 }}
               animate={{ opacity: 1, rotateY: 0 }}
               exit={{ opacity: 0, rotateY: -90 }}
-              transition={{ duration: 0.2 }}
+              transition={{ duration: 0 }}
               style={{
                 display: 'flex',
                 justifyContent: 'center',

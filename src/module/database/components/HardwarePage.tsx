@@ -49,7 +49,7 @@ const HardwareSuggestion = <T extends AllType>({
 
   return (
     <>
-      <Grid container spacing={3}>
+      <Grid container spacing={3} sx={{ placeItems: 'center' }}>
         <Grid size={{ xs: 12, md: 9 }}>{renderFilterForm}</Grid>
         <Grid size={{ xs: 12, md: 3 }}>
           <Badge
@@ -62,7 +62,6 @@ const HardwareSuggestion = <T extends AllType>({
               variant="contained"
               disabled={selectedItems.length === 0}
               onClick={() => setOpenCompare(true)}
-              sx={{ height: 58 }}
               fullWidth
             >
               {t('compare')}

@@ -1,5 +1,6 @@
 import { Box } from '@mui/material'
 import { t } from 'i18next'
+import { brandTranslationKey } from '../../../utils/LabelHelper'
 
 interface PlatformIconProps {
   data: any
@@ -39,7 +40,7 @@ const PlaceholdImage = ({
       alt={`${t(data.brand)} ${data.name}`}
       src={
         data.img ||
-        `https://placehold.co/${placeholderSize}/transparent/2b2b2b/?text=${data.brand}+${data.name}`
+        `https://placehold.co/${placeholderSize}/transparent/2b2b2b/?text=${brandTranslationKey(data.brand)}+${data.name}`
       }
     />
   )

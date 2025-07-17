@@ -11,7 +11,7 @@ import {
   getLocalizedPriceNum,
   normalizeNumberWithDP,
 } from '../../../utils/NumberHelper'
-import { generateItemName } from '../../../utils/LabelHelper'
+import { brandTranslationKey, generateItemName } from '../../../utils/LabelHelper'
 import BarMotion from '../../../styles/animation/BarMotion'
 import BenchmarksDataGrid from './BenchmarksDataGrid'
 import { getGradientColor } from '../../../utils/ColorHelper'
@@ -61,7 +61,7 @@ function GPUBenchmarksTable() {
   // 获取唯一品牌列表
   const uniqueBrands = useMemo(() => {
     const brands: string = baseData.map(
-      (item: GPUBaseDataItemType) => item.brand
+      (item: GPUBaseDataItemType) => brandTranslationKey(item.brand)
     )
     return Array.from(new Set(brands))
   }, [baseData])
