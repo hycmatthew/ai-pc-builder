@@ -128,8 +128,8 @@ const CompatibleSection = ({
       },
       {
         condition: motherboardIncompatibleWithRam(motherboard, ram),
-        messageKey: 'suggestion-ram-motherboard-incompatible',
-        type: 'suggestion',
+        messageKey: 'warning-ram-motherboard-incompatible',
+        type: 'warning',
         interpolation: {
           ram: ram?.type,
         },

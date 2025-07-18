@@ -5,6 +5,7 @@ import {
   MotherboardType,
   RAMType,
 } from '../../constant/objectTypes'
+import { isAMDCPU } from '../../utils/PCPartUtil'
 import { containStrUtil } from '../../utils/StringUtil'
 
 export const motherboardOverclockSuggestion = (
@@ -12,8 +13,7 @@ export const motherboardOverclockSuggestion = (
   motherboard: MotherboardType | null
 ) => {
   if (cpu && motherboard) {
-    const cpuBrand = cpu?.brand
-    if (cpuBrand === CPUBrand.Intel) {
+    if (!isAMDCPU(cpu)) {
       if (containStrUtil(cpu?.name, 'K')) {
         return !containStrUtil(motherboard?.chipset, 'Z')
       }
@@ -33,8 +33,7 @@ export const motherboardChipsetSuggestion = (
   motherboard: MotherboardType | null
 ) => {
   if (cpu && motherboard) {
-    const cpuBrand = cpu?.brand
-    if (cpuBrand === CPUBrand.Intel) {
+    if (!isAMDCPU(cpu)) {
       if (cpu?.name.includes('i3')) {
         return !motherboard?.chipset.includes('H')
       }
@@ -76,15 +75,10 @@ export const ramIncompatibleWithCPU = (ram: RAMType, cpu: CPUType | null) => {
   if (!cpu || !ram) {
     return false
   }
-
-  const cpuBrand = cpu.brand.toUpperCase()
-  if (cpuBrand === 'INTEL') {
-    return !ram.profile_xmp // 不兼容当不支持XMP时返回true
-  } else if (cpuBrand === 'AMD') {
-    return !ram.profile_expo // 不兼容当不支持EXPO时返回true
+  if (isAMDCPU(cpu)) {
+    return !ram.profile_expo
   }
-  // 处理未知CPU品牌
-  return true
+  return !ram.profile_xmp
 }
 
 // Motherboard RAM
@@ -97,29 +91,13 @@ export const motherboardIncompatibleWithRamSpeed = (
     : false
 }
 
-export const ramProfileIsNotMatchCPU = (
-  ram: RAMType | null,
-  cpu: CPUType | null
-) => {
-  if (!cpu || !ram) {
-    return false
-  }
-  const cpuBrand = cpu.brand.toUpperCase()
-  if (cpuBrand === 'INTEL') {
-    return !ram.profile_xmp // 不兼容当不支持XMP时返回true
-  } else if (cpuBrand === 'AMD') {
-    return !ram.profile_expo // 不兼容当不支持EXPO时返回true
-  }
-  // 对于未知品牌CPU，返回不匹配
-  return true
-}
-
 export const gpuMatchcpuSuggestion = (
   gpu: GPUType | null,
   cpu: CPUType | null
 ) => {
   if (cpu && gpu) {
-    return gpu.benchmark > cpu.multi_core_score
+    const testScore = cpu.multi_core_score * 0.5
+    return testScore > gpu.benchmark
   }
   return false
 }

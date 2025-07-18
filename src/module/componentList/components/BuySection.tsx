@@ -166,7 +166,7 @@ const BuySection = ({ dataState }: BuySectioProps) => {
             <Grid size={{ xs: 12, md: 'grow' }}>
               <CustomTextField
                 width="100%"
-                label={t('keywords')}
+                label={t('share-url')}
                 value={generateBuildPath(dataState.selectedItems)}
                 slotProps={{
                   input: {
@@ -200,7 +200,7 @@ const BuySection = ({ dataState }: BuySectioProps) => {
               />
               <CustomButton onClick={handleDialogOpen}>
                 <DescriptionIcon sx={{ paddingRight: 1 }} />
-                {t('open')}
+                {t('copy-build')}
               </CustomButton>
             </Grid>
           </Grid>

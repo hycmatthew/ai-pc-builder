@@ -85,7 +85,7 @@ const ComparisonModal = ({
     <CustomDialog
       open={isOpen}
       onClose={handleClose}
-      title={t('pc-part-list')}
+      title={t('compare')}
       size="xlarge"
     >
       <Grid

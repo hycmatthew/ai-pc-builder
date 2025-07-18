@@ -103,7 +103,7 @@ const ListCopyDialog = ({
     <CustomDialog
       open={open}
       onClose={handleClose}
-      title={t('pc-part-list')} // 添加标题
+      title={t('copy-build')} // 添加标题
       size="large"
     >
       <Box sx={{ maxWidth: '100%' }}>
@@ -123,7 +123,7 @@ const ListCopyDialog = ({
         </Box>
         <TextField
           id="outlined-multiline-static"
-          label={t('pc-part-list')}
+          label={t('copy-build')}
           disabled
           multiline
           rows={10}

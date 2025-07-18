@@ -9,6 +9,7 @@ import { getMapValue } from '../../../utils/StringUtil'
 import BuildConfig from '../constant/buildConfig'
 import { UsageConfig } from '../constant/usageConfig'
 import { RAM_BRAND_FACTOR } from '../constant/buildFactor'
+import { isAMDCPUString } from '../../../utils/PCPartUtil'
 
 type BestConfiguration = {
   cpu: MappedCPUType
@@ -391,7 +392,7 @@ function calculateRamPerformance(
   cpuBrand: string
 ): number {
   const budgetFactor = calculateBudgetFactor(budget, 0.6, 1.2)
-  const isAmd = cpuBrand.toLowerCase().includes('amd')
+  const isAmd = isAMDCPUString(cpuBrand)
   // 1. 计算有效速度（不超过主板支持）
   const maxSupported = Math.max(...supportedSpeeds)
   const cpuMaxSpeed = isAmd ? 6000 : ram.speed

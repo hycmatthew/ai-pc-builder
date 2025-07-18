@@ -4,6 +4,8 @@ import ProductEnum from '../constant/ProductEnum'
 import { getCurrentPriceWithSign, getTotalPriceStr } from './NumberHelper'
 import i18n from '../config/i18n'
 import { LangEnum } from '../constant/supportedLang'
+import { CPUType } from '../constant/objectTypes'
+import { CPUBrand } from '../constant/BrandEnum'
 
 export const getCurrentSaleLink = (item: any) => {
   const linkMap: Record<LangEnum, string> = {
@@ -12,6 +14,14 @@ export const getCurrentSaleLink = (item: any) => {
     [LangEnum.en]: 'LinkUS',
   }
   return item[linkMap[i18n.language as LangEnum]] || item.LinkUS
+}
+
+export const isAMDCPUString = (cpuBrand: string) => {
+  return cpuBrand.toLowerCase() === CPUBrand.AMD
+}
+
+export const isAMDCPU = (cpu: CPUType) => {
+  return cpu.brand.toLowerCase() === CPUBrand.AMD
 }
 
 // ==================== 文字生成邏輯 ====================

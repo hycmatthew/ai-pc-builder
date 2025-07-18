@@ -26,6 +26,7 @@ import {
   MappedSSDType,
 } from '../constant/mappedObjectTypes'
 import { calculateMotherboardBaseScore } from './scoreLogic'
+import { isAMDCPUString } from '../../../utils/PCPartUtil'
 
 const priceValidation = (item: any, budget: number): boolean => {
   const price = getLocalizedPriceNum(item)
@@ -218,9 +219,9 @@ export function getMappedRAMs(
     const isCompatibleWithMB = !mbRamType || item.type === mbRamType
     const isCompatibleWithCPU =
       !cpuBrand ||
-      (cpuBrand.toLowerCase() === 'intel'
+      (!isAMDCPUString(cpuBrand)
         ? item.profile_xmp
-        : cpuBrand.toLowerCase() === 'amd'
+        : isAMDCPUString(cpuBrand)
           ? item.profile_expo
           : true)
 
