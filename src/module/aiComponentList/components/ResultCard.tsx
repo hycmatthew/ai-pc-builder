@@ -96,7 +96,7 @@ const ResultCard: React.FC<ResultCardProps> = ({ type, data, onClick }) => {
                     variant="contained"
                     color="primary"
                   >
-                    {t('buyNow')}
+                    {t('buy-now')}
                   </BuyButton>
                 </Grid>
               </Grid>

@@ -9,6 +9,7 @@ import config from '../../../config/config'
 import HeaderLayout from './header'
 import CusTypography from '../components/CusTypography'
 import { LangEnum } from '../../../constant/supportedLang'
+import { t } from 'i18next'
 
 // 类型定义
 type AppLayoutProps = {
@@ -54,7 +55,7 @@ const LanguageDialog = ({
 
   return (
     <Dialog className="lang-dialog" onClose={onClose} open={open}>
-      <DialogTitle>Select Language</DialogTitle>
+      <DialogTitle>{t('select-language')}</DialogTitle>
       <div className="dialog-lang-btn-container">
         {Object.values(LANGUAGE_MAPPING).map((lang) => (
           <button
@@ -122,14 +123,17 @@ const AppLayout = ({ children }: AppLayoutProps) => {
       <main className="main-page">{children}</main>
 
       <footer>
-        <div className='main-container'>
-        <CusTypography variant="body2">
-          {`©${new Date().getFullYear()} buildyourpc.com`}
-        </CusTypography>
+        <div className="main-container">
+          <CusTypography variant="body2">
+            {`©${new Date().getFullYear()} buildyourpc.com`}
+          </CusTypography>
 
-        <button className="app-layout__current-lang" onClick={handleDialogOpen}>
-          {currentLanguageConfig.displayText}
-        </button>
+          <button
+            className="app-layout__current-lang"
+            onClick={handleDialogOpen}
+          >
+            {currentLanguageConfig.displayText}
+          </button>
         </div>
       </footer>
 

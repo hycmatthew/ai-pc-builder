@@ -188,7 +188,7 @@ const BuySection = ({ dataState }: BuySectioProps) => {
               <CustomSnackbar
                 open={snackbarOpen}
                 onClose={handleSnackbarClose}
-                message="Copy Path Success!"
+                message={t('copy-path-success')}
                 severity="success"
               />
             </Grid>

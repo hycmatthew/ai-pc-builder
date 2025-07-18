@@ -8,6 +8,7 @@ import CustomDialog from '../../common/components/CustomDialog'
 import CustomIconButton from '../../common/components/CustomIconButton'
 import CustomSnackbar from '../../common/components/CustomSnackbar'
 import SegmentedTabs from '../../common/components/SegmentedTabs'
+import { t } from 'i18next'
 
 type NotifyButtonProps = {
   copyVal: string
@@ -64,7 +65,7 @@ function NotifyButton({ copyVal }: NotifyButtonProps) {
       <CustomSnackbar
         open={snackbarOpen}
         onClose={handleClose}
-        message="操作成功完成！"
+        message={t('copy-build-success')}
         severity="success"
       />
     </>
@@ -127,7 +128,12 @@ const ListCopyDialog = ({
           disabled
           multiline
           rows={10}
-          sx={{ width: '100%' }}
+          sx={{
+            width: '100%',
+            '& .MuiInputBase-root': {
+              alignItems: 'flex-start', // 關鍵：對齊內容到頂部
+            },
+          }}
           value={getSelectItemListText(selectedItems, displayPrice)}
           defaultValue={getSelectItemListText(selectedItems, displayPrice)}
           onChange={handleTextFieldValueChange}
