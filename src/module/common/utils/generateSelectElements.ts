@@ -43,9 +43,7 @@ export const generateCPUSelectElement = (
   return tempMap
 }
 
-export const generateGPUSelectElement = (
-  list: GPUType[]
-): OptionType[] => {
+export const generateGPUSelectElement = (list: GPUType[]): OptionType[] => {
   const tempMap = list
     .filter((item: GPUType) => getLocalizedPriceNum(item) != 0)
     .map((item: GPUType) => {
@@ -88,9 +86,7 @@ export const generateMotherboardSelectElement = (
   return tempMap
 }
 
-export const generateRAMSelectElement = (
-  list: RAMType[]
-): OptionType[] => {
+export const generateRAMSelectElement = (list: RAMType[]): OptionType[] => {
   const tempMap = list
     .filter((item: RAMType) => getLocalizedPriceNum(item) != 0)
     .map((item: RAMType) => {
@@ -109,9 +105,7 @@ export const generateRAMSelectElement = (
   return tempMap
 }
 
-export const generatePSUSelectElement = (
-  list: PSUType[]
-): OptionType[] => {
+export const generatePSUSelectElement = (list: PSUType[]): OptionType[] => {
   const tempMap = list
     .filter((item: PSUType) => getLocalizedPriceNum(item) != 0)
     .map((item: PSUType) => {
@@ -130,9 +124,7 @@ export const generatePSUSelectElement = (
   return tempMap
 }
 
-export const generateCaseSelectElement = (
-  list: CaseType[]
-): OptionType[] => {
+export const generateCaseSelectElement = (list: CaseType[]): OptionType[] => {
   const tempMap = list
     .filter((item: CaseType) => getLocalizedPriceNum(item) != 0)
     .map((item: CaseType) => {
@@ -150,9 +142,7 @@ export const generateCaseSelectElement = (
   return tempMap
 }
 
-export const generateAIOSelectElement = (
-  list: CoolerType[]
-): OptionType[] => {
+export const generateAIOSelectElement = (list: CoolerType[]): OptionType[] => {
   const tempMap = list
     .filter((item: CoolerType) => getLocalizedPriceNum(item) != 0)
     .map((item: CoolerType) => {
@@ -170,9 +160,7 @@ export const generateAIOSelectElement = (
   return tempMap
 }
 
-export const generateSSDSelectElement = (
-  list: SSDType[]
-): OptionType[] => {
+export const generateSSDSelectElement = (list: SSDType[]): OptionType[] => {
   const tempMap = list
     .filter((item: SSDType) => getLocalizedPriceNum(item) != 0)
     .map((item: SSDType) => {

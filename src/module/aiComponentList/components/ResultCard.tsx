@@ -18,6 +18,7 @@ import PlatformIcon from '../../common/components/PlatformIcon'
 import BuyButton from '../../common/components/BuyButton'
 import PlaceholdImage from '../../common/components/PlaceholdImage'
 import { AllType } from '../../../constant/objectTypes'
+import { generateItemName } from '../../../utils/LabelHelper'
 
 interface ResultCardProps {
   type: ComponentType
@@ -48,7 +49,7 @@ const ResultCard: React.FC<ResultCardProps> = ({ type, data, onClick }) => {
     >
       <CardHeader
         title={t(config.title)}
-        subheader={`${t(data.brand)} ${data.name}`}
+        subheader={`${generateItemName(data.brand, data.name)}`}
         sx={{
           '& .MuiCardHeader-title': { fontSize: '1.25rem', fontWeight: 600 },
           '& .MuiCardHeader-subheader': { fontSize: '0.75rem' },

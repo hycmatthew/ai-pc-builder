@@ -16,11 +16,11 @@ export const generateItemName = (brand: string, name: string) => {
 
 export const generateSSDName = (item: SSDType) => {
   // const getSeries = item.brand || item.name
-  return `${t(brandTranslationKey(item.brand))} ${item.name}`
+  return `${brandTranslationKey(item.brand)} ${item.name}`
 }
 
 export const generateRAMName = (item: RAMType) => {
-  return `${t(brandTranslationKey(item.brand))} ${item.name}`
+  return `${brandTranslationKey(item.brand)} ${item.name}`
 }
 
 export const priceLabelHandler = (price: string) => {

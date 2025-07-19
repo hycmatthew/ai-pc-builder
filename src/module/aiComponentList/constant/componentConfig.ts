@@ -1,5 +1,5 @@
-import { t } from 'i18next'
 import { ReactNode } from 'react'
+import { brandTranslationKey } from '../../../utils/LabelHelper'
 
 export type ComponentType = keyof typeof componentConfig
 
@@ -25,10 +25,14 @@ type ComponentConfig = {
 
 export const componentConfig = {
   cpu: {
-    title: 'CPU',
+    title: 'cpu',
     properties: {
       simple: [
-        { label: 'brand', key: 'brand', formatter: (data) => t(data.brand), },
+        {
+          label: 'brand',
+          key: 'brand',
+          formatter: (data) => brandTranslationKey(data.brand),
+        },
         { label: 'socket', key: 'socket' },
         {
           label: 'Cores/Threads',
@@ -42,7 +46,11 @@ export const componentConfig = {
         },
       ],
       detail: [
-        { label: 'brand', key: 'brand', formatter: (data) => t(data.brand), },
+        {
+          label: 'brand',
+          key: 'brand',
+          formatter: (data) => brandTranslationKey(data.brand),
+        },
         { label: 'socket', key: 'socket' },
         {
           label: 'Cores/Threads',
@@ -61,10 +69,14 @@ export const componentConfig = {
     },
   },
   gpu: {
-    title: 'gpu',
+    title: 'graphic-card',
     properties: {
       simple: [
-        { label: 'brand', key: 'brand', formatter: (data) => t(data.brand), },
+        {
+          label: 'brand',
+          key: 'brand',
+          formatter: (data) => brandTranslationKey(data.brand),
+        },
         { label: 'Manufacturer', key: 'manufacturer' },
         { label: 'Series', key: 'series' },
         { label: 'MemorySize', key: 'memory_size' },
@@ -74,7 +86,11 @@ export const componentConfig = {
         { label: 'Length', key: 'length' },
       ],
       detail: [
-        { label: 'brand', key: 'brand', formatter: (data) => `${t(data.brand)}`, },
+        {
+          label: 'brand',
+          key: 'brand',
+          formatter: (data) => `${brandTranslationKey(data.brand)}`,
+        },
         { label: 'Manufacturer', key: 'manufacturer' },
         { label: 'Generation', key: 'generation' },
         { label: 'MemorySize', key: 'memorySize' },
@@ -92,17 +108,25 @@ export const componentConfig = {
     title: 'motherboard',
     properties: {
       simple: [
-        { label: 'brand', key: 'brand', formatter: (data) => t(data.brand), },
+        {
+          label: 'brand',
+          key: 'brand',
+          formatter: (data) => brandTranslationKey(data.brand),
+        },
         { label: 'socket', key: 'socket' },
         { label: 'Chipset', key: 'chipset' },
         { label: 'RamSlot', key: 'ram_slot' },
-        { label: 'RamSupport', key: 'ram_support' },
+        { label: 'RamSupport', key: 'ram_type' },
         { label: 'M2Slot', key: 'm2_slot' },
         { label: 'FormFactor', key: 'form_factor' },
         { label: 'Wireless', key: 'wireless' },
       ],
       detail: [
-        { label: 'brand', key: 'brand', formatter: (data) => t(data.brand), },
+        {
+          label: 'brand',
+          key: 'brand',
+          formatter: (data) => brandTranslationKey(data.brand),
+        },
         { label: 'socket', key: 'socket' },
         { label: 'Chipset', key: 'chipset' },
         { label: 'RamSlot', key: 'ram_slot' },
@@ -117,7 +141,11 @@ export const componentConfig = {
     title: 'ram',
     properties: {
       simple: [
-        { label: 'brand', key: 'brand', formatter: (data) => t(data.brand), },
+        {
+          label: 'brand',
+          key: 'brand',
+          formatter: (data) => brandTranslationKey(data.brand),
+        },
         //{ label: 'name', key: 'Name' },
         //{ label: 'image', key: 'img' },
         { label: 'Capacity', key: 'capacity' },
@@ -129,7 +157,11 @@ export const componentConfig = {
         { label: 'Profile', key: 'profile' },
       ],
       detail: [
-        { label: 'brand', key: 'brand', formatter: (data) => t(data.brand), },
+        {
+          label: 'brand',
+          key: 'brand',
+          formatter: (data) => brandTranslationKey(data.brand),
+        },
         //{ label: 'name', key: 'Name' },
         //{ label: 'image', key: 'img' },
         { label: 'Capacity', key: 'capacity' },
@@ -146,7 +178,11 @@ export const componentConfig = {
     title: 'ssd',
     properties: {
       simple: [
-        { label: 'brand', key: 'brand', formatter: (data) => t(data.brand), },
+        {
+          label: 'brand',
+          key: 'brand',
+          formatter: (data) => brandTranslationKey(data.brand),
+        },
         { label: 'Capacity', key: 'capacity' },
         { label: 'MaxRead', key: 'max_read' },
         { label: 'MaxWrite', key: 'max_write' },
@@ -164,17 +200,25 @@ export const componentConfig = {
     },
   },
   psu: {
-    title: 'power-supply',
+    title: 'psu',
     properties: {
       simple: [
-        { label: 'brand', key: 'brand', formatter: (data) => t(data.brand), },
+        {
+          label: 'brand',
+          key: 'brand',
+          formatter: (data) => brandTranslationKey(data.brand),
+        },
         { label: 'Wattage', key: 'wattage' },
         { label: 'Standard', key: 'standard' },
         { label: 'Modular', key: 'modular' },
         { label: 'Efficiency', key: 'efficiency' },
       ],
       detail: [
-        { label: 'brand', key: 'brand', formatter: (data) => t(data.brand), },
+        {
+          label: 'brand',
+          key: 'brand',
+          formatter: (data) => brandTranslationKey(data.brand),
+        },
         { label: 'Wattage', key: 'wattage' },
         { label: 'Standard', key: 'standard' },
         { label: 'Modular', key: 'modular' },
@@ -183,17 +227,25 @@ export const componentConfig = {
     },
   },
   pcCase: {
-    title: 'pc-case',
+    title: 'computer-case',
     properties: {
       simple: [
-        { label: 'brand', key: 'brand', formatter: (data) => t(data.brand), },
+        {
+          label: 'brand',
+          key: 'brand',
+          formatter: (data) => brandTranslationKey(data.brand),
+        },
         { label: 'CaseSize', key: 'case_size' },
         { label: 'Dimensions', key: 'dimensions' },
         { label: 'MaxVGAlength', key: 'max_vga_length' },
         { label: 'RadiatorSupport', key: 'radiator_support' },
       ],
       detail: [
-        { label: 'brand', key: 'brand', formatter: (data) => t(data.brand), },
+        {
+          label: 'brand',
+          key: 'brand',
+          formatter: (data) => brandTranslationKey(data.brand),
+        },
         { label: 'CaseSize', key: 'case_size' },
         { label: 'Dimensions', key: 'dimensions' },
         { label: 'MaxVGAlength', key: 'max_vga_length' },
@@ -202,10 +254,14 @@ export const componentConfig = {
     },
   },
   cooler: {
-    title: 'cooler',
+    title: 'cpu-cooler',
     properties: {
       simple: [
-        { label: 'brand', key: 'brand', formatter: (data) => t(data.brand), },
+        {
+          label: 'brand',
+          key: 'brand',
+          formatter: (data) => brandTranslationKey(data.brand),
+        },
         //{ label: 'name', key: 'Name' },
         //{ label: 'image', key: 'img' },
         { label: 'Sockets', key: 'sockets' },
@@ -217,7 +273,11 @@ export const componentConfig = {
         // { label: 'Pressure', key: 'pressure' },
       ],
       detail: [
-        { label: 'brand', key: 'brand', formatter: (data) => t(data.brand), },
+        {
+          label: 'brand',
+          key: 'brand',
+          formatter: (data) => brandTranslationKey(data.brand),
+        },
         //{ label: 'name', key: 'Name' },
         //{ label: 'image', key: 'img' },
         { label: 'Sockets', key: 'sockets' },

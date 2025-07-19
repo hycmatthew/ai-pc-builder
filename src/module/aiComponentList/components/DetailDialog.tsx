@@ -4,6 +4,7 @@ import CustomDialog from '../../common/components/CustomDialog'
 import { componentConfig } from '../constant/componentConfig'
 import { useTranslation } from 'react-i18next'
 import PlaceholdImage from '../../common/components/PlaceholdImage'
+import { brandTranslationKey, generateItemName } from '../../../utils/LabelHelper'
 
 type HardwareType = keyof typeof componentConfig
 
@@ -35,7 +36,7 @@ const DetailDialog = ({
     <CustomDialog
       open={open}
       onClose={onClose}
-      title={`${t(data.brand)} ${data.name}`}
+      title={`${generateItemName(data.brand, data.name)}`}
       size={size}
     >
       <Grid container spacing={3}>
