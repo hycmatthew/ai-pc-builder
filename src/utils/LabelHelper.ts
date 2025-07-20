@@ -3,6 +3,10 @@ import i18n from '../config/i18n'
 import { RAMType, SSDType } from '../constant/objectTypes'
 import { addCurrencySign } from './NumberHelper'
 
+export const handleYesNoFromNum = (type: number) => {
+  return type ? t('yes') : t('no')
+}
+
 export const brandTranslationKey = (brand: string) => {
   const brandKey = `brand-${brand.toLowerCase().replace(/[.\s]+/g, '-')}`
   // console.log(brandKey + '-' + t('brandKey'))
@@ -33,6 +37,10 @@ export const lengthLabelHandler = (length: number) => {
 
 export const diskSpeedLabelHandler = (speed: number) => {
   return `${speed} MB/s`
+}
+
+export const formatNormalCapacity = (capacity: number) => {
+  return `${capacity}GB`
 }
 
 export const formatSSDCapacity = (capacity: number) => {

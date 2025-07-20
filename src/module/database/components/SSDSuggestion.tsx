@@ -97,12 +97,12 @@ const SSDSuggestion = ({ ssdList, isLoading }: SSDSuggestionProps) => {
             isHighlight: false,
           },
           {
-            label: 'read-speed',
+            label: 'ssd-max-read',
             value: diskSpeedLabelHandler(specs.readSpeed),
             isHighlight: specs.readSpeed === maxRead,
           },
           {
-            label: 'write-speed',
+            label: 'ssd-max-write',
             value: diskSpeedLabelHandler(specs.writeSpeed),
             isHighlight: specs.writeSpeed === maxWrite,
           },

@@ -336,7 +336,7 @@ function AILogicPage() {
             </Grid>
             {/* Step 1 - Usage Selection */}
             <AnimatedGrid size={12}>
-              <FormLabel>{t('Usage')}</FormLabel>
+              <FormLabel>{t('usage')}</FormLabel>
               <SegmentedTabs
                 value={selectedType ?? null}
                 onChange={updateType}
@@ -347,7 +347,7 @@ function AILogicPage() {
             {activeStep > 0 && (
               <>
                 <AnimatedGrid size={12}>
-                  <FormLabel>{t('Storage')}</FormLabel>
+                  <FormLabel>{t('storage')}</FormLabel>
                   <SegmentedTabs
                     value={selectedStorage}
                     onChange={updateSelectedStorage}
@@ -355,7 +355,7 @@ function AILogicPage() {
                   />
                 </AnimatedGrid>
                 <AnimatedGrid size={12}>
-                  <FormLabel>{t('Budget')}</FormLabel>
+                  <FormLabel>{t('budget')}</FormLabel>
                 </AnimatedGrid>
                 <AnimatedGrid size={12}>
                   <Grid container spacing={1} columns={{ xs: 6, md: 12 }}>

@@ -21,8 +21,7 @@ const CURRENCY_MAP: Record<LangEnum, { region: RegionKey; sign: string }> = {
 }
 
 // 獲取貨幣配置的通用方法
-const getCurrencyConfig = () =>
-  CURRENCY_MAP[i18n.language as LangEnum] || CURRENCY_MAP[LangEnum.en]
+const getCurrencyConfig = () => CURRENCY_MAP[LangEnum.en]
 
 // 合併重複的價格處理邏輯
 const handlePriceValue = (value?: string | number) => {

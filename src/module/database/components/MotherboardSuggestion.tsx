@@ -92,7 +92,7 @@ const MotherboardSuggestion = ({
               Math.max(...selectedItems.map((mb) => mb.pcie_4_slot)),
           },
           {
-            label: 'm2-slots',
+            label: 'mb-m2-slots',
             value: specs.m2Slots.toString(),
             isHighlight:
               specs.m2Slots ===
