@@ -23,7 +23,7 @@ function MainPage() {
         imageHeight={320}
         titleText={<>{t('try-ai-build-header')}</>}
         buttonText={t('try-ai-build-button')}
-        buttonLink="ai-build"
+        buttonLink="/ai-build"
         imageAlt="DIY PC Background"
         contentSx={{
           backgroundColor: 'rgba(10, 9, 9, 0.3)',

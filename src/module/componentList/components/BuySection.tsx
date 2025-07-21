@@ -105,7 +105,7 @@ const HardwareSection = ({
                       {isXs ? (
                         <ShoppingCartIcon fontSize="small" />
                       ) : (
-                        t('buyNow')
+                        t('buy-now')
                       )}
                     </BuyButton>
                   </Grid>

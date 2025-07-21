@@ -1,5 +1,11 @@
-import i18n from '../config/i18n'
+import { useLocation } from 'react-router-dom'
 
-export const linkHandler = (link: string): string => {
-  return `/${i18n.language}/${link}`
+export const useLinkHandler = () => {
+  const location = useLocation()
+
+  return (link: string) => {
+    // 从当前 URL 中提取语言部分
+    const lang = location.pathname.split('/')[1]
+    return `/${lang}/${link.replace(/^\//, '')}` // 确保没有重复的斜杠
+  }
 }

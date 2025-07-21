@@ -104,7 +104,7 @@ const CoolerSuggestion = ({ coolerList, isLoading }: CoolerSuggestionProps) => {
       renderFilterForm={
         <Grid>
           <SelectElement
-            label={t('aio')}
+            label={t('cpu-cooler')}
             options={generateAIOSelectElement(coolerList)}
             selectChange={(id) =>
               setFilterLogic((prev) => ({ ...prev, id }))

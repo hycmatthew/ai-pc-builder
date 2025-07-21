@@ -10,7 +10,6 @@ import CusTypography from '../../common/components/CusTypography'
 import { useTranslation } from 'react-i18next'
 import DetailDialog from './DetailDialog'
 import { ComponentType } from '../constant/componentConfig'
-import { getCurrentSaleLink } from '../../../utils/PCPartUtil'
 
 type ResultComponentProps = {
   resultData: SelectedItemType
@@ -104,8 +103,6 @@ function ResultComponent({
           onClose={() => setSelectedData(null)}
           type={selectedData.type}
           data={selectedData.data}
-          price={getCurrentPriceWithSign(selectedData.data)}
-          link={getCurrentSaleLink(selectedData.data)}
           size="large"
         />
       )}

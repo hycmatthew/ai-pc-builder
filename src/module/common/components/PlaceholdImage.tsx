@@ -40,7 +40,7 @@ const PlaceholdImage = ({
       alt={`${t(data.brand)} ${data.name}`}
       src={
         data.img ||
-        `https://placehold.co/${placeholderSize}/transparent/2b2b2b/?text=${brandTranslationKey(data.brand)}+${data.name}`
+        `https://placehold.co/${placeholderSize}/transparent/2b2b2b/?text=${brandTranslationKey(data.brand, 'en')}+${data.name}`
       }
     />
   )

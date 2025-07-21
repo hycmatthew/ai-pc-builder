@@ -1,9 +1,10 @@
 import React from 'react'
 import Box from '@mui/material/Box'
+import { Link } from 'react-router-dom'
 import { SxProps, Theme } from '@mui/material/styles'
 import CusTypography from './CusTypography' // 请根据实际路径调整
 import CustomButton from './CustomButton' // 请根据实际路径调整
-import { linkHandler } from '../../../utils/LinkHelper'
+import { useLinkHandler } from '../../../utils/LinkHelper'
 
 interface HeroBannerProps {
   /**
@@ -65,6 +66,7 @@ const HeroBanner: React.FC<HeroBannerProps> = ({
   titleSx,
   buttonSx,
 }) => {
+  const linkHandler = useLinkHandler()
   return (
     <Box
       component="div"
@@ -128,8 +130,10 @@ const HeroBanner: React.FC<HeroBannerProps> = ({
         {/* 按钮 */}
         {buttonText && (
           <CustomButton
+            component={Link}
             variant="outlined"
-            href={linkHandler(buttonLink ?? '')}
+            // @ts-expect-error: 'to' prop is valid when using react-router Link as component
+            to={linkHandler(buttonLink ?? '')}
             sx={{
               py: 1,
               px: 4,

@@ -27,14 +27,14 @@ import {
   RAMType,
   SSDType,
 } from '../../../constant/objectTypes'
-import { brandTranslationKey } from '../../../utils/LabelHelper'
+import { brandTranslationKey, formatNormalCapacity, formatSSDCapacity, lengthLabelHandler } from '../../../utils/LabelHelper'
 
 const Database = () => {
   const { t } = useTranslation()
   const tabs = [
     { label: t('cpu'), value: ProductEnum.CPU },
     { label: t('motherboard'), value: ProductEnum.Motherboard },
-    { label: t('gpu'), value: ProductEnum.GPU },
+    { label: t('graphic-card'), value: ProductEnum.GPU },
     { label: t('ram'), value: ProductEnum.RAM },
     { label: t('ssd'), value: ProductEnum.SSD },
     { label: t('psu'), value: ProductEnum.PSU },
@@ -210,7 +210,8 @@ const Database = () => {
           getOptions: (list: CPUType[]) =>
             [...new Set(list.map((item) => item.socket))]
               .filter(Boolean)
-              .sort(),
+              .sort()
+              .map((value) => ({ value, label: value })),
         },
       ],
       [ProductEnum.GPU]: [
@@ -221,7 +222,8 @@ const Database = () => {
           getOptions: (list: GPUType[]) =>
             [...new Set(list.map((item) => item.manufacturer))]
               .filter(Boolean)
-              .sort(),
+              .sort()
+              .map((value) => ({ value, label: value })),
         },
         {
           type: 'select',
@@ -230,7 +232,8 @@ const Database = () => {
           getOptions: (list: GPUType[]) =>
             [...new Set(list.map((item) => item.chipset))]
               .filter(Boolean)
-              .sort(),
+              .sort()
+              .map((value) => ({ value, label: value })),
         },
         {
           type: 'select',
@@ -242,7 +245,9 @@ const Database = () => {
             ].filter(
               (size): size is number => typeof size === 'number' && !isNaN(size)
             )
-            return sizes.sort((a, b) => a - b)
+            return sizes
+              .sort((a, b) => a - b)
+              .map((value) => ({ value, label: formatNormalCapacity(value) }))
           },
         },
         {
@@ -252,7 +257,8 @@ const Database = () => {
           getOptions: (list: GPUType[]) =>
             [...new Set(list.map((item) => item.memory_bus))]
               .filter(Boolean)
-              .sort(),
+              .sort()
+              .map((value) => ({ value, label: value })),
         },
       ],
       [ProductEnum.RAM]: [
@@ -266,7 +272,9 @@ const Database = () => {
             ].filter(
               (size): size is number => typeof size === 'number' && !isNaN(size)
             )
-            return sizes.sort((a, b) => a - b)
+            return sizes
+              .sort((a, b) => a - b)
+              .map((value) => ({ value, label: formatNormalCapacity(value) }))
           },
         },
       ],
@@ -278,7 +286,8 @@ const Database = () => {
           getOptions: (list: MotherboardType[]) =>
             [...new Set(list.map((item) => item.form_factor))]
               .filter(Boolean)
-              .sort(),
+              .sort()
+              .map((value) => ({ value, label: value })),
         },
         {
           type: 'select',
@@ -287,7 +296,8 @@ const Database = () => {
           getOptions: (list: MotherboardType[]) =>
             [...new Set(list.map((item) => item.chipset))]
               .filter(Boolean)
-              .sort(),
+              .sort()
+              .map((value) => ({ value, label: value })),
         },
         {
           type: 'select',
@@ -296,15 +306,19 @@ const Database = () => {
           getOptions: (list: MotherboardType[]) =>
             [...new Set(list.map((item) => item.ram_type))]
               .filter(Boolean)
-              .sort(),
+              .sort()
+              .map((value) => ({ value, label: value })),
         },
         {
           type: 'select',
           key: 'wireless',
           label: t('wireless'),
-          getOptions: (list: MotherboardType[]) => [
-            ...new Set(list.map((item) => item.wireless)),
-          ],
+          getOptions: (_list: MotherboardType[]) => {
+            return [
+              { value: 1, label: t('yes') },
+              { value: 0, label: t('no') },
+            ]
+          },
         },
       ],
       [ProductEnum.SSD]: [
@@ -318,7 +332,9 @@ const Database = () => {
             ].filter(
               (size): size is number => typeof size === 'number' && !isNaN(size)
             )
-            return sizes.sort((a, b) => a - b)
+            return sizes
+              .sort((a, b) => a - b)
+              .map((value) => ({ value, label: formatSSDCapacity(value) }))
           },
         },
         {
@@ -328,7 +344,8 @@ const Database = () => {
           getOptions: (list: SSDType[]) =>
             [...new Set(list.map((item) => item.interface))]
               .filter(Boolean)
-              .sort(),
+              .sort()
+              .map((value) => ({ value, label: value })),
         },
       ],
       [ProductEnum.PSU]: [
@@ -339,19 +356,23 @@ const Database = () => {
           getOptions: (list: PSUType[]) =>
             [...new Set(list.map((item) => item.efficiency))]
               .filter(Boolean)
-              .sort(),
+              .sort()
+              .map((value) => ({ value, label: value })),
         },
         {
           type: 'select',
           key: 'size',
           label: t('size'),
           getOptions: (list: PSUType[]) =>
-            [...new Set(list.map((item) => item.size))].filter(Boolean).sort(),
+            [...new Set(list.map((item) => item.size))]
+              .filter(Boolean)
+              .sort()
+              .map((value) => ({ value, label: value })),
         },
         {
           type: 'range',
           key: 'wattage',
-          label: t('wattage'),
+          label: t('psu-wattage'),
           getRange: (list: PSUType[]) => ({
             min: Math.min(...list.map((item) => item.wattage || 0)),
             max: Math.max(...list.map((item) => item.wattage || 0)),
@@ -366,7 +387,8 @@ const Database = () => {
           getOptions: (list: CaseType[]) =>
             [...new Set(list.map((item) => item.case_size))]
               .filter(Boolean)
-              .sort(),
+              .sort()
+              .map((value) => ({ value, label: value })),
         },
       ],
       [ProductEnum.Cooler]: [
@@ -374,8 +396,12 @@ const Database = () => {
           type: 'select',
           key: 'is_liquid_cooler',
           label: t('is-liquid-cooler'),
-          getOptions: (list: CoolerType[]) =>
-            [...new Set(list.map((item) => item.is_liquid_cooler))].sort(),
+          getOptions: (_list: CoolerType[]) => {
+            return [
+              { value: 1, label: t('yes') },
+              { value: 0, label: t('no') },
+            ]
+          },
         },
         {
           type: 'select',
@@ -384,7 +410,8 @@ const Database = () => {
           getOptions: (list: CoolerType[]) =>
             [...new Set(list.map((item) => item.liquid_cooler_size))]
               .filter(Boolean)
-              .sort(),
+              .sort()
+              .map((value) => ({ value, label: lengthLabelHandler(value) })),
         },
       ],
       // 添加其他硬體類型配置...
@@ -434,13 +461,14 @@ const Database = () => {
         }
         case 'select': {
           const options = filter.getOptions(currentList)
+          console.log(options)
           return (
             <Box paddingY={1} key={filter.key}>
               <CustomAutocomplete
                 key={filter.key}
                 options={options.map((opt: any) => ({
-                  label: opt.toString(),
-                  value: opt,
+                  label: opt.label,
+                  value: opt.value,
                 }))}
                 label={filter.label}
                 onChange={(_, value) =>

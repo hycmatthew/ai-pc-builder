@@ -7,12 +7,18 @@ export const handleYesNoFromNum = (type: number) => {
   return type ? t('yes') : t('no')
 }
 
-export const brandTranslationKey = (brand: string) => {
+export const brandTranslationKey = (brand: string, lang?: string) => {
   const brandKey = `brand-${brand.toLowerCase().replace(/[.\s]+/g, '-')}`
-  // console.log(brandKey + '-' + t('brandKey'))
+  // 如果有指定语言
+  if (lang) {
+    // 创建指定语言的翻译函数实例
+    const tWithLang = i18n.getFixedT(lang)
+    return i18n.exists(brandKey) ? tWithLang(brandKey) : brand
+  }
+
+  // 默认行为（使用当前语言）
   return i18n.exists(brandKey) ? t(brandKey) : brand
 }
-
 export const generateItemName = (brand: string, name: string) => {
   const brandKey = brandTranslationKey(brand)
   return `${t(brandKey)} ${name}`

@@ -1,6 +1,6 @@
 import { t } from 'i18next'
 import { Link } from 'react-router-dom'
-import { linkHandler } from '../../../utils/LinkHelper'
+import { useLinkHandler } from '../../../utils/LinkHelper'
 import { useTheme, Theme } from '@mui/material/styles'
 import {
   useMediaQuery,
@@ -23,6 +23,7 @@ const HeaderLayout = () => {
   const [drawerOpen, setDrawerOpen] = useState(false)
   const theme = useTheme<Theme>()
   const isMobile = useMediaQuery(theme.breakpoints.down('md'))
+  const linkHandler = useLinkHandler()
 
   const pages = [
     { label: t('pc-builder'), link: '/' },
