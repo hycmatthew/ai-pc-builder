@@ -27,7 +27,12 @@ import {
   RAMType,
   SSDType,
 } from '../../../constant/objectTypes'
-import { brandTranslationKey, formatNormalCapacity, formatSSDCapacity, lengthLabelHandler } from '../../../utils/LabelHelper'
+import {
+  brandTranslationKey,
+  formatNormalCapacity,
+  formatSSDCapacity,
+  lengthLabelHandler,
+} from '../../../utils/LabelHelper'
 
 const Database = () => {
   const { t } = useTranslation()
@@ -94,7 +99,6 @@ const Database = () => {
 
     const min = Math.min(...prices)
     const max = Math.max(...prices)
-    console.log('minPrice:', min, 'maxPrice:', max)
     return { minPrice: min, maxPrice: max }
   }, [selectedType, dataState])
 
@@ -112,6 +116,10 @@ const Database = () => {
     setSelectedBrand(null)
     setPriceRange([minPrice, maxPrice])
     setSelectedPrice([minPrice, maxPrice])
+
+    // 清除当前硬件类型对应的特定筛选条件
+    console.log('setSpecificFilters')
+    setSpecificFilters({})
   }, [selectedType])
 
   const updateType = (_event: React.SyntheticEvent, newValue: any) => {
@@ -461,7 +469,6 @@ const Database = () => {
         }
         case 'select': {
           const options = filter.getOptions(currentList)
-          console.log(options)
           return (
             <Box paddingY={1} key={filter.key}>
               <CustomAutocomplete

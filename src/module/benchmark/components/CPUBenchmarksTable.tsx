@@ -9,7 +9,10 @@ import {
   calculatePricePerformance,
   getLocalizedPriceNum,
 } from '../../../utils/NumberHelper'
-import { brandTranslationKey, generateItemName } from '../../../utils/LabelHelper'
+import {
+  brandTranslationKey,
+  generateItemName,
+} from '../../../utils/LabelHelper'
 import BarMotion from '../../../styles/animation/BarMotion'
 import BenchmarksDataGrid from './BenchmarksDataGrid'
 import { getGradientColor } from '../../../utils/ColorHelper'
@@ -54,13 +57,13 @@ function CPUBenchmarksTable() {
     }))
   }, [dataState.cpuList])
 
-   // 获取唯一品牌列表
-    const uniqueBrands = useMemo(() => {
-      const brands: string = baseData.map(
-        (item: BaseDataItemType) => brandTranslationKey(item.brand)
-      )
-      return Array.from(new Set(brands))
-    }, [baseData])
+  // 获取唯一品牌列表
+  const uniqueBrands = useMemo(() => {
+    const brands: string = baseData.map((item: BaseDataItemType) =>
+      brandTranslationKey(item.brand)
+    )
+    return Array.from(new Set(brands))
+  }, [baseData])
 
   const [isMaxPriceUpdate, setIsMaxPriceUpdate] = useState(false)
   const minPrice = 0
@@ -132,7 +135,7 @@ function CPUBenchmarksTable() {
       {
         field: 'id',
         headerName: t('name'),
-        width: 250,
+        width: 220,
         renderCell: (params) => (
           <CusTypography variant="h6">{params.value}</CusTypography>
         ),
@@ -140,7 +143,7 @@ function CPUBenchmarksTable() {
       {
         field: 'singleScore',
         headerName: t('cpu-single-score'),
-        width: selectedField === 'singleScore' ? 430 : 150,
+        width: selectedField === 'singleScore' ? 400 : 210,
         renderCell: (params) => (
           <Stack direction="row" alignItems="center" spacing={2}>
             {params.field === selectedField &&
@@ -152,7 +155,7 @@ function CPUBenchmarksTable() {
       {
         field: 'multiScore',
         headerName: t('cpu-multi-score'),
-        width: selectedField === 'multiScore' ? 430 : 150,
+        width: selectedField === 'multiScore' ? 400 : 210,
         renderCell: (params) => (
           <Stack direction="row" alignItems="center" spacing={2}>
             {params.field === selectedField &&
@@ -174,7 +177,7 @@ function CPUBenchmarksTable() {
       {
         field: 'price',
         headerName: t('price'),
-        width: 100,
+        width: 70,
         renderCell: (params) => (
           <CusTypography variant="h6">
             {addCurrencySign(params.value)}

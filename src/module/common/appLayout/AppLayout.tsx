@@ -1,5 +1,5 @@
 import { useEffect, useState, useCallback, useMemo } from 'react'
-import { useLocation } from 'react-router-dom'
+import { useLocation, useNavigate, useParams } from 'react-router-dom'
 import ReactGA from 'react-ga4'
 import { useTranslation } from 'react-i18next'
 import { Dialog, DialogTitle } from '@mui/material'
@@ -10,6 +10,7 @@ import HeaderLayout from './header'
 import CusTypography from '../components/CusTypography'
 import { LangEnum } from '../../../constant/supportedLang'
 import { t } from 'i18next'
+import PageTitleSetter from '../../../utils/PageTitleSetter'
 
 // 类型定义
 type AppLayoutProps = {
@@ -23,9 +24,22 @@ type LanguageConfig = {
 
 // 全局语言配置
 const LANGUAGE_MAPPING: Record<string, LanguageConfig> = {
-  en: { code: LangEnum.en, displayText: 'EN' },
-  'zh-CN': { code: LangEnum.zhCN, displayText: '简' },
-  'zh-TW': { code: LangEnum.zhTW, displayText: '繁' },
+  [LangEnum.en]: { code: LangEnum.en, displayText: 'EN' },
+  [LangEnum.zhCN]: { code: LangEnum.zhCN, displayText: '简' },
+  [LangEnum.zhTW]: { code: LangEnum.zhTW, displayText: '繁' },
+}
+
+// 语言代码规范化函数
+const normalizeLanguageCode = (lang: string | undefined): LangEnum => {
+  if (!lang) return LangEnum.en
+
+  const normalized = lang.toLowerCase().replace(/_/g, '-')
+
+  if (normalized === 'zh-cn' || normalized === 'zh-hans') return LangEnum.zhCN
+  if (normalized === 'zh-tw' || normalized === 'zh-hant') return LangEnum.zhTW
+  if (normalized === 'en' || normalized === 'en-us') return LangEnum.en
+
+  return LangEnum.en
 }
 
 // 提取独立Dialog组件
@@ -42,17 +56,6 @@ const LanguageDialog = ({
   currentLanguage,
   onChangeLanguage,
 }: LanguageDialogProps) => {
-  const { i18n } = useTranslation()
-
-  const handleLanguageChange = useCallback(
-    async (lng: string) => {
-      await i18n.changeLanguage(lng)
-      onChangeLanguage(lng)
-      onClose()
-    },
-    [i18n, onChangeLanguage, onClose]
-  )
-
   return (
     <Dialog className="lang-dialog" onClose={onClose} open={open}>
       <DialogTitle>{t('select-language')}</DialogTitle>
@@ -63,7 +66,7 @@ const LanguageDialog = ({
             className={`app-layout-lang-btn ${
               currentLanguage === lang.code ? 'active' : ''
             }`}
-            onClick={() => handleLanguageChange(lang.code)}
+            onClick={() => onChangeLanguage(lang.code)}
           >
             {lang.displayText}
           </button>
@@ -76,9 +79,18 @@ const LanguageDialog = ({
 // 主组件
 const AppLayout = ({ children }: AppLayoutProps) => {
   const location = useLocation()
+  const navigate = useNavigate()
+  const params = useParams()
   const { i18n } = useTranslation()
   const [dialogOpen, setDialogOpen] = useState(false)
-  const [currentLang, setCurrentLang] = useState(i18n.language)
+
+  const currentLang = useMemo(() => {
+    const langFromParams = params.lang
+      ? normalizeLanguageCode(params.lang)
+      : undefined
+    const langFromi18n = normalizeLanguageCode(i18n.language)
+    return langFromParams || langFromi18n || LangEnum.en
+  }, [params.lang, i18n.language])
 
   // GA跟踪
   useEffect(() => {
@@ -93,14 +105,38 @@ const AppLayout = ({ children }: AppLayoutProps) => {
 
   // 语言变化监听
   useEffect(() => {
-    const handleLanguageChange = (lng: string) => {
-      setCurrentLang(lng)
+    // 确保i18n语言与路由参数同步
+    if (params.lang && params.lang !== i18n.language) {
+      i18n.changeLanguage(params.lang)
     }
-    i18n.on('languageChanged', handleLanguageChange)
-    return () => {
-      i18n.off('languageChanged', handleLanguageChange)
-    }
-  }, [i18n])
+  }, [params.lang, i18n])
+
+  // 处理语言变更
+  const handleChangeLanguage = useCallback(
+    async (lang: string) => {
+      const newLang = normalizeLanguageCode(lang)
+
+      // 1. 更新i18n语言
+      await i18n.changeLanguage(newLang)
+
+      // 2. 获取当前路径并替换语言部分
+      const pathSegments = location.pathname.split('/')
+
+      // 确保路径至少有两段（语言段 + 其他）
+      if (pathSegments.length >= 2) {
+        // 替换语言部分
+        pathSegments[1] = newLang
+        const newPath = pathSegments.join('/')
+
+        // 3. 导航到新路径
+        navigate(newPath)
+      } else {
+        // 如果路径不符合预期，导航到新语言的首页
+        navigate(`/${newLang}`)
+      }
+    },
+    [i18n, location.pathname, navigate]
+  )
 
   // 当前语言显示配置
   const currentLanguageConfig = useMemo(
@@ -118,6 +154,7 @@ const AppLayout = ({ children }: AppLayoutProps) => {
 
   return (
     <div className="app-layout">
+      <PageTitleSetter />
       <HeaderLayout />
 
       <main className="main-page">{children}</main>
@@ -141,7 +178,7 @@ const AppLayout = ({ children }: AppLayoutProps) => {
         open={dialogOpen}
         onClose={handleDialogClose}
         currentLanguage={currentLang}
-        onChangeLanguage={setCurrentLang}
+        onChangeLanguage={handleChangeLanguage}
       />
     </div>
   )

@@ -8,7 +8,7 @@ export const handleYesNoFromNum = (type: number) => {
 }
 
 export const brandTranslationKey = (brand: string, lang?: string) => {
-  const brandKey = `brand-${brand.toLowerCase().replace(/[.\s]+/g, '-')}`
+  const brandKey = `brand-${brand.toLowerCase()}`
   // 如果有指定语言
   if (lang) {
     // 创建指定语言的翻译函数实例
@@ -35,6 +35,10 @@ export const generateRAMName = (item: RAMType) => {
 
 export const priceLabelHandler = (price: string) => {
   return Number(price) === 0 ? '-' : addCurrencySign(price)
+}
+
+export const powerLabelHandler = (watt: number) => {
+  return watt > 0 ? `${watt} W` : '-'
 }
 
 export const lengthLabelHandler = (length: number) => {

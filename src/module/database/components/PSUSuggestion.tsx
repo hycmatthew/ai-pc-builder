@@ -85,7 +85,7 @@ const PSUSuggestion = ({ psuList, isLoading }: PSUSuggestionProps) => {
             isHighlight: false,
           },
           {
-            label: 'wattage',
+            label: 'psu-wattage',
             value: `${specs.wattage}W`,
             isHighlight: specs.wattage === maxWattage,
           },

@@ -5,6 +5,7 @@ import {
   formatNormalCapacity,
   handleYesNoFromNum,
   lengthLabelHandler,
+  powerLabelHandler,
 } from '../../../utils/LabelHelper'
 import { t } from 'i18next'
 
@@ -49,7 +50,7 @@ export const componentConfig = {
         {
           label: 'power',
           key: 'power',
-          formatter: (data) => `${data.power || '-'}W`,
+          formatter: (data) => powerLabelHandler(data.power),
         },
       ],
       detail: [
@@ -70,7 +71,7 @@ export const componentConfig = {
         {
           label: 'power',
           key: 'power',
-          formatter: (data) => `${data.power || '-'}W`,
+          formatter: (data) => powerLabelHandler(data.power),
         },
       ],
     },
@@ -93,7 +94,11 @@ export const componentConfig = {
         },
         { label: 'gpu-oc-clock', key: 'boost_clock' },
         { label: 'benchmark', key: 'benchmark' },
-        { label: 'gpu-power', key: 'power' },
+        {
+          label: 'gpu-power',
+          key: 'power',
+          formatter: (data) => powerLabelHandler(data.power),
+        },
         {
           label: 'gpu-length',
           key: 'length',
@@ -119,7 +124,11 @@ export const componentConfig = {
         { label: 'gpu-clock', key: 'clock_rate' },
         { label: 'gpu-oc-clock', key: 'boost_clock' },
         { label: 'gpu-benchmark', key: 'benchmark' },
-        { label: 'gpu-power', key: 'power' },
+        {
+          label: 'gpu-power',
+          key: 'power',
+          formatter: (data) => powerLabelHandler(data.power),
+        },
         {
           label: 'gpu-length',
           key: 'length',
@@ -341,7 +350,11 @@ export const componentConfig = {
           key: 'brand',
           formatter: (data) => brandTranslationKey(data.brand),
         },
-        { label: 'psu-wattage', key: 'wattage' },
+        {
+          label: 'psu-wattage',
+          key: 'wattage',
+          formatter: (data) => powerLabelHandler(data.wattage),
+        },
         { label: 'psu-standard', key: 'standard' },
         { label: 'psu-modular', key: 'modular' },
         { label: 'efficiency', key: 'efficiency' },
@@ -352,7 +365,11 @@ export const componentConfig = {
           key: 'brand',
           formatter: (data) => brandTranslationKey(data.brand),
         },
-        { label: 'psu-wattage', key: 'wattage' },
+        {
+          label: 'psu-wattage',
+          key: 'wattage',
+          formatter: (data) => powerLabelHandler(data.wattage),
+        },
         { label: 'psu-standard', key: 'standard' },
         { label: 'psu-modular', key: 'modular' },
         { label: 'efficiency', key: 'efficiency' },
@@ -447,7 +464,11 @@ export const componentConfig = {
           },
         },
         { label: 'is-liquid-cooler', key: 'is_liquid_cooler' },
-        { label: 'cooler-air-height', key: 'air_cooler_height' },
+        {
+          label: 'cooler-air-height',
+          key: 'air_cooler_height',
+          formatter: (data) => lengthLabelHandler(data.air_cooler_height),
+        },
         { label: 'cooler-noise-level', key: 'noise_level' },
         { label: 'cooler-fan-speed', key: 'fan_speed' },
         { label: 'cooler-air-flow', key: 'airflow' },
@@ -471,7 +492,11 @@ export const componentConfig = {
           },
         },
         { label: 'is-liquid-cooler', key: 'is_liquid_cooler' },
-        { label: 'cooler-air-height', key: 'air_cooler_height' },
+        {
+          label: 'cooler-air-height',
+          key: 'air_cooler_height',
+          formatter: (data) => lengthLabelHandler(data.air_cooler_height),
+        },
         { label: 'cooler-noise-level', key: 'noise_level' },
         { label: 'cooler-fan-speed', key: 'fan_speed' },
         { label: 'cooler-air-flow', key: 'airflow' },
