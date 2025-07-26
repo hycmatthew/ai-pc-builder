@@ -101,7 +101,7 @@ const HeaderLayout = () => {
         <div className="header-icon">
           <Box
             component="img"
-            src="/icon/aipcbuild-icon.png"
+            src="/icon/aibuildpc-icon.png"
             alt="BuildYourPC Custom Computers"
             sx={{
               height: 60,
