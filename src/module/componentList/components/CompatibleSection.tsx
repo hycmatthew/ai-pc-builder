@@ -23,8 +23,7 @@ import {
   gpuMatchcpuSuggestion,
   motherboardChipsetSuggestion,
   motherboardIncompatibleWithRamSpeed,
-  motherboardOverclockSuggestion,
-  ramSizeSuggestion,
+  motherboardOverclockSuggestion
 } from '../../../logic/CompatibleLogic/suggestionLogic'
 import { useMemo } from 'react'
 import { psuWithATX3 } from '../../../logic/CompatibleLogic/successLogic'

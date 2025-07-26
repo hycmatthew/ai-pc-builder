@@ -1,4 +1,3 @@
-import { CPUBrand } from '../../constant/BrandEnum'
 import {
   CPUType,
   GPUType,

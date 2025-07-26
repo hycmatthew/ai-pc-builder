@@ -1,5 +1,4 @@
 import { sum, toNumber, isNaN } from 'lodash'
-import i18n from '../config/i18n'
 import {
   AllType,
   CoolerType,

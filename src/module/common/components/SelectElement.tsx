@@ -9,7 +9,7 @@ import {
   Typography,
 } from '@mui/material'
 import Autocomplete from '@mui/material/Autocomplete'
-import { alpha, styled } from '@mui/material/styles'
+import { styled } from '@mui/material/styles'
 import { addCurrencySign } from '../../../utils/NumberHelper'
 import { brandTranslationKey } from '../../../utils/LabelHelper'
 import { OptionType } from '../../../constant/objectTypes'
