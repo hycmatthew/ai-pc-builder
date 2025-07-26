@@ -26,10 +26,10 @@ const HeaderLayout = () => {
   const linkHandler = useLinkHandler()
 
   const pages = [
-    { label: t('pc-builder'), link: '/' },
-    { label: t('benchmark'), link: linkHandler('benchmarks') },
-    { label: t('ai-builder'), link: linkHandler('ai-build') },
-    { label: t('database'), link: linkHandler('database') },
+    { label: t('page-pc-builder'), link: '/' },
+    { label: t('page-benchmark'), link: linkHandler('benchmarks') },
+    { label: t('page-ai-builder'), link: linkHandler('ai-build') },
+    { label: t('page-database'), link: linkHandler('database') },
   ]
 
   const toggleDrawer =
@@ -99,7 +99,16 @@ const HeaderLayout = () => {
     <header>
       <div className="header-menu-container">
         <div className="header-icon">
-          <h3>BuildYourPC.com</h3>
+          <Box
+            component="img"
+            src="/icon/aipcbuild-icon.png"
+            alt="BuildYourPC Custom Computers"
+            sx={{
+              height: 60,
+              width: 'auto',
+              padding: '8px 0', // 垂直留白
+            }}
+          />
         </div>
         <div className="header-menu">
           {isMobile ? renderMobileMenu() : renderDesktopMenu()}

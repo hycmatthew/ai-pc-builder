@@ -2,9 +2,9 @@ import { useLocation } from 'react-router-dom'
 import { usePageTitle } from '../hooks/usePageTitle'
 
 const PAGE_TITLES: Record<string, string> = {
-  '/': 'page-home',
-  '/benchmarks': 'page-benchmarks',
-  '/ai-build': 'page-aiBuild',
+  '/': 'page-pc-builder',
+  '/benchmarks': 'page-benchmark',
+  '/ai-build': 'page-ai-builder',
   '/database': 'page-database',
 }
 

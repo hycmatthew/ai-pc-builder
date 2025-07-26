@@ -10,7 +10,7 @@ export const usePageTitle = (titleKey: string) => {
       const translatedTitle = t(titleKey)
 
       // 设置文档标题
-      document.title = `${translatedTitle} | BuildYourPC`
+      document.title = `${translatedTitle} | AIPCbuild.com`
 
       // 可选：为搜索引擎设置元描述
       const metaDescription = document.querySelector('meta[name="description"]')
