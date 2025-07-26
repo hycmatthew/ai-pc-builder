@@ -14,10 +14,7 @@ export default defineConfig(({ mode }) => {
     build: {
       outDir: 'dist',
     },
-    base:
-      process.env.NODE_ENV === 'production'
-        ? '/ai-pc-builder/' // GitHub Pages路径
-        : '/',
+    base: process.env.NODE_ENV === 'production' ? '/' : '/',
     plugins: [
       react(),
       svgr({
