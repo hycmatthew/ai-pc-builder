@@ -14,6 +14,9 @@ export default defineConfig(({ mode }) => {
     build: {
       outDir: 'dist',
     },
+    esbuild: {
+      drop: ['console', 'debugger'],
+    },
     base: process.env.NODE_ENV === 'production' ? '/' : '/',
     plugins: [
       react(),
