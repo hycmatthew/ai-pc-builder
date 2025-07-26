@@ -162,7 +162,7 @@ const AppLayout = ({ children }: AppLayoutProps) => {
       <footer>
         <div className="main-container">
           <CusTypography variant="body2">
-            {`©${new Date().getFullYear()} buildyourpc.com`}
+            {`©${new Date().getFullYear()} AIPCbuild.com`}
           </CusTypography>
 
           <button

@@ -11,6 +11,9 @@ export default defineConfig(({ mode }) => {
   const env = loadEnv(mode, process.cwd(), 'VITE_')
 
   return {
+    build: {
+      outDir: 'dist',
+    },
     base:
       process.env.NODE_ENV === 'production'
         ? '/ai-pc-builder/' // GitHub Pages路径
